@@ -1,0 +1,44 @@
+# name: LaTeX Build and Release
+
+# permissions:
+#   contents: write
+
+# on:
+#   push:
+#     branches:
+#       - main    
+#       - report
+#   create:
+#     tags:
+#       - "*" 
+
+# jobs:
+#   build_latex:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Compile LaTeX document
+#         uses: dante-ev/latex-action@latest
+#         with:
+#           working_directory: docs/
+#           root_file: report.tex
+#           compiler: pdflatex
+#           args: -interaction=nonstopmode -shell-escape
+      
+#       - name: Upload PDF file
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: PDF
+#           path: docs/report.pdf
+
+#       - name: Create Release
+#         id: create_release
+#         uses: softprops/action-gh-release@v1
+#         with:
+#           files: |
+#             docs/report.pdf
+#           draft: false
+#           prerelease: false
+#           token: ${{ secrets.GITHUB_TOKEN }}

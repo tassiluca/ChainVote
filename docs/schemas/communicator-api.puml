@@ -1,0 +1,51 @@
+@startuml communicator-api
+
+
+class Gateway
+
+package api.src.blockchain {
+
+    package communicator {
+        interface CommunicatorInterface {
+            +createGrpcClient(): Promise<grpc.Client>
+            +createIdentity(): Promise<Identity>
+            +createSigner(): Promise<Signer>
+        }
+    
+        class Communicator implements CommunicatorInterface 
+        class CommunicatorBuilder {
+            +keyPath(keyPath: string): CommunicatorBuilder
+            +certPath(certPath: string): CommunicatorBuilder
+            +peerTlsPath(peerTlsPath: string): CommunicatorBuilder
+            +peerEndpoint(peerEndpoint: string): CommunicatorBuilder
+            +hostAlias(hostAlias: string): CommunicatorBuilder
+            +mspId(mspId: string): CommunicatorBuilder
+            +build(): Communicator
+        }
+
+        class CommunicatorFactory {
+            + {static} org1WithEndpoint(\n    peerFolderName: string,\n    peerEndpoint: string,\n    hostAlias: string\n): Communicator
+
+            + {static} org2WithEndpoint(\n    peerFolderName: string,\n    peerEndpoint: string,\n    hostAlias: string\n): Communicator
+
+            + {static} org3WithEndpoint(\n    peerFolderName: string,\n    peerEndpoint: string,\n    hostAlias: string\n): Communicator
+        }
+
+        CommunicatorBuilder ..> Communicator: <<create>>
+        CommunicatorFactory ..> CommunicatorBuilder: <<use>>
+        CommunicatorFactory .left.> Communicator: <<create>>
+    }
+
+    class GrpcClientPool {
+        + {static} getInstance(): GrpcClientPool
+        + getClientForPeer(\n    peer: Org1Peer | Org2Peer | Org3Peer\n): Promise<Gateway>
+        - createClient(\n    peer: Org1Peer | Org2Peer | Org3Peer\n): Promise<Gateway>
+    }
+
+    GrpcClientPool .left.> CommunicatorFactory: <<use>>
+    GrpcClientPool ..> Communicator: <<use>>
+    GrpcClientPool o-up-  Gateway
+    
+}
+
+@enduml

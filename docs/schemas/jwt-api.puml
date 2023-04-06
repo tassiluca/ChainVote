@@ -1,0 +1,40 @@
+@startuml jwt-api
+
+package src {
+    package models.jwt {
+        interface IJsonWebTokenModel {
+            validateRefreshToken()
+            validateAccessToken()
+            createTokenPair(\n    user,\n    expirations?:{accessToken?: string, refreshToken?:string}\n): Promise<HydratedDocument<IJsonWebToken, IJsonWebTokenMethods>>
+        }
+
+        class JsonWebTokenModel implements IJsonWebTokenModel {
+            +validateRefreshToken()
+            +validateAccessToken()
+            +createTokenPair(\n    user,\n    expirations?:{accessToken?: string, refreshToken?:string}\n): Promise<HydratedDocument<IJsonWebToken, IJsonWebTokenMethods>>
+        }
+    }
+
+    package utils.jwt {
+
+        class ConfigurationObject <<type>> {
+            + String ATPrivateKeyPath
+            + String RTPrivateKeyPath
+        }
+
+        class JwtHandler {
+            +getInstance(config: ConfigurationObject | {}): IJwtHandlerInternal
+            +verifyAccessToken<T>(token: string): T | undefined
+            +verifyRefreshToken<T>(token: string): T | undefined
+            +signAccessToken(user, expiration: string | undefined): string
+            +signRefreshToken(user, expiration: string | undefined): string
+        }
+
+        JwtHandler .up.> ConfigurationObject : <<uses>>
+
+    }
+}
+interface mongose.Schema
+IJsonWebTokenModel --|> mongose.Schema
+JsonWebTokenModel ..> JwtHandler : <<uses>>
+@enduml
