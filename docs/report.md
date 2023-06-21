@@ -27,7 +27,7 @@ sequenceDiagram
     Client ->> Application : Request code
     Application ->> Org2 : Generate code
     Org2 ->> Org2 : save code in clear in private data
-    Org2 ->> Org2 : commit code into ledger the encrypted code
+    Org2 ->> Org2 : record association user - code
     Org2 ->> Application : <code>
     Application ->> Client : <code>
     
@@ -44,7 +44,43 @@ sequenceDiagram
     end
 ```
 
-## References  
+## Data Structures
+
+### Voting data -> org2
+ - Voting name
+ - Voting starting date / ending date 
+ - Voting choices
+ - Maximum voters number
+
+### Code generation (for each votation) -> org2
+Code generation is done at the time they are requested
+ - UserID
+ - VotingID
+ - Timestamp of request
+ - Randomic number (of any size)
+
+ Hash(userid + randomicnumber + votingid + timestamp)
+
+### User - Code relationship -> org2
+- UserID, is an off-chain information given by a (simulated?) authentication system
+- Code generated before
+
+### Vote data -> org1
+- VotingID
+- Choice
+
+### User authentication -> off chain
+- Name
+- Surname
+- Email (username)
+- Password
+- (Role?)
+
+## Architectural design 
+
+![system-package](http://www.plantuml.com/plantuml/svg/TPBHRe8m58Rl-nJd1J1UByGewCQoNPZWOXQpYsCvaqPeILlcpDoxhyKwmMma9Ft_yn_wzPIfiQXjMrTWZiPI7JN8zxWZninUo0Orri1LtIX9qi8N0_SaBhBJgfL5gYgbuvW-BMc9rMG2wr9O-ZjboLYNu4UK_ts6U6jnMv6BFUD1FcWYoRvxA7DqTJHqqmi92S-ykUDAqnkWWNJSoHA5vAe8NiOsxxZLWaVv_AcpidleypEdezF49rqtDiAG_X3yt3vRFdgpjMMjYhOAviigkspKizFid0vJzMVl_FmrNoto5Lp6uI87sdQbzIAPBPSmd0ChmebXvlPrTo0uMg7aF1bWitGCyIcAFFXbwG7S6uJ7_5KT7Lnre69fDjGX4D3ySAxjZDqIGJpIObVQaRja9ILnRxFhibVl-gSa2_Vd_G00 "system-package")
+
+## References
 
 - [Blockchain for electronic voting system - Review and Open Research Challenges](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8434614/)
 - [Decentralized electronic voting system using Hyperledger Fabric](https://ieeexplore.ieee.org/document/9860211)
