@@ -1,0 +1,119 @@
+networks:
+  fabric-ca:
+
+services:
+  ca-tls:
+    container_name: ca-tls
+    image: hyperledger/fabric-ca:latest
+    command: sh -c 'fabric-ca-server start -d -b tls-ca-admin:tls-ca-adminpw --port 7052'
+    environment:
+        - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
+        - FABRIC_CA_SERVER_TLS_ENABLED=true
+        - FABRIC_CA_SERVER_CSR_CN=tls-ca
+        - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0
+        - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+        - /tmp/hyperledger/tls-ca:/tmp/hyperledger/fabric-ca
+    networks:
+        - fabric-ca
+    ports:
+        - 7052:7052
+
+  rca-org0:
+    container_name: rca-org0
+    image: hyperledger/fabric-ca:latest
+    command: sh -c 'fabric-ca-server start -d -b rca-org0-admin:rca-org0-adminpw --port 7053'
+    environment:
+        - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
+        - FABRIC_CA_SERVER_TLS_ENABLED=true
+        - FABRIC_CA_SERVER_CSR_CN=rca-org0
+        - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0
+        - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+        - /tmp/hyperledger/org0/ca:/tmp/hyperledger/fabric-ca
+    networks:
+        - fabric-ca
+    ports:
+        - 7053:7053
+
+  rca-org1:
+    container_name: rca-org1
+    image: hyperledger/fabric-ca:latest
+    command: sh -c 'fabric-ca-server start -d -b rca-org1-admin:rca-org1-adminpw --port 7054'
+    environment:
+        - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
+        - FABRIC_CA_SERVER_TLS_ENABLED=true
+        - FABRIC_CA_SERVER_CSR_CN=rca-org1
+        - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0
+        - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+        - /tmp/hyperledger/org1/ca:/tmp/hyperledger/fabric-ca
+    networks:
+        - fabric-ca
+    ports:
+        - 7054:7054
+
+  rca-org2:
+    container_name: rca-org2
+    image: hyperledger/fabric-ca:latest
+    command: /bin/bash -c 'fabric-ca-server start -d -b rca-org2-admin:rca-org2-adminpw --port 7055'
+    environment:
+        - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
+        - FABRIC_CA_SERVER_TLS_ENABLED=true
+        - FABRIC_CA_SERVER_CSR_CN=rca-org2
+        - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0
+        - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+        - /tmp/hyperledger/org2/ca:/tmp/hyperledger/fabric-ca
+    networks:
+        - fabric-ca
+    ports:
+        - 7055:7055
+
+  orderer1-org0:
+    container_name: orderer1-org0
+    image: hyperledger/fabric-orderer:latest
+    environment:
+        - ORDERER_HOME=/tmp/hyperledger/orderer1
+        - ORDERER_HOST=orderer1-org0
+        - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+        - ORDERER_GENERAL_GENESISMETHOD=file
+        - ORDERER_GENERAL_GENESISFILE=/tmp/hyperledger/org0/orderer1/genesis.block
+        - ORDERER_GENERAL_LOCALMSPID=org0MSP
+        - ORDERER_GENERAL_LOCALMSPDIR=/tmp/hyperledger/org0/orderer1/msp
+        - ORDERER_GENERAL_TLS_ENABLED=true
+        - ORDERER_GENERAL_TLS_CERTIFICATE=/tmp/hyperledger/org0/orderer1/tls-msp/signcerts/cert.pem
+        - ORDERER_GENERAL_TLS_PRIVATEKEY=/tmp/hyperledger/org0/orderer1/tls-msp/keystore/key.pem
+        - ORDERER_GENERAL_TLS_ROOTCAS=[/tmp/hyperledger/org0/orderer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem]
+        - ORDERER_GENERAL_LOGLEVEL=debug
+        - ORDERER_DEBUG_BROADCASTTRACEDIR=data/logs
+    volumes:
+        - /tmp/hyperledger/org0/orderer1:/tmp/hyperledger/org0/orderer1/
+    ports:
+        - 7050:7050
+    networks:
+        - fabric-ca
+  
+  orderer2-org0:
+    container_name: orderer2-org0
+    image: hyperledger/fabric-orderer:latest
+    environment:
+        - ORDERER_HOME=/tmp/hyperledger/orderer2
+        - ORDERER_HOST=orderer2-org0
+        - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+        - ORDERER_GENERAL_GENESISMETHOD=file
+        - ORDERER_GENERAL_GENESISFILE=/tmp/hyperledger/org0/orderer2/genesis.block
+        - ORDERER_GENERAL_LOCALMSPID=org0MSP
+        - ORDERER_GENERAL_LOCALMSPDIR=/tmp/hyperledger/org0/orderer2/msp
+        - ORDERER_GENERAL_TLS_ENABLED=true
+        - ORDERER_GENERAL_TLS_CERTIFICATE=/tmp/hyperledger/org0/orderer2/tls-msp/signcerts/cert.pem
+        - ORDERER_GENERAL_TLS_PRIVATEKEY=/tmp/hyperledger/org0/orderer2/tls-msp/keystore/key.pem
+        - ORDERER_GENERAL_TLS_ROOTCAS=[/tmp/hyperledger/org0/orderer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem]
+        - ORDERER_GENERAL_LOGLEVEL=debug
+        - ORDERER_DEBUG_BROADCASTTRACEDIR=data/logs
+    volumes:
+        - /tmp/hyperledger/org0/orderer2:/tmp/hyperledger/org0/orderer2/
+    ports:
+        - 8050:8050
+    networks:
+        - fabric-ca
