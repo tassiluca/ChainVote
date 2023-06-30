@@ -1,0 +1,7 @@
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="org2MSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/org2/peer1/assets/tls-ca/tls-ca-cert.pem
+export CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/org2/admin/msp
+export CORE_PEER_ADDRESS=localhost:7051
+
+export FABRIC_CFG_PATH=$PWD
