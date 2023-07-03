@@ -77,6 +77,7 @@ services:
         - ORDERER_HOME=/tmp/hyperledger/orderer1
         - ORDERER_HOST=orderer1-org0
         - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+        - ORDERER_GENERAL_LISTENPORT=7050
         - ORDERER_GENERAL_GENESISMETHOD=file
         - ORDERER_GENERAL_GENESISFILE=/tmp/hyperledger/org0/artifacts/genesis.block
         - ORDERER_GENERAL_LOCALMSPID=org0MSP
@@ -102,6 +103,7 @@ services:
         - ORDERER_HOME=/tmp/hyperledger/orderer2
         - ORDERER_HOST=orderer2-org0
         - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+        - ORDERER_GENERAL_LISTENPORT=8050
         - ORDERER_GENERAL_GENESISMETHOD=file
         - ORDERER_GENERAL_GENESISFILE=/tmp/hyperledger/org0/artifacts/genesis.block
         - ORDERER_GENERAL_LOCALMSPID=org0MSP
@@ -127,6 +129,7 @@ services:
         - ORDERER_HOME=/tmp/hyperledger/orderer3
         - ORDERER_HOST=orderer3-org0
         - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+        - ORDERER_GENERAL_LISTENPORT=9050 
         - ORDERER_GENERAL_GENESISMETHOD=file
         - ORDERER_GENERAL_GENESISFILE=/tmp/hyperledger/org0/artifacts/genesis.block
         - ORDERER_GENERAL_LOCALMSPID=org0MSP
