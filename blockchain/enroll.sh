@@ -1,7 +1,13 @@
 #!/bin/bash
+#
+# This script executes, for each organizion, the enrollment of each entity (network component and user) from the CAs.
+
+#####################################################################################################################
+# Enrol entities for ORG0
+#####################################################################################################################
 echo "Enroll Ordererers"
 
-#Copy certificates
+# Copy certificates
 mkdir -p /tmp/hyperledger/org0/orderer1/assets/ca 
 cp /tmp/hyperledger/org0/ca/admin/msp/cacerts/0-0-0-0-7053.pem /tmp/hyperledger/org0/orderer1/assets/ca/org0-ca-cert.pem
 
@@ -20,8 +26,7 @@ cp /tmp/hyperledger/org0/ca/admin/msp/cacerts/0-0-0-0-7053.pem /tmp/hyperledger/
 mkdir -p /tmp/hyperledger/org0/orderer3/assets/tls-ca 
 cp /tmp/hyperledger/tls-ca/admin/msp/cacerts/0-0-0-0-7052.pem /tmp/hyperledger/org0/orderer3/assets/tls-ca/tls-ca-cert.pem
 
-
-#Identities enrollment
+# Identities enrollment
 export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/org0/orderer1
 export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org0/orderer1/assets/ca/org0-ca-cert.pem
 export FABRIC_CA_CLIENT_MSPDIR=msp
@@ -29,7 +34,7 @@ export FABRIC_CA_CLIENT_MSPDIR=msp
 fabric-ca-client enroll -d -u https://orderer1-org0:orderer1pw@0.0.0.0:7053
 sleep 5
 
-#TLS
+# TLS
 export FABRIC_CA_CLIENT_MSPDIR=tls-msp
 export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org0/orderer1/assets/tls-ca/tls-ca-cert.pem
 
@@ -37,7 +42,6 @@ fabric-ca-client enroll -d -u https://orderer1-org0:orderer1PW@0.0.0.0:7052 --en
 sleep 5
 
 cp /tmp/hyperledger/org0/orderer1/tls-msp/keystore/*_sk /tmp/hyperledger/org0/orderer1/tls-msp/keystore/key.pem
-
 
 export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/org0/orderer2
 export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org0/orderer2/assets/ca/org0-ca-cert.pem
@@ -54,7 +58,6 @@ sleep 5
 
 cp /tmp/hyperledger/org0/orderer2/tls-msp/keystore/*_sk /tmp/hyperledger/org0/orderer2/tls-msp/keystore/key.pem
 
-
 export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/org0/orderer3
 export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org0/orderer3/assets/ca/org0-ca-cert.pem
 export FABRIC_CA_CLIENT_MSPDIR=msp
@@ -69,7 +72,6 @@ fabric-ca-client enroll -d -u https://orderer3-org0:orderer3PW@0.0.0.0:7052 --en
 sleep 5
 
 cp /tmp/hyperledger/org0/orderer3/tls-msp/keystore/*_sk /tmp/hyperledger/org0/orderer3/tls-msp/keystore/key.pem
-
 
 echo "Enroll Admin of ORG0"
 
@@ -96,6 +98,9 @@ cp ./orgs_config/org0.yaml /tmp/hyperledger/org0/msp/config.yaml
 echo "Org0 done"
 sleep 5
 
+#####################################################################################################################
+# Enrol entities for ORG1
+#####################################################################################################################
 echo 
 echo "Enroll Peer1"
 
@@ -149,7 +154,6 @@ sleep 5
 
 cp /tmp/hyperledger/org1/peer2/tls-msp/keystore/*_sk /tmp/hyperledger/org1/peer2/tls-msp/keystore/key.pem
 
-
 echo "Enroll Admin"
 
 export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/org1/admin
@@ -175,6 +179,9 @@ cp ./orgs_config/org1.yaml /tmp/hyperledger/org1/msp/config.yaml
 echo "Org1 done"
 sleep 5
 
+#####################################################################################################################
+# Enrol entities for ORG2
+#####################################################################################################################
 echo 
 echo "Enroll Peer1"
 
@@ -227,7 +234,6 @@ fabric-ca-client enroll -d -u https://peer2-org2:peer2PW@0.0.0.0:7052 --enrollme
 sleep 5
 
 cp /tmp/hyperledger/org2/peer2/tls-msp/keystore/*_sk /tmp/hyperledger/org2/peer2/tls-msp/keystore/key.pem
-
 
 echo "Enroll Admin"
 
