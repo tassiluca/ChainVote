@@ -24,11 +24,15 @@ function upNetwork() {
     ./reg.sh
     echo "Enrol entities for each organization"
     ./enroll.sh
-    echo "Bring up the whole network"
-    docker-compose up -d
-    echo "Create and join channels"
+    echo "Creating cryptomaterial"
     cd ./channels_config
     ./channel_artifacts.sh
+    sleep 5
+    echo "Bring up the whole network"
+    docker-compose up -d
+    sleep 5
+    echo "Create and joining channels"
+    ./channel_creation.sh
 }
 
 function downNetwork() {

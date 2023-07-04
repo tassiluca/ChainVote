@@ -14,4 +14,4 @@ configtxgen -profile OrgsChannel2 -outputCreateChannelTx /tmp/hyperledger/org2/a
 configtxgen -profile OrgsChannel2 -outputAnchorPeersUpdate /tmp/hyperledger/org2/artifacts/org2MSPanchors.tx -channelID ch2 -asOrg org2MSP
 
 # now this works...
-# peer channel create -c ch1 -f /tmp/hyperledger/org1/artifacts/channel.tx -o localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --outputBlock /tmp/hyperledger/org1/peer1/assets/mychannel.block --tls --cafile /tmp/hyperledger/org1/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+#peer channel create -c ch1 -f /tmp/hyperledger/org1/artifacts/channel.tx -o localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --outputBlock /tmp/hyperledger/org1/peer1/assets/mychannel.block --tls --cafile /tmp/hyperledger/org1/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
