@@ -7,3 +7,10 @@
 
 # Binaries
 */bin/
+
+# Gradle
+build/
+.gradle/
+
+# IDE
+.idea/
