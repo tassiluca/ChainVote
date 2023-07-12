@@ -1,4 +1,4 @@
-package org.example;
+package it.unibo.ds.chaincode;
 
 public class Main {
     public static void main(String[] args) {

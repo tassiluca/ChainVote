@@ -1,0 +1,13 @@
+[versions]
+junit = "5.9.3"
+
+[libraries]
+fabric-chaincode-shim = "org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.0"
+genson = "com.owlike:genson:1.6"
+json = "org.json:json:20230618"
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+
+[plugins]
+java-qa = "org.danilopianini.gradle-java-qa:1.11.0"
+shadowJar = "com.github.johnrengelman.shadow:8.1.1"
