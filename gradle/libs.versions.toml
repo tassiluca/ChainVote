@@ -7,6 +7,8 @@ genson = "com.owlike:genson:1.6"
 json = "org.json:json:20230618"
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+assertj-core = "org.assertj:assertj-core:3.24.2"
+mockito-core = "org.mockito:mockito-core:5.4.0"
 
 [plugins]
 java-qa = "org.danilopianini.gradle-java-qa:1.11.0"
