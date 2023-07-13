@@ -2,6 +2,7 @@ package it.unibo.ds.core;
 
 import java.security.SecureRandom;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * An implementation of {@link CodeGenerator} that uses {@link java.security.SecureRandom}.
@@ -12,10 +13,9 @@ public class SecureRandomGenerator implements CodeGenerator {
 
     @Override
     public Long generateCode(Predicate<Long> alreadyGeneratedPredicate) {
-        long generated;
-        do {
-            generated = rand.nextLong();
-        } while (alreadyGeneratedPredicate.test(generated));
-        return generated;
+        return Stream.generate(rand::nextLong)
+            .filter(r -> !alreadyGeneratedPredicate.test(r))
+            .findAny()
+            .orElseThrow();
     }
 }
