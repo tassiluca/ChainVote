@@ -7,12 +7,12 @@ import java.util.stream.Stream;
 /**
  * An implementation of {@link CodeGenerator} that uses {@link java.security.SecureRandom}.
  */
-public class SecureRandomGenerator implements CodeGenerator {
+public final class SecureRandomGenerator implements CodeGenerator {
 
-    final SecureRandom rand = new SecureRandom();
+    private final SecureRandom rand = new SecureRandom();
 
     @Override
-    public Long generateCode(Predicate<Long> alreadyGeneratedPredicate) {
+    public Long generateCode(final Predicate<Long> alreadyGeneratedPredicate) {
         return Stream.generate(rand::nextLong)
             .filter(r -> !alreadyGeneratedPredicate.test(r))
             .findAny()

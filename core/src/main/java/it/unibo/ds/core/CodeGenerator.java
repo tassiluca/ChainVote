@@ -22,7 +22,7 @@ public interface CodeGenerator {
      * @param alreadyGenerated a {@link Set} containing the already generated codes.
      * @return a new generated code.
      */
-    default Long generateCode(Set<Long> alreadyGenerated) {
+    default Long generateCode(final Set<Long> alreadyGenerated) {
         return generateCode(alreadyGenerated::contains);
     }
 }
