@@ -2,7 +2,7 @@ import java.net.URI
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("java")
+    `java-library`
     alias(libs.plugins.java.qa)
     application
 }
@@ -19,9 +19,14 @@ repositories {
 }
 
 dependencies {
+    api(project(":presentation"))
     implementation(libs.fabric.chaincode.shim)
     implementation(libs.genson)
     implementation(libs.json)
+    testImplementation(libs.junit.api)
+    testImplementation(libs.junit.engine)
+    testImplementation(libs.assertj.core)
+    testImplementation(libs.mockito.core)
 }
 
 tasks.test {
