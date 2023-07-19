@@ -3,11 +3,10 @@ package it.unibo.ds.chainvote.presentation;
 import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
 import it.unibo.ds.core.Voting;
-import it.unibo.ds.core.VotingFactory;
+import it.unibo.ds.core.VotingImpl;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,9 +36,8 @@ class TestVotingSerialization {
     @Test
     void testDeserializationWithMissingValue() {
         final var partial = "{\"name\":\"test\",\"question\":\"Yes or No?\",\"choices\":[\"Yes\",\"No\"]}";
-        assertThrows(
-            JsonBindingException.class,
-            () -> genson.deserialize(partial, Voting.class)
+        assertThrows(JsonBindingException.class, () ->
+            genson.deserialize(partial, Voting.class)
         );
     }
 
@@ -47,20 +45,20 @@ class TestVotingSerialization {
     void testDeserializationWithWrongValue() {
         final var wrong = "{\"name\":\"test\",\"question\":\"Yes or No?\",\"choices\":[\"Yes\",\"No\"],"
             + "\"openingDate\":\"2023-07-13T09:00:00\",\"closingDate\":\"2023-07-13T09:00:00\"}";
-        assertThrows(
-            JsonBindingException.class,
-            () -> genson.deserialize(wrong, Voting.class)
+        assertThrows(JsonBindingException.class, () ->
+            genson.deserialize(wrong, Voting.class)
         );
     }
 
     private Voting getVoting() {
-        return new VotingFactory().create(
-            NAME,
-            QUESTION,
-            List.of(CHOICE1, CHOICE2),
-            LocalDateTime.parse(OPENING_DATE),
-            LocalDateTime.parse(CLOSING_DATE)
-        );
+        return new VotingImpl.Builder()
+            .name(NAME)
+            .question(QUESTION)
+            .choice(CHOICE1)
+            .choice(CHOICE2)
+            .openAt(LocalDateTime.parse(OPENING_DATE))
+            .closeAt(LocalDateTime.parse(CLOSING_DATE))
+            .build();
     }
 
     private String getSerialized() {
