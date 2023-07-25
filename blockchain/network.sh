@@ -24,10 +24,9 @@ function upNetwork() {
     ./reg.sh
     echo "Enrol entities for each organization"
     ./enroll.sh
-    echo "Creating cryptomaterial"
+    echo "Creating crypto material"
     cd ./channels_config
     ./channel_artifacts.sh
-    sleep 5
     echo "Bring up the whole network"
     docker-compose up -d
     sleep 5
