@@ -1,0 +1,207 @@
+version: '2.2'
+
+networks:
+  basic:
+
+services:
+
+  ca.orderer.example.com:
+    container_name: ca.orderer.example.com
+    image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.orderer.example.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.orderer.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+    ports:
+      - 7020:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b ${ORDERER_CA_ADMIN_NAME}:${ORDERER_CA_ADMIN_PASSWORD} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - ../fabric-config/fabric-ca-server-config/orderer.example.com/fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+    networks:
+      - basic
+
+  cli.orderer.example.com:
+    container_name: cli.orderer.example.com
+    image: hyperledger/fabric-tools:${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.orderer.example.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=OrdererMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/msp
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java/:/var/hyperledger/cli/chaincode1/"
+    networks:
+      - basic
+
+  orderer0.group1.orderer.example.com:
+    container_name: orderer0.group1.orderer.example.com
+    image: hyperledger/fabric-orderer:${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7030
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - GODEBUG=netdns=go
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - 7030:7030
+      - 8030:9440
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
+  ca.org1.example.com:
+    container_name: ca.org1.example.com
+    image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org1.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+    ports:
+      - 7040:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b ${ORG1_CA_ADMIN_NAME}:${ORG1_CA_ADMIN_PASSWORD} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - ../fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+    networks:
+      - basic
+
+  cli.org1.example.com:
+    container_name: cli.org1.example.com
+    image: hyperledger/fabric-tools:${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.org1.example.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/msp
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7041
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java/:/var/hyperledger/cli/chaincode1/"
+    networks:
+      - basic
+
+  peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    image: hyperledger/fabric-peer:${FABRIC_VERSION}
+    environment:
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ID=peer0.org1.example.com
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7041
+      - CORE_PEER_LISTENADDRESS=peer0.org1.example.com:7041
+      - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.example.com:7041
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7041
+      - CORE_PEER_GOSSIP_BOOTSTRAP="peer0.org1.example.com:7041 peer1.org1.example.com:7042"
+      - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.example.com:7050
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FABRIC_CCENV_VERSION}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:${FABRIC_BASEOS_VERSION}
+      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:${FABRIC_JAVAENV_VERSION}
+      #
+      - CORE_CHAINCODE_LOGGING_LEVEL=${LOGGING_LEVEL}
+      - CORE_CHAINCODE_LOGGING_SHIM=${LOGGING_LEVEL}
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9440
+      - CORE_METRICS_PROVIDER=prometheus
+      #
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - GODEBUG=netdns=go
+      # enabled gateway
+      - CORE_PEER_GATEWAY_ENABLED=true
+    working_dir: /etc/hyperledger/fabric/peer/
+    command: peer node start
+    ports:
+      - 8041:9440
+      - 7041:7041
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/peer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/peer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/fabric/peer/msp/users
+      - ../fabric-config/config:/etc/hyperledger/fabric/config
+    networks:
+      - basic
+
+  peer1.org1.example.com:
+    container_name: peer1.org1.example.com
+    image: hyperledger/fabric-peer:${FABRIC_VERSION}
+    environment:
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ID=peer1.org1.example.com
+      - CORE_PEER_ADDRESS=peer1.org1.example.com:7042
+      - CORE_PEER_LISTENADDRESS=peer1.org1.example.com:7042
+      - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.example.com:7042
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:7042
+      - CORE_PEER_GOSSIP_BOOTSTRAP="peer0.org1.example.com:7041 peer1.org1.example.com:7042"
+      - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.example.com:7050
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FABRIC_CCENV_VERSION}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:${FABRIC_BASEOS_VERSION}
+      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:${FABRIC_JAVAENV_VERSION}
+      #
+      - CORE_CHAINCODE_LOGGING_LEVEL=${LOGGING_LEVEL}
+      - CORE_CHAINCODE_LOGGING_SHIM=${LOGGING_LEVEL}
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=peer1.org1.example.com:9440
+      - CORE_METRICS_PROVIDER=prometheus
+      #
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - GODEBUG=netdns=go
+      # enabled gateway
+      - CORE_PEER_GATEWAY_ENABLED=true
+    working_dir: /etc/hyperledger/fabric/peer/
+    command: peer node start
+    ports:
+      - 8042:9440
+      - 7042:7042
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/etc/hyperledger/fabric/peer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/etc/hyperledger/fabric/peer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/fabric/peer/msp/users
+      - ../fabric-config/config:/etc/hyperledger/fabric/config
+    networks:
+      - basic
