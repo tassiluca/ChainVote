@@ -4,7 +4,7 @@ networks:
 services:
   ca-tls:
     container_name: ca-tls
-    image: hyperledger/fabric-ca:latest
+    image: hyperledger/fabric-ca:1.5
     command: sh -c 'fabric-ca-server start -d -b tls-ca-admin:tls-ca-adminpw --port 7052'
     environment:
         - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
@@ -21,7 +21,7 @@ services:
 
   rca-org0:
     container_name: rca-org0
-    image: hyperledger/fabric-ca:latest
+    image: hyperledger/fabric-ca:1.5
     command: sh -c 'fabric-ca-server start -d -b rca-org0-admin:rca-org0-adminpw --port 7053'
     environment:
         - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
@@ -38,7 +38,7 @@ services:
 
   rca-org1:
     container_name: rca-org1
-    image: hyperledger/fabric-ca:latest
+    image: hyperledger/fabric-ca:1.5
     command: sh -c 'fabric-ca-server start -d -b rca-org1-admin:rca-org1-adminpw --port 7054'
     environment:
         - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
@@ -55,7 +55,7 @@ services:
 
   rca-org2:
     container_name: rca-org2
-    image: hyperledger/fabric-ca:latest
+    image: hyperledger/fabric-ca:1.5
     command: /bin/bash -c 'fabric-ca-server start -d -b rca-org2-admin:rca-org2-adminpw --port 7055'
     environment:
         - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
@@ -72,7 +72,7 @@ services:
 
   orderer1-org0:
     container_name: orderer1-org0
-    image: hyperledger/fabric-orderer:latest
+    image: hyperledger/fabric-orderer:2.5
     environment:
         - ORDERER_HOME=/tmp/hyperledger/orderer1
         - ORDERER_HOST=orderer1-org0
@@ -98,7 +98,7 @@ services:
   
   orderer2-org0:
     container_name: orderer2-org0
-    image: hyperledger/fabric-orderer:latest
+    image: hyperledger/fabric-orderer:2.5
     environment:
         - ORDERER_HOME=/tmp/hyperledger/orderer2
         - ORDERER_HOST=orderer2-org0
@@ -124,7 +124,7 @@ services:
 
   orderer3-org0:
     container_name: orderer3-org0
-    image: hyperledger/fabric-orderer:latest
+    image: hyperledger/fabric-orderer:2.5
     environment:
         - ORDERER_HOME=/tmp/hyperledger/orderer3
         - ORDERER_HOST=orderer3-org0
@@ -150,7 +150,7 @@ services:
 
   peer1-org1:
     container_name: peer1-org1
-    image: hyperledger/fabric-peer:latest
+    image: hyperledger/fabric-peer:2.5
     environment:
         - CORE_PEER_ID=peer1-org1
         - CORE_PEER_ADDRESS=peer1-org1:7051
@@ -179,7 +179,7 @@ services:
 
   peer2-org1:
     container_name: peer2-org1
-    image: hyperledger/fabric-peer:latest
+    image: hyperledger/fabric-peer:2.5
     environment:
         - CORE_PEER_ID=peer2-org1
         - CORE_PEER_ADDRESS=peer2-org1:8051
@@ -209,7 +209,7 @@ services:
   
   peer1-org2:
     container_name: peer1-org2
-    image: hyperledger/fabric-peer:latest
+    image: hyperledger/fabric-peer:2.5
     environment:
         - CORE_PEER_ID=peer1-org2
         - CORE_PEER_ADDRESS=peer1-org2:9051
@@ -217,7 +217,7 @@ services:
         - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
         - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/org2/peer1/msp
         - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=guide_fabric-ca
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=blockchain_fabric-ca
         - FABRIC_LOGGING_SPEC=info
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_TLS_CERT_FILE=/tmp/hyperledger/org2/peer1/tls-msp/signcerts/cert.pem
@@ -238,7 +238,7 @@ services:
 
   peer2-org2:
     container_name: peer2-org2
-    image: hyperledger/fabric-peer:latest
+    image: hyperledger/fabric-peer:2.5
     environment:
         - CORE_PEER_ID=peer2-org2
         - CORE_PEER_ADDRESS=peer2-org2:10051
@@ -246,7 +246,7 @@ services:
         - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
         - CORE_PEER_MSPCONFIGPATH=/tmp/hyperledger/org2/peer2/msp
         - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=guide_fabric-ca
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=blockchain_fabric-ca
         - FABRIC_LOGGING_SPEC=info
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_TLS_CERT_FILE=/tmp/hyperledger/org2/peer2/tls-msp/signcerts/cert.pem
