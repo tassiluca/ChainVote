@@ -124,7 +124,7 @@ services:
 
   orderer3-org0:
     container_name: orderer3-org0
-    image: hyperledger/fabric-orderer:2.2
+    image: hyperledger/fabric-orderer:2.5
     environment:
         - ORDERER_HOME=/tmp/hyperledger/orderer3
         - ORDERER_HOST=orderer3-org0
