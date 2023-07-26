@@ -33,7 +33,7 @@ export FABRIC_CFG_PATH=$PWD/channels_config
 
 echo "Generating chaincode package"
 (cd ${CHAINCODE_PATH}; ./gradlew installDist)
-peer lifecycle chaincode package ${CHAINCODE_PACKAGE_NAME} --path ${CHAINCODE_PATH} --lang java --label ${CHAINCODE_PACKAGE_NAME}_1.0
+peer lifecycle chaincode package ${CHAINCODE_PACKAGE_NAME} --path ${CHAINCODE_PATH}/build/install/${CHAINCODE_NAME} --lang java --label ${CHAINCODE_PACKAGE_NAME}_1.0
 
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="${CHAINCODE_ORG}MSP"
