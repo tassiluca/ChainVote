@@ -1,0 +1,24 @@
+image: openjdk:latest
+
+before_script:
+  - chmod +x gradlew
+  - microdnf install findutils # https://stackoverflow.com/a/73516388
+
+variables:
+  GOPTS: "--no-daemon --console=plain"
+
+Compile:
+  stage: build
+  script: ./gradlew classes testClasses $GOPTS
+
+# Check Javadoc:
+#   stage: build
+#   script: ./gradlew javadoc $GOPTS
+
+Test and Check:
+  stage: test
+  script: ./gradlew check $GOPTS
+  artifacts:
+    when: always
+    reports:
+      junit: '**/build/test-results/test/**/TEST-*.xml'
