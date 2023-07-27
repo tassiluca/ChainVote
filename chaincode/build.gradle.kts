@@ -9,6 +9,12 @@ plugins {
 
 group = "it.unibo.ds"
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 application {
     mainClass.set("org.hyperledger.fabric.contract.ContractRouter")
 }

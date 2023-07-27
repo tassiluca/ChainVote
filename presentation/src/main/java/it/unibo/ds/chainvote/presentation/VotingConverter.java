@@ -37,15 +37,24 @@ public final class VotingConverter implements Converter<Voting> {
         while (reader.hasNext()) {
             reader.next();
             switch (reader.name()) {
-                case "name" -> votingBuilder.name(reader.valueAsString());
-                case "question" -> votingBuilder.question(reader.valueAsString());
-                case "openingDate" -> votingBuilder.openAt(LocalDateTime.parse(reader.valueAsString()));
-                case "closingDate" -> votingBuilder.closeAt(LocalDateTime.parse(reader.valueAsString()));
-                case "choices" -> {
+                case "name":
+                    votingBuilder.name(reader.valueAsString());
+                    break;
+                case "question":
+                    votingBuilder.question(reader.valueAsString());
+                    break;
+                case "openingDate":
+                    votingBuilder.openAt(LocalDateTime.parse(reader.valueAsString()));
+                    break;
+                case "closingDate":
+                    votingBuilder.closeAt(LocalDateTime.parse(reader.valueAsString()));
+                    break;
+                case "choices":
                     final List<String> choices = ctx.genson.deserialize(new GenericType<>() { }, reader, ctx);
                     choices.forEach(votingBuilder::choice);
-                }
-                default -> throw new JsonBindingException("Malformed json");
+                    break;
+                default:
+                    throw new JsonBindingException("Malformed json");
             }
         }
         return votingBuilder.build();
