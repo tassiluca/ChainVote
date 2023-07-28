@@ -1,0 +1,8 @@
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.example.com
+    Specs:
+    Template:
+      Count: 2
+    Users:
+      Count: 1
