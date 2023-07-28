@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import assets.Ballot;
 import assets.Election;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
@@ -52,39 +53,40 @@ public final class ElectionTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Election createElection(final Context ctx, final String electionID, final long votersNumber,
+    public Election createElection(final Context ctx, final String goal, final long votersNumber,
                                    final LocalDateTime startingDate, final LocalDateTime endingDate,
                                    final List<String> choices) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (electionExists(ctx, electionID)) {
-            String errorMessage = String.format("Election %s already exists", electionID);
-            System.err.println(errorMessage);
-            throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_ALREADY_EXISTS.toString());
-        }
-
         if (startingDate.isEqual(endingDate) || startingDate.isAfter(endingDate)) {
-            String errorMessage = String.format("Election %s has invalid starting %s and ending %s date", electionID, startingDate, endingDate);
+            String errorMessage = String.format("Election %s has invalid starting %s and ending %s date", election.getElectionID(), startingDate, endingDate);
             System.err.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
         }
 
         if (votersNumber <= 0) {
-            String errorMessage = String.format("Election %s has invalid number of voters %d", electionID, votersNumber);
+            String errorMessage = String.format("Election %s has invalid number of voters %d", election.getElectionID(), votersNumber);
             System.err.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
         }
 
         if (choices.size() == 0) {
-            String errorMessage = String.format("Election %s has invalid choices: %s", electionID, choices);
+            String errorMessage = String.format("Election %s has invalid choices: %s", election.getElectionID(), choices);
             System.err.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
         }
 
-        Election election = new Election(electionID, votersNumber, startingDate, endingDate, choices);
+        Election election = new Election(goal, votersNumber, startingDate, endingDate, choices);
+
+        if (electionExists(ctx, election.getElectionID())) {
+            String errorMessage = String.format("Election %s already exists", election.getElectionID());
+            System.err.println(errorMessage);
+            throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_ALREADY_EXISTS.toString());
+        }
+
         // Use Genson to convert the Asset into string, sort it alphabetically and serialize it into a json string
         String sortedJson = genson.serialize(election);
-        Map<String, List<String>> voterList
+
         stub.putStringState(electionID, sortedJson);
 
         return election;
@@ -106,14 +108,16 @@ public final class ElectionTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Asset castVote(final Context ctx, final String electionID, ) {
+    public Asset castVote(final Context ctx, final String choice, final String voterID, final String electionID) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (!electionExists(ctx, assetID)) {
-            String errorMessage = String.format("Asset %s does not exist", assetID);
+        if (!electionExists(ctx, electionID)) {
+            String errorMessage = String.format("Election %s does not exist", electionID);
             System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
+            throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_NOT_FOUND.toString());
         }
+
+        Ballot ballot = new Ballot(electionID, voterID, LocalDateTime.now(), choice);
 
         Asset newAsset = new Asset(assetID, color, size, owner, appraisedValue);
         // Use Genson to convert the Asset into string, sort it alphabetically and serialize it into a json string
