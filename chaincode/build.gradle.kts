@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+    api(project(":core"))
     api(project(":presentation"))
     implementation(libs.fabric.chaincode.shim)
     implementation(libs.genson)

@@ -1,13 +1,13 @@
-package it.unibo.ds.core;
+package it.unibo.ds.core.codes;
 
 import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * A generator of codes used by the clients to cast a new vote.
+ * A generator of {@link OneTimeCode} used by the clients to cast a new vote.
  */
 @FunctionalInterface
-public interface CodeGenerator {
+interface CodeGenerator {
 
     /**
      * Generate a new (not already generated) code.
@@ -15,14 +15,14 @@ public interface CodeGenerator {
      * ensure that a new not already generated code is provided.
      * @return a new generated code.
      */
-    Long generateCode(Predicate<Long> alreadyGeneratedPredicate);
+    OneTimeCode generateCode(Predicate<OneTimeCode> alreadyGeneratedPredicate);
 
     /**
      * Generate a new code different from those given.
      * @param alreadyGenerated a {@link Set} containing the already generated codes.
      * @return a new generated code.
      */
-    default Long generateCode(final Set<Long> alreadyGenerated) {
+    default OneTimeCode generateCode(final Set<OneTimeCode> alreadyGenerated) {
         return generateCode(alreadyGenerated::contains);
     }
 }

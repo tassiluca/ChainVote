@@ -16,6 +16,8 @@ repositories {
 }
 
 dependencies {
+    compileOnly(libs.spotbugs.annotations)
+    testCompileOnly(libs.spotbugs.annotations)
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.engine)
 }
