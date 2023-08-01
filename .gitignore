@@ -1,3 +1,9 @@
 # draw.io temp file
 *.dtmp
 *.bkp
+
+# MacOS file system
+*.DS_Store
+
+# Binaries
+*/bin/
