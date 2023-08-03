@@ -8,6 +8,9 @@ build/
 # IDE
 .idea/
 
+# Node Modules
+./api-server/node_modules/
+
 # draw.io temp file
 *.dtmp
 *.bkp

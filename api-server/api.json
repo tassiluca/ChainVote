@@ -1,0 +1,206 @@
+{
+    "openapi":"3.0.3",
+    "info": {
+      "title":"ChainVote - API Server",
+      "version":"1.0"
+    },
+    "servers": [
+      {
+        "url":"https://api.server.test/v1",
+        "description": "Main server of the REST API service"
+      }
+    ],
+    "tags":[
+      {
+        "name": "Users",
+        "description": "Handle users informations"
+      }
+    ],
+    "paths": {
+      "/users": {
+        "post": {
+          "tags": ["Users"],
+          "summary": "Create a new user",
+          "description": "Create a new user in the system, this will gain basic voting policies permissions",
+          "operationId": "createUser",
+          "requestBody":{
+            "required": true,
+            "description": "Add a new user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful operation!",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "405": {
+              "description": "Invalid input"
+            }
+          }
+        }
+      }, 
+      "/users/{id}": {
+        "get":{
+          "tags": ["Users"],
+          "summary": "Return the informations of a user",
+          "description": "Return the information of a user specified by an identifier",
+          "operationId": "getUser",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "The univocal identifier of a user of the system",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful operation!",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid ID supplied"
+            },
+            "404": {
+              "description": "User not found"
+            }
+          }
+        },
+        "put": {
+          "tags": ["Users"],
+          "summary": "Edit the informations of a user",
+          "description": "Edit the information of a user of the system specified by a univocal identifier",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "The univocal identifier of a user of the system",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody":{
+            "required": true,
+            "description": "Add a new user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful operation!",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid ID supplied"
+            },
+            "404": {
+              "description": "User not found"
+            }
+          }
+        },
+        "delete":{
+          "tags": ["Users"],
+          "summary": "Delete a user",
+          "description": "Delete a user from the system",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "The univocal identifier of a user of the system",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Successful operation!"
+            },
+            "400": {
+              "description": "Invalid ID supplied"
+            },
+            "404": {
+              "description": "User not found"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "User": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64",
+              "example": 10
+            },
+            "email": {
+              "type": "string",
+              "description": "The email of the user, this is also used as username in the authentication phase",
+              "example": "aldo.rossi@eprovider.it"
+            },
+            "firstName": {
+              "type": "string",
+              "example": "Aldo"
+            },
+            "secondName": {
+              "type": "string",
+              "example": "Rossi"
+            },
+            "registrationDate": {
+              "type": "string",
+              "description": "This information contains the user's registration date in the unix timestamp format",
+              "example": "1690983907"
+            }
+          }
+        }
+      }
+    }
+  }
