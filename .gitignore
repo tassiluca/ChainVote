@@ -9,7 +9,9 @@ build/
 .idea/
 
 # Node Modules
-./api-server/node_modules/
+api-server/node_modules/
+api-server/target/
+api-server/package-lock.json
 
 # draw.io temp file
 *.dtmp
