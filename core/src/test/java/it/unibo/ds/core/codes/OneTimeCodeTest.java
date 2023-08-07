@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 )
 class OneTimeCodeTest {
 
-    private final CodeGenerator codeGenerator = new SecureRandomGenerator();
+    private final CodeGeneratorStrategy codeGenerator = new SecureRandomGenerator();
     private OneTimeCode code;
 
     @BeforeEach

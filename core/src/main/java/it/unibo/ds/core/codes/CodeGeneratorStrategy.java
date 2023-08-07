@@ -4,21 +4,21 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * A generator of {@link OneTimeCode} used by the clients to cast a new vote.
+ * An interface modeling a {@link OneTimeCode} generator strategy.
  */
 @FunctionalInterface
-interface CodeGenerator {
+interface CodeGeneratorStrategy {
 
     /**
      * Generate a new (not already generated) code.
-     * @param alreadyGeneratedPredicate a {@link Predicate} used to
-     * ensure that a new not already generated code is provided.
+     * @param alreadyGeneratedPredicate a {@link Predicate} that returns true if
+     * the tested code was already generated, false otherwise.
      * @return a new generated code.
      */
     OneTimeCode generateCode(Predicate<OneTimeCode> alreadyGeneratedPredicate);
 
     /**
-     * Generate a new code different from those given.
+     * Generate a new code different from those given in input.
      * @param alreadyGenerated a {@link Set} containing the already generated codes.
      * @return a new generated code.
      */

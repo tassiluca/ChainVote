@@ -2,7 +2,7 @@ package it.unibo.ds.core.codes;
 
 /**
  * An interface modeling a {@link OneTimeCode} manager, which exposes functions
- * to generate, (in)validate and very one-time-codes.
+ * to generate, (in)validate and verify one-time-codes.
  * @param <C> the type of the context.
  */
 public interface CodeManager<C> {

@@ -3,13 +3,12 @@ package it.unibo.ds.core.codes;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * An abstract implementation of {@link CodeManager} which implements main core logic,
- * independent of any technology, through template methods.
+ * A base implementation of {@link CodeManager} which implements main core logic, independent of any technology.
  * @param <C> the type of the context.
  */
 public final class CodeManagerImpl<C> implements CodeManager<C> {
 
-    private final CodeGenerator codeGenerator = new SecureRandomGenerator();
+    private final CodeGeneratorStrategy codeGenerator = new SecureRandomGenerator();
     private final CodeRepository<C> repo;
 
     /**
