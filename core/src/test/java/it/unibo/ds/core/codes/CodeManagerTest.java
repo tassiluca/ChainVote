@@ -82,6 +82,6 @@ class CodeManagerTest {
     @Test
     void testVerifyCodeOwner() {
         final OneTimeCode code = localManager.generateFor(VOTING_ID, USER_ID);
-        localManager.verifyCodeOwner(VOTING_ID, USER_ID, code);
+        assertTrue(localManager.verifyCodeOwner(VOTING_ID, USER_ID, code));
     }
 }
