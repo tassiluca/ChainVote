@@ -5,12 +5,16 @@ import java.util.Objects;
 /**
  * A simple {@link OneTimeCode} implementation.
  */
-final class OneTimeCodeImpl implements OneTimeCode {
+public final class OneTimeCodeImpl implements OneTimeCode {
 
     private final Long code;
     private boolean consumed;
 
-    OneTimeCodeImpl(final Long code) {
+    /**
+     * Creates a new one time code.
+     * @param code the generated random number associated to this code.
+     */
+    public OneTimeCodeImpl(final Long code) {
         this.code = code;
     }
 
@@ -46,5 +50,10 @@ final class OneTimeCodeImpl implements OneTimeCode {
     @Override
     public int hashCode() {
         return Objects.hash(code);
+    }
+
+    @Override
+    public String toString() {
+        return "OneTimeCodeImpl{code=" + code + ", consumed=" + consumed + '}';
     }
 }
