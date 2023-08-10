@@ -32,6 +32,15 @@ class CodeManagerTest {
         }
 
         @Override
+        public void replace(final Void context, final Long votingId, final OneTimeCode code) {
+            final var searchedEntry = codes.get(votingId).entrySet().stream()
+                .filter(e -> e.getValue().equals(code))
+                .findFirst()
+                .orElseThrow();
+            codes.get(votingId).replace(searchedEntry.getKey(), code);
+        }
+
+        @Override
         public Set<OneTimeCode> getAllOf(final Void context, final Long votingId) {
             return new HashSet<>(codes.getOrDefault(votingId, Map.of()).values());
         }
@@ -63,20 +72,13 @@ class CodeManagerTest {
     @Test
     void testCodeInvalidation() {
         final OneTimeCode code = localManager.generateFor(VOTING_ID, USER_ID);
-        localManager.invalidate(VOTING_ID, USER_ID, code);
+        localManager.invalidate(VOTING_ID, code);
         assertFalse(localManager.isValid(VOTING_ID, USER_ID, code));
     }
 
     @Test
-    void testCodeInvalidationMultipleTimes() {
-        final OneTimeCode code = localManager.generateFor(VOTING_ID, USER_ID);
-        localManager.invalidate(VOTING_ID, USER_ID, code);
-        assertThrows(IllegalStateException.class, () -> localManager.invalidate(VOTING_ID, USER_ID, code));
-    }
-
-    @Test
     void testAttemptInvalidationOnUnknownCode() {
-        assertThrows(IllegalStateException.class, () -> localManager.invalidate(VOTING_ID, USER_ID, new OneTimeCodeImpl(0L)));
+        assertThrows(IllegalStateException.class, () -> localManager.invalidate(VOTING_ID, new OneTimeCodeImpl(0L)));
     }
 
     @Test

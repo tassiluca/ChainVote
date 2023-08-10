@@ -54,20 +54,18 @@ public interface CodeManager<C> {
      * method the code can no longer be used.
      * @param context the context of the transaction
      * @param votingId the voting identifier
-     * @param userId the user identifier
      * @param code the code to be validated
      */
-    void invalidate(C context, Long votingId, String userId, OneTimeCode code);
+    void invalidate(C context, Long votingId, OneTimeCode code);
 
     /**
      * Invalidate the given code for the given user and voting. After calling this
      * method the code can no longer be used.
      * @param votingId the voting identifier
-     * @param userId the user identifier
      * @param code the code to be validated
      */
-    default void invalidate(final Long votingId, final String userId, final OneTimeCode code) {
-        invalidate(null, votingId, userId, code);
+    default void invalidate(final Long votingId, final OneTimeCode code) {
+        invalidate(null, votingId, code);
     }
 
     /**

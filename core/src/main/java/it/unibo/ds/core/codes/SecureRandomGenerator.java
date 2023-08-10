@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 /**
  * An implementation of {@link CodeGeneratorStrategy} that uses {@link java.security.SecureRandom}.
  */
-public final class SecureRandomGenerator implements CodeGeneratorStrategy {
+final class SecureRandomGenerator implements CodeGeneratorStrategy {
 
     private final SecureRandom rand = new SecureRandom();
 
