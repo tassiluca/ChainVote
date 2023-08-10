@@ -33,12 +33,14 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
     }
 
     @Override
-    public boolean isValid(final C context, final Long votingId, final String userId, final OneTimeCode code) {
-        final var searchedCode = repo.get(context, votingId, userId);
-        if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
+    public boolean isValid(final C context, final Long votingId, final OneTimeCode code) {
+        final var matchingCodes = repo.getAllOf(context, votingId).stream()
+            .filter(c -> c.equals(code))
+            .collect(Collectors.toSet());
+        if (matchingCodes.size() != 1) {
             return false;
         }
-        return !searchedCode.get().consumed();
+        return !matchingCodes.iterator().next().consumed();
     }
 
     @Override

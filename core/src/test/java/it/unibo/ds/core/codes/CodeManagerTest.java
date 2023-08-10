@@ -61,19 +61,19 @@ class CodeManagerTest {
     @Test
     void testCodeValidity() {
         final OneTimeCode code = localManager.generateFor(VOTING_ID, USER_ID);
-        assertTrue(localManager.isValid(VOTING_ID, USER_ID, code));
+        assertTrue(localManager.isValid(VOTING_ID, code));
     }
 
     @Test
     void testUnknownCodeValidity() {
-        assertFalse(localManager.isValid(VOTING_ID, USER_ID, new OneTimeCodeImpl(0L)));
+        assertFalse(localManager.isValid(VOTING_ID, new OneTimeCodeImpl(0L)));
     }
 
     @Test
     void testCodeInvalidation() {
         final OneTimeCode code = localManager.generateFor(VOTING_ID, USER_ID);
         localManager.invalidate(VOTING_ID, code);
-        assertFalse(localManager.isValid(VOTING_ID, USER_ID, code));
+        assertFalse(localManager.isValid(VOTING_ID, code));
     }
 
     @Test

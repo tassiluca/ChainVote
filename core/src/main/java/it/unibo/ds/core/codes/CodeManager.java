@@ -27,31 +27,27 @@ public interface CodeManager<C> {
     }
 
     /**
-     * Check if the given code is still valid, i.e. has not been consumed yet,
-     * for the given user and voting.
+     * Check if the given code is still valid, i.e. has not been consumed yet for the given voting.
      * @param context the context of the transaction
      * @param votingId the voting identifier
-     * @param userId the user identifier
      * @param code the code to be validated
      * @return true if the given code is still valid, false otherwise.
      */
-    boolean isValid(C context, Long votingId, String userId, OneTimeCode code);
+    boolean isValid(C context, Long votingId, OneTimeCode code);
 
     /**
-     * Check if the given code is still valid, i.e. has not been consumed yet,
-     * for the given user and voting.
+     * Check if the given code is still valid, i.e. has not been consumed yet for the given voting.
      * @param votingId the voting identifier
-     * @param userId the user identifier
      * @param code the code to be validated
      * @return true if the given code is still valid, false otherwise.
      */
-    default boolean isValid(final Long votingId, final String userId, final OneTimeCode code) {
-        return isValid(null, votingId, userId, code);
+    default boolean isValid(final Long votingId, final OneTimeCode code) {
+        return isValid(null, votingId, code);
     }
 
     /**
-     * Invalidate the given code for the given user and voting. After calling this
-     * method the code can no longer be used.
+     * Invalidate the given code for the given voting.
+     * After calling this method the code can no longer be used.
      * @param context the context of the transaction
      * @param votingId the voting identifier
      * @param code the code to be validated
@@ -59,8 +55,8 @@ public interface CodeManager<C> {
     void invalidate(C context, Long votingId, OneTimeCode code);
 
     /**
-     * Invalidate the given code for the given user and voting. After calling this
-     * method the code can no longer be used.
+     * Invalidate the given code for the given voting.
+     * After calling this method the code can no longer be used.
      * @param votingId the voting identifier
      * @param code the code to be validated
      */
