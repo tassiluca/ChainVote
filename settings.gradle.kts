@@ -1,4 +1,3 @@
-/*
 plugins {
     id("org.danilopianini.gradle-pre-commit-git-hooks") version "1.1.9"
 }
@@ -6,12 +5,11 @@ plugins {
 gitHooks {
     if (System.getenv("CI_ENVIRONMENT") != "gitlab-ci") {
         preCommit {
-            tasks("check")
+            tasks("test")
         }
         createHooks()
     }
 }
-*/
 
 rootProject.name = "chain-vote"
 
