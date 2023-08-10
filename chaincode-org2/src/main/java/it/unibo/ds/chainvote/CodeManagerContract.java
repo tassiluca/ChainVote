@@ -104,7 +104,7 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     }
 
     @Override
-    public void replace(Context context, Long votingId, OneTimeCode code) {
+    public void replace(final Context context, final Long votingId, final OneTimeCode code) {
         // TODO implement
     }
 
