@@ -37,10 +37,7 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
         final var matchingCodes = repo.getAllOf(context, votingId).stream()
             .filter(c -> c.equals(code))
             .collect(Collectors.toSet());
-        if (matchingCodes.size() != 1) {
-            return false;
-        }
-        return !matchingCodes.iterator().next().consumed();
+        return matchingCodes.size() == 1 && !matchingCodes.iterator().next().consumed();
     }
 
     @Override
