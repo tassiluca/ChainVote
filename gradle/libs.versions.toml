@@ -9,6 +9,7 @@ junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "jun
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 assertj-core = "org.assertj:assertj-core:3.24.2"
 mockito-core = "org.mockito:mockito-core:5.4.0"
+spotbugs-annotations = "com.github.spotbugs:spotbugs-annotations:4.7.3"
 
 [plugins]
 java-qa = "org.danilopianini.gradle-java-qa:1.11.0"

@@ -4,10 +4,12 @@ plugins {
 }
 
 gitHooks {
-    preCommit {
-        tasks("check")
+    if (System.getenv("CI_ENVIRONMENT") != "gitlab-ci") {
+        preCommit {
+            tasks("check")
+        }
+        createHooks()
     }
-    createHooks()
 }
 */
 
@@ -16,5 +18,6 @@ rootProject.name = "chain-vote"
 include(
     "core",
     "presentation",
-    "chaincode",
+    "chaincode-org2",
+    "chaincode-org1"
 )

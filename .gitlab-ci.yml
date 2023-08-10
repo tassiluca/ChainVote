@@ -1,21 +1,23 @@
 image: openjdk:latest
 
+# List of stages for jobs, and their order of execution
+stages:
+  - build
+  - test
+
 before_script:
   - chmod +x gradlew
   - microdnf install findutils # https://stackoverflow.com/a/73516388
 
 variables:
+  CI_ENVIRONMENT: "gitlab-ci"
   GOPTS: "--no-daemon --console=plain"
 
 Compile:
   stage: build
-  script: ./gradlew classes testClasses $GOPTS
+  script: ./gradlew build
 
-# Check Javadoc:
-#   stage: build
-#   script: ./gradlew javadoc $GOPTS
-
-Test and Check:
+Test and check:
   stage: test
   script: ./gradlew check $GOPTS
   artifacts:
