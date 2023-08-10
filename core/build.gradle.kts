@@ -17,6 +17,9 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.fabric.chaincode.shim)
+    implementation(libs.genson)
+    implementation(libs.json)
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.engine)
 }
