@@ -15,7 +15,7 @@ variables:
 
 Compile:
   stage: build
-  script: ./gradlew build
+  script: ./gradlew classes testClasses $GOPTS
 
 Test and check:
   stage: test
