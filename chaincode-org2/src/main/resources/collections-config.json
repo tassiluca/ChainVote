@@ -1,14 +1,14 @@
 [
   {
     "name": "CodesCollection",
-    "policy": "OR('org1MSP.peer')",
+    "policy": "OR('org2MSP.peer')",
     "requiredPeerCount": 0,
     "maxPeerCount": 1,
     "blockToLive":0,
-    "memberOnlyRead": true,
+    "memberOnlyRead": false,
     "memberOnlyWrite": false,
     "endorsementPolicy": {
-      "signaturePolicy": "OR('org1MSP.peer')"
+      "signaturePolicy": "OR('org2MSP.peer')"
     }
   }
 ]

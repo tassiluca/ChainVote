@@ -6,6 +6,7 @@ import it.unibo.ds.core.codes.CodeManager;
 import it.unibo.ds.core.codes.CodeManagerImpl;
 import it.unibo.ds.core.codes.CodeRepository;
 import it.unibo.ds.core.codes.OneTimeCode;
+import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
@@ -24,7 +25,7 @@ import java.util.Set;
     name = "CodeManagerContract",
     info = @Info(
         title = "Code Manager Contract",
-        description = "Contract used to manage one-time-code"
+        description = "Contract used to manage one-time-codes"
     )
 )
 public final class CodeManagerContract implements ContractInterface, CodeRepository<Context> {
@@ -45,26 +46,66 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
         return new OneTimeCodeAsset(codeManager.generateFor(context, votingId, userId));
     }
 
+    /**
+     * Check if the given code is still valid, i.e. has not been consumed yet for the given voting.
+     * @param context the transaction context
+     * @param votingId the voting identifier
+     * @param otc the one-time-code to validate
+     * @return rue if the given code is still valid, false otherwise.
+     */
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public boolean isValid(final Context context, final Long votingId, final Long otc) {
+        return false; // TODO
+    }
+
+    /**
+     * Invalidate the given code for the given voting. After calling this method the code can no longer be used.
+     * @param context the transaction context
+     * @param votingId the voting identifier
+     * @param otc the one-time-code to validate
+     */
+    @Transaction
+    public void invalidate(final Context context, final Long votingId, final Long otc) {
+        // TODO
+    }
+
+    /**
+     * Verifies if the given code has been generated for the given user and voting.
+     * @param context the transaction context
+     * @param votingId the voting identifier
+     * @param userId the user identifier
+     * @param otc the one-time-code to validate
+     * @return true if the given code is correct, false otherwise.
+     */
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public boolean verifyCodeOwner(final Context context, final Long votingId, final String userId, final Long otc) {
+        return codeManager.verifyCodeOwner(context, votingId, userId, new OneTimeCodeImpl(otc));
+    }
+
     @Override
     public Optional<OneTimeCode> get(final Context context, final Long votingId, final String userId) {
-        // TODO implement
-        final String serializedState = context.getStub().getStringState(
-            new CompositeKey(String.valueOf(votingId), userId).getObjectType()
+        final OneTimeCodeAsset data = genson.deserialize(
+            context.getStub().getPrivateData(
+                CODE_COLLECTION_NAME,
+                new CompositeKey(String.valueOf(votingId), userId).getObjectType()
+            ),
+            OneTimeCodeAsset.class
         );
-        System.out.println("Serialized " + serializedState);
-        final OneTimeCodeAsset state = genson.deserialize(serializedState, OneTimeCodeAsset.class);
-        return Optional.ofNullable(state).map(OneTimeCodeAsset::getAsset);
+        return Optional.ofNullable(data).map(OneTimeCodeAsset::getAsset);
     }
 
     @Override
     public void put(final Context context, final Long votingId, final String userId, final OneTimeCode code) {
-        // TODO replace with private data
-        System.out.println("Put " + code);
         context.getStub().putPrivateData(
             CODE_COLLECTION_NAME,
             new CompositeKey(String.valueOf(votingId), userId).getObjectType(),
             genson.serialize(new OneTimeCodeAsset(code))
         );
+    }
+
+    @Override
+    public void replace(Context context, Long votingId, OneTimeCode code) {
+        // TODO implement
     }
 
     @Override
