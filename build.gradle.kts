@@ -7,6 +7,7 @@ plugins {
 subprojects {
 
     apply(plugin = "java-library")
+    apply(plugin = rootProject.libs.plugins.java.qa.get().pluginId)
 
     group = "it.unibo.ds.chainvote"
 
@@ -20,10 +21,10 @@ subprojects {
     }
 
     dependencies {
-        compileOnly("com.github.spotbugs:spotbugs-annotations:4.7.3")
-        testCompileOnly("com.github.spotbugs:spotbugs-annotations:4.7.3")
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
-        testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.3")
+        compileOnly(rootProject.libs.spotbugs.annotations)
+        testCompileOnly(rootProject.libs.spotbugs.annotations)
+        testImplementation(rootProject.libs.junit.api)
+        testImplementation(rootProject.libs.junit.engine)
     }
 
     tasks.test {
