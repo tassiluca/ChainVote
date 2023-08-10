@@ -3,6 +3,7 @@ package it.unibo.ds.chainvote;
 import com.owlike.genson.annotation.JsonProperty;
 import it.unibo.ds.core.codes.OneTimeCode;
 import org.hyperledger.fabric.contract.annotation.DataType;
+import org.hyperledger.fabric.contract.annotation.Property;
 
 import java.util.Objects;
 
@@ -12,22 +13,22 @@ import java.util.Objects;
 @DataType
 public final class OneTimeCodeAsset {
 
-    @JsonProperty
-    private final OneTimeCode code;
+    @Property
+    private final OneTimeCode asset;
 
     /**
      * Creates the one-time-code asset.
      * @param code the generated code.
      */
-    public OneTimeCodeAsset(@JsonProperty("code") final OneTimeCode code) {
-        this.code = code;
+    public OneTimeCodeAsset(@JsonProperty("asset") final OneTimeCode code) {
+        asset = code;
     }
 
     /**
      * @return the code
      */
-    public OneTimeCode getCode() {
-        return code;
+    public OneTimeCode getAsset() {
+        return asset;
     }
 
     @Override
@@ -38,16 +39,16 @@ public final class OneTimeCodeAsset {
             return false;
         }
         final OneTimeCodeAsset that = (OneTimeCodeAsset) o;
-        return Objects.equals(code, that.code);
+        return Objects.equals(asset, that.asset);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code);
+        return Objects.hash(asset);
     }
 
     @Override
     public String toString() {
-        return "OneTimeCodeAsset{" + "code=" + code + '}';
+        return "OneTimeCodeAsset{asset=" + asset + '}';
     }
 }

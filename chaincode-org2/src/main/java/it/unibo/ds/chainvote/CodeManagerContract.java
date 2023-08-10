@@ -48,13 +48,20 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Override
     public Optional<OneTimeCode> get(final Context context, final Long votingId, final String userId) {
         // TODO implement
-        return Optional.empty();
+        final String serializedState = context.getStub().getStringState(
+            new CompositeKey(String.valueOf(votingId), userId).getObjectType()
+        );
+        System.out.println("Serialized " + serializedState);
+        final OneTimeCodeAsset state = genson.deserialize(serializedState, OneTimeCodeAsset.class);
+        return Optional.ofNullable(state).map(OneTimeCodeAsset::getAsset);
     }
 
     @Override
     public void put(final Context context, final Long votingId, final String userId, final OneTimeCode code) {
         // TODO replace with private data
-        context.getStub().putStringState(
+        System.out.println("Put " + code);
+        context.getStub().putPrivateData(
+            CODE_COLLECTION_NAME,
             new CompositeKey(String.valueOf(votingId), userId).getObjectType(),
             genson.serialize(new OneTimeCodeAsset(code))
         );
