@@ -1,10 +1,17 @@
+import {Request, Response, NextFunction} from "express";
+import ExpressConfig from "./express/express.config.js"
+
 import * as grpc from '@grpc/grpc-js';
-import { connect, Contract, Gateway, Identity, Network, Signer, signers } from '@hyperledger/fabric-gateway';
+import { connect, Contract, Gateway, Identity, Network, Signer} from '@hyperledger/fabric-gateway';
 
 import * as path from 'path';
 import { TextDecoder } from 'util';
 
-import { Config } from './config';
+import { Config } from './blockchain/config.js';
+
+const app = ExpressConfig();
+const PORT = process.env.PORT || 8080;
+
 
 /**
  * envOrDefault() will return the value of an environment variable, or a default value if the variable is undefined.
@@ -37,6 +44,7 @@ const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer1-org1');
 // MSP of the organization
 const mspId = envOrDefault('MSP_ID', 'org1MSP');
 
+
 // The configuration object
 const configurations: Config = new Config(
     keyDirectoryPath, 
@@ -47,11 +55,15 @@ const configurations: Config = new Config(
     mspId
 );
 
-
 const utf8Decoder = new TextDecoder();
 
-async function main(): Promise<void> {
+app.get("/", (req: Request, res: Response, next: NextFunction) => { 
+    res.json({ name: "Prova" }); 
+});
 
+
+app.get("/gateway", async (req: Request, res: Response, next: NextFunction) => { 
+    
     const client: grpc.Client = await configurations.createGrpcClient();
     const identity: Identity = await configurations.createIdentity();
     const signer: Signer = await configurations.createSigner();
@@ -78,30 +90,15 @@ async function main(): Promise<void> {
     try{
         let network: Network = gateway.getNetwork(channelName);
         let contract: Contract = network.getContract(chaincodeName);
-        
-        await initLedger(contract);
-        await getAllAssets(contract);
 
+        await getAllAssets(contract);
+        
     } finally {
         gateway.close();
         client.close();
     }
-}
+})
 
-main(); 
-
-
-/**
- * This type of transaction would typically only be run once by an application the first time it was started after its
- * initial deployment. A new version of the chaincode deployed later would likely not need to run an "init" function.
- */
-async function initLedger(contract: Contract): Promise<void> {
-    console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-
-    await contract.submitTransaction('InitLedger');
-
-    console.log('*** Transaction committed successfully');
-}
 
 /**
  * Evaluate a transaction to query ledger state.
@@ -116,7 +113,4 @@ async function getAllAssets(contract: Contract): Promise<void> {
     console.log('*** Result:', result);
 }
 
-
-
-
-
+app.listen(PORT, () => console.log("Server Running on Port " + PORT));

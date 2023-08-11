@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    ports:
+      - 8080:8080
+    stdin_open: true
+    tty: true
+    volumes:
+      - /tmp/hyperledger:/tmp/hyperledger
+    networks:
+      - blockchain_fabric-ca
+
+networks:
+  blockchain_fabric-ca:
+    external: true
