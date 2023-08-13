@@ -13,8 +13,11 @@ import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
 import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.Transaction;
+import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,52 +38,70 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     private final CodeManager<Context> codeManager = new CodeManagerImpl<>(this);
     private final Genson genson = GensonUtils.create();
 
+    private enum CodeManagerErrors {
+        INCOMPLETE_INPUT,
+        ALREADY_GENERATED_CODE,
+        WRONG_BIND
+    }
+
     /**
-     * Generate a new one-time-code.
+     * Generate a new one-time-code for the given user and election passed in a transient map.
+     * Note: a `userId` and `electionId` transient data are expected.
      * @param context the transaction context
-     * @param electionId the election identifier
-     * @param userId the user identifier
      * @return the code asset.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public OneTimeCodeAsset generateFor(final Context context, final String electionId, final String userId) {
+    public OneTimeCodeAsset generateFor(final Context context) {
+        final Map<String, byte[]> transientMap = context.getStub().getTransient();
+        final String userId = getFromTransient(transientMap, "userId");
+        final String electionId = getFromTransient(transientMap, "electionId");
         return new OneTimeCodeAsset(codeManager.generateFor(context, electionId, userId));
     }
 
     /**
-     * Check if the given code is still valid, i.e. has not been consumed yet for the given election.
+     * Check if the given code is still valid, i.e. has not been consumed yet for the given election
+     * passed in a transient map.
+     * Note: a `electionId` and `code` transient data are expected.
      * @param context the transaction context
-     * @param electionId the election identifier
-     * @param otc the one-time-code to validate
-     * @return rue if the given code is still valid, false otherwise.
+     * @return true if the given code is still valid, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean isValid(final Context context, final String electionId, final Long otc) {
+    public boolean isValid(final Context context) {
         return false; // TODO
     }
 
     /**
-     * Invalidate the given code for the given election. After calling this method the code can no longer be used.
+     * Invalidate the given code for the given election passed in a transient map.
+     * After calling this method the code can no longer be used.
+     * Note: a `electionId` and `code` transient data are expected.
      * @param context the transaction context
-     * @param electionId the election identifier
-     * @param otc the one-time-code to validate
      */
     @Transaction
-    public void invalidate(final Context context, final String electionId, final Long otc) {
+    public void invalidate(final Context context) {
         // TODO
     }
 
     /**
-     * Verifies if the given code has been generated for the given user and election.
+     * Verifies if the given code has been generated for the given user and election passed in a transient map.
+     * Note: a `electionId`, `userId` and `code` transient data are expected.
      * @param context the transaction context
-     * @param electionId the election identifier
-     * @param userId the user identifier
-     * @param otc the one-time-code to validate
      * @return true if the given code is correct, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean verifyCodeOwner(final Context context, final String electionId, final String userId, final Long otc) {
-        return codeManager.verifyCodeOwner(context, electionId, userId, new OneTimeCodeImpl(otc));
+    public boolean verifyCodeOwner(final Context context) {
+        final Map<String, byte[]> transientMap = context.getStub().getTransient();
+        final String userId = getFromTransient(transientMap, "userId");
+        final String electionId = getFromTransient(transientMap, "electionId");
+        final Long code = Long.valueOf(getFromTransient(transientMap, "code"));
+        return codeManager.verifyCodeOwner(context, electionId, userId, new OneTimeCodeImpl(code));
+    }
+
+    private String getFromTransient(final Map<String, byte[]> transientMap, final String key) {
+        if (!transientMap.containsKey(key)) {
+            final String errorMsg = "A " + key + " transient input was expected.";
+            throw new ChaincodeException(errorMsg, CodeManagerErrors.INCOMPLETE_INPUT.toString());
+        }
+        return Arrays.toString(transientMap.get(key));
     }
 
     @Override
