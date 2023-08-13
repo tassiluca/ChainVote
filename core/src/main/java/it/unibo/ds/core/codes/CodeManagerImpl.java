@@ -23,39 +23,39 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
     }
 
     @Override
-    public OneTimeCode generateFor(final C context, final Long votingId, final String userId) {
-        if (repo.get(context, votingId, userId).isPresent()) {
-            throw new IllegalStateException("A one-time-code for the given voting and user has already been generated");
+    public OneTimeCode generateFor(final C context, final String electionId, final String userId) {
+        if (repo.get(context, electionId, userId).isPresent()) {
+            throw new IllegalStateException("A one-time-code for the given election and user has already been generated");
         }
-        final var generated = codeGenerator.generateCode(repo.getAllOf(context, votingId));
-        repo.put(context, votingId, userId, generated);
+        final var generated = codeGenerator.generateCode(repo.getAllOf(context, electionId));
+        repo.put(context, electionId, userId, generated);
         return generated;
     }
 
     @Override
-    public boolean isValid(final C context, final Long votingId, final OneTimeCode code) {
-        final var matchingCodes = repo.getAllOf(context, votingId).stream()
+    public boolean isValid(final C context, final String electionId, final OneTimeCode code) {
+        final var matchingCodes = repo.getAllOf(context, electionId).stream()
             .filter(c -> c.equals(code))
             .collect(Collectors.toSet());
         return matchingCodes.size() == 1 && !matchingCodes.iterator().next().consumed();
     }
 
     @Override
-    public void invalidate(final C context, final Long votingId, final OneTimeCode code) {
-        final var matchingCodes = repo.getAllOf(context, votingId).stream()
+    public void invalidate(final C context, final String electionId, final OneTimeCode code) {
+        final var matchingCodes = repo.getAllOf(context, electionId).stream()
             .filter(c -> c.equals(code))
             .collect(Collectors.toSet());
         if (matchingCodes.size() != 1) {
-            throw new IllegalStateException("The given code is not associated to the given voting.");
+            throw new IllegalStateException("The given code is not associated to the given election.");
         }
         final OneTimeCode searchedCode = matchingCodes.iterator().next();
         searchedCode.consume();
-        repo.replace(context, votingId, searchedCode);
+        repo.replace(context, electionId, searchedCode);
     }
 
     @Override
-    public boolean verifyCodeOwner(final C context, final Long votingId, final String userId, final OneTimeCode code) {
-        final var searchedCode = repo.get(context, votingId, userId);
+    public boolean verifyCodeOwner(final C context, final String electionId, final String userId, final OneTimeCode code) {
+        final var searchedCode = repo.get(context, electionId, userId);
         return searchedCode.isPresent() && searchedCode.get().equals(code);
     }
 }

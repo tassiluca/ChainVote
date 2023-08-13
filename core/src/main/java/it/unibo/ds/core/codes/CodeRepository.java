@@ -10,37 +10,37 @@ import java.util.Set;
 public interface CodeRepository<C> {
 
     /**
-     * Retrieve the one-time-code associated to the given user for the given voting.
+     * Retrieve the one-time-code associated to the given user for the given election.
      * @param context the context of the transaction
-     * @param votingId the voting identifier
+     * @param electionId the election identifier
      * @param userId the user identifier
      * @return an {@link Optional} with the searched {@link OneTimeCode} or an empty one
-     * in case no code has been generated for the user in the given voting.
+     * in case no code has been generated for the user in the given election.
      */
-    Optional<OneTimeCode> get(C context, Long votingId, String userId);
+    Optional<OneTimeCode> get(C context, String electionId, String userId);
 
     /**
-     * Retrieves all the one-time-code generated for the given voting.
+     * Retrieves all the one-time-code generated for the given election.
      * @param context the context of the transaction
-     * @param votingId the voting identifier
+     * @param electionId the election identifier
      * @return a set of {@link OneTimeCode}s.
      */
-    Set<OneTimeCode> getAllOf(C context, Long votingId);
+    Set<OneTimeCode> getAllOf(C context, String electionId);
 
     /**
-     * Save the association between the given user and code for the given voting.
+     * Save the association between the given user and code for the given election.
      * @param context the context of the transaction
-     * @param votingId the voting identifier
+     * @param electionId the election identifier
      * @param userId the user identifier
      * @param code the code to be saved.
      */
-    void put(C context, Long votingId, String userId, OneTimeCode code);
+    void put(C context, String electionId, String userId, OneTimeCode code);
 
     /**
-     * Replace the old otc associated to the voting with the given one.
+     * Replace the old otc associated to the election with the given one.
      * @param context the context of the transaction
-     * @param votingId the voting identifier
+     * @param electionId the election identifier
      * @param code the updated code
      */
-    void replace(C context, Long votingId, OneTimeCode code);
+    void replace(C context, String electionId, OneTimeCode code);
 }

@@ -38,57 +38,57 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     /**
      * Generate a new one-time-code.
      * @param context the transaction context
-     * @param votingId the voting identifier
+     * @param electionId the election identifier
      * @param userId the user identifier
      * @return the code asset.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public OneTimeCodeAsset generateFor(final Context context, final Long votingId, final String userId) {
-        return new OneTimeCodeAsset(codeManager.generateFor(context, votingId, userId));
+    public OneTimeCodeAsset generateFor(final Context context, final String electionId, final String userId) {
+        return new OneTimeCodeAsset(codeManager.generateFor(context, electionId, userId));
     }
 
     /**
-     * Check if the given code is still valid, i.e. has not been consumed yet for the given voting.
+     * Check if the given code is still valid, i.e. has not been consumed yet for the given election.
      * @param context the transaction context
-     * @param votingId the voting identifier
+     * @param electionId the election identifier
      * @param otc the one-time-code to validate
      * @return rue if the given code is still valid, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean isValid(final Context context, final Long votingId, final Long otc) {
+    public boolean isValid(final Context context, final String electionId, final Long otc) {
         return false; // TODO
     }
 
     /**
-     * Invalidate the given code for the given voting. After calling this method the code can no longer be used.
+     * Invalidate the given code for the given election. After calling this method the code can no longer be used.
      * @param context the transaction context
-     * @param votingId the voting identifier
+     * @param electionId the election identifier
      * @param otc the one-time-code to validate
      */
     @Transaction
-    public void invalidate(final Context context, final Long votingId, final Long otc) {
+    public void invalidate(final Context context, final String electionId, final Long otc) {
         // TODO
     }
 
     /**
-     * Verifies if the given code has been generated for the given user and voting.
+     * Verifies if the given code has been generated for the given user and election.
      * @param context the transaction context
-     * @param votingId the voting identifier
+     * @param electionId the election identifier
      * @param userId the user identifier
      * @param otc the one-time-code to validate
      * @return true if the given code is correct, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean verifyCodeOwner(final Context context, final Long votingId, final String userId, final Long otc) {
-        return codeManager.verifyCodeOwner(context, votingId, userId, new OneTimeCodeImpl(otc));
+    public boolean verifyCodeOwner(final Context context, final String electionId, final String userId, final Long otc) {
+        return codeManager.verifyCodeOwner(context, electionId, userId, new OneTimeCodeImpl(otc));
     }
 
     @Override
-    public Optional<OneTimeCode> get(final Context context, final Long votingId, final String userId) {
+    public Optional<OneTimeCode> get(final Context context, final String electionId, final String userId) {
         final OneTimeCodeAsset data = genson.deserialize(
             context.getStub().getPrivateData(
                 CODE_COLLECTION_NAME,
-                new CompositeKey(String.valueOf(votingId), userId).getObjectType()
+                new CompositeKey(String.valueOf(electionId), userId).getObjectType()
             ),
             OneTimeCodeAsset.class
         );
@@ -96,21 +96,21 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     }
 
     @Override
-    public void put(final Context context, final Long votingId, final String userId, final OneTimeCode code) {
+    public void put(final Context context, final String electionId, final String userId, final OneTimeCode code) {
         context.getStub().putPrivateData(
             CODE_COLLECTION_NAME,
-            new CompositeKey(String.valueOf(votingId), userId).getObjectType(),
+            new CompositeKey(String.valueOf(electionId), userId).getObjectType(),
             genson.serialize(new OneTimeCodeAsset(code))
         );
     }
 
     @Override
-    public void replace(final Context context, final Long votingId, final OneTimeCode code) {
+    public void replace(final Context context, final String electionId, final OneTimeCode code) {
         // TODO implement
     }
 
     @Override
-    public Set<OneTimeCode> getAllOf(final Context context, final Long votingId) {
+    public Set<OneTimeCode> getAllOf(final Context context, final String electionId) {
         // TODO implement
         return Set.of();
     }
