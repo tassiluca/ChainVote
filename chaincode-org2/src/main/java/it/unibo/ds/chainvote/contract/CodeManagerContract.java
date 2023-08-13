@@ -1,6 +1,7 @@
-package it.unibo.ds.chainvote;
+package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
+import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.codes.CodeManager;
 import it.unibo.ds.core.codes.CodeManagerImpl;
