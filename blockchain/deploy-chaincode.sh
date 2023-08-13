@@ -8,7 +8,7 @@ if [[ $# -lt 2 || ! -d $1 || ($2 != "org1" && $2 != "org2") ]]; then
   echo "Usage: ./deploy-chaincode <chaincode-path> <organization-name> [<peers>]"
   echo "Description:"
   echo "  Script used to deploy **java** chaincode to the Hyperledger Fabric network."
-  echo "  Note: if private data are used this script expect to find the json config file located in the resources folder of the java project"
+  echo "  Note: if private data are used this script expect to find the \"collections-config.json\" config file located in the resources folder of the java project"
   echo
   echo "Options:"
   echo "  <organization-name>      - The name of the organization, i.e. [org1|org2]"
@@ -24,7 +24,6 @@ if [[ $# == 2 ]]; then
 else
   PEERS=()
   for i in $(seq 3 1 $#); do
-    echo "${!i}"
     PEERS+=("${!i}")
   done
 fi;
@@ -37,11 +36,11 @@ else
     PEER1_ADDRESS=localhost:9051
     PEER2_ADDRESS=localhost:10051
 fi;
+COLLECTIONS_CONFIG_ARG=()
 if [[ -f "$CHAINCODE_PATH/src/main/resources/collections-config.json" ]]; then
-  pushd "$CHAINCODE_PATH/src/main/resources/"
-  COLLECTION_CONFIG_PATH="$PWD/collections-config.json"
-  echo ">>>>>>>>>>>>>>>>>>>> $COLLECTION_CONFIG_PATH"
-  popd
+  COLLECTIONS_CONFIG_ARG+=(
+    "--collections-config" "$(realpath "$CHAINCODE_PATH/src/main/resources/collections-config.json")"
+  )
 fi;
 CHAINCODE_NAME=$(basename "$CHAINCODE_PATH")
 CHAINCODE_PACKAGE_NAME=${CHAINCODE_NAME}.tar.gz
@@ -64,7 +63,8 @@ if in_array "peer1" "${PEERS[@]}"; then
   export CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/${CHAINCODE_ORG}/peer1/assets/tls-ca/tls-ca-cert.pem
   export CORE_PEER_ADDRESS=${PEER1_ADDRESS}
   peer lifecycle chaincode install "${CHAINCODE_PACKAGE_NAME}"
-elif in_array "peer2" "${PEERS[@]}"; then
+fi;
+if in_array "peer2" "${PEERS[@]}"; then
   echo "Installation on peer2-${CHAINCODE_ORG}"
   export CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/${CHAINCODE_ORG}/peer2/assets/tls-ca/tls-ca-cert.pem
   export CORE_PEER_ADDRESS=${PEER2_ADDRESS}
@@ -81,28 +81,27 @@ elif in_array "peer2" "${PEERS[@]}"; then
   CA_FILE=/tmp/hyperledger/"${CHAINCODE_ORG}"/peer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
 fi;
 
-#if [[ -z $COLLECTION_CONFIG_PATH ]]; then
-#  COLLECTIONS_CONFIG_ARG=""
-#else
-#  echo "A collection config file found"
-#  COLLECTIONS_CONFIG_ARG="$COLLECTION_CONFIG_PATH"
-#fi;
-
 echo "Chaincode approval"
-APPROVAL_ARGS="--orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --channelID $CHANNEL_NAME --name $CHAINCODE_NAME --collections-config $COLLECTIONS_CONFIG_ARG --version 1.0 --package-id $PACKAGE_ID --sequence 1 --tls --cafile $CA_FILE"
-peer lifecycle chaincode approveformyorg $APPROVAL_ARGS
+peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0     --name "$CHAINCODE_NAME" --channelID "$CHANNEL_NAME" --version "1.0" --package-id "$PACKAGE_ID" --sequence "1" --cafile "$CA_FILE" --tls "${COLLECTIONS_CONFIG_ARG[@]}"
 echo "Verify approval"
-peer lifecycle chaincode checkcommitreadiness --channelID "$CHANNEL_NAME" --name "$CHAINCODE_NAME" "$COLLECTIONS_CONFIG_ARG" --version 1.0 --sequence 1 --tls --cafile /tmp/hyperledger/"${CHAINCODE_ORG}"/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem --output json
+peer lifecycle chaincode checkcommitreadiness --channelID "$CHANNEL_NAME" --name "$CHAINCODE_NAME" --version 1.0 --sequence 1 --tls --cafile "$CA_FILE" --output json "${COLLECTIONS_CONFIG_ARG[@]}"
 
-PEER_ADDRESSES_ARGS=""
+PEER_ADDRESSES_ARGS=()
 if in_array "peer1" "${PEERS[@]}"; then
-  PEER_ADDRESSES_ARGS+="--peerAddresses $PEER1_ADDRESS --tlsRootCertFiles /tmp/hyperledger/$CHAINCODE_ORG/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
-elif in_array "peer2" "${PEERS[@]}"; then
-  PEER_ADDRESSES_ARGS="--peerAddresses $PEER2_ADDRESS --tlsRootCertFiles /tmp/hyperledger/$CHAINCODE_ORG/peer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
+  PEER_ADDRESSES_ARGS+=(
+    "--peerAddresses" "$PEER1_ADDRESS"
+    "--tlsRootCertFiles" "/tmp/hyperledger/$CHAINCODE_ORG/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
+  )
+fi;
+if in_array "peer2" "${PEERS[@]}"; then
+  PEER_ADDRESSES_ARGS=(
+    "--peerAddresses" "$PEER2_ADDRESS"
+    "--tlsRootCertFiles" "/tmp/hyperledger/$CHAINCODE_ORG/peer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
+  )
 fi;
 
 echo "Committing"
-peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --channelID "$CHANNEL_NAME" --name "$CHAINCODE_NAME" "$COLLECTIONS_CONFIG_ARG" --version 1.0 --sequence 1 --tls --cafile "$CA_FILE" $PEER_ADDRESSES_ARGS
+peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --channelID "$CHANNEL_NAME" --name "$CHAINCODE_NAME" --version 1.0 --sequence 1 --tls --cafile "$CA_FILE" "${COLLECTIONS_CONFIG_ARG[@]}" "${PEER_ADDRESSES_ARGS[@]}"
 echo "Checking commit"
 peer lifecycle chaincode querycommitted --channelID ${CHANNEL_NAME} --name "${CHAINCODE_NAME}" --cafile "$CA_FILE"
 
