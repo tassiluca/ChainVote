@@ -8,28 +8,32 @@ skinparam component {
 skinparam DatabaseBackgroundColor Beige
 
 [:core] as C0
+[:presentation] as PS
+[:chaincode-org1] as CH1
+[:chaincode-org2] as CH2
+[org.hyperledger.fabric-chaincode-java:\nfabric-chaincode-shim] as HFC <<external>>
+[com.owlike:genson] as GS <<external>>
 
-[:chaincode] as CH
-[fabric-SDK] as HF <<external>>
-HF -|> CH
-
-[:apiservice] as API
-[:authmodule] as AUTH
-[:chainmodule] as CHAPI
+[:api-server] as API
 [:system-test] as SYSTEST <<test>>
 [:web] as WEBAPP <<executable>>
 database AuthenticationDB<<external>>
 
-C0 <|-- CH
-C0 <|-- API
-API <|-- AUTH
-API <|-- CHAPI 
-API <|-- SYSTEST
-CH <|-- SYSTEST
-API <|- WEBAPP
-HF <|-- CHAPI
+C0 <|-- PS
+GS -right-|> PS
+PS <|-- CH1
+PS <|-- CH2
+HFC -right-|> CH1
+HFC -right-|> CH2
 
-AuthenticationDB <.right.> connection
-connection <.right.> API
+C0 <|-- API
+API <|-- SYSTEST
+API <|-- WEBAPP
+CH1 <|-- SYSTEST
+CH2 <|--SYSTEST
+
+
+AuthenticationDB <.up.> connection
+connection <.up.> API
 
 @enduml
