@@ -1,8 +1,8 @@
 
 import { Request, Response, NextFunction } from "express";
-import { HttpBaseError } from "./base";
+import { HttpBaseError } from "./errors";
 
-export async function defaultHandler(
+export default async function defaultErrorHandler(
     err: Error, 
     req: Request, 
     res: Response, 
@@ -19,6 +19,4 @@ export async function defaultHandler(
         res.status(500);
         res.send("Error received" +  err.toString());
     }
-
-    
 }

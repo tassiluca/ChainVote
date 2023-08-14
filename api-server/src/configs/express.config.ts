@@ -1,8 +1,8 @@
 import express, { Application } from "express"
 import userRouter from "../routes/userRoute";
 import bodyParser from "body-parser"
-import { defaultHandler } from "../errors/error.handler";
-import { InternalServerError } from "../errors/base";
+import defaultErrorHandler from "../errors/error.handler";
+import { InternalServerError } from "../errors/errors";
 
 const ExpressConfig = (): Application => {
   const app = express();
@@ -14,9 +14,11 @@ const ExpressConfig = (): Application => {
   // Routes initialization
   app.use("/users", userRouter);
   app.get("/error", (req, res, next) => {
-    throw InternalServerError("Prova interna");
+    throw new InternalServerError("Prova provona");
   })
-  app.use(defaultHandler);
+  
+  // Use custom error handler.
+  app.use(defaultErrorHandler);
   return app
 }
 
