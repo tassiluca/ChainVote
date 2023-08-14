@@ -194,7 +194,7 @@
               "type": "string",
               "example": "Rossi"
             },
-            "registrationDate": {
+            "dateOfRegistration": {
               "type": "string",
               "description": "This information contains the user's registration date in the unix timestamp format",
               "example": "1690983907"
