@@ -23,5 +23,27 @@ export class HttpBaseError implements Error {
     }
 }
 
+function errorBuilder(
+    statusCode:StatusCodes | number,
+    name: string,
+    message?: string,
+    stack?: string | undefined
+    ): HttpBaseError {
+    
+    let _message = "Error";
+    if(message) {
+        _message = message;
+    }
 
+    return new HttpBaseError(statusCode, name, _message, stack);
+}
+
+export function InternalServerError(message: string, stack?: string | undefined): HttpBaseError {
+    return errorBuilder(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        "Internal Server Error",
+        message,
+        stack
+    );
+}
 
