@@ -30,8 +30,7 @@ let User = new Schema<IUser>({
 User.pre("save", function (next) {
     const user = this;
 
-    if (user.isModified("password") || user.isNew) {
-
+    if (user.isModified("password") || user.isNew) {    
 
       bcrypt.genSalt(SALT_WORK_FACTOR, function (error, salt) {
         if (error) {
