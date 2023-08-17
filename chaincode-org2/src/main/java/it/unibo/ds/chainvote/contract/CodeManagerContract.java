@@ -16,6 +16,7 @@ import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
@@ -101,10 +102,10 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
 
     private String getFromTransient(final Map<String, byte[]> transientMap, final String key) {
         if (!transientMap.containsKey(key)) {
-            final String errorMsg = "A `" + key + "` transient input was expected.";
+            final String errorMsg = "An entry with key `" + key + "` was expected in the transient map.";
             throw new ChaincodeException(errorMsg, CodeManagerErrors.INCOMPLETE_INPUT.toString());
         }
-        return Arrays.toString(transientMap.get(key));
+        return new String(transientMap.get(key), StandardCharsets.UTF_8);
     }
 
     @Override

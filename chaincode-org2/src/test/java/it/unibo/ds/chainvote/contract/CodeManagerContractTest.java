@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +20,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,9 +31,10 @@ final class CodeManagerContractTest {
 
     private static final byte[] ELECTION_ID = "test-election".getBytes(UTF_8);
     private static final byte[] USER_ID = "mrossi".getBytes(UTF_8);
+    private static final byte[] CODE = Long.toString(123L).getBytes(UTF_8);
     private static final String KEY = new CompositeKey(
-        Arrays.toString(ELECTION_ID),
-        Arrays.toString(USER_ID)
+        new String(ELECTION_ID, UTF_8),
+        new String(USER_ID, UTF_8)
     ).getObjectType();
 
     private final Genson genson = GensonUtils.create();
@@ -51,14 +53,16 @@ final class CodeManagerContractTest {
     @Nested
     class TestCodeGeneration {
 
-        private final Map<String, byte[]> transientData = new HashMap<>() {{
-            put("userId", USER_ID);
-            put("electionId", ELECTION_ID);
-        }};
+        @BeforeEach
+        void setup() {
+            when(stub.getTransient()).thenReturn(new HashMap<>() {{
+                put("userId", USER_ID);
+                put("electionId", ELECTION_ID);
+            }});
+        }
 
         @Test
         void whenNotAlreadyRequested() {
-            when(stub.getTransient()).thenReturn(transientData);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
             final OneTimeCodeAsset asset = contract.generateFor(context);
             assertNotNull(asset.getAsset().getCode());
@@ -67,7 +71,6 @@ final class CodeManagerContractTest {
 
         @Test
         void whenAlreadyExists() {
-            when(stub.getTransient()).thenReturn(transientData);
             final byte[] mockedCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(0L))).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
             final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
@@ -85,7 +88,7 @@ final class CodeManagerContractTest {
             final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
-                .hasMessage("A `electionId` transient input was expected.");
+                .hasMessage("An entry with key `electionId` was expected in the transient map.");
             assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCOMPLETE_INPUT".getBytes(UTF_8));
         }
     }
@@ -93,5 +96,27 @@ final class CodeManagerContractTest {
     @Nested
     class TestCodeVerification {
 
+        @BeforeEach
+        void setup() {
+            when(stub.getTransient()).thenReturn(new HashMap<>() {{
+                put("userId", USER_ID);
+                put("electionId", ELECTION_ID);
+                put("code", CODE);
+            }});
+        }
+
+        @Test
+        void whenCodeIsCorrect() {
+            final byte[] mockedCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(123L))).getBytes(UTF_8);
+            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
+            assertTrue(contract.verifyCodeOwner(context));
+        }
+
+        @Test
+        void whenCodeIsIncorrect() {
+            final byte[] wrongCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(0L))).getBytes(UTF_8);
+            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
+            assertFalse(contract.verifyCodeOwner(context));
+        }
     }
 }
