@@ -14,13 +14,18 @@ import org.hyperledger.fabric.contract.annotation.Contract;
 import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
+import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
+import org.hyperledger.fabric.shim.ledger.KeyValue;
+import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A Hyperledger Fabric contract to manage one-time-codes.
@@ -71,7 +76,10 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean isValid(final Context context) {
-        return false; // TODO
+        final Map<String, byte[]> transientMap = context.getStub().getTransient();
+        final String electionId = getFromTransient(transientMap, "electionId");
+        final Long code = Long.valueOf(getFromTransient(transientMap, "code"));
+        return codeManager.isValid(context, electionId, new OneTimeCodeImpl(code));
     }
 
     /**
@@ -82,7 +90,10 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
      */
     @Transaction
     public void invalidate(final Context context) {
-        // TODO
+        final Map<String, byte[]> transientMap = context.getStub().getTransient();
+        final String electionId = getFromTransient(transientMap, "electionId");
+        final Long code = Long.valueOf(getFromTransient(transientMap, "code"));
+        codeManager.invalidate(context, electionId, new OneTimeCodeImpl(code));
     }
 
     /**
@@ -136,7 +147,29 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
 
     @Override
     public Set<OneTimeCode> getAllOf(final Context context, final String electionId) {
-        // TODO implement
-        return Set.of();
+        try {
+            return getQueryResults(context, new CompositeKey(electionId).getObjectType()).stream()
+                .map(OneTimeCodeAsset::getAsset)
+                .collect(Collectors.toSet());
+        } catch (Exception exception) {
+            throw new ChaincodeException();
+        }
+    }
+
+    private Set<OneTimeCodeAsset> getQueryResults(final Context context, final String compositeKey) throws Exception {
+        final ChaincodeStub stub = context.getStub();
+        final Set<OneTimeCodeAsset> queryResults = new HashSet<>();
+        try (final QueryResultsIterator<KeyValue> results = stub.getPrivateDataByPartialCompositeKey(CODES_COLLECTION, compositeKey)) {
+            for (final KeyValue result : results) {
+                if (result.getStringValue() == null || result.getStringValue().length() == 0) {
+                    System.err.printf("Invalid Asset json: %s\n", result.getStringValue());
+                    continue;
+                }
+                final OneTimeCodeAsset asset = genson.deserialize(result.getStringValue(), OneTimeCodeAsset.class);
+                queryResults.add(asset);
+                System.out.println("QueryResult: " + asset.toString());
+            }
+        }
+        return Collections.unmodifiableSet(queryResults);
     }
 }
