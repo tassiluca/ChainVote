@@ -12,12 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static it.unibo.ds.chainvote.contract.CodeManagerContract.CODES_COLLECTION;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,10 +28,12 @@ import static org.mockito.Mockito.when;
 
 final class CodeManagerContractTest {
 
-    private static final byte[] ELECTION_ID = "test-election".getBytes();
-    private static final byte[] USER_ID = "mrossi".getBytes();
-    private static final String KEY =
-        new CompositeKey(Arrays.toString(ELECTION_ID), Arrays.toString(USER_ID)).getObjectType();
+    private static final byte[] ELECTION_ID = "test-election".getBytes(UTF_8);
+    private static final byte[] USER_ID = "mrossi".getBytes(UTF_8);
+    private static final String KEY = new CompositeKey(
+        Arrays.toString(ELECTION_ID),
+        Arrays.toString(USER_ID)
+    ).getObjectType();
 
     private final Genson genson = GensonUtils.create();
     private final CodeManagerContract contract = new CodeManagerContract();
@@ -66,13 +68,13 @@ final class CodeManagerContractTest {
         @Test
         void whenAlreadyExists() {
             when(stub.getTransient()).thenReturn(transientData);
-            final byte[] mockedCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(0L))).getBytes();
+            final byte[] mockedCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(0L))).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
             final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("A one-time-code for the given election and user has already been generated");
-            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ALREADY_GENERATED_CODE".getBytes());
+            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ALREADY_GENERATED_CODE".getBytes(UTF_8));
         }
 
         @Test
@@ -84,7 +86,12 @@ final class CodeManagerContractTest {
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("A `electionId` transient input was expected.");
-            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCOMPLETE_INPUT".getBytes());
+            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCOMPLETE_INPUT".getBytes(UTF_8));
         }
+    }
+
+    @Nested
+    class TestCodeVerification {
+
     }
 }

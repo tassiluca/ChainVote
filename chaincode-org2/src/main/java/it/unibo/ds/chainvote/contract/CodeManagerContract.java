@@ -22,8 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * An Hyperledger Fabric chaincode entry point contract to manage one-time-codes.
- * TODO replace args with transient data
+ * A Hyperledger Fabric contract to manage one-time-codes.
  */
 @Contract(
     name = "CodeManagerContract",
@@ -46,8 +45,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
 
     /**
      * Generate a new one-time-code for the given user and election passed in a transient map.
-     * Note: a `userId` and `electionId` transient data are expected.
-     * @param context the transaction context
+     * @param context the transaction context. A transient map is expected with the following
+     *               key-value pairs: `userId` and `electionId`.
      * @return the code asset.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
@@ -65,8 +64,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     /**
      * Check if the given code is still valid, i.e. has not been consumed yet for the given election
      * passed in a transient map.
-     * Note: a `electionId` and `code` transient data are expected.
-     * @param context the transaction context
+     * @param context the transaction context. A transient map is expected with the following
+     *                key-value pairs: `electionId` and `code`.
      * @return true if the given code is still valid, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
@@ -77,8 +76,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     /**
      * Invalidate the given code for the given election passed in a transient map.
      * After calling this method the code can no longer be used.
-     * Note: a `electionId` and `code` transient data are expected.
-     * @param context the transaction context
+     * @param context the transaction context. A transient map is expected with the following
+     *                key-value pairs: `electionId` and `code`.
      */
     @Transaction
     public void invalidate(final Context context) {
@@ -87,8 +86,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
 
     /**
      * Verifies if the given code has been generated for the given user and election passed in a transient map.
-     * Note: a `electionId`, `userId` and `code` transient data are expected.
-     * @param context the transaction context
+     * @param context the transaction context. A transient map is expected with the following
+     *                key-value pairs: `electionId`, `userId` and `code`
      * @return true if the given code is correct, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)

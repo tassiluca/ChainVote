@@ -50,7 +50,7 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
         repo.replace(context, electionId, searchedCode);
     }
 
-    private Set<OneTimeCode> getMatchingCodes(C context, final String electionId, final OneTimeCode code) {
+    private Set<OneTimeCode> getMatchingCodes(final C context, final String electionId, final OneTimeCode code) {
         return repo.getAllOf(context, electionId).stream()
             .filter(c -> c.equals(code))
             .collect(Collectors.toSet());
