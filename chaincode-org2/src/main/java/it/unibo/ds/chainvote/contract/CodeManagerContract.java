@@ -34,7 +34,7 @@ import java.util.Set;
 )
 public final class CodeManagerContract implements ContractInterface, CodeRepository<Context> {
 
-    private static final String CODE_COLLECTION_NAME = "CodesCollection";
+    static final String CODES_COLLECTION = "CodesCollection";
     private final CodeManager<Context> codeManager = new CodeManagerImpl<>(this);
     private final Genson genson = GensonUtils.create();
 
@@ -55,7 +55,11 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
         final String userId = getFromTransient(transientMap, "userId");
         final String electionId = getFromTransient(transientMap, "electionId");
-        return new OneTimeCodeAsset(codeManager.generateFor(context, electionId, userId));
+        try {
+            return new OneTimeCodeAsset(codeManager.generateFor(context, electionId, userId));
+        } catch (IllegalStateException exception) {
+            throw new ChaincodeException(exception.getMessage(), CodeManagerErrors.ALREADY_GENERATED_CODE.toString());
+        }
     }
 
     /**
@@ -98,7 +102,7 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
 
     private String getFromTransient(final Map<String, byte[]> transientMap, final String key) {
         if (!transientMap.containsKey(key)) {
-            final String errorMsg = "A " + key + " transient input was expected.";
+            final String errorMsg = "A `" + key + "` transient input was expected.";
             throw new ChaincodeException(errorMsg, CodeManagerErrors.INCOMPLETE_INPUT.toString());
         }
         return Arrays.toString(transientMap.get(key));
@@ -108,8 +112,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     public Optional<OneTimeCode> get(final Context context, final String electionId, final String userId) {
         final OneTimeCodeAsset data = genson.deserialize(
             context.getStub().getPrivateData(
-                CODE_COLLECTION_NAME,
-                new CompositeKey(String.valueOf(electionId), userId).getObjectType()
+                CODES_COLLECTION,
+                new CompositeKey(electionId, userId).getObjectType()
             ),
             OneTimeCodeAsset.class
         );
@@ -119,8 +123,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Override
     public void put(final Context context, final String electionId, final String userId, final OneTimeCode code) {
         context.getStub().putPrivateData(
-            CODE_COLLECTION_NAME,
-            new CompositeKey(String.valueOf(electionId), userId).getObjectType(),
+            CODES_COLLECTION,
+            new CompositeKey(electionId, userId).getObjectType(),
             genson.serialize(new OneTimeCodeAsset(code))
         );
     }
