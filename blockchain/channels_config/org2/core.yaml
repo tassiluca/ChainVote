@@ -20,7 +20,7 @@ peer:
 
     # The Address at local network interface this Peer will listen on.
     # By default, it will listen on all network interfaces
-    listenAddress: 0.0.0.0:7051
+    listenAddress: 0.0.0.0:9051
 
     # The endpoint this peer uses to listen for inbound chaincode connections.
     # If this is commented-out, the listen address is selected to be
@@ -39,7 +39,7 @@ peer:
     # in the same organization. For peers in other organization, see
     # gossip.externalEndpoint for more info.
     # When used as CLI config, this means the peer's endpoint to interact with
-    address: 0.0.0.0:7051
+    address: localhost:9051
 
     # Whether the Peer should programmatically determine its address
     # This case is useful for docker containers.
@@ -101,7 +101,7 @@ peer:
         # Important: The endpoints here have to be endpoints of peers in the same
         # organization, because the peer would refuse connecting to these endpoints
         # unless they are in the same organization as the peer.
-        bootstrap: 127.0.0.1:7051
+        bootstrap: 127.0.0.1:9051
 
         # NOTE: orgLeader and useLeaderElection parameters are mutual exclusive.
         # Setting both to true would result in the termination of the peer
@@ -289,7 +289,7 @@ peer:
         # It is not required to be set, but can be used to augment the set of TLS CA certificates
         # available from the MSPs of each channel’s configuration.
         rootcert:
-            file: tls/ca.crt
+            file: /tmp/hyperledger/org2/peer1/assets/tls-ca/tls-ca-cert.pem
         # If mutual TLS is enabled, clientRootCAs.files contains a list of additional root certificates
         # used for verifying certificates of client connections.
         # It augments the set of TLS CA certificates available from the MSPs of each channel’s configuration.
@@ -351,7 +351,7 @@ peer:
 
     # Path on the file system where peer will find MSP local configurations
     # The path may be relative to FABRIC_CFG_PATH or an absolute path.
-    mspConfigPath: msp
+    mspConfigPath: /tmp/hyperledger/org2/admin/msp
 
     # Identifier of the local MSP
     # ----!!!!IMPORTANT!!!-!!!IMPORTANT!!!-!!!IMPORTANT!!!!----
@@ -360,7 +360,7 @@ peer:
     # to match the name of one of the MSPs in each of the channel
     # that this peer is a member of. Otherwise this peer's messages
     # will not be identified as valid by other nodes.
-    localMspId: SampleOrg
+    localMspId: org2MSP
 
     # CLI common client config options
     client:

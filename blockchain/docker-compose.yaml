@@ -166,6 +166,7 @@ services:
         - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/org1/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer2-org1:8051
         - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1-org1:7051
         - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/org1/peer1
@@ -195,9 +196,9 @@ services:
         - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/org1/peer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
-        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2-org1:8051
         - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
         - CORE_PEER_GOSSIP_BOOTSTRAP=peer1-org1:7051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2-org1:8051
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/org1/peer2
     volumes:
         - /var/run:/host/var/run
@@ -225,8 +226,9 @@ services:
         - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/org2/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
-        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1-org2:9051
         - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer2-org2:10051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1-org2:9051
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/org2/peer1
     volumes:
         - /var/run:/host/var/run
@@ -254,9 +256,9 @@ services:
         - CORE_PEER_TLS_ROOTCERT_FILE=/tmp/hyperledger/org2/peer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
-        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2-org2:10051
         - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
         - CORE_PEER_GOSSIP_BOOTSTRAP=peer1-org2:9051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2-org2:10051
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/org2/peer2
     volumes:
         - /var/run:/host/var/run
