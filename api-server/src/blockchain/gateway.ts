@@ -29,7 +29,7 @@ const certPath = envOrDefault('CERT_PATH', path.resolve(cryptoPath, 'admin', 'ms
 const tlsCertPath = envOrDefault('TLS_CERT_PATH', path.resolve(cryptoPath, 'peer1', 'tls-msp', 'tlscacerts', 'tls-0-0-0-0-7052.pem'));
 
 // Gateway peer endpoint.
-const peerEndpoint = envOrDefault('PEER_ENDPOINT', 'localhost:7051');
+const peerEndpoint = envOrDefault('PEER_ENDPOINT', 'peer1-org1:7051');
 
 // Gateway peer SSL host name override.
 const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer1-org1');

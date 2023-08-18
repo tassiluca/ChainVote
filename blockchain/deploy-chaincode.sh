@@ -29,7 +29,7 @@ CHAINCODE_NAME=$3
 CHAINCODE_PACKAGE_NAME=${CHAINCODE_NAME}.tar.gz
 
 export PATH="$PATH:$PWD/bin"
-export FABRIC_CFG_PATH=$PWD/channels_config
+export FABRIC_CFG_PATH=$PWD/channels_config/$CHAINCODE_ORG
 
 echo "Generating chaincode package"
 (cd ${CHAINCODE_PATH}; ./gradlew installDist)
