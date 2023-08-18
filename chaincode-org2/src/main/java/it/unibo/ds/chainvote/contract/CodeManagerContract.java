@@ -19,13 +19,14 @@ import org.hyperledger.fabric.shim.ledger.CompositeKey;
 import org.hyperledger.fabric.shim.ledger.KeyValue;
 import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static it.unibo.ds.chainvote.utils.TransientUtils.getLongFromTransient;
+import static it.unibo.ds.chainvote.utils.TransientUtils.getStringFromTransient;
 
 /**
  * A Hyperledger Fabric contract to manage one-time-codes.
@@ -58,8 +59,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public OneTimeCodeAsset generateFor(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String userId = getFromTransient(transientMap, "userId");
-        final String electionId = getFromTransient(transientMap, "electionId");
+        final String userId = getStringFromTransient(transientMap, "userId");
+        final String electionId = getStringFromTransient(transientMap, "electionId");
         try {
             return new OneTimeCodeAsset(codeManager.generateFor(context, electionId, userId));
         } catch (IllegalStateException exception) {
@@ -77,8 +78,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean isValid(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getFromTransient(transientMap, "electionId");
-        final Long code = Long.valueOf(getFromTransient(transientMap, "code"));
+        final String electionId = getStringFromTransient(transientMap, "electionId");
+        final Long code = getLongFromTransient(transientMap, "code");
         return codeManager.isValid(context, electionId, new OneTimeCodeImpl(code));
     }
 
@@ -91,8 +92,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Transaction
     public void invalidate(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getFromTransient(transientMap, "electionId");
-        final Long code = Long.valueOf(getFromTransient(transientMap, "code"));
+        final String electionId = getStringFromTransient(transientMap, "electionId");
+        final Long code = getLongFromTransient(transientMap, "code");
         codeManager.invalidate(context, electionId, new OneTimeCodeImpl(code));
     }
 
@@ -105,18 +106,10 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean verifyCodeOwner(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String userId = getFromTransient(transientMap, "userId");
-        final String electionId = getFromTransient(transientMap, "electionId");
-        final Long code = Long.valueOf(getFromTransient(transientMap, "code"));
+        final String userId = getStringFromTransient(transientMap, "userId");
+        final String electionId = getStringFromTransient(transientMap, "electionId");
+        final Long code = getLongFromTransient(transientMap, "code");
         return codeManager.verifyCodeOwner(context, electionId, userId, new OneTimeCodeImpl(code));
-    }
-
-    private String getFromTransient(final Map<String, byte[]> transientMap, final String key) {
-        if (!transientMap.containsKey(key)) {
-            final String errorMsg = "An entry with key `" + key + "` was expected in the transient map.";
-            throw new ChaincodeException(errorMsg, CodeManagerErrors.INCOMPLETE_INPUT.toString());
-        }
-        return new String(transientMap.get(key), StandardCharsets.UTF_8);
     }
 
     @Override
