@@ -1,14 +1,35 @@
 services:
+  # Rest api service
   app:
     build: .
     ports:
       - 8080:8080
-    stdin_open: true
-    tty: true
     volumes:
       - /tmp/hyperledger:/tmp/hyperledger
+    environment:
+      - CONN_STR=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
     networks:
       - blockchain_fabric-ca
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+
+  # Mongodb service
+  mongodb:
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=user
+      - MONGODB_INITDB_ROOT_PASSWORD=pass
+    ports:
+      - 27017:27017
+    volumes:
+      - type: bind
+        source: ./dbdata
+        target: /data/db
+    networks:
+      - blockchain_fabric-ca
+    
 
 networks:
   blockchain_fabric-ca:

@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from "express";
 import ExpressConfig from "./configs/express.config.js"
-// import MongooseConfig from "./configs/mongoose.config.js";
+import MongooseConfig from "./configs/mongoose.config.js";
 import {Config} from "./blockchain/config.js";
 import * as path from 'path';
 import { TextDecoder } from 'util';
@@ -51,8 +51,7 @@ const configurations: Config = new Config(
 const utf8Decoder = new TextDecoder();
 
 
-// Estabilish Mongoose connection
-// MongooseConfig();
+MongooseConfig();
 
 const app = ExpressConfig();
 const PORT = process.env.PORT || 8080;
@@ -85,35 +84,20 @@ app.get("/ciao", async (req:Request, res: Response, next: NextFunction) => {
         },
     });
 
-
-
     try{
         let network: Network = gateway.getNetwork(channelName);
         let contract: Contract = network.getContract(chaincodeName);
         
-        await initLedger(contract);
-        await getAllAssets(contract);
+        //await initLedger(contract);
+
+        const response = await getAllAssets(contract);
+        res.send(response);
 
     } finally {
         gateway.close();
         client.close();
     }
 });
-
-
-
-/**
- * This type of transaction would typically only be run once by an application the first time it was started after its
- * initial deployment. A new version of the chaincode deployed later would likely not need to run an "init" function.
- */
-async function initLedger(contract: Contract): Promise<void> {
-    console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-
-    await contract.submitTransaction('InitLedger');
-
-    console.log('*** Transaction committed successfully');
-}
-
 
 /**
  * Evaluate a transaction to query ledger state.
@@ -125,7 +109,8 @@ async function getAllAssets(contract: Contract): Promise<void> {
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
-    console.log('*** Result:', result);
+    
+    return result;
 }
 
 
