@@ -147,13 +147,14 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
 
     @Override
     public Set<OneTimeCode> getAllOf(final Context context, final String electionId) {
-        try {
-            return getQueryResults(context, new CompositeKey(electionId).getObjectType()).stream()
-                .map(OneTimeCodeAsset::getAsset)
-                .collect(Collectors.toSet());
-        } catch (Exception exception) {
-            throw new ChaincodeException();
-        }
+        return Set.of();
+//        try {
+//            return getQueryResults(context, new CompositeKey(electionId).getObjectType()).stream()
+//                .map(OneTimeCodeAsset::getAsset)
+//                .collect(Collectors.toSet());
+//        } catch (Exception exception) {
+//            throw new ChaincodeException();
+//        }
     }
 
     private Set<OneTimeCodeAsset> getQueryResults(final Context context, final String compositeKey) throws Exception {
