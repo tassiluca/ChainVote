@@ -8,3 +8,6 @@ dist/
 
 # DB data
 dbdata/
+
+# Env file
+.env

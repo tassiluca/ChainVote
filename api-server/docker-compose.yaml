@@ -6,8 +6,6 @@ services:
       - 8080:8080
     volumes:
       - /tmp/hyperledger:/tmp/hyperledger
-    environment:
-      - CONN_STR=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
     networks:
       - blockchain_fabric-ca
     depends_on:

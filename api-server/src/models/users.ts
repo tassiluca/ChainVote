@@ -3,7 +3,7 @@ import bcrypt from "bcrypt"
 
 const SALT_WORK_FACTOR: number = 10
 
-enum Roles {
+export enum Roles {
   ADMIN="admin",
   USER="user"
 }
@@ -79,3 +79,4 @@ User.methods.comparePassword = function (password: string | Buffer, next: (err: 
 const UserModel = mongoose.model<IUserDocument>('Users', User);
 
 export {UserModel as User}
+
