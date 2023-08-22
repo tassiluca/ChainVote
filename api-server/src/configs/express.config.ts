@@ -1,7 +1,7 @@
 import express, { Application } from "express"
 import userRouter from "../routes/userRoute";
 import bodyParser from "body-parser"
-import defaultErrorHandler from "../errors/error.handler";
+import defaultErrorHandler from "../middleware/error.middleware";
 import { InternalServerError } from "../errors/errors";
 
 const ExpressConfig = (): Application => {

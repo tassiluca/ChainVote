@@ -38,3 +38,25 @@ export class InternalServerError extends HttpBaseError {
         )
     } 
 }
+
+export class NotFoundError extends HttpBaseError {
+    constructor(message?: string, stack?: string | undefined) {
+        super(
+            StatusCodes.NOT_FOUND,
+            "Not Found",
+            message,
+            stack
+        )
+    } 
+}
+
+export class UnauthorizedError extends HttpBaseError {
+    constructor(message?: string, stack?: string | undefined) {
+        super(
+            StatusCodes.UNAUTHORIZED,
+            "Unauthorized",
+            message,
+            stack
+        )
+    } 
+}

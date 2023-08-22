@@ -1,6 +1,6 @@
 
 import { Request, Response, NextFunction } from "express";
-import { HttpBaseError } from "./errors";
+import { HttpBaseError } from "../errors/errors";
 
 export default async function defaultErrorHandler(
     err: Error, 
