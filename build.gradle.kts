@@ -21,10 +21,15 @@ subprojects {
     }
 
     dependencies {
-        compileOnly(rootProject.libs.spotbugs.annotations)
-        testCompileOnly(rootProject.libs.spotbugs.annotations)
-        testImplementation(rootProject.libs.junit.api)
-        testImplementation(rootProject.libs.junit.engine)
+        with(rootProject.libs) {
+            implementation(log4j.api)
+            implementation(log4j.core)
+            implementation(log4j.slf4j.impl)
+            compileOnly(spotbugs.annotations)
+            testCompileOnly(spotbugs.annotations)
+            testImplementation(junit.api)
+            testImplementation(junit.engine)
+        }
     }
 
     tasks.test {
