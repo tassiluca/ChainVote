@@ -10,13 +10,13 @@ export default async function defaultErrorHandler(
 ) {
     if(err instanceof HttpBaseError) {
         res.status(err.code);
-        res.send({
+        return res.send({
             code: err.code,
             name: err.name,
             message: err.message
         });
     } else {
         res.status(500);
-        res.send("Error received" +  err.toString());
+        return res.send("Error received" +  err.toString());
     }
 }

@@ -1,5 +1,7 @@
 import mongoose, {Schema} from "mongoose"
+import {MongoError} from "mongodb"
 import bcrypt from "bcrypt"
+import { BadRequestError } from "../errors/errors";
 
 const SALT_WORK_FACTOR: number = 10
 
@@ -67,12 +69,23 @@ User.pre("save", function (next) {
     }
 });
 
+User.post('save', function(error: Error, doc: Document, next) {
+  if(error && error instanceof MongoError) {
+    if (error.code === 11000) {
+      return next(new BadRequestError('The entered email is already present'));
+    }
+    next(error);
+  }
+
+  next();
+});
+
 User.methods.comparePassword = function (password: string | Buffer, next: (err: Error | undefined, same: any) => any) {
   bcrypt.compare(password, this.password, function(error, isMatch) {
       if (error) {
           return next(error, undefined);
       }
-      next(undefined, isMatch);
+      return next(undefined, isMatch);
   });
 };
 

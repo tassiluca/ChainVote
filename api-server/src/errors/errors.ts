@@ -28,6 +28,18 @@ export class HttpBaseError implements Error {
     }
 }
 
+
+export class BadRequestError extends HttpBaseError {
+    constructor(message?: string, stack?: string | undefined) {
+        super(
+            StatusCodes.BAD_REQUEST,
+            "Bad Request",
+            message,
+            stack
+        )
+    } 
+}
+
 export class InternalServerError extends HttpBaseError {
     constructor(message?: string, stack?: string | undefined) {
         super(

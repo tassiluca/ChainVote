@@ -13,7 +13,7 @@
         // "allowSyntheticDefaultImports": true,             /* Allow 'import x from y' when a module doesn't have a default export. */
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "strict": true, /* Enable all strict type-checking options. */
+        "strict": false, /* Enable all strict type-checking options. */
         "strictNullChecks": true, /* When type checking, take into account 'null' and 'undefined'. */
         "strictFunctionTypes": true, /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */
         "strictBindCallApply": true, /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */

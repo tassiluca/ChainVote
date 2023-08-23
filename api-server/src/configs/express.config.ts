@@ -2,7 +2,6 @@ import express, { Application } from "express"
 import userRouter from "../routes/userRoute";
 import bodyParser from "body-parser"
 import defaultErrorHandler from "../middleware/error.middleware";
-import { InternalServerError } from "../errors/errors";
 
 const ExpressConfig = (): Application => {
   const app = express();
@@ -13,10 +12,7 @@ const ExpressConfig = (): Application => {
   
   // Routes initialization
   app.use("/users", userRouter);
-  app.get("/error", (req, res, next) => {
-    throw new InternalServerError("Prova provona");
-  })
-  
+
   // Use custom error handler.
   app.use(defaultErrorHandler);
   return app
