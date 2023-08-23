@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static it.unibo.ds.chainvote.utils.TransientUtils.getLongFromTransient;
 import static it.unibo.ds.chainvote.utils.TransientUtils.getStringFromTransient;
@@ -62,7 +63,7 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
         final String userId = getStringFromTransient(transientMap, "userId");
         final String electionId = getStringFromTransient(transientMap, "electionId");
         try {
-            return new OneTimeCodeAsset(codeManager.generateFor(context, electionId, userId));
+            return new OneTimeCodeAsset(codeManager.generateFor(context, electionId, userId), userId, electionId);
         } catch (IllegalStateException exception) {
             throw new ChaincodeException(exception.getMessage(), CodeManagerErrors.ALREADY_GENERATED_CODE.toString());
         }
@@ -117,7 +118,7 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
         final OneTimeCodeAsset data = genson.deserialize(
             context.getStub().getPrivateData(
                 CODES_COLLECTION,
-                new CompositeKey(electionId, userId).getObjectType()
+                new CompositeKey(electionId, userId).toString()
             ),
             OneTimeCodeAsset.class
         );
@@ -126,10 +127,11 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
 
     @Override
     public void put(final Context context, final String electionId, final String userId, final OneTimeCode code) {
+        System.out.println("[PUT] election: " + electionId + " - user: " + userId + " - code: " + code);
         context.getStub().putPrivateData(
             CODES_COLLECTION,
-            new CompositeKey(electionId, userId).getObjectType(),
-            genson.serialize(new OneTimeCodeAsset(code))
+            new CompositeKey(electionId, userId).toString(),
+            genson.serialize(new OneTimeCodeAsset(code, userId, electionId))
         );
     }
 
@@ -141,19 +143,16 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Override
     public Set<OneTimeCode> getAllOf(final Context context, final String electionId) {
         return Set.of();
-//        try {
-//            return getQueryResults(context, new CompositeKey(electionId).getObjectType()).stream()
-//                .map(OneTimeCodeAsset::getAsset)
-//                .collect(Collectors.toSet());
-//        } catch (Exception exception) {
-//            throw new ChaincodeException();
-//        }
+//        return getQueryResults(context, electionId).stream()
+//            .map(OneTimeCodeAsset::getAsset)
+//            .collect(Collectors.toSet());
     }
 
-    private Set<OneTimeCodeAsset> getQueryResults(final Context context, final String compositeKey) throws Exception {
+    private Set<OneTimeCodeAsset> getQueryResults(final Context context, final String partialKey) {
         final ChaincodeStub stub = context.getStub();
         final Set<OneTimeCodeAsset> queryResults = new HashSet<>();
-        try (final QueryResultsIterator<KeyValue> results = stub.getPrivateDataByPartialCompositeKey(CODES_COLLECTION, compositeKey)) {
+        final String queryString = "{\"selector\":{\"electionId\":\"" + partialKey + "\"}}";
+        try (final QueryResultsIterator<KeyValue> results = stub.getPrivateDataQueryResult(CODES_COLLECTION, queryString)) {
             for (final KeyValue result : results) {
                 if (result.getStringValue() == null || result.getStringValue().length() == 0) {
                     System.err.printf("Invalid Asset json: %s\n", result.getStringValue());
@@ -163,7 +162,10 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
                 queryResults.add(asset);
                 System.out.println("QueryResult: " + asset.toString());
             }
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+        System.out.println("[QUERY] ENDED");
         return Collections.unmodifiableSet(queryResults);
     }
 }

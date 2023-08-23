@@ -16,12 +16,24 @@ public final class OneTimeCodeAsset {
     @Property
     private final OneTimeCode asset;
 
+    @Property
+    private final String userId;
+
+    @Property
+    private final String electionId;
+
     /**
      * Creates the one-time-code asset.
      * @param code the generated code.
      */
-    public OneTimeCodeAsset(@JsonProperty("asset") final OneTimeCode code) {
-        asset = code;
+    public OneTimeCodeAsset(
+        @JsonProperty("asset") final OneTimeCode code,
+        @JsonProperty("userId") final String userId,
+        @JsonProperty("electionId") final String electionId
+    ) {
+        this.asset = code;
+        this.userId = userId;
+        this.electionId = electionId;
     }
 
     /**
@@ -29,6 +41,14 @@ public final class OneTimeCodeAsset {
      */
     public OneTimeCode getAsset() {
         return asset;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getElectionId() {
+        return electionId;
     }
 
     @Override

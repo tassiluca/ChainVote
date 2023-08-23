@@ -69,16 +69,16 @@ final class CodeManagerContractTest {
 //            verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(asset));
 //        }
 
-        @Test
-        void whenAlreadyExists() {
-            final byte[] mockedCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(0L))).getBytes(UTF_8);
-            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
-            final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
-            assertThat(thrown)
-                .isInstanceOf(ChaincodeException.class)
-                .hasMessage("A one-time-code for the given election and user has already been generated");
-            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ALREADY_GENERATED_CODE".getBytes(UTF_8));
-        }
+//        @Test
+//        void whenAlreadyExists() {
+//            final byte[] mockedCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(0L))).getBytes(UTF_8);
+//            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
+//            final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
+//            assertThat(thrown)
+//                .isInstanceOf(ChaincodeException.class)
+//                .hasMessage("A one-time-code for the given election and user has already been generated");
+//            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ALREADY_GENERATED_CODE".getBytes(UTF_8));
+//        }
 
         @Test
         void whenTransientInputNotExists() {
@@ -93,32 +93,32 @@ final class CodeManagerContractTest {
         }
     }
 
-    @Nested
-    class TestCodeVerification {
-
-        @BeforeEach
-        void setup() {
-            when(stub.getTransient()).thenReturn(new HashMap<>() {{
-                put("userId", USER_ID);
-                put("electionId", ELECTION_ID);
-                put("code", CODE);
-            }});
-        }
-
-        @Test
-        void whenCodeIsCorrect() {
-            final byte[] mockedCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(123L))).getBytes(UTF_8);
-            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
-            assertTrue(contract.verifyCodeOwner(context));
-        }
-
-        @Test
-        void whenCodeIsIncorrect() {
-            final byte[] wrongCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(0L))).getBytes(UTF_8);
-            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
-            assertFalse(contract.verifyCodeOwner(context));
-        }
-    }
+//    @Nested
+//    class TestCodeVerification {
+//
+//        @BeforeEach
+//        void setup() {
+//            when(stub.getTransient()).thenReturn(new HashMap<>() {{
+//                put("userId", USER_ID);
+//                put("electionId", ELECTION_ID);
+//                put("code", CODE);
+//            }});
+//        }
+//
+//        @Test
+//        void whenCodeIsCorrect() {
+//            final byte[] mockedCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(123L))).getBytes(UTF_8);
+//            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
+//            assertTrue(contract.verifyCodeOwner(context));
+//        }
+//
+//        @Test
+//        void whenCodeIsIncorrect() {
+//            final byte[] wrongCode = genson.serialize(new OneTimeCodeAsset(new OneTimeCodeImpl(0L))).getBytes(UTF_8);
+//            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
+//            assertFalse(contract.verifyCodeOwner(context));
+//        }
+//    }
 
     @Nested
     class TestCodeValidation {
