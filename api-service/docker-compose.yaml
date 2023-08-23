@@ -1,0 +1,36 @@
+services:
+  # Rest api service
+  app:
+    build: ./api
+    ports:
+      - 8080:8080
+    environment:
+      - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
+    volumes:
+      - /tmp/hyperledger:/tmp/hyperledger
+    networks:
+      - blockchain_fabric-ca
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+
+  # Mongodb service
+  mongodb:
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=user
+      - MONGODB_INITDB_ROOT_PASSWORD=pass
+    ports:
+      - 27017:27017
+    volumes:
+      - type: bind
+        source: ./dbdata
+        target: /data/db
+    networks:
+      - blockchain_fabric-ca
+    
+
+networks:
+  blockchain_fabric-ca:
+    external: true
