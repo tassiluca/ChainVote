@@ -1,0 +1,10 @@
+{
+  "index": {
+    "fields": [
+      "electionId"
+    ]
+  },
+  "ddoc": "indexCodesDoc",
+  "name": "indexCodes",
+  "type": "json"
+}
