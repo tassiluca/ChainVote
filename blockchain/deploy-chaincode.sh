@@ -50,6 +50,7 @@ export FABRIC_CFG_PATH=$PWD/channels_config/$CHAINCODE_ORG
 
 echo "Generating chaincode package"
 pushd "$CHAINCODE_PATH"/.. || exit 2
+./gradlew clean
 ./gradlew "$CHAINCODE_NAME":installDist
 popd || exit 2
 peer lifecycle chaincode package "${CHAINCODE_PACKAGE_NAME}" --path "${CHAINCODE_PATH}/build/install/${CHAINCODE_NAME}" --lang java --label "${CHAINCODE_PACKAGE_NAME}_1.0"
@@ -82,7 +83,7 @@ elif in_array "peer2" "${PEERS[@]}"; then
 fi;
 
 echo "Chaincode approval"
-peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0     --name "$CHAINCODE_NAME" --channelID "$CHANNEL_NAME" --version "1.0" --package-id "$PACKAGE_ID" --sequence "1" --cafile "$CA_FILE" --tls "${COLLECTIONS_CONFIG_ARG[@]}"
+peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --name "$CHAINCODE_NAME" --channelID "$CHANNEL_NAME" --version "1.0" --package-id "$PACKAGE_ID" --sequence "1" --cafile "$CA_FILE" --tls "${COLLECTIONS_CONFIG_ARG[@]}"
 echo "Verify approval"
 peer lifecycle chaincode checkcommitreadiness --channelID "$CHANNEL_NAME" --name "$CHAINCODE_NAME" --version 1.0 --sequence 1 --tls --cafile "$CA_FILE" --output json "${COLLECTIONS_CONFIG_ARG[@]}"
 
