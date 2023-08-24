@@ -17,10 +17,3 @@ export async function createUser(req: Request, res: Response, next: NextFunction
     }
 }
 
-
-export async function login(req: Request, res: Response, next: NextFunction) {
-    // const email = req.body.email;
-    // const password = req.body.password;
-}
-
-
