@@ -1,0 +1,23 @@
+{
+  "name": "core-components",
+  "version": "1.0.0",
+  "description": "Core components that are shared between the different Javascript's services of the organization",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Giovanni Antonioni, Luca Tassinari, Luca Rubboli",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
+  },
+  "publishConfig": {
+    "registry": "http://verdaccio:4873"
+  }
+}
