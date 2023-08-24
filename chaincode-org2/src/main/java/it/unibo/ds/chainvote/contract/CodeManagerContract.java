@@ -19,11 +19,7 @@ import org.hyperledger.fabric.shim.ledger.CompositeKey;
 import org.hyperledger.fabric.shim.ledger.KeyValue;
 import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static it.unibo.ds.chainvote.utils.TransientUtils.getLongFromTransient;
@@ -113,6 +109,29 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
         return codeManager.verifyCodeOwner(context, electionId, userId, new OneTimeCodeImpl(code));
     }
 
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public OneTimeCodeAsset[] queryElection(final Context context, final String electionId) {
+        final ChaincodeStub stub = context.getStub();
+        final Set<OneTimeCodeAsset> queryResults = new HashSet<>();
+        final String queryString = "{\"selector\":{\"electionId\":\"" + electionId + "\"}}";
+        try (final QueryResultsIterator<KeyValue> results = stub.getPrivateDataQueryResult(CODES_COLLECTION, queryString)) {
+            for (final KeyValue result : results) {
+                if (result.getStringValue() == null || result.getStringValue().length() == 0) {
+                    System.err.printf("Invalid Asset json: %s\n", result.getStringValue());
+                    continue;
+                }
+                final OneTimeCodeAsset asset = genson.deserialize(result.getStringValue(), OneTimeCodeAsset.class);
+                queryResults.add(asset);
+                System.out.println("QueryResult: " + asset.toString());
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        System.out.println("[QUERY] ENDED");
+        final OneTimeCodeAsset[] returnValue = new OneTimeCodeAsset[queryResults.size()];
+        return queryResults.toArray(returnValue);
+    }
+
     @Override
     public Optional<OneTimeCode> get(final Context context, final String electionId, final String userId) {
         final OneTimeCodeAsset data = genson.deserialize(
@@ -146,26 +165,5 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
 //        return getQueryResults(context, electionId).stream()
 //            .map(OneTimeCodeAsset::getAsset)
 //            .collect(Collectors.toSet());
-    }
-
-    private Set<OneTimeCodeAsset> getQueryResults(final Context context, final String partialKey) {
-        final ChaincodeStub stub = context.getStub();
-        final Set<OneTimeCodeAsset> queryResults = new HashSet<>();
-        final String queryString = "{\"selector\":{\"electionId\":\"" + partialKey + "\"}}";
-        try (final QueryResultsIterator<KeyValue> results = stub.getPrivateDataQueryResult(CODES_COLLECTION, queryString)) {
-            for (final KeyValue result : results) {
-                if (result.getStringValue() == null || result.getStringValue().length() == 0) {
-                    System.err.printf("Invalid Asset json: %s\n", result.getStringValue());
-                    continue;
-                }
-                final OneTimeCodeAsset asset = genson.deserialize(result.getStringValue(), OneTimeCodeAsset.class);
-                queryResults.add(asset);
-                System.out.println("QueryResult: " + asset.toString());
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        System.out.println("[QUERY] ENDED");
-        return Collections.unmodifiableSet(queryResults);
     }
 }
