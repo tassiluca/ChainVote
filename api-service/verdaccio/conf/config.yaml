@@ -16,6 +16,7 @@ packages:
   '**':
     access: $all
     publish: $authenticated
+    proxy: npmjs
 middlewares:
   audit:
     enabled: true

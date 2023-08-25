@@ -47,7 +47,7 @@ services:
       - blockchain_fabric-ca
   
   verdaccio:
-    image: verdaccio/verdaccio
+    image: verdaccio/verdaccio:5
     container_name: 'verdaccio'
     environment:
       - VERDACCIO_PORT=4873
