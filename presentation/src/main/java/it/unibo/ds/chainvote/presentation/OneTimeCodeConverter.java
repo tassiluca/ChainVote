@@ -12,20 +12,35 @@ import it.unibo.ds.core.codes.OneTimeCodeImpl;
  * A {@link OneTimeCode} converter from class object to json string and vice-versa.
  */
 public final class OneTimeCodeConverter implements Converter<OneTimeCode> {
+
     @Override
     public void serialize(final OneTimeCode object, final ObjectWriter writer, final Context ctx) {
         writer.beginObject();
         writer.writeString("otc", Long.toString(object.getCode()));
+        writer.writeString("consumed", Boolean.toString(object.consumed()));
         writer.endObject();
     }
 
     @Override
     public OneTimeCode deserialize(final ObjectReader reader, final Context ctx) {
+        OneTimeCode code = null;
+        Boolean consumed = null;
         reader.beginObject();
-        reader.next();
-        if ("otc".equals(reader.name())) {
-            return new OneTimeCodeImpl(reader.valueAsLong());
+        while (reader.hasNext()) {
+            reader.next();
+            if ("otc".equals(reader.name())) {
+                code = new OneTimeCodeImpl(reader.valueAsLong());
+            } else if ("consumed".equals(reader.name())) {
+                consumed = reader.valueAsBoolean();
+            } else {
+                throw new JsonBindingException("Malformed json");
+            }
         }
-        throw new JsonBindingException("Malformed json");
+        if (code == null || consumed == null) {
+            throw new JsonBindingException("Malformed json: missing value");
+        } else if (consumed) {
+            code.consume();
+        }
+        return code;
     }
 }
