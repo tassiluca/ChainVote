@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A base implementation of {@link CodeManager} which implements main core logic, independent of any technology.
@@ -31,6 +32,18 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
         final var generated = codeGenerator.generateCode(repo.getAllOf(context, electionId));
         repo.put(context, electionId, userId, generated);
         return generated;
+    }
+
+    @Override
+    public Set<OneTimeCode> generateAllFor(final C context, final String electionId, final long votersNumber) {
+        if (!repo.getAllOf(context, electionId).isEmpty()) {
+            throw new IllegalStateException("The codes for the given election have already been generated");
+        }
+        return Stream.generate(codeGenerator::generateCode)
+            .distinct()
+            .limit(votersNumber)
+            .peek(c -> repo.put(context, electionId, c))
+            .collect(Collectors.toSet());
     }
 
     @Override

@@ -37,6 +37,14 @@ public interface CodeRepository<C> {
     void put(C context, String electionId, String userId, OneTimeCode code);
 
     /**
+     * Save the association between the given election and code.
+     * @param context the context of the transaction
+     * @param electionId the election identifier
+     * @param code the code to be saved.
+     */
+    void put(C context, String electionId, OneTimeCode code);
+
+    /**
      * Replace the old otc associated to the election with the given one.
      * @param context the context of the transaction
      * @param electionId the election identifier

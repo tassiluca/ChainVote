@@ -1,5 +1,7 @@
 package it.unibo.ds.core.codes;
 
+import java.util.Set;
+
 /**
  * An interface modeling a {@link OneTimeCode} manager, which exposes functions
  * to generate, (in)validate and verify one-time-codes.
@@ -8,7 +10,7 @@ package it.unibo.ds.core.codes;
 public interface CodeManager<C> {
 
     /**
-     * Generates a new {@link OneTimeCode}.
+     * Generates a new {@link OneTimeCode} for the given election.
      * @param context the context of the transaction
      * @param electionId the election identifier
      * @param userId the user identifier
@@ -24,6 +26,25 @@ public interface CodeManager<C> {
      */
     default OneTimeCode generateFor(final String electionId, final String userId) {
         return generateFor(null, electionId, userId);
+    }
+
+    /**
+     * Generates a number of {@link OneTimeCode} equal to votersNumber for the given election.
+     * @param context the context of the transaction
+     * @param electionId the election identifier
+     * @param votersNumber the number of one-time-codes to generate
+     * @return a set with all the generated codes.
+     */
+    Set<OneTimeCode> generateAllFor(C context, String electionId, long votersNumber);
+
+    /**
+     * Generates a number of {@link OneTimeCode} equal to votersNumber for the given election.
+     * @param electionId the election identifier
+     * @param votersNumber the number of one-time-codes to generate
+     * @return a set with all the generated codes.
+     */
+    default Set<OneTimeCode> generateAllFor(final String electionId, final long votersNumber) {
+        return generateAllFor(null, electionId, votersNumber);
     }
 
     /**
