@@ -1,6 +1,7 @@
 package it.unibo.ds.chainvote.assets;
 
 import com.owlike.genson.Genson;
+import com.owlike.genson.annotation.JsonProperty;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.codes.OneTimeCode;
 import org.hyperledger.fabric.contract.annotation.DataType;
@@ -23,12 +24,16 @@ public final class OTCAssetPrivateDetails {
     private final String electionId;
 
     @Property
-    private final OneTimeCode asset;
-
-    @Property
     private String userId;
 
-    public OTCAssetPrivateDetails(final OneTimeCode code, final String electionId) {
+    @Property
+    private final OneTimeCode asset;
+
+    public OTCAssetPrivateDetails(
+        @JsonProperty("asset") final OneTimeCode code,
+        @JsonProperty("electionId") final String electionId,
+        @JsonProperty("userId") final String userId
+    ) {
         this.electionId = electionId;
         this.asset = code;
     }
@@ -43,13 +48,6 @@ public final class OTCAssetPrivateDetails {
 
     public String getUserId() {
         return userId;
-    }
-
-    public void setUserId(final String userId) {
-        if (this.userId != null && !this.userId.isBlank()) {
-            throw new IllegalStateException("This asset was already associated to a user");
-        }
-        this.userId = userId;
     }
 
     @Override
@@ -72,12 +70,10 @@ public final class OTCAssetPrivateDetails {
     public static OTCAssetPrivateDetails deserialize(final String serializedAsset) {
         try {
             final JSONObject json = new JSONObject(serializedAsset);
-            final String userId = json.get("userId") instanceof String ? json.getString("userId") : null;
+            final String userId = json.getString("userId");
             final String electionId = json.getString("electionId");
             final OneTimeCode asset = genson.deserialize(json.getJSONObject("asset").toString(), OneTimeCode.class);
-            final OTCAssetPrivateDetails otcAsset = new OTCAssetPrivateDetails(asset, electionId);
-            if (userId != null) { otcAsset.setUserId(userId); }
-            return otcAsset;
+            return new OTCAssetPrivateDetails(asset, electionId, userId);
         } catch (JSONException exception) {
             throw new ChaincodeException("Deserialize error: " + exception.getMessage(), "DATA_ERROR");
         }
