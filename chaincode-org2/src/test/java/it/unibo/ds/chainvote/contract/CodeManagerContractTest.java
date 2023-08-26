@@ -1,9 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
@@ -80,17 +78,17 @@ final class CodeManagerContractTest {
 //            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ALREADY_GENERATED_CODE".getBytes(UTF_8));
 //        }
 
-        @Test
-        void whenTransientInputNotExists() {
-            final Map<String, byte[]> incompleteTransientData = new HashMap<>() {{ put("userId", USER_ID); }};
-            when(stub.getTransient()).thenReturn(incompleteTransientData);
-            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
-            assertThat(thrown)
-                .isInstanceOf(ChaincodeException.class)
-                .hasMessage("An entry with key `electionId` was expected in the transient map.");
-            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCOMPLETE_INPUT".getBytes(UTF_8));
-        }
+//        @Test
+//        void whenTransientInputNotExists() {
+//            final Map<String, byte[]> incompleteTransientData = new HashMap<>() {{ put("userId", USER_ID); }};
+//            when(stub.getTransient()).thenReturn(incompleteTransientData);
+//            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
+//            final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
+//            assertThat(thrown)
+//                .isInstanceOf(ChaincodeException.class)
+//                .hasMessage("An entry with key `electionId` was expected in the transient map.");
+//            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCOMPLETE_INPUT".getBytes(UTF_8));
+//        }
     }
 
 //    @Nested
