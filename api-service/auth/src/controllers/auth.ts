@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "../models/users";
-import { UnauthorizedError } from "../errors/errors";
+import { User } from "core-components";
+import { UnauthorizedError } from "core-components"
 
 export async function login(req: Request, res: Response, next: NextFunction) {
     

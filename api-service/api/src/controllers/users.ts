@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "../models/users";
-
+import { User } from "core-components";
 
 export async function createUser(req: Request, res: Response, next: NextFunction) {
     const user = new User({

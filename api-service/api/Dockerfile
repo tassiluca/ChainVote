@@ -1,11 +1,7 @@
 FROM node:20-alpine
-
 WORKDIR /usr/src/app
 COPY . .
-
-RUN npm install
-RUN npm run prepare
-
-EXPOSE 8080
-
-CMD [ "npm", "start" ]
+COPY ./script.sh /
+RUN chmod 700 /usr/src/app/script.sh
+EXPOSE 8180
+CMD [ "/usr/src/app/script.sh" ]

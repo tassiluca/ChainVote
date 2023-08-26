@@ -1,7 +1,7 @@
 import express, { Application } from "express"
 import bodyParser from "body-parser"
 import authRouter from "../routes/authRoute";
-import defaultErrorHandler from "../middleware/error.middleware";
+import {defaultErrorHandler} from "core-components";
 
 const ExpressConfig = (): Application => {
     const app = express();

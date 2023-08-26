@@ -1,4 +1,16 @@
-export * from "./models/users/users";
-export * from "./errors/errors";
-export * from "./middleware/error.middleware";
+export {
+    User
+} from "./models/users/users";
+
+export {
+    HttpBaseError, 
+    BadRequestError,
+    InternalServerError,
+    NotFoundError,
+    UnauthorizedError
+} from "./errors/errors";
+
+export {
+    defaultErrorHandler
+} from "./middleware/error.middleware";
 
