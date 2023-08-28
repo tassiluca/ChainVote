@@ -3,7 +3,11 @@ package it.unibo.ds.chainvote.contract;
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.core.codes.*;
+import it.unibo.ds.core.codes.CodeManager;
+import it.unibo.ds.core.codes.CodeManagerImpl;
+import it.unibo.ds.core.codes.CodeRepository;
+import it.unibo.ds.core.codes.OneTimeCode;
+import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
@@ -117,7 +121,7 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
             ),
             OneTimeCodeAsset.class
         );
-        return Optional.ofNullable(data).map(OneTimeCodeAsset::getAsset);
+        return Optional.ofNullable(data).map(OneTimeCodeAsset::getCode);
     }
 
     @Override
