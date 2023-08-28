@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "core-components";
-import { UnauthorizedError } from "core-components"
+import { User, UnauthorizedError } from "core-components"
+import { signRefreshToken, signAccessToken } from "../jwt/jwt.auth";
+
 
 export async function login(req: Request, res: Response, next: NextFunction) {
     
@@ -18,10 +19,15 @@ export async function login(req: Request, res: Response, next: NextFunction) {
             if (error || !isMatch) {
                 return next(responseError);
             }
-            
+
+            const accessToken = signAccessToken({sub: user.email});
+            const refreshToken = signRefreshToken({sub: user.email});
+
             return res.status(200).send({
                 message: "Login successfull",
-                email: email
+                email: email,
+                accessToken: accessToken,
+                refreshToken: refreshToken
             });
         });
        
