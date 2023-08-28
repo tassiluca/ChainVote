@@ -26,13 +26,13 @@ import static it.unibo.ds.chainvote.utils.TransientUtils.getStringFromTransient;
  * A Hyperledger Fabric contract to manage one-time-codes.
  */
 @Contract(
-    name = "CodeManagerContract",
+    name = "CodesManagerContract",
     info = @Info(
         title = "Code Manager Contract",
         description = "Contract used to manage one-time-codes"
     )
 )
-public final class CodeManagerContract implements ContractInterface, CodeRepository<Context> {
+public final class CodesManagerContract implements ContractInterface, CodeRepository<Context> {
 
     static final String CODES_COLLECTION = "CodesCollection";
     private final CodeManager<Context> codeManager = new CodeManagerImpl<>(this);
@@ -44,6 +44,18 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
         ALREADY_INVALIDATED_CODE
     }
 
+    private enum TransientData {
+        USER_ID("userId"),
+        ELECTION_ID("electionId"),
+        CODE("code");
+
+        final String key;
+
+        TransientData(final String key) {
+            this.key = key;
+        }
+    }
+
     /**
      * Generate a new one-time-code for the given user and election passed in a transient map.
      * @param context the transaction context. A transient map is expected with the following
@@ -53,8 +65,8 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public Long generateFor(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String userId = getStringFromTransient(transientMap, "userId");
-        final String electionId = getStringFromTransient(transientMap, "electionId");
+        final String userId = getStringFromTransient(transientMap, TransientData.USER_ID.key);
+        final String electionId = getStringFromTransient(transientMap, TransientData.ELECTION_ID.key);
         try {
             return codeManager.generateFor(context, electionId, userId).getCode();
         } catch (IllegalStateException exception) {
@@ -72,9 +84,9 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean isValid(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getStringFromTransient(transientMap, "electionId");
-        final String userId = getStringFromTransient(transientMap, "userId");
-        final Long code = getLongFromTransient(transientMap, "code");
+        final String electionId = getStringFromTransient(transientMap, TransientData.ELECTION_ID.key);
+        final String userId = getStringFromTransient(transientMap, TransientData.USER_ID.key);
+        final Long code = getLongFromTransient(transientMap, TransientData.CODE.key);
         return codeManager.isValid(context, electionId, userId, new OneTimeCodeImpl(code));
     }
 
@@ -87,9 +99,9 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Transaction
     public void invalidate(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getStringFromTransient(transientMap, "electionId");
-        final String userId = getStringFromTransient(transientMap, "userId");
-        final Long code = getLongFromTransient(transientMap, "code");
+        final String electionId = getStringFromTransient(transientMap, TransientData.ELECTION_ID.key);
+        final String userId = getStringFromTransient(transientMap, TransientData.USER_ID.key);
+        final Long code = getLongFromTransient(transientMap, TransientData.CODE.key);
         try {
             codeManager.invalidate(context, electionId, userId, new OneTimeCodeImpl(code));
         } catch (IllegalStateException exception) {
@@ -106,9 +118,9 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean verifyCodeOwner(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getStringFromTransient(transientMap, "electionId");
-        final String userId = getStringFromTransient(transientMap, "userId");
-        final Long code = getLongFromTransient(transientMap, "code");
+        final String electionId = getStringFromTransient(transientMap, TransientData.ELECTION_ID.key);
+        final String userId = getStringFromTransient(transientMap, TransientData.USER_ID.key);
+        final Long code = getLongFromTransient(transientMap, TransientData.CODE.key);
         return codeManager.verifyCodeOwner(context, electionId, userId, new OneTimeCodeImpl(code));
     }
 

@@ -12,14 +12,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import static it.unibo.ds.chainvote.contract.CodeManagerContract.CODES_COLLECTION;
+import static it.unibo.ds.chainvote.contract.CodesManagerContract.CODES_COLLECTION;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 final class CodeManagerContractTest {
 
@@ -29,7 +33,7 @@ final class CodeManagerContractTest {
     private static final String KEY = new CompositeKey(ELECTION_ID, USER_ID).toString();
 
     private final Genson genson = GensonUtils.create();
-    private final CodeManagerContract contract = new CodeManagerContract();
+    private final CodesManagerContract contract = new CodesManagerContract();
     private Context context;
     private ChaincodeStub stub;
 
@@ -46,10 +50,12 @@ final class CodeManagerContractTest {
 
         @BeforeEach
         void setup() {
-            when(stub.getTransient()).thenReturn(new HashMap<>() {{
-                put("userId", USER_ID.getBytes(UTF_8));
-                put("electionId", ELECTION_ID.getBytes(UTF_8));
-            }});
+            when(stub.getTransient()).thenReturn(
+                Map.of(
+                    "userId", USER_ID.getBytes(UTF_8),
+                    "electionId", ELECTION_ID.getBytes(UTF_8)
+                )
+            );
         }
 
         @Test
@@ -80,17 +86,19 @@ final class CodeManagerContractTest {
 
         @BeforeEach
         void setup() {
-            when(stub.getTransient()).thenReturn(new HashMap<>() {{
-                put("userId", USER_ID.getBytes(UTF_8));
-                put("electionId", ELECTION_ID.getBytes(UTF_8));
-                put("code", Long.toString(CODE).getBytes(UTF_8));
-            }});
+            when(stub.getTransient()).thenReturn(
+                Map.of(
+                    "userId", USER_ID.getBytes(UTF_8),
+                    "electionId", ELECTION_ID.getBytes(UTF_8),
+                    "code", Long.toString(CODE).getBytes(UTF_8)
+                )
+            );
         }
 
         @Test
         void whenCodeIsCorrect() {
             final byte[] mockedCode = genson.serialize(
-                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(123L))
+                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
             assertTrue(contract.verifyCodeOwner(context));
@@ -111,11 +119,13 @@ final class CodeManagerContractTest {
 
         @BeforeEach
         void setup() {
-            when(stub.getTransient()).thenReturn(new HashMap<>() {{
-                put("userId", USER_ID.getBytes(UTF_8));
-                put("electionId", ELECTION_ID.getBytes(UTF_8));
-                put("code", Long.toString(CODE).getBytes(UTF_8));
-            }});
+            when(stub.getTransient()).thenReturn(
+                Map.of(
+                    "userId", USER_ID.getBytes(UTF_8),
+                    "electionId", ELECTION_ID.getBytes(UTF_8),
+                    "code", Long.toString(CODE).getBytes(UTF_8)
+                )
+            );
         }
 
         @Test
@@ -153,7 +163,7 @@ final class CodeManagerContractTest {
             final var code = new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE));
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(genson.serialize(code).getBytes(UTF_8));
             contract.invalidate(context);
-            final var consumedCode = code.getAsset();
+            final var consumedCode = code.getCode();
             consumedCode.consume();
             final var consumedAsset = new OneTimeCodeAsset(ELECTION_ID, USER_ID, consumedCode);
             verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(consumedAsset));

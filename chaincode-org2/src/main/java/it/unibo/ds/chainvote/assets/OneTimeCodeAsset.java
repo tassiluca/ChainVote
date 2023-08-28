@@ -1,8 +1,6 @@
 package it.unibo.ds.chainvote.assets;
 
-import com.owlike.genson.Genson;
 import com.owlike.genson.annotation.JsonProperty;
-import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.codes.OneTimeCode;
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
@@ -13,8 +11,6 @@ import org.hyperledger.fabric.contract.annotation.Property;
 @DataType
 public final class OneTimeCodeAsset {
 
-    private static final Genson genson = GensonUtils.create();
-
     @Property
     private final String electionId;
 
@@ -22,36 +18,51 @@ public final class OneTimeCodeAsset {
     private final String userId;
 
     @Property
-    private final OneTimeCode asset;
+    private final OneTimeCode code;
 
+    /**
+     * Creates a new asset.
+     * @param electionId the election identifier
+     * @param userId the user identifier
+     * @param code the code to be associated to the given election and user
+     */
     public OneTimeCodeAsset(
         @JsonProperty("electionId") final String electionId,
         @JsonProperty("userId") final String userId,
-        @JsonProperty("asset") final OneTimeCode code
+        @JsonProperty("code") final OneTimeCode code
     ) {
         this.electionId = electionId;
-        this.asset = code;
+        this.code = code;
         this.userId = userId;
     }
 
+    /**
+     * @return the election identifier
+     */
     public String getElectionId() {
         return electionId;
     }
 
-    public OneTimeCode getAsset() {
-        return asset;
+    /**
+     * @return the code
+     */
+    public OneTimeCode getCode() {
+        return code;
     }
 
+    /**
+     * @return the user identifier
+     */
     public String getUserId() {
         return userId;
     }
 
     @Override
     public String toString() {
-        return "OneTimeCodeAsset{" +
-            "electionId='" + electionId + '\'' +
-            ", asset=" + asset +
-            ", userId='" + userId + '\'' +
-            '}';
+        return "OneTimeCodeAsset{"
+            + "electionId='" + electionId + '\''
+            + ", code=" + code
+            + ", userId='" + userId + '\''
+            + '}';
     }
 }

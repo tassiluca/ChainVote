@@ -11,7 +11,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 
-public class TransientUtilsTest {
+class TransientUtilsTest {
 
     @Test
     void whenTransientInputNotExists() {
@@ -20,7 +20,7 @@ public class TransientUtilsTest {
         final Throwable thrown = catchThrowable(() -> getStringFromTransient(transientData, key));
         assertThat(thrown)
             .isInstanceOf(ChaincodeException.class)
-            .hasMessage("An entry with key `" + key +"` was expected in the transient map.");
+            .hasMessage("An entry with key `" + key + "` was expected in the transient map.");
         assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCOMPLETE_INPUT".getBytes(UTF_8));
     }
 
