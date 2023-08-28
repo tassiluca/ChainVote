@@ -1,7 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.assets.OTCAssetPrivateDetails;
+import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.codes.*;
 import org.hyperledger.fabric.contract.Context;
@@ -78,7 +78,7 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
      * Invalidate the given code for the given election passed in a transient map.
      * After calling this method the code can no longer be used.
      * @param context the transaction context. A transient map is expected with the following
-     *                key-value pairs: `electionId` and `code`.
+     *                key-value pairs: `electionId`, `userId` and `code`.
      */
     @Transaction
     public void invalidate(final Context context) {
@@ -106,14 +106,14 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
 
     @Override
     public Optional<OneTimeCode> get(final Context context, final String electionId, final String userId) {
-        final OTCAssetPrivateDetails data = genson.deserialize(
+        final OneTimeCodeAsset data = genson.deserialize(
             context.getStub().getPrivateData(
                 CODES_COLLECTION,
                 new CompositeKey(electionId, userId).toString()
             ),
-            OTCAssetPrivateDetails.class
+            OneTimeCodeAsset.class
         );
-        return Optional.ofNullable(data).map(OTCAssetPrivateDetails::getAsset);
+        return Optional.ofNullable(data).map(OneTimeCodeAsset::getAsset);
     }
 
     @Override
@@ -121,7 +121,7 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
         context.getStub().putPrivateData(
             CODES_COLLECTION,
             new CompositeKey(electionId, userId).toString(),
-            genson.serialize(new OTCAssetPrivateDetails(code, userId, electionId))
+            genson.serialize(new OneTimeCodeAsset(electionId, userId, code))
         );
     }
 

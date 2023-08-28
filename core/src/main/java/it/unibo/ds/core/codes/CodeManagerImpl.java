@@ -44,7 +44,7 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
     public void invalidate(final C context, final String electionId, final String userId, final OneTimeCode code) {
         final var searchedCode = repo.get(context, electionId, userId);
         if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
-            throw new IllegalStateException("The given code ins not associated to the given user for the given voting");
+            throw new IllegalStateException("The given code is not associated to the given user for the given voting");
         }
         searchedCode.get().consume();
         repo.replace(context, electionId, userId, searchedCode.get());

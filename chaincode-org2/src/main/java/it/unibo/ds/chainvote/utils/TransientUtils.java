@@ -9,7 +9,8 @@ import java.util.function.Function;
 public final class TransientUtils {
 
     private enum Error {
-        INCOMPLETE_INPUT
+        INCOMPLETE_INPUT,
+        WRONG_INPUT
     }
 
     private static <X> X getFromTransient(
@@ -29,6 +30,11 @@ public final class TransientUtils {
     }
 
     public static Long getLongFromTransient(final Map<String, byte[]> transientData, final String key) {
-        return Long.valueOf(getStringFromTransient(transientData, key));
+        try {
+            return Long.valueOf(getStringFromTransient(transientData, key));
+        } catch (NumberFormatException exception) {
+            final String errorMsg = "The `" + key + "`s input was expected to be a Long.";
+            throw new ChaincodeException(errorMsg, Error.WRONG_INPUT.toString());
+        }
     }
 }
