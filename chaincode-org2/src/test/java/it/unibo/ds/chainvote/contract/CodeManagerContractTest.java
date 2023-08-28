@@ -12,21 +12,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Map;
 
 import static it.unibo.ds.chainvote.contract.CodeManagerContract.CODES_COLLECTION;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 final class CodeManagerContractTest {
 
@@ -123,6 +116,62 @@ final class CodeManagerContractTest {
                 put("electionId", ELECTION_ID.getBytes(UTF_8));
                 put("code", Long.toString(CODE).getBytes(UTF_8));
             }});
+        }
+
+        @Test
+        void whenCodeStillValid() {
+            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(
+                genson.serialize(
+                    new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE))
+                ).getBytes(UTF_8)
+            );
+            assertTrue(contract.isValid(context));
+        }
+
+        @Test
+        void whenCodeIsIncorrect() {
+            final byte[] wrongCode = genson.serialize(
+                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
+            ).getBytes(UTF_8);
+            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
+            assertFalse(contract.isValid(context));
+        }
+
+        @Test
+        void whenCodeIsInvalid() {
+            final var code = new OneTimeCodeImpl(CODE);
+            code.consume();
+            final byte[] invalidCode = genson.serialize(
+                new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
+            ).getBytes(UTF_8);
+            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(invalidCode);
+            assertFalse(contract.isValid(context));
+        }
+
+        @Test
+        void whenInvalidate() {
+            final var code = new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE));
+            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(genson.serialize(code).getBytes(UTF_8));
+            contract.invalidate(context);
+            final var consumedCode = code.getAsset();
+            consumedCode.consume();
+            final var consumedAsset = new OneTimeCodeAsset(ELECTION_ID, USER_ID, consumedCode);
+            verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(consumedAsset));
+        }
+
+        @Test
+        void whenAttemptToInvalidateMultipleTimes() {
+            final var code = new OneTimeCodeImpl(CODE);
+            code.consume();
+            final byte[] invalidCode = genson.serialize(
+                new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
+            ).getBytes(UTF_8);
+            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(invalidCode);
+            final Throwable thrown = catchThrowable(() -> contract.invalidate(context));
+            assertThat(thrown)
+                .isInstanceOf(ChaincodeException.class)
+                .hasMessage("The given code has already been consumed");
+            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ALREADY_INVALIDATED_CODE".getBytes(UTF_8));
         }
     }
 }

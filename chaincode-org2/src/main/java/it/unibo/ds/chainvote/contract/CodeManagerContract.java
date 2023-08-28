@@ -37,7 +37,7 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     private enum CodeManagerErrors {
         INCOMPLETE_INPUT,
         ALREADY_GENERATED_CODE,
-        WRONG_BIND
+        ALREADY_INVALIDATED_CODE
     }
 
     /**
@@ -86,7 +86,11 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
         final String electionId = getStringFromTransient(transientMap, "electionId");
         final String userId = getStringFromTransient(transientMap, "userId");
         final Long code = getLongFromTransient(transientMap, "code");
-        codeManager.invalidate(context, electionId, userId, new OneTimeCodeImpl(code));
+        try {
+            codeManager.invalidate(context, electionId, userId, new OneTimeCodeImpl(code));
+        } catch (IllegalStateException exception) {
+            throw new ChaincodeException(exception.getMessage(), CodeManagerErrors.ALREADY_INVALIDATED_CODE.toString());
+        }
     }
 
     /**

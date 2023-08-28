@@ -67,6 +67,13 @@ class CodeManagerTest {
     }
 
     @Test
+    void testCodeInvalidationMultipleTimes() {
+        final OneTimeCode code = localManager.generateFor(ELECTION_ID, USER_ID);
+        localManager.invalidate(ELECTION_ID, USER_ID, code);
+        assertThrows(IllegalStateException.class, () -> localManager.invalidate(ELECTION_ID, USER_ID, code));
+    }
+
+    @Test
     void testAttemptInvalidationOnUnknownCode() {
         assertThrows(
             IllegalStateException.class,
