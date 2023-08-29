@@ -27,29 +27,26 @@ describe("User's insertion in database",  () => {
     
         await user.save();
         expect(user._id).toBeDefined();
+        expect(user.role).toBe("user");
     });
-    
-    test("Can't save a user with an email that is already present", async () => {
-        const user = new User(correctUserData);
-    
-        await user.save();
-        expect(user._id).toBeDefined();
-    
-        const sameUser = new User(correctUserData);
-    
-        try {
-            await sameUser.save();
-        } catch(error) {
-            expect(error).toBeDefined();
-            expect(error.message).toBe("E11000 duplicate key error collection: test.users index: email_1 dup key: { email: \""+ user.email +"\" }");
-        }
+
+    test("Should save an administrator", async () => {
+        let adminData = {
+            ...correctUserData,
+            role: "admin"
+        }; 
+
+        const admin = new User(adminData);
+        
+        await admin.save();
+        expect(admin._id).toBeDefined();
+        expect(admin.role).toBe("admin");
     });
 });
 
 
 
 describe("User's field validation tests", () => {
-    
     test("Can't save a user with an invalid password", async () => {
         const user = new User({
             ...correctUserData,
@@ -78,7 +75,23 @@ describe("User's field validation tests", () => {
             expect(error).toBeInstanceOf(mongoose.Error.ValidationError);
             expect(error.errors.email).toBeDefined();
         }
-    })
+    });
+
+    test("Can't save a user with an email that is already present", async () => {
+        const user = new User(correctUserData);
+    
+        await user.save();
+        expect(user._id).toBeDefined();
+    
+        const sameUser = new User(correctUserData);
+    
+        try {
+            await sameUser.save();
+        } catch(error) {
+            expect(error).toBeDefined();
+            expect(error.message).toBe("E11000 duplicate key error collection: test.users index: email_1 dup key: { email: \""+ user.email +"\" }");
+        }
+    });
 })
 
 

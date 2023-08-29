@@ -1,6 +1,6 @@
 {
   "name": "core-components",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Core components that are shared between the different Javascript's services of the organization",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -27,6 +27,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "http-status-codes": "^2.2.0",
+    "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.4",
     "validator": "^13.11.0"
   }
