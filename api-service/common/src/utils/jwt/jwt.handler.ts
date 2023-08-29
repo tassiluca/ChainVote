@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import jwt, { SignOptions } from 'jsonwebtoken';
+import { BadRequestError } from "../..";
 
 export type ConfigurationObject = {
     ATPrivateKeyPath?: string;
@@ -58,13 +59,16 @@ export function verifyRefreshToken<T>(token: string): T | undefined {
  * @param payload 
  * @returns 
  */
-export function signAccessToken(payload: Object) {
+export function signAccessToken(payload: Object, expiration: string | undefined = undefined) {
     const privateKeyPath = localConfigurations.ATPrivateKeyPath || process.env.AT_PRIVATE_KEY_PATH;
     if(!privateKeyPath) {
         throw new Error("Access token private key path is not set");
     }
+    if(!expiration) {
+        expiration = "1m";
+    }
     const privateKey: string = readFileSync(privateKeyPath, 'utf8');
-    return signJwt(payload, privateKey, {expiresIn: "20m"});
+    return signJwt(payload, privateKey, {expiresIn: expiration});
 }
 
 /**
@@ -72,13 +76,17 @@ export function signAccessToken(payload: Object) {
  * @param payload 
  * @returns 
  */
-export function signRefreshToken(payload: Object) {
+export function signRefreshToken(payload: Object, expiration: string | undefined = undefined) {
     const privateKeyPath = localConfigurations.RTPrivateKeyPath || process.env.RT_PRIVATE_KEY_PATH;
+    
     if(!privateKeyPath) {
         throw new Error("Refresh token private key path is not set");
     }
+    if(!expiration) {
+        expiration = "10m";
+    }
     const privateKey: string = readFileSync(privateKeyPath, 'utf8');
-    return signJwt(payload, privateKey, {expiresIn: "60m"});
+    return signJwt(payload, privateKey, {expiresIn: expiration});
 }
 
 
@@ -94,5 +102,10 @@ function signJwt(payload: Object, pKey: string, options: SignOptions) {
 }
 
 function verifyJwt<T>(token: string, pKey: string): T | null {
-    return jwt.verify(token, pKey) as T;
+    return jwt.verify(token, pKey, (error, decoded) => {
+        if(error) {
+            throw new BadRequestError(error.message);
+        } 
+        return decoded;
+    }) as T;
 }

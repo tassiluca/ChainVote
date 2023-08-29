@@ -1,5 +1,5 @@
 
-import { setupConnection, destroyConnection, dropCollectionsInDb } from "../../utils/local.db"
+import { setupConnection, destroyConnection } from "../../utils/local.db"
 import { User } from "../../models/users/users";
 import { resolve } from "path";  
 import {
@@ -10,6 +10,7 @@ import {
     verifyAccessToken,
     verifyRefreshToken
 } from "./jwt.handler"
+import { BadRequestError } from "../../errors/errors";
 
 const configuration: ConfigurationObject = {
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
@@ -68,11 +69,20 @@ describe("Verification of a jwt token", () => {
         const reshreshToken = signRefreshToken({sub: user}); 
         const verifiedTokenResponse: any = verifyRefreshToken(reshreshToken);
         expect(verifiedTokenResponse).toBeDefined();
+        
+        //console.log(verifiedTokenResponse);
+
 
         const subscriber = verifiedTokenResponse.sub;
         expect(subscriber.email).toBe("claudio.rossi@email.it");
         expect(subscriber.firstName).toBe("Claudio");
         expect(subscriber.secondName).toBe("Rossi");
         expect(subscriber.role).toBe("user");
+    });
+
+    test("Should refuse to validate an expired token ", () => {
+        const now = new Date();
+        const reshreshToken = signRefreshToken({sub: user}, "0s");
+        expect(() => verifyRefreshToken(reshreshToken)).toThrow(BadRequestError);
     });
 }); 
