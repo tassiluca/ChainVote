@@ -5,7 +5,8 @@ import { resolve } from "path";
 
 initJWTSystem({
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
-    RTPrivateKeyPath: resolve("./secrets/rt_private.pem")
+    RTPrivateKeyPath: resolve("./secrets/rt_private.pem"),
+    RTPublicKeyPath: resolve("./secrets/rt_public.pem")
 });
 
 MongooseConfig();

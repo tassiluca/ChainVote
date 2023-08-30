@@ -12,7 +12,7 @@ const ExpressConfig = (): Application => {
 
 
     // Routes setup
-    app.use(authRouter);
+    app.use('/auth',authRouter);
     app.use(defaultErrorHandler);
     return app
 }
