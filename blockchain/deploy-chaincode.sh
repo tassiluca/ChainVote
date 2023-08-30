@@ -2,6 +2,8 @@
 #
 # Script to deploy a Java chaincode on the HF network.
 
+set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
+
 source utils.sh
 
 if [[ $# -lt 2 || ! -d $1 || ($2 != "org1" && $2 != "org2") ]]; then

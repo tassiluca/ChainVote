@@ -2,6 +2,8 @@
 #
 # Script to create the channels and join peers to them.
 
+set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
+
 export CORE_PEER_TLS_ENABLED=true
 export FABRIC_CFG_PATH=$PWD/org1
 
@@ -29,8 +31,7 @@ peer channel create --channelID ch2 --file /tmp/hyperledger/org2/artifacts/chann
 peer channel join --blockpath /tmp/hyperledger/org2/peer1/assets/ch2.block
 # join peer2-org2
 CORE_PEER_ADDRESS=localhost:10051 peer channel join --blockpath /tmp/hyperledger/org2/peer1/assets/ch2.block
-
-#update anchor peer
+# update anchor peer
 peer channel update --channelID ch2 --file /tmp/hyperledger/org2/artifacts/org2MSPanchors.tx --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --tls --cafile /tmp/hyperledger/org2/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
 echo "Checking if peer1-org2 and peer2-org2 have the same ledger"
 peer channel getinfo --channelID ch2

@@ -2,6 +2,8 @@
 #
 # This script executes the enrollment of the registrar of each CA and registers all entities.
 
+set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
+
 #####################################################################################################################
 # Bring up TLS-CA
 #####################################################################################################################
