@@ -53,7 +53,6 @@ tasks.register("upAndDeploy") {
 
     fun deployChaincode(chaincodeName: String, organizationName: String) {
         println(":: Deploy $chaincodeName ::")
-        executeScript("./gradlew", "$chaincodeName:clean")
         executeScript("./gradlew", "$chaincodeName:installDist")
         if (File("./$chaincodeName/META-INF").isDirectory) {
             executeScript("cp", "-r", "META-INF", "build/install/$chaincodeName", scriptDir = chaincodeName)
