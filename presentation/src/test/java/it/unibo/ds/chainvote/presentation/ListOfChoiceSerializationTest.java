@@ -38,33 +38,8 @@ public class ListOfChoiceSerializationTest {
 
     @Test
     void testDeserialization() {
-        System.out.println(genson.deserialize(genson.serialize(LIST), new GenericType<List<Choice>>() {}));
         final var deserialized = genson.deserialize(genson.serialize(LIST), new GenericType<List<Choice>>() {});
-
-        /*
-        TypeToken<List<Choice>> typeToken = new TypeToken<List<Choice>>() {};
-
-
-
-        // JSON da deserializzare (sostituisci con il tuo JSON effettivo)
-        String json = "[{\"prop1\":\"val1\",\"prop2\":\"val2\"}, {\"prop1\":\"val3\",\"prop2\":\"val4\"}]";
-
-
-
-        // Deserializza la lista di Choice utilizzando il TypeToken
-        List<Choice> choices = genson.deserialize(json, typeToken);
-
-
-
-        // Ora hai una lista di oggetti Choice deserializzati
-        for (Choice choice : choices) {
-            System.out.println(choice);
-        }
-
-         */
-        System.out.println(deserialized);
-
-        //assertEquals(BALLOT, deserialized);
+        assertEquals(LIST, deserialized);
     }
 
     @Test

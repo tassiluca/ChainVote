@@ -49,4 +49,9 @@ public final class Choice {
     public int hashCode() {
         return Objects.hash(choice);
     }
+
+    @Override
+    public String toString() {
+        return "Choice{choice='" + choice + "'}";
+    }
 }
