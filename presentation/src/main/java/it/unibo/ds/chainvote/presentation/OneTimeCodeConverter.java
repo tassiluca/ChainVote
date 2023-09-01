@@ -26,6 +26,7 @@ public final class OneTimeCodeConverter implements Converter<OneTimeCode> {
         if ("otc".equals(reader.name())) {
             return new OneTimeCodeImpl(reader.valueAsLong());
         }
+        reader.endObject();
         throw new JsonBindingException("Malformed json");
     }
 }

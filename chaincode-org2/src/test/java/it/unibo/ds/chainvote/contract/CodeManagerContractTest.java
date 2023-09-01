@@ -1,9 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
@@ -20,18 +18,15 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 final class CodeManagerContractTest {
 
+    private static final long LONG = 123L;
     private static final byte[] ELECTION_ID = "test-election".getBytes(UTF_8);
     private static final byte[] USER_ID = "mrossi".getBytes(UTF_8);
-    private static final byte[] CODE = Long.toString(123L).getBytes(UTF_8);
+    private static final byte[] CODE = Long.toString(LONG).getBytes(UTF_8);
     private static final String KEY = new CompositeKey(
         new String(ELECTION_ID, UTF_8),
         new String(USER_ID, UTF_8)

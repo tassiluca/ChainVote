@@ -1,10 +1,7 @@
 package it.unibo.ds.core.assets;
 
-import com.owlike.genson.annotation.JsonProperty;
 import it.unibo.ds.core.utils.Choice;
 import it.unibo.ds.core.utils.Utils;
-import org.hyperledger.fabric.contract.annotation.DataType;
-import org.hyperledger.fabric.contract.annotation.Property;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,20 +11,21 @@ import java.util.Optional;
 /**
  * A {@link Ballot} implementation.
  */
-@DataType()
+
 public final class BallotImpl implements Ballot {
 
-    @Property()
     private final String electionID;
-
-    @Property()
     private final String voterCodeID;
-
-    @Property()
     private final LocalDateTime date;
-
-    @Property()
     private final Choice choice;
+
+    private BallotImpl(final String electionID, final String voterCodeID, final LocalDateTime date,
+                       final Choice choice) {
+        this.electionID = electionID;
+        this.voterCodeID = voterCodeID;
+        this.date = date;
+        this.choice = choice;
+    }
 
     @Override
     public String getElectionID() {
@@ -49,14 +47,6 @@ public final class BallotImpl implements Ballot {
         return this.choice;
     }
 
-    private BallotImpl(@JsonProperty("electionID") final String electionID,
-                       @JsonProperty("voterCodeID") final String voterCodeID,
-                  @JsonProperty("date") final LocalDateTime date, @JsonProperty("choice") final Choice choice) {
-        this.electionID = electionID;
-        this.voterCodeID = voterCodeID;
-        this.date = date;
-        this.choice = choice;
-    }
 
     @Override
     public boolean equals(final Object obj) {

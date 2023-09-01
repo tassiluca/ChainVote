@@ -1,84 +1,88 @@
 package it.unibo.ds.core.assets;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Optional;
-
 import it.unibo.ds.core.manager.ElectionManagerImpl;
 import it.unibo.ds.core.utils.Choice;
-import it.unibo.ds.core.utils.FixedVotes;
-import org.hyperledger.fabric.contract.annotation.DataType;
-import org.hyperledger.fabric.contract.annotation.Property;
 
-import com.owlike.genson.annotation.JsonProperty;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static it.unibo.ds.core.utils.Utils.isDateBetween;
 
 /**
  * The {@link Election} implementation.
  */
-@DataType()
 public final class ElectionImpl implements Election {
 
     private static final boolean DEBUG = false;
 
-    @Property()
-    private final String electionID;
-
-    @Property()
     private final String goal;
 
-    @Property()
     private final long votersNumber;
 
-    @Property()
     private final LocalDateTime startingDate;
 
-    @Property()
     private final LocalDateTime endingDate;
 
-    @Property()
     private final List<Choice> choices;
 
-    @Property()
     private final Map<Choice, Long> results;
 
     // Only for debug
-    @Property()
     private Map<String, Choice> voteAccountability;
 
     // Keep all the choices of the ballots (Not to query if the voter has already voted)
-    @Property()
     private final List<Choice> ballots;
 
-    private ElectionImpl(@JsonProperty("goal") final String goal,
-                    @JsonProperty("votersNumber") final long votersNumber,
-                         @JsonProperty("startingDate") final LocalDateTime startingDate,
-                    @JsonProperty("endingDate") final LocalDateTime endingDate,
-                         @JsonProperty("choices") final List<Choice> choices) {
+    private ElectionImpl(final String goal, final long votersNumber, final LocalDateTime startingDate,
+                         final LocalDateTime endingDate,  final List<Choice> choices) {
+        this(goal, votersNumber, startingDate, endingDate, choices, new HashMap<>(), new ArrayList<>());
+    }
+
+    private List<Choice> initializeChoice(final List<Choice> choices) {
+        return List.copyOf(ElectionManagerImpl.getInstance().initializeChoices(choices));
+    }
+
+    private Map<Choice, Long> initializeResults(final List<Choice> choices,
+                                          final Map<Choice, Long> results,
+                                                final long votersNumber) {
+        return ElectionManagerImpl.getInstance().initializeResults(results, choices, votersNumber);
+    }
+
+    private List<Choice> initializeBallots(final List<Choice> choices,
+                                          final Map<Choice, Long> results,
+                                          final List<Choice> ballots,
+                                           final long votersNumber) {
+        return ElectionManagerImpl.getInstance().initializeBallots(ballots, choices, results, votersNumber);
+    }
+
+    private long checkVotersNumber(final long voters) {
+        ElectionManagerImpl.getInstance().checkVoters(voters);
+        return voters;
+    }
+
+    private ElectionImpl(final String goal, final long votersNumber, final LocalDateTime startingDate,
+                         final LocalDateTime endingDate, final List<Choice> choices, final Map<Choice, Long> results,
+                         final List<Choice> ballots) {
         this.goal = goal;
+        ElectionManagerImpl.getInstance().checkVoters(votersNumber);
         this.votersNumber = votersNumber;
+        ElectionManagerImpl.getInstance().checkData(startingDate, endingDate);
         this.startingDate = startingDate;
         this.endingDate = endingDate;
-        this.results = new HashMap<>();
-        this.choices = List.copyOf(ElectionManagerImpl.getInstance().initializeChoice(choices));
-        for (Choice choice: this.choices) {
-            this.results.put(choice, (long) 0);
-        }
-        this.ballots = new ArrayList<>();
+
+        this.choices = this.initializeChoice(choices);
+        this.results = this.initializeResults(choices, Objects.isNull(results) ? new HashMap<>() : results,
+                votersNumber);
+        this.ballots = this.initializeBallots(choices, Objects.isNull(results) ? new HashMap<>() : results,
+                Objects.isNull(ballots) ? new ArrayList<>() : ballots, votersNumber);
         if (DEBUG) {
             this.voteAccountability = new HashMap<>();
         }
-        this.electionID = String.valueOf(this.hashCode());
     }
 
     @Override
     public String getElectionID() {
-        return this.electionID;
+        return String.valueOf(this.hashCode());
     }
 
     @Override
@@ -123,15 +127,13 @@ public final class ElectionImpl implements Election {
 
     @Override
     public boolean castVote(final Ballot ballot) {
-        if (ElectionManagerImpl.getInstance().isBallotValid(this, ballot)) {
-            this.ballots.add(ballot.getChoice());
-            if (DEBUG) {
-                this.voteAccountability.put(ballot.getVoterID(), ballot.getChoice());
-            }
-            long oldValue = this.results.get(ballot.getChoice());
-            return this.results.replace(ballot.getChoice(), oldValue, oldValue + 1);
+        ElectionManagerImpl.getInstance().checkBallot(this, ballot);
+        this.ballots.add(ballot.getChoice());
+        if (DEBUG) {
+            this.voteAccountability.put(ballot.getVoterID(), ballot.getChoice());
         }
-        return false;
+        long oldValue = this.results.get(ballot.getChoice());
+        return this.results.replace(ballot.getChoice(), oldValue, oldValue + 1);
     }
 
     @Override
@@ -167,7 +169,6 @@ public final class ElectionImpl implements Election {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode())
-                + " [electionID=" + this.electionID
                 + ", goal=" + this.goal + ", voters=" + this.votersNumber + ", starting="
                 + this.startingDate + ", ending="
                 + this.endingDate + ", choices=" + this.choices + "]";
@@ -178,34 +179,20 @@ public final class ElectionImpl implements Election {
      */
     public static final class Builder implements ElectionBuilder {
 
-        private static final long MIN_VOTERS = 1;
-        private static final long MAX_VOTERS = 2_000_000_000;
         private Optional<String> goal;
         private Optional<Long> votersNumber;
         private Optional<LocalDateTime> startingDate;
         private Optional<LocalDateTime> endingDate;
         private Optional<List<Choice>> choices;
+        private Optional<Map<Choice, Long>> results = Optional.empty();
+        private Optional<List<Choice>> ballots = Optional.empty();
 
         private void check(final Object input) {
             Objects.requireNonNull(input);
         }
         private void checkString(final String input) {
             if (input.equals("")) {
-                throw new IllegalArgumentException("Invalid goal " + input);
-            }
-        }
-
-        private void checkNumber(final long input) {
-            if (input < MIN_VOTERS || input > MAX_VOTERS) {
-                throw new IllegalArgumentException("Invalid number of voters: input " + input
-                        + " intervals accepted [" + MIN_VOTERS + ", " + MAX_VOTERS + "]");
-            }
-        }
-
-        private void checkDates(final LocalDateTime start, final LocalDateTime end) {
-            if (start.isAfter(end) || start.isEqual(end) || end.isAfter(LocalDateTime.now())) {
-                throw new IllegalArgumentException("Invalid dates, start: " + start + " end: " + end
-                        + "\nRequired a start before the end, and the end must be after now");
+                throw new IllegalArgumentException("Invalid " + input);
             }
         }
 
@@ -218,7 +205,6 @@ public final class ElectionImpl implements Election {
 
         @Override
         public ElectionBuilder voters(final long number) {
-            this.checkNumber(number);
             this.votersNumber = Optional.of(number);
             return this;
         }
@@ -227,7 +213,6 @@ public final class ElectionImpl implements Election {
         public ElectionBuilder start(final LocalDateTime start) {
             this.check(start);
             this.startingDate = Optional.of(start);
-            this.endingDate.ifPresent(localDateTime -> this.checkDates(this.startingDate.get(), localDateTime));
             return this;
         }
 
@@ -235,26 +220,28 @@ public final class ElectionImpl implements Election {
         public ElectionBuilder end(final LocalDateTime end) {
             this.check(end);
             this.endingDate = Optional.of(end);
-            this.startingDate.ifPresent(localDateTime -> this.checkDates(localDateTime, this.endingDate.get()));
             return this;
-        }
-
-        private boolean areChoicesValidForBuilding(final List<Choice> choices) {
-            return choices.stream().distinct()
-                    .filter(choice -> !choice.equals(FixedVotes.INFORMAL_BALLOT.getChoice()))
-                    .count() >= 2;
         }
 
         @Override
         public ElectionBuilder choices(final List<Choice> choices) {
             this.check(choices);
-            if (areChoicesValidForBuilding(choices)) {
-                this.choices = Optional.of(List.copyOf(choices));
-            } else {
-                throw new IllegalArgumentException("Invalid set of choices: " + choices
-                        + "\nRequires at least 2 different choices without the blank choice");
-            }
+            this.choices = Optional.of(List.copyOf(choices));
             return this;
+        }
+
+        @Override
+        public ElectionBuilder results(final Map<Choice, Long> results) {
+            this.check(results);
+            this.results = Optional.of(results);
+            return this;
+        }
+
+        @Override
+        public ElectionBuilder ballots(List<Choice> ballots) {
+            this.check(ballots);
+            this.ballots = Optional.of(ballots);
+            return null;
         }
 
         @Override
@@ -263,7 +250,9 @@ public final class ElectionImpl implements Election {
                     this.votersNumber.orElseThrow(),
                     this.startingDate.orElseThrow(),
                     this.endingDate.orElseThrow(),
-                    this.choices.orElseThrow());
+                    this.choices.orElseThrow(),
+                    this.results.orElse(null),
+                    this.ballots.orElse(null));
         }
     }
 }

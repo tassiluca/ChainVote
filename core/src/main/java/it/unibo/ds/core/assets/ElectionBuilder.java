@@ -4,6 +4,7 @@ import it.unibo.ds.core.utils.Choice;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The {@link Election} builder interface.
@@ -44,6 +45,20 @@ public interface ElectionBuilder {
      * @return the {@link ElectionBuilder}.
      */
     ElectionBuilder choices(List<Choice> choices);
+
+    /**
+     * Return the {@link ElectionBuilder} with the list of results set if the input is correct.
+     * @param results the list of results to set.
+     * @return the {@link ElectionBuilder}.
+     */
+    ElectionBuilder results(Map<Choice, Long> results);
+
+    /**
+     * Return the {@link ElectionBuilder} with the list of ballots set if the input is correct.
+     * @param ballots the list of ballots to set.
+     * @return the {@link ElectionBuilder}.
+     */
+    ElectionBuilder ballots(List<Choice> ballots);
 
     /**
      * Return the new {@link Election} if params are correctly set.

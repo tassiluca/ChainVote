@@ -1,9 +1,11 @@
-package it.unibo.ds.core.contract;
+package it.unibo.ds.chainvote.contract;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unibo.ds.chainvote.assets.BallotAsset;
+import it.unibo.ds.chainvote.assets.ElectionAsset;
 import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.assets.Election;
@@ -73,9 +75,9 @@ public final class ElectionTransfer implements ContractInterface {
      * @return the new {@link Election}.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Election createElection(final Context ctx, final String goal, final long votersNumber,
-                                   final LocalDateTime startingDate, final LocalDateTime endingDate,
-                                   final List<Choice> choices) {
+    public ElectionAsset createElection(final Context ctx, final String goal, final long votersNumber,
+                                        final LocalDateTime startingDate, final LocalDateTime endingDate,
+                                        final List<Choice> choices) {
         ChaincodeStub stub = ctx.getStub();
         String electionID = Utils.calculateID(goal, startingDate, endingDate, choices);
         if (electionExists(ctx, electionID)) {
@@ -93,7 +95,7 @@ public final class ElectionTransfer implements ContractInterface {
                     .build();
             String sortedJson = genson.serialize(election);
             stub.putStringState(electionID, sortedJson);
-            return election;
+            return new ElectionAsset("", election);
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
             throw new ChaincodeException(e.getMessage(), ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
@@ -107,11 +109,11 @@ public final class ElectionTransfer implements ContractInterface {
      * @return the {@link Election}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public Election readElection(final Context ctx, final String electionID) {
+    public ElectionAsset readElection(final Context ctx, final String electionID) {
         if (electionExists(ctx, electionID)) {
             ChaincodeStub stub = ctx.getStub();
             String electionJSON = stub.getStringState(electionID);
-            return genson.deserialize(electionJSON, Election.class);
+            return genson.deserialize(electionJSON, ElectionAsset.class);
         } else {
             String errorMessage = String.format("Election %s does not exist", electionID);
             System.out.println(errorMessage);
@@ -128,7 +130,7 @@ public final class ElectionTransfer implements ContractInterface {
      * @return the {@link Ballot} casted.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Ballot castVote(final Context ctx, final Choice choice, final String voterID, final String electionID) {
+    public BallotAsset castVote(final Context ctx, final Choice choice, final String voterID, final String electionID) {
         ChaincodeStub stub = ctx.getStub();
         if (!electionExists(ctx, electionID)) {
             String errorMessage = String.format("Election %s does not exist", electionID);
@@ -136,13 +138,13 @@ public final class ElectionTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_NOT_FOUND.toString());
         }
         try {
-            Ballot ballot = new BallotImpl.Builder().electionID(electionID)
+            BallotAsset ballot = new BallotAsset(electionID, new BallotImpl.Builder().electionID(electionID)
             .voterID(voterID)
             .dateUnchecked(LocalDateTime.now())
             .choiceUnchecked(choice)
-            .build();
-            Election election = readElection(ctx, electionID);
-            election.castVote(ballot);
+            .build());
+            ElectionAsset election = readElection(ctx, electionID);
+            election.getAsset().castVote(ballot.getAsset());
 
             String electionJson = genson.serialize(election);
             // Required ??
