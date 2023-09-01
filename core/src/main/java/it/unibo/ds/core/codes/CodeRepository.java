@@ -1,7 +1,6 @@
 package it.unibo.ds.core.codes;
 
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * An interface with method to store/retrieve from a data source the one-time-codes data.
@@ -20,14 +19,6 @@ public interface CodeRepository<C> {
     Optional<OneTimeCode> get(C context, String electionId, String userId);
 
     /**
-     * Retrieves all the one-time-code generated for the given election.
-     * @param context the context of the transaction
-     * @param electionId the election identifier
-     * @return a set of {@link OneTimeCode}s.
-     */
-    Set<OneTimeCode> getAllOf(C context, String electionId);
-
-    /**
      * Save the association between the given user and code for the given election.
      * @param context the context of the transaction
      * @param electionId the election identifier
@@ -40,7 +31,8 @@ public interface CodeRepository<C> {
      * Replace the old otc associated to the election with the given one.
      * @param context the context of the transaction
      * @param electionId the election identifier
+     * @param userId the user identifier
      * @param code the updated code
      */
-    void replace(C context, String electionId, OneTimeCode code);
+    void replace(C context, String electionId, String userId, OneTimeCode code);
 }

@@ -8,7 +8,7 @@ package it.unibo.ds.core.codes;
 public interface CodeManager<C> {
 
     /**
-     * Generates a new {@link OneTimeCode}.
+     * Generates a new {@link OneTimeCode} for the given election.
      * @param context the context of the transaction
      * @param electionId the election identifier
      * @param userId the user identifier
@@ -30,19 +30,21 @@ public interface CodeManager<C> {
      * Check if the given code is still valid, i.e. has not been consumed yet for the given election.
      * @param context the context of the transaction
      * @param electionId the election identifier
+     * @param userId the user identifier
      * @param code the code to be validated
      * @return true if the given code is still valid, false otherwise.
      */
-    boolean isValid(C context, String electionId, OneTimeCode code);
+    boolean isValid(C context, String electionId, String userId, OneTimeCode code);
 
     /**
      * Check if the given code is still valid, i.e. has not been consumed yet for the given election.
      * @param electionId the election identifier
+     * @param userId the user identifier
      * @param code the code to be validated
      * @return true if the given code is still valid, false otherwise.
      */
-    default boolean isValid(final String electionId, final OneTimeCode code) {
-        return isValid(null, electionId, code);
+    default boolean isValid(final String electionId, final String userId, final OneTimeCode code) {
+        return isValid(null, electionId, userId, code);
     }
 
     /**
@@ -50,18 +52,20 @@ public interface CodeManager<C> {
      * After calling this method the code can no longer be used.
      * @param context the context of the transaction
      * @param electionId the election identifier
+     * @param userId the user identifier
      * @param code the code to be validated
      */
-    void invalidate(C context, String electionId, OneTimeCode code);
+    void invalidate(C context, String electionId, String userId, OneTimeCode code);
 
     /**
      * Invalidate the given code for the given election.
      * After calling this method the code can no longer be used.
      * @param electionId the election identifier
+     * @param userId the user identifier
      * @param code the code to be validated
      */
-    default void invalidate(final String electionId, final OneTimeCode code) {
-        invalidate(null, electionId, code);
+    default void invalidate(final String electionId, final String userId, final OneTimeCode code) {
+        invalidate(null, electionId, userId, code);
     }
 
     /**

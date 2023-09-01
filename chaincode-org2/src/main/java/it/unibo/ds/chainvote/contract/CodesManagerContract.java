@@ -14,17 +14,10 @@ import org.hyperledger.fabric.contract.annotation.Contract;
 import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
-import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
-import org.hyperledger.fabric.shim.ledger.KeyValue;
-import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static it.unibo.ds.chainvote.utils.TransientUtils.getLongFromTransient;
 import static it.unibo.ds.chainvote.utils.TransientUtils.getStringFromTransient;
@@ -33,13 +26,13 @@ import static it.unibo.ds.chainvote.utils.TransientUtils.getStringFromTransient;
  * A Hyperledger Fabric contract to manage one-time-codes.
  */
 @Contract(
-    name = "CodeManagerContract",
+    name = "CodesManagerContract",
     info = @Info(
         title = "Code Manager Contract",
         description = "Contract used to manage one-time-codes"
     )
 )
-public final class CodeManagerContract implements ContractInterface, CodeRepository<Context> {
+public final class CodesManagerContract implements ContractInterface, CodeRepository<Context> {
 
     static final String CODES_COLLECTION = "CodesCollection";
     private final CodeManager<Context> codeManager = new CodeManagerImpl<>(this);
@@ -48,7 +41,19 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     private enum CodeManagerErrors {
         INCOMPLETE_INPUT,
         ALREADY_GENERATED_CODE,
-        WRONG_BIND
+        ALREADY_INVALIDATED_CODE
+    }
+
+    private enum TransientData {
+        USER_ID("userId"),
+        ELECTION_ID("electionId"),
+        CODE("code");
+
+        final String key;
+
+        TransientData(final String key) {
+            this.key = key;
+        }
     }
 
     /**
@@ -58,12 +63,12 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
      * @return the code asset.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public OneTimeCodeAsset generateFor(final Context context) {
+    public Long generateFor(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String userId = getStringFromTransient(transientMap, "userId");
-        final String electionId = getStringFromTransient(transientMap, "electionId");
+        final String userId = getStringFromTransient(transientMap, TransientData.USER_ID.key);
+        final String electionId = getStringFromTransient(transientMap, TransientData.ELECTION_ID.key);
         try {
-            return new OneTimeCodeAsset(codeManager.generateFor(context, electionId, userId), userId, electionId);
+            return codeManager.generateFor(context, electionId, userId).getCode();
         } catch (IllegalStateException exception) {
             throw new ChaincodeException(exception.getMessage(), CodeManagerErrors.ALREADY_GENERATED_CODE.toString());
         }
@@ -73,29 +78,35 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
      * Check if the given code is still valid, i.e. has not been consumed yet for the given election
      * passed in a transient map.
      * @param context the transaction context. A transient map is expected with the following
-     *                key-value pairs: `electionId` and `code`.
+     *                key-value pairs: `electionId`, `userId` and `code`.
      * @return true if the given code is still valid, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean isValid(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getStringFromTransient(transientMap, "electionId");
-        final Long code = getLongFromTransient(transientMap, "code");
-        return codeManager.isValid(context, electionId, new OneTimeCodeImpl(code));
+        final String electionId = getStringFromTransient(transientMap, TransientData.ELECTION_ID.key);
+        final String userId = getStringFromTransient(transientMap, TransientData.USER_ID.key);
+        final Long code = getLongFromTransient(transientMap, TransientData.CODE.key);
+        return codeManager.isValid(context, electionId, userId, new OneTimeCodeImpl(code));
     }
 
     /**
      * Invalidate the given code for the given election passed in a transient map.
      * After calling this method the code can no longer be used.
      * @param context the transaction context. A transient map is expected with the following
-     *                key-value pairs: `electionId` and `code`.
+     *                key-value pairs: `electionId`, `userId` and `code`.
      */
     @Transaction
     public void invalidate(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getStringFromTransient(transientMap, "electionId");
-        final Long code = getLongFromTransient(transientMap, "code");
-        codeManager.invalidate(context, electionId, new OneTimeCodeImpl(code));
+        final String electionId = getStringFromTransient(transientMap, TransientData.ELECTION_ID.key);
+        final String userId = getStringFromTransient(transientMap, TransientData.USER_ID.key);
+        final Long code = getLongFromTransient(transientMap, TransientData.CODE.key);
+        try {
+            codeManager.invalidate(context, electionId, userId, new OneTimeCodeImpl(code));
+        } catch (IllegalStateException exception) {
+            throw new ChaincodeException(exception.getMessage(), CodeManagerErrors.ALREADY_INVALIDATED_CODE.toString());
+        }
     }
 
     /**
@@ -107,9 +118,9 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean verifyCodeOwner(final Context context) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String userId = getStringFromTransient(transientMap, "userId");
-        final String electionId = getStringFromTransient(transientMap, "electionId");
-        final Long code = getLongFromTransient(transientMap, "code");
+        final String electionId = getStringFromTransient(transientMap, TransientData.ELECTION_ID.key);
+        final String userId = getStringFromTransient(transientMap, TransientData.USER_ID.key);
+        final Long code = getLongFromTransient(transientMap, TransientData.CODE.key);
         return codeManager.verifyCodeOwner(context, electionId, userId, new OneTimeCodeImpl(code));
     }
 
@@ -122,50 +133,20 @@ public final class CodeManagerContract implements ContractInterface, CodeReposit
             ),
             OneTimeCodeAsset.class
         );
-        return Optional.ofNullable(data).map(OneTimeCodeAsset::getAsset);
+        return Optional.ofNullable(data).map(OneTimeCodeAsset::getCode);
     }
 
     @Override
     public void put(final Context context, final String electionId, final String userId, final OneTimeCode code) {
-        System.out.println("[PUT] election: " + electionId + " - user: " + userId + " - code: " + code);
         context.getStub().putPrivateData(
             CODES_COLLECTION,
             new CompositeKey(electionId, userId).toString(),
-            genson.serialize(new OneTimeCodeAsset(code, userId, electionId))
+            genson.serialize(new OneTimeCodeAsset(electionId, userId, code))
         );
     }
 
     @Override
-    public void replace(final Context context, final String electionId, final OneTimeCode code) {
-        // TODO implement
-    }
-
-    @Override
-    public Set<OneTimeCode> getAllOf(final Context context, final String electionId) {
-        return Set.of();
-//        return getQueryResults(context, electionId).stream()
-//            .map(OneTimeCodeAsset::getAsset)
-//            .collect(Collectors.toSet());
-    }
-
-    private Set<OneTimeCodeAsset> getQueryResults(final Context context, final String partialKey) {
-        final ChaincodeStub stub = context.getStub();
-        final Set<OneTimeCodeAsset> queryResults = new HashSet<>();
-        final String queryString = "{\"selector\":{\"electionId\":\"" + partialKey + "\"}}";
-        try (final QueryResultsIterator<KeyValue> results = stub.getPrivateDataQueryResult(CODES_COLLECTION, queryString)) {
-            for (final KeyValue result : results) {
-                if (result.getStringValue() == null || result.getStringValue().length() == 0) {
-                    System.err.printf("Invalid Asset json: %s\n", result.getStringValue());
-                    continue;
-                }
-                final OneTimeCodeAsset asset = genson.deserialize(result.getStringValue(), OneTimeCodeAsset.class);
-                queryResults.add(asset);
-                System.out.println("QueryResult: " + asset.toString());
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        System.out.println("[QUERY] ENDED");
-        return Collections.unmodifiableSet(queryResults);
+    public void replace(final Context context, final String electionId, final String userId, final OneTimeCode code) {
+        put(context, electionId, userId, code);
     }
 }

@@ -52,6 +52,7 @@ echo "Generating chaincode package"
 pushd "$CHAINCODE_PATH"/.. || exit 2
 ./gradlew clean
 ./gradlew "$CHAINCODE_NAME":installDist
+cp -r "${CHAINCODE_NAME}"/META-INF "${CHAINCODE_NAME}"/build/install/"${CHAINCODE_NAME}"
 popd || exit 2
 peer lifecycle chaincode package "${CHAINCODE_PACKAGE_NAME}" --path "${CHAINCODE_PATH}/build/install/${CHAINCODE_NAME}" --lang java --label "${CHAINCODE_PACKAGE_NAME}_1.0"
 
@@ -108,4 +109,3 @@ peer lifecycle chaincode querycommitted --channelID ${CHANNEL_NAME} --name "${CH
 
 echo "Cleaning"
 rm "${CHAINCODE_PACKAGE_NAME}"
-

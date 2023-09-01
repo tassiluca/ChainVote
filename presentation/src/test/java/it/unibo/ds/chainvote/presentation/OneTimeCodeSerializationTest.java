@@ -21,14 +21,26 @@ class OneTimeCodeSerializationTest {
     }
 
     @Test
+    void testConsumedSerialization() {
+        final var consumedSerialized = genson.serialize(getConsumedOTC());
+        assertEquals(getConsumedSerialized(), consumedSerialized);
+    }
+
+    @Test
     void testDeserialization() {
         final var deserialized = genson.deserialize(getSerialized(), OneTimeCode.class);
         assertEquals(getOTC(), deserialized);
     }
 
     @Test
+    void testConsumedDeserialization() {
+        final var consumedDeserialized = genson.deserialize(getConsumedSerialized(), OneTimeCode.class);
+        assertEquals(getConsumedOTC(), consumedDeserialized);
+    }
+
+    @Test
     void testDeserializationWithWrongType() {
-        final var wrong = "{\"otc\":\"wrong\"}";
+        final var wrong = "{\"otc\":\"wrong\",\"consumed\":\"false\"}";
         assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, OneTimeCode.class));
     }
 
@@ -38,11 +50,27 @@ class OneTimeCodeSerializationTest {
         assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, OneTimeCode.class));
     }
 
+    @Test
+    void testIncompleteDeserialization() {
+        final var wrong = "{\"consumed\":\"false\"}";
+        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, OneTimeCode.class));
+    }
+
     private OneTimeCode getOTC() {
         return new OneTimeCodeImpl(CODE);
     }
 
+    private OneTimeCode getConsumedOTC() {
+        final var code = new OneTimeCodeImpl(CODE);
+        code.consume();
+        return code;
+    }
+
     private String getSerialized() {
-        return "{\"otc\":\"" + CODE + "\"}";
+        return "{\"otc\":\"" + CODE + "\",\"consumed\":\"false\"}";
+    }
+
+    private String getConsumedSerialized() {
+        return "{\"otc\":\"" + CODE + "\",\"consumed\":\"true\"}";
     }
 }
