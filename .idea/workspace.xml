@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="31b3403b-9221-4d4c-b840-a0d88e021a94" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/BallotConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/BallotConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/ElectionConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/ElectionConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/GensonUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/GensonUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presentation/src/test/java/it/unibo/ds/chainvote/presentation/ElectionSerializationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/presentation/src/test/java/it/unibo/ds/chainvote/presentation/ElectionSerializationTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -278,7 +275,7 @@
       <workItem from="1692954516730" duration="21271000" />
       <workItem from="1693229481894" duration="9271000" />
       <workItem from="1693293484066" duration="30697000" />
-      <workItem from="1693553988843" duration="8800000" />
+      <workItem from="1693553988843" duration="9009000" />
     </task>
     <servers />
   </component>

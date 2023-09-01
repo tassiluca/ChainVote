@@ -28,6 +28,35 @@ public final class GensonUtils {
 
     private GensonUtils() { }
 
+    /**
+     * @return a new {@link Genson} instance, already configured.
+     */
+    public static Genson create() {
+        return new GensonBuilder()
+            .useRuntimeType(true)
+            .useConstructorWithArguments(true)
+            .withConverterFactory(new ChainedFactory() {
+                @Override
+                protected Converter<?> create(final Type type, final Genson genson, final Converter<?> nextConverter) {
+                    if (Wrapper.toAnnotatedElement(nextConverter).isAnnotationPresent(HandleClassMetadata.class)) {
+                        return new LiteralAsObjectConverter<>(nextConverter);
+                    } else {
+                        return nextConverter;
+                    }
+                }
+            })
+            .withConverter(new OneTimeCodeConverter(), OneTimeCodeImpl.class)
+            .withConverter(new OneTimeCodeConverter(), OneTimeCode.class)
+            .withConverter(new LocalDateTimeConverter(), LocalDateTime.class)
+            .withConverter(new BallotConverter(), BallotImpl.class)
+            .withConverter(new BallotConverter(), Ballot.class)
+            .withConverter(new ElectionConverter(), Election.class)
+            .withConverter(new ElectionConverter(), ElectionImpl.class)
+            .withConverter(new ChoiceConverter(), Choice.class)
+            .withConverter(new ListOfChoiceConverter(), new GenericType<>() { })
+            .create();
+    }
+
     private static class LiteralAsObjectConverter<T> implements Converter<T> {
         private final Converter<T> concreteConverter;
 
@@ -57,34 +86,5 @@ public final class GensonUtils {
             reader.endObject();
             return instance;
         }
-    }
-
-    /**
-     * @return a new {@link Genson} instance, already configured.
-     */
-    public static Genson create() {
-        return new GensonBuilder()
-            .useRuntimeType(true)
-            .useConstructorWithArguments(true)
-            .withConverterFactory(new ChainedFactory() {
-                @Override
-                protected Converter<?> create(final Type type, final Genson genson, final Converter<?> nextConverter) {
-                    if (Wrapper.toAnnotatedElement(nextConverter).isAnnotationPresent(HandleClassMetadata.class)) {
-                        return new LiteralAsObjectConverter<>(nextConverter);
-                    } else {
-                        return nextConverter;
-                    }
-                }
-            })
-            .withConverter(new OneTimeCodeConverter(), OneTimeCodeImpl.class)
-            .withConverter(new OneTimeCodeConverter(), OneTimeCode.class)
-            .withConverter(new LocalDateTimeConverter(), LocalDateTime.class)
-            .withConverter(new BallotConverter(), BallotImpl.class)
-            .withConverter(new BallotConverter(), Ballot.class)
-            .withConverter(new ElectionConverter(), Election.class)
-            .withConverter(new ElectionConverter(), ElectionImpl.class)
-            .withConverter(new ChoiceConverter(), Choice.class)
-            .withConverter(new ListOfChoiceConverter(), new GenericType<>() { })
-            .create();
     }
 }
