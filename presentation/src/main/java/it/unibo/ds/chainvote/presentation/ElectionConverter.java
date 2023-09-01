@@ -1,6 +1,10 @@
 package it.unibo.ds.chainvote.presentation;
 
-import com.owlike.genson.*;
+import com.owlike.genson.Context;
+import com.owlike.genson.Converter;
+import com.owlike.genson.GenericType;
+import com.owlike.genson.Genson;
+import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
 import it.unibo.ds.core.assets.Election;
@@ -8,7 +12,9 @@ import it.unibo.ds.core.assets.ElectionImpl;
 import it.unibo.ds.core.utils.Choice;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class ElectionConverter implements Converter<Election> {
 

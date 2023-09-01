@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="31b3403b-9221-4d4c-b840-a0d88e021a94" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/BallotConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/BallotConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/ElectionConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/ElectionConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/GensonUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/GensonUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presentation/src/test/java/it/unibo/ds/chainvote/presentation/ElectionSerializationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/presentation/src/test/java/it/unibo/ds/chainvote/presentation/ElectionSerializationTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/chaincode-org1">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/chaincode-org2">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="chain-vote" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Kotlin Class" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectId" id="2T9LgRSCEt3ZChizYWA7BYCac6f" />
+  <component name="ProjectViewState">
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+    <option name="showVisibilityIcons" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "feature/chaincode",
+    "last_opened_file_path": "/Users/lucatassi/Projects/distributed-systems/ds-project/chain-vote",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.14269274",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.sourceCode.Java",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/chaincode-org2/build/install" />
+      <recent name="$PROJECT_DIR$/chaincode-org1" />
+      <recent name="$PROJECT_DIR$/chaincode/src/main/java/it/unibo/ds/chainvote" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/chaincode-org2/src/main/resources" />
+      <recent name="$PROJECT_DIR$/chaincode-org2" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="it.unibo.ds.chainvote" />
+      <recent name="it.unibo.ds.core.codes" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.ListOfChoiceSerializationTest">
+    <configuration name="ElectionSerializationTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":presentation:test" />
+            <option value="--tests" />
+            <option value="&quot;it.unibo.ds.chainvote.presentation.ElectionSerializationTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>true</ForceTestExec>
+      <method v="2" />
+    </configuration>
+    <configuration name="ListOfChoiceSerializationTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":presentation:test" />
+            <option value="--tests" />
+            <option value="&quot;it.unibo.ds.chainvote.presentation.ListOfChoiceSerializationTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>true</ForceTestExec>
+      <method v="2" />
+    </configuration>
+    <configuration name="ListOfChoiceSerializationTest.testDeserialization" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":presentation:test" />
+            <option value="--tests" />
+            <option value="&quot;it.unibo.ds.chainvote.presentation.ListOfChoiceSerializationTest.testDeserialization&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>true</ForceTestExec>
+      <method v="2" />
+    </configuration>
+    <configuration name="OneTimeCodeSerializationSample.testList" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":presentation:test" />
+            <option value="--tests" />
+            <option value="&quot;it.unibo.ds.chainvote.presentation.OneTimeCodeSerializationSample.testList&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>true</ForceTestExec>
+      <method v="2" />
+    </configuration>
+    <configuration name="OneTimeCodeSerializationSample.testSerialization" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":presentation:test" />
+            <option value="--tests" />
+            <option value="&quot;it.unibo.ds.chainvote.presentation.OneTimeCodeSerializationSample.testSerialization&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>true</ForceTestExec>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.ListOfChoiceSerializationTest" />
+        <item itemvalue="Gradle.ElectionSerializationTest" />
+        <item itemvalue="Gradle.ListOfChoiceSerializationTest.testDeserialization" />
+        <item itemvalue="Gradle.OneTimeCodeSerializationSample.testList" />
+        <item itemvalue="Gradle.OneTimeCodeSerializationSample.testSerialization" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="StandaloneScriptsStorage">
+    <option name="files">
+      <set>
+        <option value="$PROJECT_DIR$/chaincode-org1/build.gradle.kts" />
+      </set>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="31b3403b-9221-4d4c-b840-a0d88e021a94" name="Changes" comment="" />
+      <created>1690450460502</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1690450460502</updated>
+      <workItem from="1690450462376" duration="646000" />
+      <workItem from="1690466691660" duration="25011000" />
+      <workItem from="1690542652703" duration="5535000" />
+      <workItem from="1690633359477" duration="27920000" />
+      <workItem from="1691338769168" duration="3468000" />
+      <workItem from="1691391685953" duration="42189000" />
+      <workItem from="1691651207792" duration="5738000" />
+      <workItem from="1691658509412" duration="14798000" />
+      <workItem from="1691681362066" duration="59000" />
+      <workItem from="1691752065791" duration="7502000" />
+      <workItem from="1691914342667" duration="19889000" />
+      <workItem from="1692195982281" duration="24980000" />
+      <workItem from="1692340571033" duration="21000" />
+      <workItem from="1692340605404" duration="11000" />
+      <workItem from="1692340622248" duration="15000" />
+      <workItem from="1692340661852" duration="11230000" />
+      <workItem from="1692520105092" duration="593000" />
+      <workItem from="1692611797384" duration="25914000" />
+      <workItem from="1692810589165" duration="446000" />
+      <workItem from="1692860948875" duration="27167000" />
+      <workItem from="1692954516730" duration="21271000" />
+      <workItem from="1693229481894" duration="9271000" />
+      <workItem from="1693293484066" duration="30697000" />
+      <workItem from="1693553988843" duration="8800000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/presentation/src/main/java/it/unibo/ds/chainvote/presentation/ListOfChoiceConverter.java</url>
+          <line>30</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="org.hyperledger.fabric.contract.Context" memberName="stub" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+</project>

@@ -28,10 +28,10 @@ public final class GensonUtils {
 
     private GensonUtils() { }
 
-    public static class LiteralAsObjectConverter<T> implements Converter<T> {
+    private static class LiteralAsObjectConverter<T> implements Converter<T> {
         private final Converter<T> concreteConverter;
 
-        public LiteralAsObjectConverter(final Converter<T> concreteConverter) {
+        LiteralAsObjectConverter(final Converter<T> concreteConverter) {
             this.concreteConverter = concreteConverter;
         }
 
@@ -48,8 +48,11 @@ public final class GensonUtils {
             T instance = null;
             while (reader.hasNext()) {
                 reader.next();
-                if (reader.name().equals("value")) instance = concreteConverter.deserialize(reader, ctx);
-                else throw new IllegalStateException(String.format("Encountered unexpected property named '%s'", reader.name()));
+                if (reader.name().equals("value")) {
+                    instance = concreteConverter.deserialize(reader, ctx);
+                } else {
+                    throw new IllegalStateException(String.format("Encountered unexpected property named '%s'", reader.name()));
+                }
             }
             reader.endObject();
             return instance;
@@ -81,7 +84,7 @@ public final class GensonUtils {
             .withConverter(new ElectionConverter(), Election.class)
             .withConverter(new ElectionConverter(), ElectionImpl.class)
             .withConverter(new ChoiceConverter(), Choice.class)
-            .withConverter(new ListOfChoiceConverter(), new GenericType<>(){})
+            .withConverter(new ListOfChoiceConverter(), new GenericType<>() { })
             .create();
     }
 }

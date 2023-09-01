@@ -1,20 +1,30 @@
-# Binaries
+### Binaries ###
 */bin/
 
-# Gradle
+### Gradle ###
 build/
 .gradle/
 
-# IDE
-.idea/
+#### IDEs ###
+# IntelliJ IDEA
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
-# draw.io temp file
+### draw.io temp file ###
 *.dtmp
 *.bkp
 
-# MacOS file system
+### MacOS file system ###
 *.DS_Store
 
-# Chaincode jars/packages
+### Chaincode jars/packages ###
 *.jar
 *.tar.gz
