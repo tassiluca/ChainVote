@@ -19,8 +19,8 @@ export async function login(req: Request, res: Response, next: NextFunction) {
                 return next(responseError);
             }
 
-            const accessToken = signAccessToken({sub: user});
-            const refreshToken = signRefreshToken({sub: user});
+            const accessToken = signAccessToken({sub: user}, "1h");
+            const refreshToken = signRefreshToken({sub: user}, "2h");
 
             return res.status(200).send({
                 message: "Login successfull",

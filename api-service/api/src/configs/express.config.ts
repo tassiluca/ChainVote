@@ -3,6 +3,7 @@ import userRouter from "../routes/userRoute";
 import bodyParser from "body-parser"
 import { defaultErrorHandler } from "core-components";
 
+
 const ExpressConfig = (): Application => {
   const app = express();
 
