@@ -1,7 +1,7 @@
-import mongoose, {Schema} from "mongoose"
+import mongoose, {Model, Schema, Types} from "mongoose"
 import {MongoError} from "mongodb"
 import bcrypt from "bcrypt"
-import {isEmail, isStrongPassword} from 'validator';
+import {isEmail, isStrongPassword, isAlpha} from "validator";
 import { BadRequestError } from "../../errors/errors"
 
 const SALT_WORK_FACTOR: number = 10
@@ -11,19 +11,32 @@ export enum Roles {
   USER="user"
 }
 
+interface IJwtToken {
+    _id: Types.ObjectId;
+    token: string,
+    createdAt: Date,
+    updatedAt: Date
+}
 interface IUser {
-    email: string;
-    password: string;
-    firstName: string;
-    secondName: string;
-    role: Roles;
+    email: string,
+    password: string,
+    firstName: string,
+    secondName: string,
+    role: Roles,
+    tokens: IJwtToken[]
 }
 
-interface IUserDocument extends IUser, Document {
-  comparePassword: (password: string, next: (err: Error | undefined, same: any) => any) => Promise<boolean>;
+type UserDocumentProps = {
+    tokens: Types.DocumentArray<IJwtToken>;
+};
+
+interface UserDocumentMethods {
+    comparePassword: (password: string, next: (err: Error | undefined, same: any) => any) => Promise<boolean>;
 }
 
-let User = new Schema<IUserDocument>({
+type UserDocumentType = Model<IUser, {}, UserDocumentProps, UserDocumentMethods>
+
+let User = new Schema<IUser, UserDocumentType>({
     email: {
         type: String,
         required: true, 
@@ -37,12 +50,27 @@ let User = new Schema<IUserDocument>({
         required: true,
         validate: isStrongPassword
     },
-    firstName: String,
-    secondName: String,
+    firstName: {
+        type: String,
+        validate: isAlpha
+    },
+    secondName: {
+        type: String,
+        validate: isAlpha
+    },
     role: {
       type: String,
       enum: Roles,
       default: Roles.USER
+    },
+    tokens: {
+        type: [new Schema<IJwtToken>({
+            token: {
+                type: String,
+                required: true,
+                index: { unique: true}
+            }
+        },{ timestamps: true })]
     }
 });
 
@@ -92,7 +120,7 @@ User.methods.comparePassword = function (password: string | Buffer, next: (err: 
   });
 };
 
-const UserModel = mongoose.model<IUserDocument>('Users', User);
+const UserModel = mongoose.model<IUser, UserDocumentType>('Users', User);
 
 export {UserModel as User}
 

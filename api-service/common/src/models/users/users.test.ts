@@ -77,14 +77,42 @@ describe("User's field validation tests", () => {
         }
     });
 
+    test("Can't save a user with a numeric first or second name", async () => {
+       const user1 = new User({
+           ...correctUserData,
+           firstName: "test1"
+       });
+
+        const user2 = new User({
+            ...correctUserData,
+            secondName: "test2"
+        });
+
+        try {
+            await user1.save();
+        } catch(error) {
+            expect(error).toBeDefined();
+            expect(error).toBeInstanceOf(mongoose.Error.ValidationError);
+            console.log("Error: Users validation failed: firstName: Validator failed for path `firstName` with value `" + user1.firstName +"`");
+        }
+
+        try {
+            await user2.save();
+        } catch(error) {
+            expect(error).toBeDefined();
+            expect(error).toBeInstanceOf(mongoose.Error.ValidationError);
+            console.log("Error: Users validation failed: secondName: Validator failed for path `secondName` with value `" + user2.secondName +"`");
+        }
+    });
+
     test("Can't save a user with an email that is already present", async () => {
         const user = new User(correctUserData);
-    
+
         await user.save();
         expect(user._id).toBeDefined();
-    
+
         const sameUser = new User(correctUserData);
-    
+
         try {
             await sameUser.save();
         } catch(error) {

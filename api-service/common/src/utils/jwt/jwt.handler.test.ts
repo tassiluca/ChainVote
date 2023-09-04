@@ -1,7 +1,7 @@
 
-import { setupConnection, destroyConnection } from "../../utils/local.db"
+import { setupConnection, destroyConnection } from "../local.db"
 import { User } from "../../models/users/users";
-import { resolve } from "path";  
+import { resolve } from "path";
 import {
     ConfigurationObject,
     initJWTSystem,
