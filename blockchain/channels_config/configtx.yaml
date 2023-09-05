@@ -96,7 +96,7 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('org2MSP.admin', 'org2MSP.peer', 'org2MSP.client')"
+                Rule: "OR('org2MSP.admin', 'org2MSP.peer', 'org2MSP.client', 'org1MSP.admin', 'org1MSP.peer', 'org1MSP.admin')"
             Writers:
                 Type: Signature
                 Rule: "OR('org2MSP.admin', 'org2MSP.client')"
@@ -105,7 +105,7 @@ Organizations:
                 Rule: "OR('org2MSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('org2MSP.peer')"
+                Rule: "OR('org2MSP.peer', 'org1MSP.peer')"
 
         # leave this flag set to true.
         AnchorPeers:
@@ -338,6 +338,7 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *org1
+                - *org2
             Capabilities:
                 <<: *ApplicationCapabilities
 

@@ -26,11 +26,14 @@ sleep 3
 export FABRIC_CFG_PATH=$PWD/org2
 
 echo "Creating ch2 and join peer1-org2 and peer2-org2 to it"
+cp /tmp/hyperledger/org1/peer1/assets/ch1.block /tmp/hyperledger/org2/peer1/assets/
 peer channel create --channelID ch2 --file /tmp/hyperledger/org2/artifacts/channel.tx --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --outputBlock /tmp/hyperledger/org2/peer1/assets/ch2.block --tls --cafile /tmp/hyperledger/org2/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
 # join peer1-org2
 peer channel join --blockpath /tmp/hyperledger/org2/peer1/assets/ch2.block
+peer channel join --blockpath /tmp/hyperledger/org2/peer1/assets/ch1.block
 # join peer2-org2
 CORE_PEER_ADDRESS=localhost:10051 peer channel join --blockpath /tmp/hyperledger/org2/peer1/assets/ch2.block
+CORE_PEER_ADDRESS=localhost:10051 peer channel join --blockpath /tmp/hyperledger/org2/peer1/assets/ch1.block
 # update anchor peer
 peer channel update --channelID ch2 --file /tmp/hyperledger/org2/artifacts/org2MSPanchors.tx --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --tls --cafile /tmp/hyperledger/org2/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
 echo "Checking if peer1-org2 and peer2-org2 have the same ledger"
