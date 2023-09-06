@@ -11,23 +11,15 @@ export enum Roles {
   USER="user"
 }
 
-interface IJwtToken {
-    _id: Types.ObjectId;
-    token: string,
-    createdAt: Date,
-    updatedAt: Date
-}
 export interface IUser {
     email: string,
     password: string,
     firstName: string,
     secondName: string,
     role: Roles,
-    tokens: IJwtToken[]
 }
 
 interface UserDocumentProps extends IUser, Document {
-    tokens: Types.DocumentArray<IJwtToken>;
     comparePassword: (password: string, next: (err: Error | undefined, same: any) => any) => Promise<boolean>;
 }
 
@@ -59,15 +51,6 @@ let User = new Schema<IUser, UserDocumentType>({
       type: String,
       enum: Roles,
       default: Roles.USER
-    },
-    tokens: {
-        type: [new Schema<IJwtToken>({
-            token: {
-                type: String,
-                required: true,
-                index: { unique: true }
-            }
-        },{ timestamps: true })]
     }
 });
 
