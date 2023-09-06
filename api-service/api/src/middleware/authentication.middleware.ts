@@ -18,7 +18,6 @@ export async function authenticationHandler (req: Request, res: Response, next: 
             return next(new UnauthorizedError("Invalid access token"));
         }
         
-        
         const user = await User.findOne({email: email});
         if(user == null) {
             return next(new NotFoundError("User not found"));

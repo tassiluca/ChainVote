@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { BadRequestError } from "../..";
+import {BadRequestError, User} from "../..";
 
 export type ConfigurationObject = {
     ATPrivateKeyPath?: string;
@@ -28,7 +28,7 @@ export function initJWTSystem(configurations) {
 
 /**
  * Verify an access token
- * @param token 
+ * @param token
  * @returns 
  */
 export function verifyAccessToken<T>(token: string): T | undefined {
@@ -56,10 +56,9 @@ export function verifyRefreshToken<T>(token: string): T | undefined {
 
 /**
  * Sign a new access token
- * @param payload 
  * @returns 
  */
-export function signAccessToken(payload: Object, expiration: string | undefined = undefined) {
+export function signAccessToken(user, expiration: string | undefined = undefined) {
     const privateKeyPath = localConfigurations.ATPrivateKeyPath || process.env.AT_PRIVATE_KEY_PATH;
     if(!privateKeyPath) {
         throw new Error("Access token private key path is not set");
@@ -68,15 +67,14 @@ export function signAccessToken(payload: Object, expiration: string | undefined 
         expiration = "1m";
     }
     const privateKey: string = readFileSync(privateKeyPath, 'utf8');
-    return signJwt(payload, privateKey, {expiresIn: expiration});
+    return signJwt({sub: user}, privateKey, {expiresIn: expiration});
 }
 
 /**
  * Sign a new refresh token
- * @param payload 
  * @returns 
  */
-export function signRefreshToken(payload: Object, expiration: string | undefined = undefined) {
+export async function signRefreshToken(user, expiration: string | undefined = undefined) {
     const privateKeyPath = localConfigurations.RTPrivateKeyPath || process.env.RT_PRIVATE_KEY_PATH;
     
     if(!privateKeyPath) {
@@ -86,7 +84,16 @@ export function signRefreshToken(payload: Object, expiration: string | undefined
         expiration = "10m";
     }
     const privateKey: string = readFileSync(privateKeyPath, 'utf8');
-    return signJwt(payload, privateKey, {expiresIn: expiration});
+
+    const generatedToken = signJwt({sub: user}, privateKey, {expiresIn: expiration});
+    try {
+         user.tokens.push({token: generatedToken});
+         await user.save();
+    } catch (error) {
+        throw new Error("Error while saving the token: " + error.message);
+    }
+
+    return generatedToken;
 }
 
 

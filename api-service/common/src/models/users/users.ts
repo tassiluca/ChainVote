@@ -17,7 +17,7 @@ interface IJwtToken {
     createdAt: Date,
     updatedAt: Date
 }
-interface IUser {
+export interface IUser {
     email: string,
     password: string,
     firstName: string,
@@ -26,15 +26,12 @@ interface IUser {
     tokens: IJwtToken[]
 }
 
-type UserDocumentProps = {
+interface UserDocumentProps extends IUser, Document {
     tokens: Types.DocumentArray<IJwtToken>;
-};
-
-interface UserDocumentMethods {
     comparePassword: (password: string, next: (err: Error | undefined, same: any) => any) => Promise<boolean>;
 }
 
-type UserDocumentType = Model<IUser, {}, UserDocumentProps, UserDocumentMethods>
+type UserDocumentType = Model<IUser, {}, UserDocumentProps>
 
 let User = new Schema<IUser, UserDocumentType>({
     email: {
@@ -68,7 +65,7 @@ let User = new Schema<IUser, UserDocumentType>({
             token: {
                 type: String,
                 required: true,
-                index: { unique: true}
+                index: { unique: true }
             }
         },{ timestamps: true })]
     }

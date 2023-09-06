@@ -53,8 +53,9 @@ describe("Sign of jwt tokens", () => {
 
 
 describe("Verification of a jwt token", () => {
+
     test("Should verify an access token", () => {
-        const accessToken = signAccessToken({sub: user}); 
+        const accessToken = signAccessToken(user);
         const verifiedTokenResponse: any = verifyAccessToken(accessToken);
         expect(verifiedTokenResponse).toBeDefined();
         
@@ -65,8 +66,16 @@ describe("Verification of a jwt token", () => {
         expect(subscriber.role).toBe("user");
     });
 
-    test("Should verify a refresh token", () => {
-        const reshreshToken = signRefreshToken({sub: user}); 
+    test("Should verify a refresh token", async () => {
+        const reshreshToken= await signRefreshToken(user);
+        expect(user.tokens).not.toBe({});
+
+        await signRefreshToken(user);
+        const test = await User.findOne({email: user.email},null,{});
+        if(test) {
+            console.log(test.tokens[test.tokens.length - 1]);
+        }
+
         const verifiedTokenResponse: any = verifyRefreshToken(reshreshToken);
         expect(verifiedTokenResponse).toBeDefined();
         
@@ -80,9 +89,11 @@ describe("Verification of a jwt token", () => {
         expect(subscriber.role).toBe("user");
     });
 
-    test("Should refuse to validate an expired token ", () => {
+    test("Should refuse to validate an expired token ", async () => {
         const now = new Date();
-        const reshreshToken = signRefreshToken({sub: user}, "0s");
+        const reshreshToken = await signRefreshToken({sub: user}, "0s");
         expect(() => verifyRefreshToken(reshreshToken)).toThrow(BadRequestError);
     });
+
+
 }); 
