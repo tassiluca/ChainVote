@@ -28,7 +28,6 @@ afterEach(async () => {
 
 
 describe("Token's insertion in database",  () => {
-
     test("Should save a token successfully in database", async () => {
         const user = await new User({
             email: "claudio.rossi@email.it",
@@ -46,7 +45,6 @@ describe("Token's insertion in database",  () => {
 
 
 describe("Token's validation", () => {
-
     test("Can't save a token if the email's doesn't belong to any user",  async () => {
         try {
             await new Jwt({token: "test", email: "groppo.galoppo@bho.it"}).save();

@@ -1,16 +1,10 @@
 
-import { setupConnection, destroyConnection } from "../local.db"
+import {setupConnection, destroyConnection, dropCollectionsInDb} from "../local.db"
 import { User } from "../../models/users/users";
 import { resolve } from "path";
-import {
-    ConfigurationObject,
-    initJWTSystem,
-    signAccessToken,
-    signRefreshToken,
-    verifyAccessToken,
-    verifyRefreshToken
-} from "./jwt.handler"
-import { BadRequestError } from "../../errors/errors";
+import { ConfigurationObject, JwtHandler} from "./jwt.handler";
+import {Jwt} from "../../models/jwt/jwt";
+import {BadRequestError} from "../../errors/errors";
 
 const configuration: ConfigurationObject = {
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
@@ -29,8 +23,13 @@ beforeAll(async () => {
         firstName: "Claudio",
         secondName: "Rossi"
     });
+
+    JwtHandler.config(configuration);
     user = await user.save();
-    initJWTSystem(configuration);
+});
+
+afterEach(async () => {
+   await dropCollectionsInDb();
 });
 
 afterAll(async () => {
@@ -39,26 +38,34 @@ afterAll(async () => {
 
 describe("Sign of jwt tokens", () => {
     test("Should create an access token successfully",  () => {
-        const accessToken = signAccessToken({sub: user});
+        const accessToken = JwtHandler.getInstance().signAccessToken({sub: user});
         expect(accessToken).not.toBe({});
         expect(typeof accessToken).toBe("string");
     });
-    
-    test("Should create a refresh token successfully",  () => {
-        const refreshToken = signRefreshToken({sub: user});
+
+    test("Should create a refresh token successfully",  async () => {
+        const refreshToken = await JwtHandler.getInstance().signRefreshToken(user);
         expect(refreshToken).not.toBe({});
         expect(typeof refreshToken).toBe("string");
+        expect(await Jwt.exists({token: refreshToken, email: user.email, enabled: true})).toBeDefined();
     });
-}); 
 
+    test("When I create a new refresh token the others should be disabled", async () => {
+       const refreshToken = await JwtHandler.getInstance().signRefreshToken(user);
+       expect(await Jwt.exists({token: refreshToken, email: user.email, enabled: true})).toBeDefined();
+       const otherRefreshToken = await JwtHandler.getInstance().signRefreshToken(user);
+       expect(await Jwt.exists({token: otherRefreshToken, email: user.email, enabled: true})).toBeDefined();
+       expect(await Jwt.exists({token: refreshToken, email: user.email, enabled: false})).toBeDefined();
+
+    });
+});
 
 describe("Verification of a jwt token", () => {
-
-    test("Should verify an access token", () => {
-        const accessToken = signAccessToken(user);
-        const verifiedTokenResponse: any = verifyAccessToken(accessToken);
+    test("Should verify an access token", async () => {
+        const accessToken = JwtHandler.getInstance().signAccessToken(user);
+        const verifiedTokenResponse: any = await JwtHandler.getInstance().verifyAccessToken(accessToken);
         expect(verifiedTokenResponse).toBeDefined();
-        
+
         const subscriber = verifiedTokenResponse.sub;
         expect(subscriber.email).toBe("claudio.rossi@email.it");
         expect(subscriber.firstName).toBe("Claudio");
@@ -67,20 +74,11 @@ describe("Verification of a jwt token", () => {
     });
 
     test("Should verify a refresh token", async () => {
-        const reshreshToken= await signRefreshToken(user);
-        expect(user.tokens).not.toBe({});
+        const refreshToken= await JwtHandler.getInstance().signRefreshToken(user);
+        expect(await Jwt.exists({token: refreshToken, email: user.email, enabled: true})).toBeDefined();
 
-        await signRefreshToken(user);
-        const test = await User.findOne({email: user.email},null,{});
-        if(test) {
-            console.log(test.tokens[test.tokens.length - 1]);
-        }
-
-        const verifiedTokenResponse: any = verifyRefreshToken(reshreshToken);
+        const verifiedTokenResponse: any = await JwtHandler.getInstance().verifyRefreshToken(refreshToken);
         expect(verifiedTokenResponse).toBeDefined();
-        
-        //console.log(verifiedTokenResponse);
-
 
         const subscriber = verifiedTokenResponse.sub;
         expect(subscriber.email).toBe("claudio.rossi@email.it");
@@ -89,11 +87,31 @@ describe("Verification of a jwt token", () => {
         expect(subscriber.role).toBe("user");
     });
 
-    test("Should refuse to validate an expired token ", async () => {
-        const now = new Date();
-        const reshreshToken = await signRefreshToken({sub: user}, "0s");
-        expect(() => verifyRefreshToken(reshreshToken)).toThrow(BadRequestError);
+    test("Should block the use of an old refresh token", async () => {
+        const refreshToken= await JwtHandler.getInstance().signRefreshToken(user);
+        // Wait a good amount of time between the two requests.
+        await new Promise(r => setTimeout(r, 1000));
+        const other = await JwtHandler.getInstance().signRefreshToken(user);
+        let err;
+        try {
+            await JwtHandler.getInstance().verifyRefreshToken(refreshToken);
+        } catch (error) {
+            err = error;
+        }
+
+        expect(err).toBeDefined();
+        expect(err).toBeInstanceOf(Error);
     });
 
-
-}); 
+    test("Should refuse to validate an expired token ", async () => {
+        const refreshToken = await JwtHandler.getInstance().signRefreshToken(user, "0s");
+        let err;
+        try {
+            await JwtHandler.getInstance().verifyRefreshToken(refreshToken)
+        } catch (error) {
+            err = error;
+        }
+        expect(err).toBeDefined();
+        expect(err).toBeInstanceOf(BadRequestError);
+    });
+});

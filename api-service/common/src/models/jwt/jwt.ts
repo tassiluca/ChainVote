@@ -30,7 +30,6 @@ const jwtSchema = new Schema<IJsonWebToken>({
     },
     enabled: {
         type: Boolean,
-        required: true,
         default: true
     }
 }, {timestamps: { createdAt: true, updatedAt: false }});

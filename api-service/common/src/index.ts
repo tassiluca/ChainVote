@@ -24,10 +24,4 @@ export {
  * Exporting JWT handlers
  */
 export type {ConfigurationObject} from "./utils/jwt/jwt.handler";
-export {
-    initJWTSystem,
-    signAccessToken,
-    signRefreshToken,
-    verifyAccessToken,
-    verifyRefreshToken
-} from "./utils/jwt/jwt.handler";
+
