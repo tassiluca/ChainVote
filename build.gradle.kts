@@ -71,5 +71,6 @@ tasks.register("upAndDeploy") {
         restartNetwork()
         deployChaincode("chaincode-org1", "org1")
         deployChaincode("chaincode-org2", "org2")
+        deployChaincode("chaincode-org1", "org2")
     }
 }

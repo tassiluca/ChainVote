@@ -13,9 +13,9 @@ if [[ $# -lt 2 || ! -d $1 || ($2 != "org1" && $2 != "org2") ]]; then
   echo "  Note: if private data are used this script expect to find the \"collections-config.json\" config file located in the resources folder of the java project"
   echo
   echo "Options:"
-  echo "  <organization-name>      - The name of the organization, i.e. [org1|org2]"
-  echo "  <chaincode-path>         - The path to the java chaincode project"
-  echo "  [OPTIONAL] <peers>       - The comma-separated list of peers on which deploy the chaincode, i.e. [peer1|peer2]. Default value: all org peers'"
+  echo "  <organization-name>         - The name of the organization, i.e. [org1|org2]"
+  echo "  <chaincode-path>            - The path to the java chaincode project"
+  echo "  [OPTIONAL] <peers>          - The comma-separated list of peers on which deploy the chaincode, i.e. [peer1|peer2]. Default value: all org peers'"
   exit 1
 fi;
 
@@ -72,7 +72,9 @@ fi;
 
 echo "Checking installation"
 INSTALLED_CHAINCODE=$(peer lifecycle chaincode queryinstalled)
-PACKAGE_ID=$(echo "${INSTALLED_CHAINCODE}" | grep -oE 'Package ID: ([^,]+)' | cut -d ' ' -f 3)
+PACKAGE_ID=$(echo "${INSTALLED_CHAINCODE}" | grep -oE "Package ID: ${CHAINCODE_NAME}([^,]+)" | cut -d ' ' -f 3)
+
+echo "PACKAGE_ID: ${PACKAGE_ID}";
 
 if in_array "peer1" "${PEERS[@]}"; then
   CA_FILE=/tmp/hyperledger/"${CHAINCODE_ORG}"/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem

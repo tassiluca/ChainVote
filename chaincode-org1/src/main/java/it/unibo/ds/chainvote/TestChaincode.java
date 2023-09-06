@@ -4,6 +4,7 @@ import org.hyperledger.fabric.Logger;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
+import org.hyperledger.fabric.contract.annotation.Default;
 import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.Transaction;
 
@@ -17,6 +18,7 @@ import org.hyperledger.fabric.contract.annotation.Transaction;
         description = "Contract used to test cross-contract and cross-ledger invocation"
     )
 )
+@Default
 public final class TestChaincode implements ContractInterface {
 
     private final Logger logger = Logger.getLogger(this.getClass());
