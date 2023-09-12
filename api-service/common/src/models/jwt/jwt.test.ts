@@ -2,9 +2,8 @@ import { setupConnection, destroyConnection, dropCollectionsInDb } from "../../u
 
 import {User} from "../users/users";
 import {Jwt} from "./jwt";
-import {ConfigurationObject, initJWTSystem, signAccessToken} from "../../utils/jwt/jwt.handler";
+import {ConfigurationObject, JwtHandler} from "../../utils/jwt/jwt.handler";
 import {resolve} from "path";
-
 
 const configuration: ConfigurationObject = {
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
@@ -15,7 +14,7 @@ const configuration: ConfigurationObject = {
 
 beforeAll(async () => {
     await setupConnection();
-    initJWTSystem(configuration);
+    JwtHandler.config(configuration);
 });
 
 afterAll(async () => {
@@ -26,8 +25,30 @@ afterEach(async () => {
     await dropCollectionsInDb();
 });
 
-
 describe("Token's insertion in database",  () => {
+    test("Should manually save a token successfully in database", async () => {
+        const user = await new User({
+            email: "claudio.rossi@email.it",
+            password: "PassworD1!",
+            firstName: "Claudio",
+            secondName: "Rossi"
+        }).save();
+        const refreshToken = JwtHandler.getInstance().signRefreshToken(user, "10m");
+        const accessToken = JwtHandler.getInstance().signAccessToken(user, "5m");
+
+        const tokensRecord = await new Jwt({
+            refreshToken: refreshToken,
+            accessToken: accessToken,
+            email: user.email
+        }).save();
+
+        expect(tokensRecord._id).toBeDefined();
+        expect(tokensRecord.refreshToken).toBe(refreshToken);
+        expect(tokensRecord.accessToken).toBe(accessToken);
+        expect(tokensRecord.email).toBe(user.email);
+        expect(tokensRecord.enabled).toBe(true);
+    });
+
     test("Should save a token successfully in database", async () => {
         const user = await new User({
             email: "claudio.rossi@email.it",
@@ -35,19 +56,117 @@ describe("Token's insertion in database",  () => {
             firstName: "Claudio",
             secondName: "Rossi"
         }).save();
-        const accessToken = signAccessToken(user);
-        const token = await new Jwt({token: accessToken, email: user.email}).save();
-        expect(token._id).toBeDefined();
-        expect(token.token).toBe(accessToken);
-    });
 
+        const tokensRecord = await Jwt.createTokenPair(user);
+        expect(tokensRecord).toBeDefined();
+        expect(tokensRecord.email).toBe(user.email);
+    });
 });
 
+describe("Security features", () => {
+    test("Should block other tokens if I generate another one for a specific user", async () => {
+        const user = await new User({
+            email: "claudio.rossi@email.it",
+            password: "PassworD1!",
+            firstName: "Claudio",
+            secondName: "Rossi"
+        }).save();
+        // Create two token for the user, the first one will be blocked
+        const firstToken = await Jwt.createTokenPair(user);
+        const secondToken = await Jwt.createTokenPair(user);
+        expect(await Jwt.exists({refreshToken: secondToken, email: user.email, enabled: true})).toBeDefined();
+        expect(await Jwt.exists({refreshToken: firstToken, email: user.email, enabled: false})).toBeDefined();
+    });
+});
 
 describe("Token's validation", () => {
+
+    test("Should refresh a token", async  () => {
+        const user = await new User({
+            email: "claudio.rossi@email.it",
+            password: "PassworD1!",
+            firstName: "Claudio",
+            secondName: "Rossi"
+        }).save();
+
+        const jwtRecord = await Jwt.createTokenPair(user);
+        const oldVal = jwtRecord.accessToken;
+        await jwtRecord.refresh(user.email);
+        expect(jwtRecord.enabled).toBe(true);
+        expect(oldVal).not.toBe(jwtRecord.accessToken);
+
+        const updatedRecord: any = await Jwt.findOne({refreshToken: jwtRecord.refreshToken});
+        expect(updatedRecord).toBeDefined();
+        expect(updatedRecord.accessToken).toBe(jwtRecord.accessToken);
+    });
+
+    test("Should validate a valid token", async () => {
+        const user = await new User({
+            email: "user.one@email.it",
+            password: "PassworD1!",
+            firstName: "User",
+            secondName: "Uno"
+        }).save();
+        const jwt = await Jwt.createTokenPair(user);
+        const validationResponse = await jwt.validateAccessToken(user.email);
+
+        expect(validationResponse).toBeDefined();
+        expect(validationResponse.sub.email).toBe(user.email);
+        expect(validationResponse.sub.firstName).toBe(user.firstName);
+        expect(validationResponse.sub.secondName).toBe(user.secondName);
+    });
+
+
+    test("Shouldn't validate a token that belong to another user", async () => {
+        const user = await new User({
+            email: "user.one@email.it",
+            password: "PassworD1!",
+            firstName: "User",
+            secondName: "Uno"
+        }).save();
+
+        const otherUser = await new User({
+            email: "user.two@email.it",
+            password: "PassworD1!",
+            firstName: "User",
+            secondName: "Two"
+        }).save();
+
+        const jwt = await Jwt.createTokenPair(user);
+        try {
+            const validationResponse = await jwt.validateAccessToken(otherUser.email);
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
+    });
+
     test("Can't save a token if the email's doesn't belong to any user",  async () => {
         try {
-            await new Jwt({token: "test", email: "groppo.galoppo@bho.it"}).save();
+            await new Jwt({accessToken: "test", refreshToken: "test", email: "groppo.galoppo@bho.it"}).save();
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
+    });
+
+    test("Pre-validation fails if the email specified doesn't match with the subscriber's one", async () => {
+        const user1 = await new User({
+            email: "user.one@email.it",
+            password: "PassworD1!",
+            firstName: "User",
+            secondName: "Uno"
+        }).save();
+
+        const user2 = await new User({
+            email: "user.two@email.it",
+            password: "PassworD1!",
+            firstName: "User",
+            secondName: "Due"
+        }).save();
+
+        const token = await JwtHandler.getInstance().signRefreshToken(user2);
+
+        try {
+            await new Jwt({refreshToken: token, email: user1.email}).save();
         } catch (error) {
             expect(error).toBeDefined();
         }

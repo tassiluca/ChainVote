@@ -28,10 +28,6 @@ beforeAll(async () => {
     user = await user.save();
 });
 
-afterEach(async () => {
-   await dropCollectionsInDb();
-});
-
 afterAll(async () => {
     await destroyConnection();
 });
@@ -43,24 +39,16 @@ describe("Sign of jwt tokens", () => {
         expect(typeof accessToken).toBe("string");
     });
 
+
     test("Should create a refresh token successfully",  async () => {
         const refreshToken = await JwtHandler.getInstance().signRefreshToken(user);
         expect(refreshToken).not.toBe({});
         expect(typeof refreshToken).toBe("string");
-        expect(await Jwt.exists({token: refreshToken, email: user.email, enabled: true})).toBeDefined();
-    });
-
-    test("When I create a new refresh token the others should be disabled", async () => {
-       const refreshToken = await JwtHandler.getInstance().signRefreshToken(user);
-       expect(await Jwt.exists({token: refreshToken, email: user.email, enabled: true})).toBeDefined();
-       const otherRefreshToken = await JwtHandler.getInstance().signRefreshToken(user);
-       expect(await Jwt.exists({token: otherRefreshToken, email: user.email, enabled: true})).toBeDefined();
-       expect(await Jwt.exists({token: refreshToken, email: user.email, enabled: false})).toBeDefined();
-
     });
 });
 
 describe("Verification of a jwt token", () => {
+
     test("Should verify an access token", async () => {
         const accessToken = JwtHandler.getInstance().signAccessToken(user);
         const verifiedTokenResponse: any = await JwtHandler.getInstance().verifyAccessToken(accessToken);
@@ -75,7 +63,7 @@ describe("Verification of a jwt token", () => {
 
     test("Should verify a refresh token", async () => {
         const refreshToken= await JwtHandler.getInstance().signRefreshToken(user);
-        expect(await Jwt.exists({token: refreshToken, email: user.email, enabled: true})).toBeDefined();
+        expect(await Jwt.exists({refreshToken: refreshToken, email: user.email, enabled: true})).toBeDefined();
 
         const verifiedTokenResponse: any = await JwtHandler.getInstance().verifyRefreshToken(refreshToken);
         expect(verifiedTokenResponse).toBeDefined();
@@ -87,23 +75,7 @@ describe("Verification of a jwt token", () => {
         expect(subscriber.role).toBe("user");
     });
 
-    test("Should block the use of an old refresh token", async () => {
-        const refreshToken= await JwtHandler.getInstance().signRefreshToken(user);
-        // Wait a good amount of time between the two requests.
-        await new Promise(r => setTimeout(r, 1000));
-        const other = await JwtHandler.getInstance().signRefreshToken(user);
-        let err;
-        try {
-            await JwtHandler.getInstance().verifyRefreshToken(refreshToken);
-        } catch (error) {
-            err = error;
-        }
-
-        expect(err).toBeDefined();
-        expect(err).toBeInstanceOf(Error);
-    });
-
-    test("Should refuse to validate an expired token ", async () => {
+    test("Should refuse to validate an expired token", async () => {
         const refreshToken = await JwtHandler.getInstance().signRefreshToken(user, "0s");
         let err;
         try {
