@@ -93,7 +93,6 @@ describe("User's field validation tests", () => {
         } catch(error) {
             expect(error).toBeDefined();
             expect(error).toBeInstanceOf(mongoose.Error.ValidationError);
-            console.log("Error: Users validation failed: firstName: Validator failed for path `firstName` with value `" + user1.firstName +"`");
         }
 
         try {
@@ -101,7 +100,6 @@ describe("User's field validation tests", () => {
         } catch(error) {
             expect(error).toBeDefined();
             expect(error).toBeInstanceOf(mongoose.Error.ValidationError);
-            console.log("Error: Users validation failed: secondName: Validator failed for path `secondName` with value `" + user2.secondName +"`");
         }
     });
 

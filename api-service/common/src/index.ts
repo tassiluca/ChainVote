@@ -23,5 +23,7 @@ export {
 /**
  * Exporting JWT handlers
  */
-export type {ConfigurationObject} from "./utils/jwt/jwt.handler";
-
+import {JwtHandler as h, IJwtHandler} from "./utils/jwt/jwt.handler";
+const JwtHandler = h as unknown as IJwtHandler;
+export {JwtHandler}
+export type {IJwtHandler, ConfigurationObject} from "./utils/jwt/jwt.handler";

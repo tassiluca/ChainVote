@@ -9,8 +9,22 @@ export type ConfigurationObject = {
     RTPublicKeyPath?: string;
 };
 
-export class JwtHandler {
+export interface IJwtHandler {
+    config(config: ConfigurationObject): void
+    setConfig(key: string, value: any): void
+    getConfig(key: string): any
+}
 
+export interface IJwtHandlerInternal extends IJwtHandler {
+    getInstance(config: ConfigurationObject | {}): IJwtHandlerInternal
+    verifyAccessToken<T>(token: string): T | undefined
+    verifyRefreshToken<T>(token: string): T | undefined
+    signAccessToken(user, expiration: string | undefined): string
+    signRefreshToken(user, expiration: string | undefined): string
+}
+
+
+export class JwtHandler {
     private static INSTANCE: JwtHandler | null = null;
     private internalConfiguration: ConfigurationObject;
 
@@ -62,7 +76,7 @@ export class JwtHandler {
         return verifiedResponse;
     }
 
-    public signAccessToken(user, expiration: string | undefined = undefined) {
+    public signAccessToken(user, expiration: string | undefined = undefined): string {
         const privateKey: string = this.getKey("PR", "AT");
         if(!expiration) {
             expiration = "1m";
