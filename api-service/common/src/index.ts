@@ -5,6 +5,9 @@ export {
     User
 } from "./models/users/users";
 
+export {
+    Jwt
+} from  "./models/jwt/jwt";
 /**
  * Exporting errors
  */

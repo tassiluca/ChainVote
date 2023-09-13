@@ -1,6 +1,7 @@
 import {readFileSync} from "fs";
 import jwt, {SignOptions} from 'jsonwebtoken';
 import {BadRequestError} from "../..";
+import * as fs from "fs";
 
 export type ConfigurationObject = {
     ATPrivateKeyPath?: string;
@@ -38,6 +39,8 @@ export class JwtHandler {
         if(!config) {
             this.internalConfiguration = {}
         } else {
+            const paths = Object.values(config);
+            paths.forEach((path:string) => this.checkPath(path));
             this.internalConfiguration = config;
         }
     }
@@ -52,8 +55,9 @@ export class JwtHandler {
         return this.INSTANCE;
     }
 
-    public setConfig(key: string, value: any): void {
-        this.internalConfiguration[key] = value;
+    public setConfig(key: string, path: any): void {
+        this.checkPath(path);
+        this.internalConfiguration[key] = path;
     }
 
     public getConfig(key: string): any {
@@ -110,10 +114,18 @@ export class JwtHandler {
         }
 
         if(!keyPath) {
-            throw new Error(`Key path of type ${keyPath} for token type ${tokenType} is not set`);
+            throw new Error(`Key path of type ${keyType} for token type ${tokenType} is not set`);
         }
 
         return readFileSync(keyPath, 'utf8');
+    }
+
+    private checkPath(path: string) {
+        try {
+            fs.accessSync(path);
+        } catch(error) {
+            throw new Error("The path " + path + " doesn't exists");
+        }
     }
 
     private signJwt(payload: Object, pKey: string, options: SignOptions) {

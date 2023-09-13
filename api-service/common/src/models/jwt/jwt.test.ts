@@ -81,25 +81,6 @@ describe("Security features", () => {
 
 describe("Token's validation", () => {
 
-    test("Should refresh a token", async  () => {
-        const user = await new User({
-            email: "claudio.rossi@email.it",
-            password: "PassworD1!",
-            firstName: "Claudio",
-            secondName: "Rossi"
-        }).save();
-
-        const jwtRecord = await Jwt.createTokenPair(user);
-        const oldVal = jwtRecord.accessToken;
-        await jwtRecord.refresh(user.email);
-        expect(jwtRecord.enabled).toBe(true);
-        expect(oldVal).not.toBe(jwtRecord.accessToken);
-
-        const updatedRecord: any = await Jwt.findOne({refreshToken: jwtRecord.refreshToken});
-        expect(updatedRecord).toBeDefined();
-        expect(updatedRecord.accessToken).toBe(jwtRecord.accessToken);
-    });
-
     test("Should validate a valid token", async () => {
         const user = await new User({
             email: "user.one@email.it",
@@ -143,30 +124,6 @@ describe("Token's validation", () => {
     test("Can't save a token if the email's doesn't belong to any user",  async () => {
         try {
             await new Jwt({accessToken: "test", refreshToken: "test", email: "groppo.galoppo@bho.it"}).save();
-        } catch (error) {
-            expect(error).toBeDefined();
-        }
-    });
-
-    test("Pre-validation fails if the email specified doesn't match with the subscriber's one", async () => {
-        const user1 = await new User({
-            email: "user.one@email.it",
-            password: "PassworD1!",
-            firstName: "User",
-            secondName: "Uno"
-        }).save();
-
-        const user2 = await new User({
-            email: "user.two@email.it",
-            password: "PassworD1!",
-            firstName: "User",
-            secondName: "Due"
-        }).save();
-
-        const token = await JwtHandler.getInstance().signRefreshToken(user2);
-
-        try {
-            await new Jwt({refreshToken: token, email: user1.email}).save();
         } catch (error) {
             expect(error).toBeDefined();
         }

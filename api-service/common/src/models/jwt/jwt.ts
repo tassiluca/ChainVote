@@ -60,7 +60,7 @@ jwtSchema.static('createTokenPair', async function createTokenPair(user, expirat
 });
 
 
-jwtSchema.method("validateRefreshToken", async function validateRefreshToken(requestEmail:string){
+jwtSchema.method('validateRefreshToken', async function validateRefreshToken(requestEmail:string){
     let validationResponse;
     try {
         validationResponse = JwtHandler.getInstance().verifyRefreshToken(this.refreshToken)
@@ -75,7 +75,7 @@ jwtSchema.method("validateRefreshToken", async function validateRefreshToken(req
 });
 
 
-jwtSchema.method("validateAccessToken", async function validateAccessToken(requestEmail:string){
+jwtSchema.method('validateAccessToken', async function validateAccessToken(requestEmail:string){
     let validationResponse;
     try {
         validationResponse = JwtHandler.getInstance().verifyAccessToken(this.accessToken)
@@ -87,44 +87,6 @@ jwtSchema.method("validateAccessToken", async function validateAccessToken(reque
         throw new UnauthorizedError("Unauthorized user's email");
     }
     return validationResponse;
-});
-
-jwtSchema.method('refresh', async function refresh(requestEmail:string): Promise<HydratedDocument<IJsonWebToken, IJsonWebTokenMethods>> {
-    if(!this.enabled) {
-        throw new UnauthorizedError("Invalid token: Token is not enabled");
-    }
-    let validationResponse;
-    try {
-        validationResponse = this.validateRefreshToken(requestEmail);
-    } catch (error) {
-
-
-        // Disable tokens
-        await this.updateOne({refreshToken: this.refreshToken}, {enabled: false});
-        throw error;
-    }
-
-    const user = await User.findOne({email: this.email});
-    this.accessToken = JwtHandler.getInstance().signAccessToken(user);
-    await this.save();
-    return this;
-});
-
-jwtSchema.pre("save", function (next){
-    const decodedRefreshToken: any = JwtHandler.getInstance().verifyRefreshToken(this.refreshToken);
-    const decodedAccessToken: any = JwtHandler.getInstance().verifyAccessToken(this.accessToken);
-
-    const subRefresh = decodedRefreshToken.sub;
-    if(subRefresh && subRefresh.email !== this.email) {
-        return next(new BadRequestError("Email of the submited refresh token doesn't match with the one specified in the record"));
-    }
-
-    const subAccess = decodedAccessToken.sub;
-    if(subAccess && subAccess.email !== this.email) {
-        return next(new BadRequestError("Email of the submited access token doesn't match with the one specified in the record"));
-    }
-
-    return next();
 });
 
 
