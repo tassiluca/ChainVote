@@ -10,11 +10,11 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
     if(email && email !== user.email) {
         try {
             if(!isAllowed) {
-                throw new UnauthorizedError("Can't access to the resource");
+                next(new UnauthorizedError("Can't access to the resource"));
             }
             user = await User.findOne({email: email});
-            if(user == undefined || user == null) {
-                throw new NotFoundError("Can't find the user");
+            if(user == undefined) {
+                next(new NotFoundError("Can't find the user"));
             }
         } catch(error) {
             throw error; 

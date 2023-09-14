@@ -6,7 +6,7 @@ import {defaultErrorHandler} from "core-components";
 const ExpressConfig = (): Application => {
     const app = express();
 
-    // Express configurations 
+    // Express configurations
     app.use(express.json());
     app.use(bodyParser.json());
 

@@ -1,11 +1,10 @@
 import ExpressConfig from "./configs/express.config.js"
 import MongooseConfig from "./configs/mongoose.config.js";
-import { initJWTSystem } from "core-components";
+import { JwtHandler } from "core-components";
 import { resolve } from "path"
 
 
-
-initJWTSystem({
+JwtHandler.config({
     ATPublicKeyPath: resolve("./secrets/at_public.pem"),
     RTPublicKeyPath: resolve("./secrets/rt_public.pem")
 });

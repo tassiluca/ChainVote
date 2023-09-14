@@ -4,6 +4,7 @@ import {User} from "../users/users";
 import {Jwt} from "./jwt";
 import {ConfigurationObject, JwtHandler} from "../../utils/jwt/jwt.handler";
 import {resolve} from "path";
+import {UnauthorizedError} from "../../errors/errors";
 
 const configuration: ConfigurationObject = {
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
@@ -74,8 +75,20 @@ describe("Security features", () => {
         // Create two token for the user, the first one will be blocked
         const firstToken = await Jwt.createTokenPair(user);
         const secondToken = await Jwt.createTokenPair(user);
-        expect(await Jwt.exists({refreshToken: secondToken, email: user.email, enabled: true})).toBeDefined();
-        expect(await Jwt.exists({refreshToken: firstToken, email: user.email, enabled: false})).toBeDefined();
+
+        const existsEnabled = await Jwt.exists({
+            refreshToken: secondToken.refreshToken,
+            email: user.email,
+            enabled: true
+        });
+        const existsDisabled = await Jwt.exists({
+            refreshToken: firstToken.refreshToken,
+            email: user.email,
+            enabled: false
+        });
+
+        expect(existsEnabled).not.toBeNull();
+        expect(existsDisabled).not.toBeNull();
     });
 });
 
@@ -96,7 +109,6 @@ describe("Token's validation", () => {
         expect(validationResponse.sub.firstName).toBe(user.firstName);
         expect(validationResponse.sub.secondName).toBe(user.secondName);
     });
-
 
     test("Shouldn't validate a token that belong to another user", async () => {
         const user = await new User({
@@ -121,11 +133,40 @@ describe("Token's validation", () => {
         }
     });
 
-    test("Can't save a token if the email's doesn't belong to any user",  async () => {
+    test("Shouldn't save a token if the email's doesn't belong to any user",  async () => {
         try {
             await new Jwt({accessToken: "test", refreshToken: "test", email: "groppo.galoppo@bho.it"}).save();
         } catch (error) {
             expect(error).toBeDefined();
         }
     });
+
+    test("Shouldn't validate a token if the record is disabled",  async () => {
+        const user = await new User({
+            email: "user.one@email.it",
+            password: "PassworD1!",
+            firstName: "User",
+            secondName: "Uno"
+        }).save();
+
+        const jwt = await Jwt.createTokenPair(user);
+        jwt.enabled = false;
+        await jwt.save();
+
+        try {
+            const validationResponse = await jwt.validateAccessToken(user.email);
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error).toBeInstanceOf(UnauthorizedError);
+        }
+
+        try {
+            const validationResponse = await jwt.validateRefreshToken(user.email);
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error).toBeInstanceOf(UnauthorizedError);
+        }
+
+    });
 });
+

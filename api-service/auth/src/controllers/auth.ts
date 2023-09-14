@@ -1,12 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import { User, UnauthorizedError, BadRequestError, NotFoundError, InternalServerError } from "core-components"
-import { signRefreshToken, signAccessToken, verifyRefreshToken } from "core-components";
-
+import { User, UnauthorizedError, BadRequestError, NotFoundError } from "core-components"
+import { Jwt } from "core-components";
 
 export async function login(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
-    const responseError = new UnauthorizedError("Login error"); 
+    const responseError = new UnauthorizedError("Login error");
+
+    if(!(email)) {
+        return next(new BadRequestError("The request should contains the \"email\" field"));
+    }
 
     try {
         const user = await User.findOne({email: email});
@@ -14,19 +17,17 @@ export async function login(req: Request, res: Response, next: NextFunction) {
             return next(responseError); 
         }
         
-        user.comparePassword(password, function(error, isMatch) {
+        user.comparePassword(password, async function(error, isMatch) {
             if (error || !isMatch) {
                 return next(responseError);
             }
 
-            const accessToken = signAccessToken({sub: user}, "1h");
-            const refreshToken = signRefreshToken({sub: user}, "2h");
-
+            const tokens = await Jwt.createTokenPair(user);
             return res.status(200).send({
                 message: "Login successfull",
                 email: email,
-                accessToken: accessToken,
-                refreshToken: refreshToken
+                accessToken: tokens.accessToken,
+                refreshToken: tokens.refreshToken
             });
         });
        
@@ -52,26 +53,26 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
         return next(new NotFoundError("The specified email doesn't belong to any users"));
     }
 
-    try {
-        const decodedToken: any = verifyRefreshToken(refreshToken);
-        if(decodedToken) {
-            const decodedUser = decodedToken.sub;
-            if(decodedUser.email != email) {
-                return next(new UnauthorizedError("Invalid token"));
-            }
-            const accessToken = signAccessToken({sub: user});
-            const refhreshToken = signRefreshToken({sub: user});
+    const tokenRecord = await Jwt.findOne({refreshToken: refreshToken});
+    if(tokenRecord) {
+        try {
+            await tokenRecord.validateRefreshToken(email);
+        } catch (error) {
+            return next(error);
+        }
+
+        try {
+            const newTokens = await Jwt.createTokenPair(user);
             return res.status(200).send({
                 message: "Access token refreshed, the new one is attached to this response",
                 email: email,
-                accessToken: accessToken,
-                refreshToken: refhreshToken
+                accessToken: newTokens.accessToken,
+                refreshToken: newTokens.refreshToken
             });
-
-        } else {
-            return next(new InternalServerError("Error during the validation of the token"));
+        } catch (error) {
+            return next(Error("Error while creating a new token pair"));
         }
-    } catch(error) {
-        next(error);
+    } else {
+        return next(new NotFoundError("Can't find the requested token"));
     }
 }

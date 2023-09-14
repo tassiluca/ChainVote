@@ -113,7 +113,7 @@ export class JwtHandler {
             }
         }
 
-        if(!keyPath) {
+        if(keyPath === undefined) {
             throw new Error(`Key path of type ${keyType} for token type ${tokenType} is not set`);
         }
 

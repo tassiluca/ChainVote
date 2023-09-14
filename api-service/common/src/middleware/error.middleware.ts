@@ -1,6 +1,7 @@
 
 import { Request, Response, NextFunction } from "express";
 import { HttpBaseError } from "../errors/errors";
+import {StatusCodes} from "http-status-codes";
 
 export async function defaultErrorHandler(
     err: Error, 
@@ -16,7 +17,7 @@ export async function defaultErrorHandler(
             message: err.message
         });
     } else {
-        res.status(500);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR);
         return res.send("Error received" +  err.toString());
     }
 }

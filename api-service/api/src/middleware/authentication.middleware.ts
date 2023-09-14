@@ -1,23 +1,23 @@
-import { BadRequestError, NotFoundError, UnauthorizedError, verifyAccessToken } from "core-components";
+import { BadRequestError, NotFoundError} from "core-components";
 import {Request, Response, NextFunction} from "express";
 import { User } from "core-components";
-
+import { Jwt } from "core-components";
 
 export async function authenticationHandler (req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const authorizationHeader = req.headers["authorization"];
-    if(authorizationHeader == undefined || authorizationHeader == null) {
+    if(authorizationHeader == undefined) {
         return next(new BadRequestError("Authorization header not found in the request"));
     }
     
     const accessToken = authorizationHeader.split(" ")[1];
     try {
-        const decodedToken: any = verifyAccessToken(accessToken);
-        const subscriber = decodedToken.sub;
-        if(subscriber.email != email) {
-            return next(new UnauthorizedError("Invalid access token"));
+
+        const jwtRecord = await Jwt.findOne({accessToken: accessToken});
+        if(jwtRecord == null) {
+            return next(new NotFoundError("The submitted jwt token doesn't exists"));
         }
-        
+        await jwtRecord.validateAccessToken(email);
         const user = await User.findOne({email: email});
         if(user == null) {
             return next(new NotFoundError("User not found"));
