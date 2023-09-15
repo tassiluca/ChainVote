@@ -72,3 +72,15 @@ export class UnauthorizedError extends HttpBaseError {
         )
     } 
 }
+
+
+export class TooManyRequests extends HttpBaseError {
+    constructor(message?: string, stack?: string | undefined) {
+        super(
+            StatusCodes.TOO_MANY_REQUESTS,
+            "Too Many Requests",
+            message,
+            stack
+        )
+    }
+}
