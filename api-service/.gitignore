@@ -3,3 +3,6 @@ dbdata/
 
 # Env file
 .env
+
+# Cache
+cache/
