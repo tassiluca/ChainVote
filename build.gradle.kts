@@ -1,4 +1,5 @@
 import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -39,59 +40,76 @@ subprojects {
     }
 }
 
-// ---------------------------- chaincode deployment ------------------------------
-
-val blockchainGroup = "blockchain"
-
-typealias Chaincode = String
+data class Chaincode(val name: String, val org: String)
+val chaincodeOrg1 = Chaincode("chaincode-org1", "org1")
+val chaincodeOrg2 = Chaincode("chaincode-org2", "org2")
 data class Peer(val org: String, val name: String, val address: String)
-
-val peersOrg1 = setOf(Peer("org1", "peer1", "localhost:7051"), Peer("org1", "peer2", "localhost:8051"))
-val peersOrg2 = setOf(Peer("org2", "peer1", "localhost:9051"), Peer("org2", "peer2", "localhost:10051"))
+val peersOrg1 = setOf(
+    Peer("org1", "peer1", "localhost:7051"),
+    Peer("org1", "peer2", "localhost:8051"),
+)
+val peersOrg2 = setOf(
+    Peer("org2", "peer1", "localhost:9051"),
+    Peer("org2", "peer2", "localhost:10051"),
+)
 val allPeers = peersOrg1.plus(peersOrg2)
-
+val blockchainGroup = "blockchain"
 val blockchainDirectory = File("${projectDir.absolutePath}/blockchain")
 
-fun String.toArgs() = this.split(" ")
+fun executeCommand(
+    command: String,
+    directory: File = blockchainDirectory,
+    environments: Map<String, String>? = null,
+    stdout: OutputStream? = null,
+) = exec {
+    workingDir = directory
+    stdout?.let { standardOutput = it }
+    environments?.let { environment(it) }
+    commandLine(command.split(" "))
+}
 
-tasks.register<Exec>("downNetwork") {
+tasks.register("downNetwork") {
     group = blockchainGroup
-    workingDir = blockchainDirectory
-    commandLine("./network.sh down".toArgs())
+    executeCommand("./network.sh down")
 }
 
-tasks.register<Exec>("upNetwork") {
+tasks.register("upNetwork") {
     group = blockchainGroup
-    workingDir = blockchainDirectory
-    commandLine("./network.sh up".toArgs())
+    executeCommand("./network.sh up")
 }
 
-fun compile(chaincode: Chaincode) = exec {
-    workingDir = projectDir
-    commandLine("./gradlew $chaincode:installDist".toArgs())
-}
+fun Chaincode.compile() = executeCommand("./gradlew $name:installDist", projectDir)
 
-fun `package`(chaincode: String, organization: String) = exec {
-    workingDir = blockchainDirectory
-    environment(
-        mapOf(
-            "CORE_PEER_TLS_ENABLED" to "true",
-            "FABRIC_CFG_PATH" to "${projectDir.absolutePath}/blockchain/channels_config/$organization",
-        ),
-    )
-    commandLine("./bin/peer lifecycle chaincode package $chaincode.tar.gz --path ${projectDir.absolutePath}/$chaincode/build/install/$chaincode --lang java --label ${chaincode}_1.0".toArgs())
-}
+fun commonEnvironmentsFor(organization: String) = mapOf(
+    "CORE_PEER_TLS_ENABLED" to "true",
+    "FABRIC_CFG_PATH" to "${projectDir.absolutePath}/blockchain/channels_config/$organization",
+)
+
+fun environmentsFor(organization: String, peer: Peer) = mapOf(
+    "CORE_PEER_LOCALMSPID" to "${peer.org}MSP",
+    "CORE_PEER_MSPCONFIGPATH" to "/tmp/hyperledger/${peer.org}/admin/msp",
+    "CORE_PEER_TLS_ROOTCERT_FILE" to "/tmp/hyperledger/${peer.org}/${peer.name}/assets/tls-ca/tls-ca-cert.pem",
+    "CORE_PEER_ADDRESS" to peer.address,
+).plus(commonEnvironmentsFor(organization))
+
+fun Chaincode.`package`() = executeCommand(
+    "./bin/peer lifecycle chaincode package $name.tar.gz " +
+        "--path ${projectDir.absolutePath}/$name/build/install/$name " +
+        "--lang java " +
+        "--label ${name}_1.0",
+    environments = commonEnvironmentsFor(org),
+)
 
 tasks.register("packageChaincodeOrg1") {
     group = blockchainGroup
-    compile("chaincode-org1")
-    `package`("chaincode-org1", "org1")
+    chaincodeOrg1.compile()
+    chaincodeOrg1.`package`()
 }
 
 tasks.register("packageChaincodeOrg2") {
     group = blockchainGroup
-    compile("chaincode-org2")
-    `package`("chaincode-org2", "org2")
+    chaincodeOrg2.compile()
+    chaincodeOrg2.`package`()
 }
 
 tasks.register<Delete>("cleanAllPackages") {
@@ -99,39 +117,21 @@ tasks.register<Delete>("cleanAllPackages") {
     blockchainDirectory.listFiles { _, fileName -> fileName.endsWith(".tar.gz") }?.forEach { delete(it) }
 }
 
-fun install(chaincode: String, organization: String, peers: Set<Peer>) {
-    for (peer in peers) {
-        println(">> Installing on $peer")
-        exec {
-            environment(
-                mapOf(
-                    "CORE_PEER_TLS_ENABLED" to "true",
-                    "FABRIC_CFG_PATH" to "${projectDir.absolutePath}/blockchain/channels_config/$organization",
-                    "CORE_PEER_LOCALMSPID" to "${peer.org}MSP",
-                    "CORE_PEER_MSPCONFIGPATH" to "/tmp/hyperledger/${peer.org}/admin/msp",
-                    "CORE_PEER_TLS_ROOTCERT_FILE" to "/tmp/hyperledger/${peer.org}/${peer.name}/assets/tls-ca/tls-ca-cert.pem",
-                    "CORE_PEER_ADDRESS" to peer.address,
-                ),
-            )
-            workingDir = blockchainDirectory
-            commandLine("./bin/peer lifecycle chaincode install $chaincode.tar.gz".toArgs())
-        }
-    }
+infix fun Chaincode.installOn(peers: Set<Peer>) = peers.forEach {
+    println(">> Installing on $it")
+    executeCommand(
+        "./bin/peer lifecycle chaincode install $name.tar.gz",
+        environments = environmentsFor(org, it),
+    )
 }
 
 fun findPackageId(chaincode: String, organization: String): String? {
     val outputStream = ByteArrayOutputStream()
-    exec {
-        standardOutput = outputStream
-        workingDir = blockchainDirectory
-        environment(
-            mapOf(
-                "CORE_PEER_TLS_ENABLED" to "true",
-                "FABRIC_CFG_PATH" to "${projectDir.absolutePath}/blockchain/channels_config/$organization",
-            ),
-        )
-        commandLine("./bin/peer lifecycle chaincode queryinstalled".toArgs())
-    }
+    executeCommand(
+        "./bin/peer lifecycle chaincode queryinstalled",
+        environments = commonEnvironmentsFor(organization),
+        stdout = outputStream,
+    )
     return Regex("$chaincode[^,]+").find(outputStream.toString())?.value
 }
 
@@ -139,72 +139,49 @@ fun approve(chaincode: String, organization: String, peers: Set<Peer>, collectio
     val packageId = findPackageId(chaincode, organization)
     peers.map { it.org }.distinct().forEach { org ->
         println(">> Approval for $org")
-        val channel = "ch${org.last()}"
+        val channels = setOf("ch${org.last()}", "ch${organization.last()}").distinct()
         val approvalPeer = peers.find { it.org == org }!!
         val caFile = "/tmp/hyperledger/$org/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
-        val envs = mapOf(
-            "CORE_PEER_TLS_ENABLED" to "true",
-            "FABRIC_CFG_PATH" to "${projectDir.absolutePath}/blockchain/channels_config/$organization",
-            "CORE_PEER_LOCALMSPID" to "${org}MSP",
-            "CORE_PEER_MSPCONFIGPATH" to "/tmp/hyperledger/$org/admin/msp",
-            "CORE_PEER_TLS_ROOTCERT_FILE" to "/tmp/hyperledger/$org/${approvalPeer.name}/assets/tls-ca/tls-ca-cert.pem",
-            "CORE_PEER_ADDRESS" to approvalPeer.address,
-        )
-        val collectionsConfigArgs = collectionsConfig?.let { "--collections-config ${collectionsConfig.absolutePath}" } ?: ""
-        exec {
-            workingDir = blockchainDirectory
-            environment(envs)
-            commandLine("./bin/peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --name $chaincode --channelID $channel --version 1.0 --package-id $packageId --sequence 1 --cafile $caFile $collectionsConfigArgs --tls".toArgs())
-        }
-        if (org != organization) {
-            val channel1 = "ch${organization.last()}"
-            exec {
-                workingDir = blockchainDirectory
-                environment(envs)
-                commandLine("./bin/peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --name $chaincode --channelID $channel1 --version 1.0 --package-id $packageId --sequence 1 --cafile $caFile --tls".toArgs())
-            }
+        val collectionsArgs = collectionsConfig?.let { "--collections-config ${collectionsConfig.absolutePath}" } ?: ""
+        channels.forEach {
+            executeCommand(
+                "./bin/peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --name $chaincode --channelID $it --version 1.0 --package-id $packageId --sequence 1 --cafile $caFile $collectionsArgs --tls",
+                environments = environmentsFor(org, approvalPeer),
+            )
         }
     }
 }
 
 fun commit(chaincode: String, organization: String, peers: Set<Peer>, collectionsConfig: File? = null) {
+    println(">> Committing")
     val approvalPeer = peers.find { it.org == organization } ?: error("No peers found")
     val channel = "ch${organization.last()}"
     val caFile = "/tmp/hyperledger/$organization/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
-    val envs = mapOf(
-        "CORE_PEER_TLS_ENABLED" to "true",
-        "FABRIC_CFG_PATH" to "${projectDir.absolutePath}/blockchain/channels_config/$organization",
-        "CORE_PEER_LOCALMSPID" to "${organization}MSP",
-        "CORE_PEER_MSPCONFIGPATH" to "/tmp/hyperledger/$organization/admin/msp",
-        "CORE_PEER_TLS_ROOTCERT_FILE" to "/tmp/hyperledger/$organization/${approvalPeer.name}/assets/tls-ca/tls-ca-cert.pem",
-        "CORE_PEER_ADDRESS" to approvalPeer.address,
-    )
-    val collectionsConfigArgs = collectionsConfig?.let { "--collections-config ${collectionsConfig.absolutePath}" } ?: ""
+    val collectionsArgs = collectionsConfig?.let { "--collections-config ${collectionsConfig.absolutePath}" } ?: ""
     val peerAddresses = peers.asSequence().filter { it.org == organization }
         .map { "--peerAddresses ${it.address} --tlsRootCertFiles /tmp/hyperledger/${it.org}/${it.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem" }
         .joinToString(separator = " ")
-    exec {
-        workingDir = blockchainDirectory
-        environment(envs)
-        commandLine("./bin/peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --channelID $channel --name $chaincode --version 1.0 --sequence 1 --tls --cafile $caFile $peerAddresses $collectionsConfigArgs --tls".toArgs())
-    }
+    executeCommand(
+        "./bin/peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --channelID $channel --name $chaincode --version 1.0 --sequence 1 --tls --cafile $caFile $peerAddresses $collectionsArgs --tls",
+        environments = environmentsFor(organization, approvalPeer),
+    )
 }
 
-tasks.register("deployChaincodes") {
+tasks.register("upAndDeploy") {
     group = blockchainGroup
     finalizedBy("cleanAllPackages")
     dependsOn("downNetwork", "upNetwork", "packageChaincodeOrg1", "packageChaincodeOrg2")
     doLast {
-        with(Pair("chaincode-org2", "org2")) {
-            val collectionsConfig = File("${projectDir.absolutePath}/$first/src/main/resources/collections-config.json")
-            install(first, second, peersOrg2)
-            approve(first, second, peersOrg2, collectionsConfig)
-            commit(first, second, peersOrg2, collectionsConfig)
+        with(chaincodeOrg2) {
+            val collectionsConfig = File("${projectDir.absolutePath}/$name/src/main/resources/collections-config.json")
+            this installOn peersOrg2
+            approve(name, org, peersOrg2, collectionsConfig)
+            commit(name, org, peersOrg2, collectionsConfig)
         }
-        with(Pair("chaincode-org1", "org1")) {
-            install(first, second, allPeers)
-            approve(first, second, allPeers)
-            commit(first, second, allPeers)
+        with(chaincodeOrg1) {
+            this installOn allPeers
+            approve(name, org, allPeers)
+            commit(name, org, allPeers)
         }
     }
 }
