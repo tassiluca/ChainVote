@@ -89,6 +89,7 @@ tasks.register("downNetwork") {
 tasks.register("upNetwork") {
     group = blockchainGroup
     description = "Bring up the blockchain network"
+    dependsOn("downNetwork")
     doLast { executeCommand("./network.sh up") }
 }
 
@@ -196,7 +197,7 @@ fun Chaincode.deploy(peers: Set<Peer>, collectionsConfig: File? = null) {
 tasks.register("upAndDeploy") {
     group = blockchainGroup
     description = "Up the network and deploy both chaincodes"
-    dependsOn("downNetwork", "upNetwork", "packageChaincodes")
+    dependsOn("upNetwork", "packageChaincodes")
     doLast {
         chaincodeOrg1.deploy(allPeers)
         chaincodeOrg2.apply {
