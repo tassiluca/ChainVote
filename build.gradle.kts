@@ -196,12 +196,12 @@ fun Chaincode.deploy(peers: Set<Peer>, collectionsConfig: File? = null) {
 tasks.register("upAndDeploy") {
     group = blockchainGroup
     description = "Up the network and deploy both chaincodes"
-    finalizedBy("cleanAllPackages")
     dependsOn("downNetwork", "upNetwork", "packageChaincodes")
     doLast {
         chaincodeOrg1.deploy(allPeers)
         chaincodeOrg2.apply {
             deploy(peersOrg2, File("${projectDir.absolutePath}/$name/src/main/resources/collections-config.json"))
         }
+        executeCommand("./gradlew cleanAllPackages", projectDir)
     }
 }
