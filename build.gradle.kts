@@ -141,11 +141,19 @@ fun approve(chaincode: String, organization: String, peers: Set<Peer>, collectio
         println(">> Approval for $org")
         val channels = setOf("ch${org.last()}", "ch${organization.last()}").distinct()
         val approvalPeer = peers.find { it.org == org }!!
-        val caFile = "/tmp/hyperledger/$org/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
-        val collectionsArgs = collectionsConfig?.let { "--collections-config ${collectionsConfig.absolutePath}" } ?: ""
-        channels.forEach {
+        channels.forEach { channel ->
             executeCommand(
-                "./bin/peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --name $chaincode --channelID $it --version 1.0 --package-id $packageId --sequence 1 --cafile $caFile $collectionsArgs --tls",
+                "./bin/peer lifecycle chaincode approveformyorg " +
+                    "--orderer localhost:7050 " +
+                    "--ordererTLSHostnameOverride orderer1-org0 " +
+                    "--name $chaincode " +
+                    "--channelID $channel " +
+                    "--version 1.0 " +
+                    "--package-id $packageId " +
+                    "--sequence 1 " +
+                    "--cafile /tmp/hyperledger/$org/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem " +
+                    (collectionsConfig?.let { "--collections-config ${it.absolutePath} " } ?: "" ) +
+                    "--tls",
                 environments = environmentsFor(org, approvalPeer),
             )
         }
@@ -156,13 +164,21 @@ fun commit(chaincode: String, organization: String, peers: Set<Peer>, collection
     println(">> Committing")
     val approvalPeer = peers.find { it.org == organization } ?: error("No peers found")
     val channel = "ch${organization.last()}"
-    val caFile = "/tmp/hyperledger/$organization/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
-    val collectionsArgs = collectionsConfig?.let { "--collections-config ${collectionsConfig.absolutePath}" } ?: ""
     val peerAddresses = peers.asSequence().filter { it.org == organization }
         .map { "--peerAddresses ${it.address} --tlsRootCertFiles /tmp/hyperledger/${it.org}/${it.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem" }
         .joinToString(separator = " ")
     executeCommand(
-        "./bin/peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --channelID $channel --name $chaincode --version 1.0 --sequence 1 --tls --cafile $caFile $peerAddresses $collectionsArgs --tls",
+        "./bin/peer lifecycle chaincode commit " +
+            "--orderer localhost:7050 " +
+            "--ordererTLSHostnameOverride orderer1-org0 " +
+            "--channelID $channel " +
+            "--name $chaincode " +
+            "--version 1.0 " +
+            "--sequence 1 " +
+            "--cafile /tmp/hyperledger/$organization/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem " +
+            "$peerAddresses " +
+            (collectionsConfig?.let { "--collections-config ${it.absolutePath} " } ?: "" ) +
+            "--tls",
         environments = environmentsFor(organization, approvalPeer),
     )
 }
