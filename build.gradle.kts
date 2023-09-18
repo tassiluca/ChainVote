@@ -116,7 +116,7 @@ tasks.register("packageChaincodes") {
 
 tasks.register<Delete>("cleanAllPackages") {
     group = blockchainGroup
-    description = "Remove all already generated packages"
+    description = "Remove all generated packages"
     blockchainDirectory.listFiles { _, fileName -> fileName.endsWith(".tar.gz") }?.forEach { delete(it) }
 }
 
