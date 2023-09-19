@@ -1,58 +1,55 @@
 package it.unibo.ds.chainvote.contract;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import it.unibo.ds.chainvote.assets.BallotAsset;
+import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.assets.ElectionAsset;
+import it.unibo.ds.chainvote.assets.ElectionInfoAsset;
 import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.assets.Election;
-import it.unibo.ds.core.assets.ElectionImpl;
+import it.unibo.ds.core.factory.ElectionFactory;
+import it.unibo.ds.core.manager.ElectionManagerImpl;
 import it.unibo.ds.core.utils.Choice;
-import it.unibo.ds.core.utils.Utils;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
-import org.hyperledger.fabric.contract.annotation.Contact;
 import org.hyperledger.fabric.contract.annotation.Contract;
 import org.hyperledger.fabric.contract.annotation.Default;
 import org.hyperledger.fabric.contract.annotation.Info;
-import org.hyperledger.fabric.contract.annotation.License;
 import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.KeyValue;
 import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
-import com.owlike.genson.Genson;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * A contract.
+ * Contracts managing {@link Election}.
  */
 @Contract(
-        name = "basic",
+        name = "ElectionContract",
         info = @Info(
-                title = "Asset Transfer",
-                description = "The hyperlegendary asset transfer",
-                version = "0.0.1-SNAPSHOT",
-                license = @License(
-                        name = "Apache 2.0 License",
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.html"),
-                contact = @Contact(
-                        email = "a.transfer@example.com",
-                        name = "Adrian Transfer",
-                        url = "https://hyperledger.example.com")))
+                title = "Election Contract",
+                description = "Contract used to manage election"
+                )
+)
 
 @Default
-public final class ElectionTransfer implements ContractInterface {
+public final class ElectionContract implements ContractInterface {
+
+    private static final String CHANNEL_INFO_NAME = "ch2";
+    private static final String CHAINCODE_INFO_NAME = "chaincode-org1";
 
     private final Genson genson = new Genson();
 
     private enum ElectionTransferErrors {
         ELECTION_NOT_FOUND,
         ELECTION_ALREADY_EXISTS,
-        ELECTION_INVALID_ARGUMENT
+        ELECTION_INVALID_ARGUMENT,
+        ELECTION_INVALID_BALLOT_ARGUMENT
     }
 
     /**
@@ -61,64 +58,87 @@ public final class ElectionTransfer implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void initLedger(final Context ctx) {
-        ChaincodeStub stub = ctx.getStub();
+        // ChaincodeStub stub = ctx.getStub();
     }
 
     /**
-     * Create a {@link Election}.
+     * Create a {@link ElectionAsset}.
      * @param ctx the {@link Context}.
-     * @param goal the goal of the new {@link Election}.
-     * @param votersNumber the voters number of the new {@link Election}.
-     * @param startingDate the starting {@link LocalDateTime} of the new {@link Election}.
-     * @param endingDate the ending {@link LocalDateTime} of the new {@link Election}.
-     * @param choices the list of {@link Choice} of the new {@link Election}.
-     * @return the new {@link Election}.
+     * @param electionID the ID of the new {@link ElectionAsset}.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public ElectionAsset createElection(final Context ctx, final String goal, final long votersNumber,
-                                        final LocalDateTime startingDate, final LocalDateTime endingDate,
-                                        final List<Choice> choices) {
+    public void createElection(final Context ctx, final String electionID) {
+        this.createElection(ctx, electionID, new HashMap<>());
+    }
+
+    /**
+     * Create a {@link ElectionAsset}.
+     * @param ctx the {@link Context}.
+     * @param electionID the ID of the new {@link ElectionAsset}.
+     * @param results the results of the new {@link ElectionAsset}.
+     */
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
+    public void createElection(final Context ctx, final String electionID, final Map<Choice, Long> results) {
         ChaincodeStub stub = ctx.getStub();
-        String electionID = Utils.calculateID(goal, startingDate, endingDate, choices);
         if (electionExists(ctx, electionID)) {
-            String errorMessage = String.format("Election %s already exists", electionID);
+            String errorMessage = String.format("ElectionAsset %s already exists", electionID);
             System.err.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_ALREADY_EXISTS.toString());
         }
 
+        ElectionInfoAsset electionInfo = readElectionInfo(ctx, electionID);
+
         try {
-            Election election = new ElectionImpl.Builder().goal(goal)
-                    .voters(votersNumber)
-                    .start(startingDate)
-                    .end(endingDate)
-                    .choices(choices)
-                    .build();
-            String sortedJson = genson.serialize(election);
-            stub.putStringState(electionID, sortedJson);
-            return new ElectionAsset("", election);
+            Election election = ElectionFactory
+                    .buildElection(electionInfo.getAsset(), results);
+            ElectionAsset electionAsset = new ElectionAsset(electionID, election);
+            String sortedJson = genson.serialize(electionAsset.getAsset());
+            stub.putStringState(electionAsset.getElectionId(), sortedJson);
         } catch (IllegalArgumentException e) {
-            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
             throw new ChaincodeException(e.getMessage(), ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
         }
     }
 
     /**
-     * Return the {@link Election}.
+     * Return the {@link ElectionAsset}.
      * @param ctx the {@link Context}.
-     * @param electionID the {@link Election}'s ID of the {@link Election} to retrieve.
-     * @return the {@link Election}.
+     * @param electionID the ID of the {@link ElectionAsset} to retrieve.
+     * @return the {@link ElectionAsset}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public ElectionAsset readElection(final Context ctx, final String electionID) {
+    public ElectionAsset readElectionAsset(final Context ctx, final String electionID) {
         if (electionExists(ctx, electionID)) {
             ChaincodeStub stub = ctx.getStub();
             String electionJSON = stub.getStringState(electionID);
-            return genson.deserialize(electionJSON, ElectionAsset.class);
+            return new ElectionAsset(electionID, genson.deserialize(electionJSON, Election.class));
         } else {
-            String errorMessage = String.format("Election %s does not exist", electionID);
+            String errorMessage = String.format("ElectionAsset %s does not exist", electionID);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_NOT_FOUND.toString());
         }
+    }
+
+    /**
+     * Return the {@link ElectionInfoAsset}.
+     * @param ctx the {@link Context}.
+     * @param electionID the ID of the {@link ElectionInfoAsset} to retrieve.
+     * @return the {@link ElectionInfoAsset}.
+     */
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public ElectionInfoAsset readElectionInfo(final Context ctx, final String electionID) {
+        var response = ctx.getStub().invokeChaincodeWithStringArgs(CHAINCODE_INFO_NAME,
+                "{\"function\":\"readElectionInfoAsset\", \"Args\":[\"" + electionID + "\"]}",
+                CHANNEL_INFO_NAME);
+        System.out.println(response.getStatusCode());
+        System.out.println(response.getMessage());
+        /*
+        ChaincodeStub stub = ctx.getStub();
+        // TODO complete how to read from different channels assets.
+        String electionJSON = stub.getStringState(electionID);
+        return genson.deserialize(electionJSON, ElectionInfoAsset.class);
+         */
+        return null;
     }
 
     /**
@@ -126,41 +146,47 @@ public final class ElectionTransfer implements ContractInterface {
      * @param ctx the {@link Context}.
      * @param choice the {@link Choice} of the {@link Ballot}.
      * @param voterID the voter ID of the {@link Ballot}.
-     * @param electionID the {@link Election}'s ID.
-     * @return the {@link Ballot} casted.
+     * @param electionID the {@link ElectionAsset}'s ID.
+     * @return the {@link Ballot} cast.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public BallotAsset castVote(final Context ctx, final Choice choice, final String voterID, final String electionID) {
+    public Ballot castVote(final Context ctx, final Choice choice, final String voterID, final String electionID) {
         ChaincodeStub stub = ctx.getStub();
         if (!electionExists(ctx, electionID)) {
-            String errorMessage = String.format("Election %s does not exist", electionID);
+            String errorMessage = String.format("ElectionAsset %s does not exist", electionID);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_NOT_FOUND.toString());
         }
+        Ballot ballot = null;
         try {
-            BallotAsset ballot = new BallotAsset(electionID, new BallotImpl.Builder().electionID(electionID)
-            .voterID(voterID)
-            .dateUnchecked(LocalDateTime.now())
-            .choiceUnchecked(choice)
-            .build());
-            ElectionAsset election = readElection(ctx, electionID);
-            election.getAsset().castVote(ballot.getAsset());
-
-            String electionJson = genson.serialize(election);
-            // Required ??
-            deleteAsset(ctx, electionID);
-            stub.putStringState(electionID, electionJson);
-            return ballot;
+            ballot = new BallotImpl.Builder().electionID(electionID)
+                .voterID(voterID)
+                .date(LocalDateTime.now())
+                .choice(choice)
+                .build();
         } catch (IllegalArgumentException e) {
-            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
             throw new ChaincodeException(e.getMessage(), ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
         }
+        ElectionInfoAsset electionInfo = readElectionInfo(ctx, electionID);
+        ElectionAsset election = readElectionAsset(ctx, electionID);
+        try {
+            ElectionManagerImpl.getInstance().castVote(election.getAsset(), electionInfo.getAsset(), ballot);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            throw new ChaincodeException(ElectionTransferErrors.ELECTION_INVALID_BALLOT_ARGUMENT.toString());
+        }
+        String electionJson = genson.serialize(election.getAsset());
+        // Required ??
+        deleteAsset(ctx, electionID);
+        stub.putStringState(election.getElectionId(), electionJson);
+        return ballot;
     }
 
     /**
-     * Delete an {@link Election}.
+     * Delete an {@link ElectionAsset}.
      * @param ctx the {@link Context}.
-     * @param electionID the {@link Election}'s ID.
+     * @param electionID the {@link ElectionAsset}'s ID.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void deleteAsset(final Context ctx, final String electionID) {
@@ -175,10 +201,10 @@ public final class ElectionTransfer implements ContractInterface {
     }
 
     /**
-     * Check if an {@link Election} exists.
+     * Check if an {@link ElectionAsset} exists.
      * @param ctx the {@link Context}.
-     * @param electionID the {@link Election}'s ID.
-     * @return if the {@link Election} exists.
+     * @param electionID the {@link ElectionAsset}'s ID.
+     * @return if the {@link ElectionAsset} exists.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean electionExists(final Context ctx, final String electionID) {

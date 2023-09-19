@@ -1,11 +1,13 @@
 package it.unibo.ds.chainvote;
 
+import com.owlike.genson.annotation.JsonProperty;
+import it.unibo.ds.core.assets.ElectionInfo;
 import org.hyperledger.fabric.Logger;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
-import org.hyperledger.fabric.contract.annotation.Contract;
-import org.hyperledger.fabric.contract.annotation.Info;
-import org.hyperledger.fabric.contract.annotation.Transaction;
+import org.hyperledger.fabric.contract.annotation.*;
+
+import java.util.Objects;
 
 /**
  * Sample contract used to test cross-contract and cross-ledger invocation
@@ -27,4 +29,5 @@ public final class TestChaincode implements ContractInterface {
         logger.info("[SAMPLE FUNCTION] called");
         return true;
     }
+
 }

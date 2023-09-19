@@ -1,25 +1,19 @@
 package it.unibo.ds.chainvote.presentation;
 
-import com.owlike.genson.Context;
-import com.owlike.genson.Converter;
-import com.owlike.genson.GenericType;
-import com.owlike.genson.Genson;
-import com.owlike.genson.GensonBuilder;
-import com.owlike.genson.Wrapper;
+import com.owlike.genson.*;
 import com.owlike.genson.annotation.HandleClassMetadata;
 import com.owlike.genson.convert.ChainedFactory;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.core.assets.Ballot;
-import it.unibo.ds.core.assets.BallotImpl;
-import it.unibo.ds.core.assets.Election;
-import it.unibo.ds.core.assets.ElectionImpl;
+import it.unibo.ds.core.assets.*;
 import it.unibo.ds.core.codes.OneTimeCode;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import it.unibo.ds.core.utils.Choice;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class for Genson (de)serialization stuffs.
@@ -35,6 +29,20 @@ public final class GensonUtils {
         return new GensonBuilder()
             .useRuntimeType(true)
             .useConstructorWithArguments(true)
+            .withConverter(new OneTimeCodeConverter(), OneTimeCodeImpl.class)
+            .withConverter(new OneTimeCodeConverter(), OneTimeCode.class)
+            .withConverter(new LocalDateTimeConverter(), LocalDateTime.class)
+            .withConverter(new BallotConverter(), Ballot.class)
+            .withConverter(new BallotConverter(), BallotImpl.class)
+            .withConverter(new ElectionConverter(), Election.class)
+            .withConverter(new ElectionConverter(), ElectionImpl.class)
+            .withConverter(new ElectionInfoConverter(), ElectionInfo.class)
+            .withConverter(new ElectionInfoConverter(), ElectionInfoImpl.class)
+            .withConverter(new ChoiceConverter(), Choice.class)
+            .withDeserializer(new ListOfChoiceConverter(), new GenericType<List<Choice>>() {})
+            //.withConverter(new ListOfChoiceConverter(), new GenericType<List<Choice>>() {})
+            .withDeserializer(new MapOfChoiceLongConverter(), new GenericType<Map<Choice, Long>>() {})
+            //.withConverter(new MapOfChoiceLongConverter(), new GenericType<Map<Choice, Long>>() {})
             .withConverterFactory(new ChainedFactory() {
                 @Override
                 protected Converter<?> create(final Type type, final Genson genson, final Converter<?> nextConverter) {
@@ -45,15 +53,6 @@ public final class GensonUtils {
                     }
                 }
             })
-            .withConverter(new OneTimeCodeConverter(), OneTimeCodeImpl.class)
-            .withConverter(new OneTimeCodeConverter(), OneTimeCode.class)
-            .withConverter(new LocalDateTimeConverter(), LocalDateTime.class)
-            .withConverter(new BallotConverter(), BallotImpl.class)
-            .withConverter(new BallotConverter(), Ballot.class)
-            .withConverter(new ElectionConverter(), Election.class)
-            .withConverter(new ElectionConverter(), ElectionImpl.class)
-            .withConverter(new ChoiceConverter(), Choice.class)
-            .withConverter(new ListOfChoiceConverter(), new GenericType<>() { })
             .create();
     }
 

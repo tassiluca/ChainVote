@@ -98,20 +98,6 @@ public final class BallotImpl implements Ballot {
             }
         }
 
-        private void checkDate(final LocalDateTime date) {
-            if (date.isAfter(LocalDateTime.now())) {
-                throw new IllegalArgumentException("Invalid date: " + date
-                        + "\nRequired a date before now");
-            }
-        }
-
-        private void checkDates(final LocalDateTime date, final LocalDateTime start, final LocalDateTime end) {
-            if (!Utils.isDateBetween(date, start, end)) {
-                throw new IllegalArgumentException("Invalid date: " + date
-                        + "\nRequired a date after " + start + " and before " + end);
-            }
-        }
-
         private void checkChoice(final Choice choice, final List<Choice> choices) {
             if (!choices.contains(choice)) {
                 throw new IllegalArgumentException("Choice expressed " + choice
@@ -134,37 +120,15 @@ public final class BallotImpl implements Ballot {
         }
 
         @Override
-        public BallotBuilder dateUnchecked(final LocalDateTime date) {
+        public BallotBuilder date(final LocalDateTime date) {
             check(date);
-            checkDate(date);
             this.date = Optional.of(date);
             return this;
         }
 
         @Override
-        public BallotBuilder dateChecked(final LocalDateTime date, final LocalDateTime start,
-                                         final LocalDateTime end) {
-            check(date);
-            check(start);
-            check(end);
-            checkDate(date);
-            checkDates(date, start, end);
-            this.date = Optional.of(date);
-            return this;
-        }
-
-        @Override
-        public BallotBuilder choiceUnchecked(final Choice choice) {
+        public BallotBuilder choice(final Choice choice) {
             check(choice);
-            this.choice = Optional.of(choice);
-            return this;
-        }
-
-        @Override
-        public BallotBuilder choiceChecked(final Choice choice, final List<Choice> choices) {
-            check(choice);
-            check(choices);
-            checkChoice(choice, choices);
             this.choice = Optional.of(choice);
             return this;
         }

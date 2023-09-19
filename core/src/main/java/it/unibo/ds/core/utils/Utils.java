@@ -1,6 +1,7 @@
 package it.unibo.ds.core.utils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +33,10 @@ public final class Utils {
      */
     public static String calculateID(final String goal, final LocalDateTime start, final LocalDateTime end,
                                      final List<Choice> choices) {
-        return String.valueOf(Objects.hash(goal, start, end, choices));
+        List<Choice> choicesToUse = new ArrayList<>(choices);
+        if (!choicesToUse.contains(FixedVotes.INFORMAL_BALLOT.getChoice())) {
+            choicesToUse.add(FixedVotes.INFORMAL_BALLOT.getChoice());
+        }
+        return String.valueOf(Objects.hash(goal, start, end, choicesToUse));
     }
 }

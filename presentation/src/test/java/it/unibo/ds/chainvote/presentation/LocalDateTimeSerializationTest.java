@@ -25,14 +25,15 @@ public class LocalDateTimeSerializationTest {
             TIME_MAP.get("h"), TIME_MAP.get("m"), TIME_MAP.get("s"));
 
     private String getSerialized() {
-        return "{\"day\":\"" + TIME_MAP.get("d") + "\",\"month\":\"" + TIME_MAP.get("M") + "\",\"year\":\""
-                + TIME_MAP.get("y") + "\",\"hour\":\"" + TIME_MAP.get("h") + "\",\"minute\":\""
+        return "{\"year\":\"" + TIME_MAP.get("y") + "\",\"month\":\"" + TIME_MAP.get("M") + "\",\"day\":\""
+                + TIME_MAP.get("d") + "\",\"hour\":\"" + TIME_MAP.get("h") + "\",\"minute\":\""
                 + TIME_MAP.get("m") + "\",\"second\":\"" + TIME_MAP.get("s") + "\"}";
     }
 
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(DATE);
+        System.out.println(serialized);
         assertEquals(getSerialized(), serialized);
     }
 

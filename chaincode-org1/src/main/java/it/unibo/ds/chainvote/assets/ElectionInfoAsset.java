@@ -1,28 +1,28 @@
 package it.unibo.ds.chainvote.assets;
 
 import com.owlike.genson.annotation.JsonProperty;
-import it.unibo.ds.core.assets.Election;
+import it.unibo.ds.core.assets.ElectionInfo;
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 
 import java.util.Objects;
 
 @DataType()
-public final class ElectionAsset {
+public class ElectionInfoAsset {
 
     @Property()
     private final String electionId;
 
     @Property()
-    private final Election asset;
+    private final ElectionInfo asset;
 
-    public ElectionAsset(@JsonProperty("electionID") final String electionId,
-                         @JsonProperty("asset") final Election asset) {
+    public ElectionInfoAsset(@JsonProperty("electionID") final String electionId,
+                             @JsonProperty("asset") final ElectionInfo asset) {
         this.asset = asset;
-        this.electionId = electionId;
+        this.electionId = electionId.equals("") ? this.asset.getElectionID() : electionId;
     }
 
-    public Election getAsset() {
+    public ElectionInfo getAsset() {
         return this.asset;
     }
 
@@ -37,7 +37,7 @@ public final class ElectionAsset {
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final ElectionAsset that = (ElectionAsset) o;
+        final ElectionInfoAsset that = (ElectionInfoAsset) o;
         return Objects.equals(asset, that.getAsset()) && electionId.equals(that.getElectionId());
     }
 
@@ -48,6 +48,6 @@ public final class ElectionAsset {
 
     @Override
     public String toString() {
-        return "ElectionAsset{asset=" + asset + ", electionID=" + electionId + "}";
+        return "ElectionInfoAsset{asset=" + asset + ", electionID=" + electionId + "}";
     }
 }

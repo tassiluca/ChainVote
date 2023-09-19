@@ -33,29 +33,30 @@ public class BallotConverter implements Converter<Ballot> {
         LocalDateTime date = null;
         String choice = null;
 
-        reader.next();
-        if ("electionID".equals(reader.name())) {
-            electionID = reader.valueAsString();
+        while (reader.hasNext()) {
+            reader.next();
+            if ("electionID".equals(reader.name())) {
+                electionID = reader.valueAsString();
+            } else if ("voterID".equals(reader.name())) {
+                voterID = reader.valueAsString();
+            } else if ("date".equals(reader.name())) {
+                date = GensonUtils.create().deserialize(reader.valueAsString(), LocalDateTime.class);
+            } else if ("choice".equals(reader.name())) {
+                choice = reader.valueAsString();
+            } else {
+                throw new JsonBindingException("Malformed json");
+            }
         }
-        reader.next();
-        if ("voterID".equals(reader.name())) {
-            voterID = reader.valueAsString();
-        }
-        reader.next();
-        if ("date".equals(reader.name())) {
-            date = GensonUtils.create().deserialize(reader.valueAsString(), LocalDateTime.class);
-        }
-        reader.next();
-        if ("choice".equals(reader.name())) {
-            choice = reader.valueAsString();
+        if (electionID == null || voterID == null || date == null || choice == null) {
+            throw new JsonBindingException("Malformed json: missing value");
         }
 
         Ballot ballot;
         try {
             ballot = new BallotImpl.Builder().electionID(electionID)
                     .voterID(voterID)
-                    .dateUnchecked(date)
-                    .choiceUnchecked(new Choice(choice))
+                    .date(date)
+                    .choice(new Choice(choice))
                     .build();
         } catch (IllegalArgumentException | NoSuchElementException e) {
             throw new JsonBindingException("Malformed json");
