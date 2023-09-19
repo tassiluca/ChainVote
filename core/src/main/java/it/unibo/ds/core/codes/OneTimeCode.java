@@ -13,8 +13,9 @@ public interface OneTimeCode {
 
     /**
      * Consume this code, i.e. make it unusable for future transactions.
+     * @throws AlreadyConsumedCodeException if it was already consumed
      */
-    void consume();
+    void consume() throws AlreadyConsumedCodeException;
 
     /**
      * @return true if this code has already been consumed, false otherwise.

@@ -21,9 +21,11 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
     }
 
     @Override
-    public OneTimeCode generateFor(final C context, final String electionId, final String userId) {
+    public OneTimeCode generateFor(final C context, final String electionId, final String userId) throws AlreadyGeneratedCodeException {
         if (repo.get(context, electionId, userId).isPresent()) {
-            throw new IllegalStateException("A one-time-code for the given election and user has already been generated");
+            throw new AlreadyGeneratedCodeException(
+                "A one-time-code for election `" + electionId + "` and user `" + userId + "` has already been generated"
+            );
         }
         final var generated = codeGenerator.generateCode();
         repo.put(context, electionId, userId, generated);
@@ -37,14 +39,13 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
             return false;
         }
         return !searchedCode.get().consumed();
-        // return !(searchedCode.isEmpty() || !searchedCode.get().equals(code)) || !searchedCode.get().consumed();
     }
 
     @Override
-    public void invalidate(final C context, final String electionId, final String userId, final OneTimeCode code) {
+    public void invalidate(final C context, final String electionId, final String userId, final OneTimeCode code) throws NotValidCodeException, AlreadyConsumedCodeException {
         final var searchedCode = repo.get(context, electionId, userId);
         if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
-            throw new IllegalStateException("The given code is not associated to the given user for the given voting");
+            throw new NotValidCodeException("The given code is not associated to the given user for the given voting");
         }
         searchedCode.get().consume();
         repo.replace(context, electionId, userId, searchedCode.get());

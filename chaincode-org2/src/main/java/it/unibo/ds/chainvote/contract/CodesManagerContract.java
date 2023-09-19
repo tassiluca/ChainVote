@@ -3,9 +3,12 @@ package it.unibo.ds.chainvote.contract;
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
+import it.unibo.ds.core.codes.AlreadyConsumedCodeException;
+import it.unibo.ds.core.codes.AlreadyGeneratedCodeException;
 import it.unibo.ds.core.codes.CodeManager;
 import it.unibo.ds.core.codes.CodeManagerImpl;
 import it.unibo.ds.core.codes.CodeRepository;
+import it.unibo.ds.core.codes.NotValidCodeException;
 import it.unibo.ds.core.codes.OneTimeCode;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.hyperledger.fabric.contract.Context;
@@ -41,6 +44,7 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
 
     private enum CodeManagerErrors {
         INCOMPLETE_INPUT,
+        NOT_VALID_CODE,
         ALREADY_GENERATED_CODE,
         ALREADY_INVALIDATED_CODE
     }
@@ -75,7 +79,7 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
         final String electionId = getStringFromTransient(transientMap, TransientData.ELECTION_ID.key);
         try {
             return codeManager.generateFor(context, electionId, userId).getCode();
-        } catch (IllegalStateException exception) {
+        } catch (AlreadyGeneratedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), CodeManagerErrors.ALREADY_GENERATED_CODE.toString());
         }
     }
@@ -110,8 +114,10 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
         final Long code = getLongFromTransient(transientMap, TransientData.CODE.key);
         try {
             codeManager.invalidate(context, electionId, userId, new OneTimeCodeImpl(code));
-        } catch (IllegalStateException exception) {
+        } catch (AlreadyConsumedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), CodeManagerErrors.ALREADY_INVALIDATED_CODE.toString());
+        } catch (NotValidCodeException exception) {
+            throw new ChaincodeException(exception.getMessage(), CodeManagerErrors.NOT_VALID_CODE.toString());
         }
     }
 
