@@ -33,8 +33,8 @@ class OneTimeCodeTest {
 
     @Test
     void testConsumeMultipleTimes() {
-//        assertDoesNotThrow(code::consume);
-//        assertThrows(IllegalStateException.class, () -> code.consume());
+        assertDoesNotThrow(code::consume);
+        assertThrows(AlreadyConsumedCodeException.class, () -> code.consume());
     }
 
     @Test

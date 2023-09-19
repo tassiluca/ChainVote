@@ -24,7 +24,7 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
     public OneTimeCode generateFor(final C context, final String electionId, final String userId) throws AlreadyGeneratedCodeException {
         if (repo.get(context, electionId, userId).isPresent()) {
             throw new AlreadyGeneratedCodeException(
-                "A one-time-code for election `" + electionId + "` and user `" + userId + "` has already been generated"
+                "A one-time-code for the given election and user has already been generated"
             );
         }
         final var generated = codeGenerator.generateCode();

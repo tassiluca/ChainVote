@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,20 +38,20 @@ class CodeManagerTest {
     });
 
     @Test
-    void testGenerate() throws AlreadyGeneratedCodeException {
-        final var code = localManager.generateFor(ELECTION_ID, USER_ID);
+    void testGenerate() {
+        final var code = assertDoesNotThrow(() -> localManager.generateFor(ELECTION_ID, USER_ID));
         assertNotNull(code);
     }
 
     @Test
-    void testGenerateMultipleTimes() throws AlreadyGeneratedCodeException {
-//        localManager.generateFor(ELECTION_ID, USER_ID);
-//        assertThrows(IllegalStateException.class, () -> localManager.generateFor(ELECTION_ID, USER_ID));
+    void testGenerateMultipleTimes() {
+        assertDoesNotThrow(() -> localManager.generateFor(ELECTION_ID, USER_ID));
+        assertThrows(AlreadyGeneratedCodeException.class, () -> localManager.generateFor(ELECTION_ID, USER_ID));
     }
 
     @Test
-    void testCodeValidity() throws AlreadyGeneratedCodeException {
-        final OneTimeCode code = localManager.generateFor(ELECTION_ID, USER_ID);
+    void testCodeValidity() {
+        final OneTimeCode code = assertDoesNotThrow(() -> localManager.generateFor(ELECTION_ID, USER_ID));
         assertTrue(localManager.isValid(ELECTION_ID, USER_ID, code));
     }
 
@@ -60,25 +61,25 @@ class CodeManagerTest {
     }
 
     @Test
-    void testCodeInvalidation() throws AlreadyGeneratedCodeException, AlreadyConsumedCodeException, NotValidCodeException {
-        final OneTimeCode code = localManager.generateFor(ELECTION_ID, USER_ID);
-        localManager.invalidate(ELECTION_ID, USER_ID, code);
+    void testCodeInvalidation() {
+        final OneTimeCode code = assertDoesNotThrow(() -> localManager.generateFor(ELECTION_ID, USER_ID));
+        assertDoesNotThrow(() -> localManager.invalidate(ELECTION_ID, USER_ID, code));
         assertFalse(localManager.isValid(ELECTION_ID, USER_ID, code));
     }
 
     @Test
-    void testCodeInvalidationMultipleTimes() throws AlreadyGeneratedCodeException, AlreadyConsumedCodeException, NotValidCodeException {
-//        final OneTimeCode code = localManager.generateFor(ELECTION_ID, USER_ID);
-//        localManager.invalidate(ELECTION_ID, USER_ID, code);
-//        assertThrows(IllegalStateException.class, () -> localManager.invalidate(ELECTION_ID, USER_ID, code));
+    void testCodeInvalidationMultipleTimes() {
+        final OneTimeCode code = assertDoesNotThrow(() -> localManager.generateFor(ELECTION_ID, USER_ID));
+        assertDoesNotThrow(() -> localManager.invalidate(ELECTION_ID, USER_ID, code));
+        assertThrows(AlreadyConsumedCodeException.class, () -> localManager.invalidate(ELECTION_ID, USER_ID, code));
     }
 
     @Test
     void testAttemptInvalidationOnUnknownCode() {
-//        assertThrows(
-//            IllegalStateException.class,
-//            () -> localManager.invalidate(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
-//        );
+        assertThrows(
+            NotValidCodeException.class,
+            () -> localManager.invalidate(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
+        );
     }
 
     @Test
