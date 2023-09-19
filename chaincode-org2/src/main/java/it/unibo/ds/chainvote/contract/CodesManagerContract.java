@@ -16,6 +16,7 @@ import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -54,6 +55,11 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
         TransientData(final String key) {
             this.key = key;
         }
+    }
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public void testCCI(final Context context) {
+        context.getStub().invokeChaincodeWithStringArgs("chaincode-org1", List.of("sampleFunction"), "ch1");
     }
 
     /**
