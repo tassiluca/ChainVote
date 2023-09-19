@@ -65,9 +65,11 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public Long generateFor(final Context context) {
         return applyToTransients(context, (electionId, userId) -> {
-            // TODO: ASAP chaincode-org1 is ready
+            // TODO ASAP chaincode-org1 is ready
             //  if (!electionExists(context, electionId)) {
-            //      throw new ChaincodeException("The given election doesn't exists", CodeManagerErrors.ALREADY_GENERATED_CODE.toString());
+            //      throw new ChaincodeException(
+            //          "The given election doesn't exists", CodeManagerErrors.ALREADY_GENERATED_CODE.toString()
+            //      );
             //  }
             try {
                 return codeManager.generateFor(context, electionId, userId).getCode();
@@ -133,21 +135,24 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
     }
 
     private void doWithTransients(final Context context, final TriConsumer<String, String, Long> action) {
-        applyToTransients(context, (e, u, c) -> { action.accept(e, u, c); return null; });
+        applyToTransients(context, (electionId, userId, code) -> {
+            action.accept(electionId, userId, code);
+            return null;
+        });
     }
 
     private <T> T applyToTransients(final Context context, final TriFunction<String, String, Long, T> action) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getStringFromTransient(transientMap, ELECTION_ID.key);
-        final String userId = getStringFromTransient(transientMap, USER_ID.key);
-        final Long code = getLongFromTransient(transientMap, CODE.key);
+        final String electionId = getStringFromTransient(transientMap, ELECTION_ID.getKey());
+        final String userId = getStringFromTransient(transientMap, USER_ID.getKey());
+        final Long code = getLongFromTransient(transientMap, CODE.getKey());
         return action.apply(electionId, userId, code);
     }
 
     private <T> T applyToTransients(final Context context, final BiFunction<String, String, T> action) {
         final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getStringFromTransient(transientMap, ELECTION_ID.key);
-        final String userId = getStringFromTransient(transientMap, USER_ID.key);
+        final String electionId = getStringFromTransient(transientMap, ELECTION_ID.getKey());
+        final String userId = getStringFromTransient(transientMap, USER_ID.getKey());
         return action.apply(electionId, userId);
     }
 

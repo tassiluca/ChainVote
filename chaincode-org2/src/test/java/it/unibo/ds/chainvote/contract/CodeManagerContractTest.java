@@ -1,6 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
@@ -22,7 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 final class CodeManagerContractTest {
 
@@ -67,6 +70,7 @@ final class CodeManagerContractTest {
         }
 
         @Test
+        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenAlreadyExists() {
             final byte[] mockedCode = genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
@@ -169,6 +173,7 @@ final class CodeManagerContractTest {
         }
 
         @Test
+        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenAttemptToInvalidateMultipleTimes() {
             final var code = new OneTimeCodeImpl(CODE);
             assertDoesNotThrow(code::consume);

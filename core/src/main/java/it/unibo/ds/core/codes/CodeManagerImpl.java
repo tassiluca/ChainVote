@@ -21,7 +21,11 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
     }
 
     @Override
-    public OneTimeCode generateFor(final C context, final String electionId, final String userId) throws AlreadyGeneratedCodeException {
+    public OneTimeCode generateFor(
+        final C context,
+        final String electionId,
+        final String userId
+    ) throws AlreadyGeneratedCodeException {
         if (repo.get(context, electionId, userId).isPresent()) {
             throw new AlreadyGeneratedCodeException(
                 "A one-time-code for the given election and user has already been generated"
@@ -42,7 +46,12 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
     }
 
     @Override
-    public void invalidate(final C context, final String electionId, final String userId, final OneTimeCode code) throws NotValidCodeException, AlreadyConsumedCodeException {
+    public void invalidate(
+        final C context,
+        final String electionId,
+        final String userId,
+        final OneTimeCode code
+    ) throws NotValidCodeException, AlreadyConsumedCodeException {
         final var searchedCode = repo.get(context, electionId, userId);
         if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
             throw new NotValidCodeException("The given code is not associated to the given user for the given voting");
