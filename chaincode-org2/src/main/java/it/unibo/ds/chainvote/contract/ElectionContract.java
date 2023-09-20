@@ -58,6 +58,7 @@ public final class ElectionContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void initLedger(final Context ctx) {
+        System.out.println("[EC] initLedger");
         // ChaincodeStub stub = ctx.getStub();
     }
 
@@ -68,6 +69,7 @@ public final class ElectionContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void createElection(final Context ctx, final String electionID) {
+        System.out.println("[EC] createElection");
         this.createElection(ctx, electionID, new HashMap<>());
     }
 
@@ -79,6 +81,7 @@ public final class ElectionContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void createElection(final Context ctx, final String electionID, final Map<Choice, Long> results) {
+        System.out.println("[EC] createElection with results");
         ChaincodeStub stub = ctx.getStub();
         if (electionExists(ctx, electionID)) {
             String errorMessage = String.format("ElectionAsset %s already exists", electionID);
@@ -108,6 +111,7 @@ public final class ElectionContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public ElectionAsset readElectionAsset(final Context ctx, final String electionID) {
+        System.out.println("[EC] readElectionAsset");
         if (electionExists(ctx, electionID)) {
             ChaincodeStub stub = ctx.getStub();
             String electionJSON = stub.getStringState(electionID);
@@ -127,6 +131,7 @@ public final class ElectionContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public ElectionInfoAsset readElectionInfo(final Context ctx, final String electionID) {
+        System.out.println("[EC] readElectionInfo");
         var response = ctx.getStub().invokeChaincodeWithStringArgs(CHAINCODE_INFO_NAME,
                 "{\"function\":\"readElectionInfoAsset\", \"Args\":[\"" + electionID + "\"]}",
                 CHANNEL_INFO_NAME);
@@ -151,6 +156,7 @@ public final class ElectionContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public Ballot castVote(final Context ctx, final Choice choice, final String voterID, final String electionID) {
+        System.out.println("[EC] castVote");
         ChaincodeStub stub = ctx.getStub();
         if (!electionExists(ctx, electionID)) {
             String errorMessage = String.format("ElectionAsset %s does not exist", electionID);
@@ -190,6 +196,7 @@ public final class ElectionContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void deleteAsset(final Context ctx, final String electionID) {
+        System.out.println("[EC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
 
         if (!electionExists(ctx, electionID)) {
@@ -208,6 +215,7 @@ public final class ElectionContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean electionExists(final Context ctx, final String electionID) {
+        System.out.println("[EC] electionExists");
         ChaincodeStub stub = ctx.getStub();
         String electionJSON = stub.getStringState(electionID);
         return (electionJSON != null && !electionJSON.isEmpty());
