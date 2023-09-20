@@ -14,8 +14,8 @@ interface IJsonWebToken {
 }
 
 interface IJsonWebTokenMethods {
-    validateRefreshToken(requestEmail:string);
-    validateAccessToken(requestEmail:string);
+    validateRefreshToken();
+    validateAccessToken();
 }
 
 interface IJsonWebTokenModel extends Model<IJsonWebToken, {}, IJsonWebTokenMethods> {
@@ -59,27 +59,19 @@ jwtSchema.static('createTokenPair', async function createTokenPair(user, expirat
 });
 
 
-jwtSchema.method('validateRefreshToken', async function validateRefreshToken(requestEmail:string){
+jwtSchema.method('validateRefreshToken', async function validateRefreshToken(){
     if(!this.enabled) {
         throw new UnauthorizedError("The token is disabled, please login again");
     }
-    const validationResponse:any = JwtHandler.getInstance().verifyRefreshToken(this.refreshToken);
-    if(this.email !== requestEmail || validationResponse && this.email !== validationResponse.sub.email) {
-        throw new UnauthorizedError("Unauthorized user's email");
-    }
-    return validationResponse;
+    return JwtHandler.getInstance().verifyRefreshToken(this.refreshToken);;
 });
 
 
-jwtSchema.method('validateAccessToken', async function validateAccessToken(requestEmail:string){
+jwtSchema.method('validateAccessToken', async function validateAccessToken(){
     if(!this.enabled) {
         throw new UnauthorizedError("The token is disabled, please login again");
     }
-    const validationResponse:any = JwtHandler.getInstance().verifyAccessToken(this.accessToken);
-    if(this.email !== requestEmail || (validationResponse && this.email !== validationResponse.sub.email)) {
-        throw new UnauthorizedError("Unauthorized user's email");
-    }
-    return validationResponse;
+    return JwtHandler.getInstance().verifyAccessToken(this.accessToken);;
 });
 
 const JwtModel = model<IJsonWebToken, IJsonWebTokenModel>('Jwt', jwtSchema);

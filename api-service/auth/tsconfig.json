@@ -26,8 +26,12 @@
         "noFallthroughCasesInSwitch": true, /* Enable error reporting for fallthrough cases in switch statements. */
         /* Skip type checking .d.ts files that are included with TypeScript. */
         "skipLibCheck": true,
+        "types": [
+            "jest"
+        ],
         "typeRoots": [
             "./src/@types",
+            "./node_modules/@types"
         ], /* Skip type checking all .d.ts files. */
     },
     "include": [

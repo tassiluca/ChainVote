@@ -5,14 +5,14 @@ import { Jwt } from "core-components";
 export async function login(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
-    const responseError = new UnauthorizedError("Login error");
 
-    if(!(email)) {
-        return next(new BadRequestError("The request should contains the \"email\" field"));
+    if(!email || !password) {
+        return next(new BadRequestError("Please provide email and password"));
     }
 
     try {
         const user = await User.findOne({email: email});
+        const responseError = new UnauthorizedError("Login error");
         if (user === null || user === undefined) {
             return next(responseError); 
         }
@@ -40,12 +40,8 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
     const email = req.body.email;
     const refreshToken = req.body.refreshToken;
 
-    if(!(email)) {
-        return next(new BadRequestError("The request should contains the \"email\" field"));
-    }
-
-    if(!(refreshToken)) {
-        return next(new BadRequestError("The request should contains the \"refreshToken\" field"));
+    if(!email || !refreshToken) {
+        return next(new BadRequestError("Invalid request, please retry"));
     }
 
     const user = await User.findOne({email: email});
@@ -56,21 +52,20 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
     const tokenRecord = await Jwt.findOne({refreshToken: refreshToken});
     if(tokenRecord) {
         try {
-            await tokenRecord.validateRefreshToken(email);
-        } catch (error) {
-            return next(error);
-        }
-
-        try {
+            const tokenResponse: any = await tokenRecord.validateRefreshToken();
+            if(tokenResponse.sub.email != email) {
+                return next(new UnauthorizedError("The submitted token doesn't belong to the specified user"));
+            }
             const newTokens = await Jwt.createTokenPair(user);
             return res.status(200).send({
-                message: "Access token refreshed, the new one is attached to this response",
+                message: "Tokens refreshed, the new ones are attached to this response",
                 email: email,
                 accessToken: newTokens.accessToken,
                 refreshToken: newTokens.refreshToken
             });
+
         } catch (error) {
-            return next(Error("Error while creating a new token pair"));
+            return next(error);
         }
     } else {
         return next(new NotFoundError("Can't find the requested token"));

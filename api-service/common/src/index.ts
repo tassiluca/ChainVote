@@ -38,6 +38,22 @@ export {
 } from "./middleware/limiter.middleware";
 
 
+/**
+ * Exporting intefaces
+ */
+export type {
+    ApiLimiterRule,
+    ApiLimiterEntry
+} from "./middleware/limiter.middleware";
+
+export type {
+    ApiLimiterStorage
+} from "./utils/limiter_storage/limiter_storage";
+
+export type {
+    IJwtHandler,
+    ConfigurationObject
+} from "./utils/jwt/jwt.handler";
 
 /**
  * Exporting JWT handlers
@@ -48,7 +64,4 @@ const JwtHandler = h as unknown as IJwtHandler;
 export {
     JwtHandler
 }
-export type {
-    IJwtHandler,
-    ConfigurationObject
-} from "./utils/jwt/jwt.handler";
+

@@ -101,36 +101,14 @@ describe("Token's validation", () => {
             firstName: "User",
             secondName: "Uno"
         }).save();
+
         const jwt = await Jwt.createTokenPair(user);
-        const validationResponse = await jwt.validateAccessToken(user.email);
+        const validationResponse = await jwt.validateAccessToken();
 
         expect(validationResponse).toBeDefined();
         expect(validationResponse.sub.email).toBe(user.email);
         expect(validationResponse.sub.firstName).toBe(user.firstName);
         expect(validationResponse.sub.secondName).toBe(user.secondName);
-    });
-
-    test("Shouldn't validate a token that belong to another user", async () => {
-        const user = await new User({
-            email: "user.one@email.it",
-            password: "PassworD1!",
-            firstName: "User",
-            secondName: "Uno"
-        }).save();
-
-        const otherUser = await new User({
-            email: "user.two@email.it",
-            password: "PassworD1!",
-            firstName: "User",
-            secondName: "Two"
-        }).save();
-
-        const jwt = await Jwt.createTokenPair(user);
-        try {
-            const validationResponse = await jwt.validateAccessToken(otherUser.email);
-        } catch (error) {
-            expect(error).toBeDefined();
-        }
     });
 
     test("Shouldn't save a token if the email's doesn't belong to any user",  async () => {
@@ -154,14 +132,14 @@ describe("Token's validation", () => {
         await jwt.save();
 
         try {
-            const validationResponse = await jwt.validateAccessToken(user.email);
+            const validationResponse = await jwt.validateAccessToken();
         } catch (error) {
             expect(error).toBeDefined();
             expect(error).toBeInstanceOf(UnauthorizedError);
         }
 
         try {
-            const validationResponse = await jwt.validateRefreshToken(user.email);
+            const validationResponse = await jwt.validateRefreshToken();
         } catch (error) {
             expect(error).toBeDefined();
             expect(error).toBeInstanceOf(UnauthorizedError);

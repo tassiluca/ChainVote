@@ -4,7 +4,6 @@ import { User } from "core-components";
 import { Jwt } from "core-components";
 
 export async function authenticationHandler (req: Request, res: Response, next: NextFunction) {
-    const email = req.body.email;
     const authorizationHeader = req.headers["authorization"];
     if(authorizationHeader == undefined) {
         return next(new BadRequestError("Authorization header not found in the request"));
@@ -17,8 +16,8 @@ export async function authenticationHandler (req: Request, res: Response, next: 
         if(jwtRecord == null) {
             return next(new NotFoundError("The submitted jwt token doesn't exists"));
         }
-        await jwtRecord.validateAccessToken(email);
-        const user = await User.findOne({email: email});
+        const validationResponse:any = await jwtRecord.validateAccessToken();
+        const user = await User.findOne({email: validationResponse.sub.email});
         if(user == null) {
             return next(new NotFoundError("User not found"));
         }

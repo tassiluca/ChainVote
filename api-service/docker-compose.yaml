@@ -27,6 +27,8 @@ services:
       - 8180:8180
     environment:
       - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     networks:
       - blockchain_fabric-ca
     depends_on:
@@ -74,7 +76,7 @@ services:
     restart: always
     ports:
       - 6379:6379
-    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    command: redis-server --save 20 1 --loglevel warning
     volumes:
       - type: bind
         source: ./cache
