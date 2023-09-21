@@ -93,22 +93,18 @@ tasks.register("upNetwork") {
     doLast { executeCommand("./network.sh up") }
 }
 
-fun Chaincode.compile() = executeCommand("./gradlew $name:installDist", projectDir)
-
-fun Chaincode.`package`() {
-    compile()
-    executeCommand(
-        "./bin/peer lifecycle chaincode package $name.tar.gz " +
-            "--path ${projectDir.absolutePath}/$name/build/install/$name " +
-            "--lang java " +
-            "--label ${name}_1.0",
-        environments = commonEnvironmentsFor(organization),
-    )
-}
+fun Chaincode.`package`() = executeCommand(
+    "./bin/peer lifecycle chaincode package $name.tar.gz " +
+        "--path ${projectDir.absolutePath}/$name/build/install/$name " +
+        "--lang java " +
+        "--label ${name}_1.0",
+    environments = commonEnvironmentsFor(organization),
+)
 
 tasks.register("packageChaincodes") {
     group = blockchainGroup
     description = "Build and generate chaincode packages"
+    dependsOn(":${chaincodeOrg1.name}:installDist", ":${chaincodeOrg2.name}:installDist")
     doLast {
         chaincodeOrg1.`package`()
         chaincodeOrg2.`package`()
@@ -205,4 +201,13 @@ tasks.register("upAndDeploy") {
         }
         executeCommand("./gradlew cleanAllPackages", projectDir)
     }
+}
+
+tasks.register("installBinaries") {
+    description = "Install Hyperledger Fabric binaries"
+    doLast { executeCommand("./install-binaries.sh") }
+}
+
+tasks.filter { it.group == blockchainGroup }.forEach {
+    it.dependsOn("installBinaries")
 }
