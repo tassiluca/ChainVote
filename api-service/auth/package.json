@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "test": "jest --verbose --runInBand",
+    "test": "jest --silent --forceExit",
     "build": "tsc",
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts",
