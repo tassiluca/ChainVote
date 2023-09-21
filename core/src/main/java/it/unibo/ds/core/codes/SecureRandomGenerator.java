@@ -5,9 +5,9 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * An implementation of {@link CodeGenerator} that uses {@link java.security.SecureRandom}.
+ * An implementation of {@link CodeGeneratorStrategy} that uses {@link java.security.SecureRandom}.
  */
-public final class SecureRandomGenerator implements CodeGenerator {
+final class SecureRandomGenerator implements CodeGeneratorStrategy {
 
     private final SecureRandom rand = new SecureRandom();
 

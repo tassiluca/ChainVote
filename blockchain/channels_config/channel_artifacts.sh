@@ -2,6 +2,8 @@
 #
 # Script to create channel artifacts.
 
+set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
+
 # Genesis block
 configtxgen -profile OrgsOrdererGenesis -outputBlock /tmp/hyperledger/org0/artifacts/genesis.block -channelID syschannel
 

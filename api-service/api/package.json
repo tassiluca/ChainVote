@@ -8,8 +8,7 @@
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts",
     "prepare": "npm run build",
-    "pretest": "npm run lint",
-    "test": "jest",
+    "test": "jest --silent --forceExit",
     "start": "node dist/app.js"
   },
   "author": "Giovanni Antonioni, Luca Tassinari, Luca Rubboli",

@@ -1,0 +1,53 @@
+@startuml codes-chaincode
+
+package core {
+    interface OneTimeCode {
+        +getCode(): Long
+        +consume()
+        +consumed(): boolean
+    }
+
+    class OneTimeCodeImpl implements OneTimeCode
+
+    interface CodeGeneratorStrategy {
+        +generateCode(\n    alreadyGeneratedPredicate: Predicate<OneTimeCode>\n):OneTimeCode
+        +generateCode(\n    alreadyGenerated: Set<OneTimeCode>\n): OneTimeCode
+    }
+    CodeGeneratorStrategy *-up- OneTimeCode
+
+    class SecureRandomGenerator implements CodeGeneratorStrategy
+
+    interface CodeRepository<C> {
+        +get(ctx: C, electionId: String, userId: String): Optional<OneTimeCode>
+        +getAllOf(ctx: C, electionId: String): Set<OneTimeCode>
+        +put(ctx: C, electionId: String, userId: String, code: OneTimeCode)
+        +replace(ctx: C, electionId: String, code: OneTimeCode)
+    }
+
+    interface CodeManager<C> {
+        +generateFor(ctx: C, electionId: String, userId: String): OneTimeCode
+        +isValid(ctx: C, electionId: String, code: OneTimeCode): boolean
+        +invalidate(ctx: C, electionId: String, code: OneTimeCode)
+        +verifyCodeOwner(ctx: C, electionId: String, userId: String, code: OneTimeCode): boolean
+    }
+
+    class CodeManagerImpl<C> implements CodeManager
+    CodeManager *-left-- OneTimeCode
+    CodeManagerImpl *-right- CodeRepository
+    CodeManagerImpl *-- CodeGeneratorStrategy
+}
+
+package chaincode-org2 {
+
+    package "hyperledger-fabric-shim" as HFS {
+        interface ContractInterface
+    }
+    
+    class CodeManagerContract< org.hyperledger.fabric.contract.Context> implements HFS.ContractInterface, core.CodeRepository {
+        +generateFor(ctx: Context, electionId: String, userId: String): ...
+        +isValid(ctx: Context, )
+        +...
+    }
+}
+
+@enduml

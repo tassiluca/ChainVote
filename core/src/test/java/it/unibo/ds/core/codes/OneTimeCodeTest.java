@@ -4,11 +4,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressFBWarnings(
     value = { "UwF" },
@@ -16,24 +16,31 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 )
 class OneTimeCodeTest {
 
-    private final CodeGenerator codeGenerator = new SecureRandomGenerator();
+    private static final long GENERATED_CODE = 123;
     private OneTimeCode code;
 
     @BeforeEach
     void setup() {
-        this.code = codeGenerator.generateCode(Set.of());
-        assertFalse(this.code.consumed());
+        code = new OneTimeCodeImpl(GENERATED_CODE);
+        assertFalse(code.consumed());
     }
 
     @Test
     void testConsume() {
-        this.code.consume();
-        assertTrue(this.code.consumed());
+        assertDoesNotThrow(code::consume);
+        assertTrue(code.consumed());
     }
 
     @Test
     void testConsumeMultipleTimes() {
-        this.code.consume();
-        assertThrows(IllegalStateException.class, () -> this.code.consume());
+        assertDoesNotThrow(code::consume);
+        assertThrows(AlreadyConsumedCodeException.class, () -> code.consume());
+    }
+
+    @Test
+    void testEquality() {
+        final var code2 = new OneTimeCodeImpl(GENERATED_CODE);
+        assertDoesNotThrow(code2::consume);
+        assertEquals(code2, code);
     }
 }

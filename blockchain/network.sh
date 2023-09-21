@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Script to automatize the bring up and down of the blockchain network.
+
+set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
 
 if [[ $# != 1 || ($1 != "up" && $1 != "down") ]]; then
     echo "Usage: ./network [up|down]"

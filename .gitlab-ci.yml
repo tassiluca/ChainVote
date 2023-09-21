@@ -15,12 +15,17 @@ variables:
 
 Compile:
   stage: build
-  script: ./gradlew build
+  script: ./gradlew classes testClasses $GOPTS
 
-Test and check:
+Test:
   stage: test
-  script: ./gradlew check $GOPTS
+  script: ./gradlew test $GOPTS
   artifacts:
     when: always
     reports:
       junit: '**/build/test-results/test/**/TEST-*.xml'
+
+Check:
+  stage: test
+  script: ./gradlew check $GOPTS
+

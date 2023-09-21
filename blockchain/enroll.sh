@@ -2,10 +2,12 @@
 #
 # This script executes, for each organizion, the enrollment of each entity (network component and user) from the CAs.
 
+set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
+
 #####################################################################################################################
 # Enrol entities for ORG0
 #####################################################################################################################
-echo "Enroll Ordererers"
+echo "Enroll Orderers"
 
 # Copy certificates
 mkdir -p /tmp/hyperledger/org0/orderer1/assets/ca 
