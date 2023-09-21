@@ -1,0 +1,23 @@
+html {
+    margin: 1%;
+}
+
+footer {
+    background-color: #f8f9fa !important;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer ul {
+    list-style: none;
+}
+
+footer ul li {
+    display: inline-block;
+}
+
+footer ul li:not(:last-child)::after {
+    content: " | ";
+}
