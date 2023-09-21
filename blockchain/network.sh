@@ -33,7 +33,7 @@ function upNetwork() {
     ./channel_artifacts.sh
     echo "Bring up the whole network"
     docker-compose up -d
-    sleep 5
+    sleep 10
     echo "Create and joining channels"
     ./channel_creation.sh
 }

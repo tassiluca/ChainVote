@@ -14,7 +14,7 @@ public interface CodeManager<C> {
      * @param userId the user identifier
      * @return a new {@link OneTimeCode} instance for the given user and election.
      */
-    OneTimeCode generateFor(C context, String electionId, String userId);
+    OneTimeCode generateFor(C context, String electionId, String userId) throws AlreadyGeneratedCodeException;
 
     /**
      * Generates a new {@link OneTimeCode}.
@@ -22,7 +22,7 @@ public interface CodeManager<C> {
      * @param userId the user identifier
      * @return a new {@link OneTimeCode} instance for the given user and election.
      */
-    default OneTimeCode generateFor(final String electionId, final String userId) {
+    default OneTimeCode generateFor(final String electionId, final String userId) throws AlreadyGeneratedCodeException {
         return generateFor(null, electionId, userId);
     }
 
@@ -55,7 +55,8 @@ public interface CodeManager<C> {
      * @param userId the user identifier
      * @param code the code to be validated
      */
-    void invalidate(C context, String electionId, String userId, OneTimeCode code);
+    void invalidate(C context, String electionId, String userId, OneTimeCode code)
+        throws NotValidCodeException, AlreadyConsumedCodeException;
 
     /**
      * Invalidate the given code for the given election.
@@ -64,7 +65,11 @@ public interface CodeManager<C> {
      * @param userId the user identifier
      * @param code the code to be validated
      */
-    default void invalidate(final String electionId, final String userId, final OneTimeCode code) {
+    default void invalidate(
+        final String electionId,
+        final String userId,
+        final OneTimeCode code
+    ) throws NotValidCodeException, AlreadyConsumedCodeException {
         invalidate(null, electionId, userId, code);
     }
 

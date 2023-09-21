@@ -1,6 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
@@ -18,10 +19,13 @@ import static it.unibo.ds.chainvote.contract.CodesManagerContract.CODES_COLLECTI
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 final class CodeManagerContractTest {
 
@@ -66,6 +70,7 @@ final class CodeManagerContractTest {
         }
 
         @Test
+        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenAlreadyExists() {
             final byte[] mockedCode = genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
@@ -113,7 +118,7 @@ final class CodeManagerContractTest {
     }
 
     @Nested
-    class TestCodeValidation {
+    class TestCodeInvalidation {
 
         @BeforeEach
         void setup() {
@@ -148,7 +153,7 @@ final class CodeManagerContractTest {
         @Test
         void whenCodeIsInvalid() {
             final var code = new OneTimeCodeImpl(CODE);
-            code.consume();
+            assertDoesNotThrow(code::consume);
             final byte[] invalidCode = genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
             ).getBytes(UTF_8);
@@ -162,15 +167,16 @@ final class CodeManagerContractTest {
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(genson.serialize(code).getBytes(UTF_8));
             contract.invalidate(context);
             final var consumedCode = code.getCode();
-            consumedCode.consume();
+            assertDoesNotThrow(consumedCode::consume);
             final var consumedAsset = new OneTimeCodeAsset(ELECTION_ID, USER_ID, consumedCode);
             verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(consumedAsset));
         }
 
         @Test
+        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenAttemptToInvalidateMultipleTimes() {
             final var code = new OneTimeCodeImpl(CODE);
-            code.consume();
+            assertDoesNotThrow(code::consume);
             final byte[] invalidCode = genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
             ).getBytes(UTF_8);
@@ -178,7 +184,7 @@ final class CodeManagerContractTest {
             final Throwable thrown = catchThrowable(() -> contract.invalidate(context));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
-                .hasMessage("The given code has already been consumed");
+                .hasMessage("The code has already been consumed");
             assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ALREADY_INVALIDATED_CODE".getBytes(UTF_8));
         }
     }
