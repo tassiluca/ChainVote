@@ -33,7 +33,14 @@ export async function createUser(req: Request, res: Response, next: NextFunction
     });
     try {
         await user.save();
-        res.status(StatusCodes.OK).send(user);
+        res.status(StatusCodes.CREATED).send({
+            message: "User created successfully",
+            data: {
+                email: user.email,
+                firstName: user.firstName,
+                secondName: user.secondName
+            }
+        });
     } catch(error) {
         return next(error);
     }

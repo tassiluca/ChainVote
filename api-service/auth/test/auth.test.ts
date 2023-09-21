@@ -3,9 +3,10 @@ import ExpressConfig from "../src/configs/express.config";
 import {Jwt, User} from "core-components";
 import {StatusCodes} from "http-status-codes";
 
-const app = ExpressConfig();
+let app;
 let user;
 beforeAll(async () => {
+    app = ExpressConfig();
     user = new User({
         email: "test.user@email.it",
         password: "Password1!",

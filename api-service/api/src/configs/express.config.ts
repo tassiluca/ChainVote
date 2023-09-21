@@ -1,10 +1,13 @@
 import express, { Application } from "express"
 import userRouter from "../routes/userRoute";
 import bodyParser from "body-parser"
-import { defaultErrorHandler } from "core-components";
+import {defaultErrorHandler} from "core-components";
+import MongooseConfig from "./mongoose.config";
 
 
 const ExpressConfig = (): Application => {
+  MongooseConfig();
+
   const app = express();
 
   // Express configurations 
