@@ -8,7 +8,6 @@
     "build": "tsc",
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts",
-    "prepare": "npm run build",
     "start": "node dist/app.js"
   },
   "author": "",
@@ -16,7 +15,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
-    "core-components": "^1.0.8",
+    "core-components": "^1.0.12",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "http-status-codes": "^2.2.0",
