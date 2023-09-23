@@ -6,6 +6,8 @@ services:
       - 8080:8080
     environment:
       - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       - /tmp/hyperledger:/tmp/hyperledger
     networks:

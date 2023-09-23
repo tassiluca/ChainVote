@@ -7,7 +7,6 @@
     "build": "tsc",
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts",
-    "prepare": "npm run build",
     "test": "jest --silent --forceExit",
     "start": "node dist/app.js"
   },
