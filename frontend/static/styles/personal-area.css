@@ -1,0 +1,16 @@
+main {
+    margin: 50px 2%;
+}
+
+#content {
+    margin: 20px 0;
+}
+
+.card a:hover {
+    text-decoration: none;
+}
+
+.card {
+    margin-bottom: 10px;
+}
+
