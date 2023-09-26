@@ -15,6 +15,11 @@ if [[ $# != 1 || ($1 != "up" && $1 != "down") ]]; then
     exit 1
 fi;
 
+function test() {
+    echo "Ended"
+    exit 1
+}
+
 function upNetwork() {
     echo "Setup binaries"
     if [[ ! -d ./bin/ ]]; then
@@ -22,8 +27,8 @@ function upNetwork() {
     fi;
     export PATH="$PATH:$PWD/bin"
     echo "Up ca-tls rca-org0 rca-org1 rca-org2"
-    docker-compose up -d ca-tls rca-org0 rca-org1 rca-org2
-    sleep 5
+    docker-compose up ca-tls rca-org0 rca-org1 rca-org2 --wait
+    sleep 10
     echo "Enrol registrar of each CA and register all entities"
     ./reg.sh
     echo "Enrol entities for each organization"
@@ -32,7 +37,7 @@ function upNetwork() {
     cd ./channels_config
     ./channel_artifacts.sh
     echo "Bring up the whole network"
-    docker-compose up -d
+    docker-compose up --wait
     sleep 10
     echo "Create and joining channels"
     ./channel_creation.sh
