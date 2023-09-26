@@ -1,0 +1,63 @@
+\usepackage{listings}
+\usepackage{xcolor}
+
+%-----------------------------------------------------
+% LISTING CONFIGURATIONS
+%-----------------------------------------------------
+
+\lstset{
+	showstringspaces=false,
+	basicstyle=\scriptsize\ttfamily,
+	commentstyle={\color{olive}},
+	identifierstyle=\color{black},
+	ndkeywordstyle={\color{blue}},
+	stringstyle={\color{magenta}},
+	emphstyle={},
+	keywordstyle={\color{blue}},
+	breaklines=true,
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	numbersep=10pt,
+	tabsize=2,
+	extendedchars=true,
+	frame=trBL,
+	frameround=fttt,
+    escapeinside={(*@}{@*)},
+}
+
+\lstdefinelanguage{Kotlin}{
+    comment=[l]{//},
+    emph={delegate, filter, filterIsInstance, flatMap, toSet, firstOrNull, forEach, lazy, map, mapNotNull, println, return@, sequence, yield, Array, Byte, Double, Float, Int, Iterable, Long, Runnable, Short, String},
+    keywords={operator, infix, init, abstract, actual, as, as?, break, by, class, companion, continue, data, do, dynamic, else, enum, expect, false, final, for, fun, get, if, import, in, interface, internal, is, null, object, override, package, private, public, return, set, super, suspend, this, throw, true, try, typealias, val, var, vararg, when, where, while, it},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    morestring=[s]{"""*}{*"""},
+    ndkeywords={@Deprecated, @JvmField, @JvmName, @JvmOverloads, @JvmStatic, @JvmSynthetic},
+    sensitive=true,
+}
+
+\lstdefinelanguage{JavaScript}{
+    keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, let, const},
+    ndkeywords={class, export, boolean, throw, implements, import, this},
+    sensitive=false,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]',
+    morestring=[b]",
+    emph={Companion},
+}
+
+\newcommand{\prolog}[1]{\lstinline[style=Prolog-cool,basicstyle=\ttfamily\normalsize]{#1}}
+\newcommand{\kotlin}[1]{\lstinline[language=Kotlin,basicstyle=\ttfamily\normalsize]{#1}}
+\newcommand{\python}[1]{\lstinline[language=Python,basicstyle=\ttfamily\normalsize]{#1}}
+
+\newcommand{\py}[1]{\texttt{#1}}
+\newcommand{\pl}[1]{\texttt{#1}}
+\newcommand{\kt}[1]{\texttt{#1}}
+\newcommand{\pli}[1]{\pl{\textit{#1}}}
+
+\newcommand{\prologimport}[2][{}]{\lstinputlisting[#1,style=Prolog-cool]{#2}}
+\newcommand{\javaimport}[2][{}]{\lstinputlisting[#1,language=Java]{#2}}
+\newcommand{\jsimport}[2][{}]{\lstinputlisting[#1,language=JavaScript]{#2}}
+\newcommand{\kotlinimport}[2][{}]{\lstinputlisting[#1,language=Kotlin]{#2}}
+\newcommand{\pythonimport}[2][{}]{\lstinputlisting[#1,language=Python]{#2}}
