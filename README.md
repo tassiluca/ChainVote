@@ -3,8 +3,6 @@
 
 ## Authors
 
-Luca Tassinari
-Luca Rubboli
-Giovanni Antonioni
-
-
+- Luca Tassinari
+- Luca Rubboli
+- Giovanni Antonioni
