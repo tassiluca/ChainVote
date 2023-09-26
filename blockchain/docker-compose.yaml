@@ -22,9 +22,8 @@ services:
     ports:
       - 7052:7052
     healthcheck:
-      test: ["CMD", "jq", "-r", ".status"]
-      interval: 1s
-      timeout: 10s
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
 
   rca-org0:
     container_name: rca-org0
@@ -45,6 +44,9 @@ services:
       - fabric-ca
     ports:
       - 7053:7053
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
 
   rca-org1:
     container_name: rca-org1
@@ -65,6 +67,9 @@ services:
       - fabric-ca
     ports:
       - 7054:7054
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
 
   rca-org2:
     container_name: rca-org2
@@ -85,6 +90,9 @@ services:
       - fabric-ca
     ports:
       - 7055:7055
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
 
   orderer1-org0:
     container_name: orderer1-org0
@@ -114,6 +122,9 @@ services:
       - 7050:7050
     networks:
       - fabric-ca
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
   
   orderer2-org0:
     container_name: orderer2-org0
@@ -135,6 +146,7 @@ services:
       - ORDERER_GENERAL_TLS_ROOTCAS=[/tmp/hyperledger/org0/orderer2/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem]
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_DEBUG_BROADCASTTRACEDIR=data/logs
+      - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:8080
     volumes:
       - /tmp/hyperledger/org0/artifacts:/tmp/hyperledger/org0/artifacts
       - /tmp/hyperledger/org0/orderer2:/tmp/hyperledger/org0/orderer2/
@@ -142,6 +154,9 @@ services:
       - 8050:8050
     networks:
       - fabric-ca
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
 
   orderer3-org0:
     container_name: orderer3-org0
@@ -163,6 +178,7 @@ services:
       - ORDERER_GENERAL_TLS_ROOTCAS=[/tmp/hyperledger/org0/orderer3/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem]
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_DEBUG_BROADCASTTRACEDIR=data/logs
+      - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:8080
     volumes:
       - /tmp/hyperledger/org0/artifacts:/tmp/hyperledger/org0/artifacts
       - /tmp/hyperledger/org0/orderer3:/tmp/hyperledger/org0/orderer3/
@@ -170,6 +186,9 @@ services:
       - 9050:9050
     networks:
       - fabric-ca
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
 
   couchdb-peer1-org1:
     container_name: couchdb-peer1-org1
@@ -222,6 +241,9 @@ services:
       - fabric-ca
     depends_on:
       - couchdb-peer1-org1
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
 
   couchdb-peer2-org1:
     container_name: couchdb-peer2-org1
@@ -274,6 +296,9 @@ services:
       - fabric-ca
     depends_on:
       - couchdb-peer2-org1
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
 
   couchdb-peer1-org2:
     container_name: couchdb-peer1-org2
@@ -326,6 +351,9 @@ services:
       - fabric-ca
     depends_on:
       - couchdb-peer1-org2
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
 
   couchdb-peer2-org2:
     container_name: couchdb-peer2-org2
@@ -378,3 +406,6 @@ services:
       - fabric-ca
     depends_on:
       - couchdb-peer2-org2
+    healthcheck:
+      test: curl http://localhost:8080/healthz | jq -e '.status' | grep -q "OK"
+      interval: 5s
