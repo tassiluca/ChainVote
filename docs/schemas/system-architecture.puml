@@ -1,0 +1,26 @@
+@startuml system-architecture
+
+skinparam component {
+    BackgroundColor<<external>> White
+    BackgroundColor<<test>> cyan
+    BackgroundColor<<executable>> LawnGreen
+}
+skinparam DatabaseBackgroundColor Beige
+
+component :api-service { 
+
+}
+
+component :blockchain {
+
+}
+
+component :frontend as FRONTEND {
+
+}
+
+component :smart-contracts {
+
+}
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml use-cases
+left to right direction
+
+actor User
+actor Administrator
+
+rectangle ChainVote {
+    usecase "Register and authenticate to the system" as UC0
+    usecase "Create new election" as UC1
+    usecase "Cast a vote for an election" as UC2
+    usecase "List all elections" as UC3
+    usecase "See results of an election" as UC4
+    usecase "See turnout of an election" as UC5
+    usecase "See info of an election" as UC6
+    usecase "Check election is closed" as CK1
+    usecase "Check election is open" as CK2
+    UC4 .left.> CK1 : <<include>>
+    UC2 .right.> CK2 : <<include>>
+}
+
+User -- UC0
+User -- UC2
+User -- UC3
+User -- UC4
+User -- UC5
+User -- UC6
+Administrator -up- UC0
+Administrator -up- UC1
+Administrator -up- UC6
+Administrator -up- UC4
+Administrator -up- UC3
+Administrator -up- UC5
+
+@enduml

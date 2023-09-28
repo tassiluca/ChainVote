@@ -1,5 +1,4 @@
-name: compile-latex-action
-run-name: Compiling latex
+name: Compile Latex Report
 
 on: 
   push:
