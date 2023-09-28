@@ -1,8 +1,15 @@
-name: Compile Latex Report
-
+name: Build and deploy on GH Releases 
 on: 
   push:
     tags: '*'
+    branches-ignore:
+      - 'autodelivery**'
+      - 'bump-**'
+      - 'renovate-**'
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'renovate.json'
   pull_request:
   workflow_dispatch:
 
