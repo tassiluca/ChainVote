@@ -9,13 +9,15 @@ on:
 jobs:
   compile-latex-action:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+
       - uses: xu-cheng/latex-action@v3
         with:
           working_directory: docs/
-          root_file:
-            report.tex
+          root_file: report.tex
 
       - uses: ncipollo/release-action@v1
         with:
