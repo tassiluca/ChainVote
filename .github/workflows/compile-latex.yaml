@@ -1,7 +1,10 @@
 name: compile-latex-action
-run-name: Compiling github
+run-name: Compiling latex
+
 on:
   push:
+    tags:
+      - '*'
     branches:
       - main
       - report
