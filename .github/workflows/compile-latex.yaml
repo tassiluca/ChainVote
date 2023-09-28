@@ -1,31 +1,19 @@
 name: compile-latex-action
 run-name: Compiling latex
 
-on:
+on: 
   push:
-    tags:
-      - '*'
-    branches:
-      - main
-      - report
+    tags: '*'
+    paths:
+      - 'docs/**'
+  pull_request:
+  workflow_dispatch:
 
 jobs:
-  compile-latex-action:
+  Setup-Compile-Deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: xu-cheng/latex-action@v3
+      - uses: DanySK/compile-and-publish-all-latex@1.0.54
         with:
-          working_directory: docs/
-          root_file: report.tex
-
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          artifacts: docs/
-          replacesArtifacts: true
-          tag: ${{ steps.current-time.outputs.time }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
