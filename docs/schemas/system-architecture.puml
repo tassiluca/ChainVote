@@ -2,25 +2,25 @@
 
 skinparam component {
     BackgroundColor<<external>> White
-    BackgroundColor<<test>> cyan
     BackgroundColor<<executable>> LightGreen
+    BackgroundColor<<test>> cyan
 }
 skinparam DatabaseBackgroundColor Beige
 
-component :api-service { 
+' TODO: just a sketch
 
-}
+[:frontend] as FRONTEND
+FRONTEND ..> "ReST API" : use
 
-component :blockchain {
+[:api-service] as API
+API -up- "ReST API"
+API -right- "Data Access"
+API ..> "gRPC" : use
 
-}
+[:smart-contracts] as SC
+SC -up- "gRPC"
 
-component :frontend as FRONTEND {
-
-}
-
-component :smart-contracts {
-
-}
+[:blockchain] as CHAIN
+SC -left- CHAIN
 
 @enduml
