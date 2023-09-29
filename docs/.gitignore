@@ -4,6 +4,7 @@
 
 ## Generated PDFs
 report.pdf
+out/
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

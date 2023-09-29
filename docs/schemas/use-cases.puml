@@ -14,8 +14,10 @@ rectangle ChainVote {
     usecase "See info of an election" as UC6
     usecase "Check election is closed" as CK1
     usecase "Check election is open" as CK2
+    usecase "Check has not already voted" as CK3
+    UC2 ..> CK2 : <<include>>
+    UC2 ..> CK3 : <<include>>
     UC4 .left.> CK1 : <<include>>
-    UC2 .right.> CK2 : <<include>>
 }
 
 User -- UC0
@@ -24,11 +26,11 @@ User -- UC3
 User -- UC4
 User -- UC5
 User -- UC6
-Administrator -up- UC0
-Administrator -up- UC1
-Administrator -up- UC6
-Administrator -up- UC4
-Administrator -up- UC3
-Administrator -up- UC5
+Administrator -up-- UC0
+Administrator -up-- UC1
+Administrator -up-- UC3
+Administrator -up-- UC4
+Administrator -up-- UC5
+Administrator -up-- UC6
 
 @enduml

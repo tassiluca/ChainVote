@@ -3,7 +3,7 @@
 skinparam component {
     BackgroundColor<<external>> White
     BackgroundColor<<test>> cyan
-    BackgroundColor<<executable>> LawnGreen
+    BackgroundColor<<executable>> LightGreen
 }
 skinparam DatabaseBackgroundColor Beige
 

@@ -2,7 +2,7 @@
 
 skinparam component {
     BackgroundColor<<external>> White
-    BackgroundColor<<executable>> LawnGreen
+    BackgroundColor<<executable>> LightGreen
 }
 
 [:core] as C
@@ -20,7 +20,7 @@ CH -up-|> P
 CH1 -up-|> CH 
 CH2 -up-|> CH
 
-GNS -|> C
+GNS -|> P
 FABRIC -|> CH
 
 @enduml
