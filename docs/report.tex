@@ -88,80 +88,91 @@ In \cref{fig:use-cases-diagram} are reported the main use cases that emerged fro
 
 \subsection{Self-assessment policy}
 
-\begin{itemize}
-    \item How should the \emph{quality} of the \emph{produced software} be assessed?
-    
-    \item How should the \emph{effectiveness} of the project outcomes be assessed?
-\end{itemize}
+\desc{
+    \begin{itemize}
+        \item How should the \emph{quality} of the \emph{produced software} be assessed?
+        \item How should the \emph{effectiveness} of the project outcomes be assessed?
+    \end{itemize}
+}
 
 \section{Background}
 
-Any preliminary notion necessary to understand the goals, the motivations, the context, or the development of this project.
-%
-\begin{itemize}
-    \item Theoretical aspects
-    
-    \item Used frameworks / models / technologies (and motivation for their choice)
-\end{itemize}
+\desc{
+    Any preliminary notion necessary to understand the goals, the motivations, the context, or the development of this project.
+    %
+    \begin{itemize}
+        \item Theoretical aspects
+        \item Used frameworks / models / technologies (and motivation for their choice)
+    \end{itemize}
+}
 
 \section{Requirements Analysis}
 
-Is there any implicit requirement hidden within this project's requirements?
-%
-Is there any implicit hypothesis hidden within this project's requirements?
-%
-Are there any non-functional requirements implied by this project's requirements?
-
-What model / paradigm / techonology is the best suited to face this project's requirements?
-%
-What's the abstraction gap among the available models / paradigms / techonologies and the problem to be solved?
+\desc{
+    Is there any implicit requirement hidden within this project's requirements?
+    Is there any implicit hypothesis hidden within this project's requirements?
+    Are there any non-functional requirements implied by this project's requirements?
+    What model / paradigm / techonology is the best suited to face this project's requirements?
+    What's the abstraction gap among the available models / paradigms / techonologies and the problem to be solved?
+}
 
 \section{Design}
 
-This is where the logical / abstract contribution of the project is presented.
+\desc{
+    This is where the logical / abstract contribution of the project is presented.
+    Notice that, when describing a software project, three dimensions need to be taken into account: structure, behaviour, and interaction.
+    Always remember to report \textbf{why} a particular design has been chosen.
+    Reporting wrong design choices which has been evalued during the design phase is welcome too.
+}
 
-Notice that, when describing a software project, three dimensions need to be taken into account: structure, behaviour, and interaction.
+\subsection{Blockchain architecture}
 
-Always remember to report \textbf{why} a particular design has been chosen.
-Reporting wrong design choices which has been evalued during the design phase is welcome too.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figures/network-architecture.pdf}
+    \caption{Network high-level architecture}
+    \label{fig:image}
+\end{figure}
 
-\subsection{Structure / Domain Entities}
+\subsection{Application architecture}
 
-Which entities need to by modelled to reflect the domain?
-%
-(UML Class diagram)
+\subsubsection{Structure / Domain Entities}
+\desc{
+    Which entities need to by modelled to reflect the domain?
+    (UML Class diagram)
+    How should entities be modularised?
+    (UML Component / Package / Deployment Diagrams)
+}
 
-How should entities be modularised?
-%
-(UML Component / Package / Deployment Diagrams)
+\subsubsection{Behaviour}
 
-\subsection{Behaviour}
+\desc{
+    How should each entity behave?
+    (UML State diagram or Activity Diagram)
+}
 
-How should each entity behave?
-%
-(UML State diagram or Activity Diagram)
+\subsubsection{Interaction}
 
-\subsection{Interaction}
-
-How should entities interact with each other?
-%
-(UML Sequence Diagram)
+\desc{
+    How should entities interact with each other?
+    (UML Sequence Diagram)
+}
 
 \section{Implementation Details}
 
-Just report interesting / non-trivial / non-obvious implementation details.
-
-This section is expected to be short in case some documentation (e.g. Javadoc or Swagger Spec) has been produced for the software artefacts.
-%
-This this case, the produced documentation should be referenced here.
+\desc{
+    Just report interesting / non-trivial / non-obvious implementation details.
+    This section is expected to be short in case some documentation (e.g. Javadoc or Swagger Spec) has been produced for the software artefacts.
+    This this case, the produced documentation should be referenced here.
+}
 
 \section{Self-assessment / Validation}
 
-Choose a criterion for the evaluation of the produced software and \textbf{its compliance to the requirements above}.
-
-Pseudo-formal or formal criteria are preferred.
-
-In case of a test-driven development, describe tests here and possibly report the amount of passing tests, the total amount of tests and, possibly, the test coverage.
+\desc{
+    Choose a criterion for the evaluation of the produced software and \textbf{its compliance to the requirements above}.
+    Pseudo-formal or formal criteria are preferred.
+    In case of a test-driven development, describe tests here and possibly report the amount of passing tests, the total amount of tests and, possibly, the test coverage.
+}
 
 \section{Deployment Instructions}
 
