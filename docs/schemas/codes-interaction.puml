@@ -1,0 +1,43 @@
+@startuml codes-interaction
+
+actor Client as C
+participant ":API" as API
+participant ":CodesManagerContract" as CM
+participant ":ElectionContract" as EC
+participant ":ElectionInfoContract" as EI
+
+activate C
+activate API
+activate CM
+activate EC
+activate EI
+
+== request new code ==
+
+C ->> API : ""requestCode(usr, election)""
+API ->> CM : ""generateFor(usr, election)""
+CM ->> EI : ""electionExists()""
+
+alt#Gold #Pink election not exists
+    EI --> CM : No
+    CM --> API : Election do not exists
+    API --> C : Error: election not exists
+else code already generated
+    EI --> CM : Yes
+    CM --> API : Code already \ngenerated for (usr, election)
+    API --> C : Error: code already generated
+else #LightGreen Successful case
+    EI --> CM : Yes
+    CM -> CM : generate new code \nfor (usr, election) and \nstore association on \nledger private data
+    activate CM
+    CM --> CM : ""one-time-code""
+    deactivate CM
+    CM --> API : ""one-time-code""
+    API --> C : ""one-time-code""
+end
+
+note over C, EI
+    TO COMPLETE!
+end note
+
+@enduml

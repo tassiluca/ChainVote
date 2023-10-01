@@ -95,6 +95,10 @@ In \cref{fig:use-cases-diagram} are reported the main use cases that emerged fro
     \end{itemize}
 }
 
+Assessment will be made by means of automatic tests. 
+%
+Testing should cover all the requirements reported in the analysis.
+
 \section{Background}
 
 \desc{
@@ -118,23 +122,25 @@ In \cref{fig:use-cases-diagram} are reported the main use cases that emerged fro
 
 \section{Design}
 
-\desc{
-    This is where the logical / abstract contribution of the project is presented.
-    Notice that, when describing a software project, three dimensions need to be taken into account: structure, behaviour, and interaction.
-    Always remember to report \textbf{why} a particular design has been chosen.
-    Reporting wrong design choices which has been evalued during the design phase is welcome too.
-}
+In the following section is presented the blockchain network architecture, as well as the application one.
 
 \subsection{Blockchain architecture}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{figures/network-architecture.pdf}
-    \caption{Network high-level architecture}
+    \caption{High level network architecture}
     \label{fig:image}
 \end{figure}
 
-\subsection{Application architecture}
+\subsection{Application design}
+
+\desc{
+    This is where the logical / abstract contribution of the project is presented.
+    Notice that, when describing a software project, three dimensions need to be taken into account: structure, behaviour, and interaction.
+    Always remember to report \textbf{why} a particular design has been chosen.
+    Reporting wrong design choices which has been evalued during the design phase is welcome too.
+}
 
 \subsubsection{Structure / Domain Entities}
 \desc{
@@ -143,6 +149,13 @@ In \cref{fig:use-cases-diagram} are reported the main use cases that emerged fro
     How should entities be modularised?
     (UML Component / Package / Deployment Diagrams)
 }
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/codes-core.eps}
+    \caption{Codes classes}
+    \label{fig:} 
+\end{figure}
 
 \subsubsection{Behaviour}
 
@@ -157,6 +170,15 @@ In \cref{fig:use-cases-diagram} are reported the main use cases that emerged fro
     How should entities interact with each other?
     (UML Sequence Diagram)
 }
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/codes-interaction.eps}
+    \caption{}
+    \label{fig:} 
+\end{figure}
+
+\subsection{Architectural design}
 
 \section{Implementation Details}
 
@@ -201,6 +223,8 @@ Recap what you did \emph{not}
 \subsection{What did we learned}
 
 Racap what did you learned
+
+% --------------------- TO REMOVE ONCE ENDED ------------------------------
 
 \section*{Stylistic Notes}
 
