@@ -3,7 +3,7 @@ name: LaTeX Build and Release
 on:
   push:
     branches:
-      - main      
+      - main    
       - report
   create:
     tags:

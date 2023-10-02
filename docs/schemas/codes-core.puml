@@ -1,0 +1,38 @@
+@startuml codes-core
+
+interface OneTimeCode {
+    +getCode(): Long
+    +consume()
+    +consumed(): boolean
+}
+
+class OneTimeCodeImpl implements OneTimeCode
+
+interface CodeGeneratorStrategy {
+    +generateCode(\n    alreadyGeneratedPredicate: Predicate<OneTimeCode>\n):OneTimeCode
+    +generateCode(\n    alreadyGenerated: Set<OneTimeCode>\n): OneTimeCode
+    +generateCode(): OneTimeCode
+}
+CodeGeneratorStrategy *-up- OneTimeCode
+
+class SecureRandomGenerator implements CodeGeneratorStrategy
+
+interface CodeRepository<C> {
+    +get(ctx: C, electionId: String, userId: String): Optional<OneTimeCode>
+    +put(ctx: C, electionId: String, userId: String, code: OneTimeCode)
+    +replace(ctx: C, electionId: String, code: OneTimeCode)
+}
+
+interface CodeManager<C> {
+    +generateFor(ctx: C, electionId: String, userId: String): OneTimeCode
+    +isValid(ctx: C, electionId: String, code: OneTimeCode): boolean
+    +invalidate(ctx: C, electionId: String, code: OneTimeCode)
+    +verifyCodeOwner(ctx: C, electionId: String, userId: String, code: OneTimeCode): boolean
+}
+
+class CodeManagerImpl<C> implements CodeManager
+CodeManager *-left-- OneTimeCode
+CodeManagerImpl *-- CodeRepository
+CodeManagerImpl *-- CodeGeneratorStrategy
+
+@enduml

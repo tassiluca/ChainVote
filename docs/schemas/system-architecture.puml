@@ -1,0 +1,26 @@
+@startuml system-architecture
+
+skinparam component {
+    BackgroundColor<<external>> White
+    BackgroundColor<<executable>> LightGreen
+    BackgroundColor<<test>> cyan
+}
+skinparam DatabaseBackgroundColor Beige
+
+' TODO: just a sketch
+
+[:frontend] as FRONTEND
+FRONTEND ..> "ReST API" : use
+
+[:api-service] as API
+API -up- "ReST API"
+API -right- "Data Access"
+API ..> "gRPC" : use
+
+[:smart-contracts] as SC
+SC -up- "gRPC"
+
+[:blockchain] as CHAIN
+SC -left- CHAIN
+
+@enduml

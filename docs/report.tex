@@ -12,16 +12,12 @@
 
 \subtitle{(v. \version)}
 
-% Consider watching:
-% https://www.youtube.com/watch?v=ihxSUsJB_14
-% https://www.youtube.com/watch?v=XTFWaV55uDo
-
 \author{
     Giovanni Antonioni \\ \emailaddr{author1@email.it}
     \and 
     Luca Rubboli \\ \emailaddr{author2@gmail.com} 
     \and 
-    Luca Tassinari \\ \emailaddr{author3@unibo.it}
+    Luca Tassinari \\ \emailaddr{luca.tassinari10@studio.unibo.it}
 }
 
 \date{\today}
@@ -31,97 +27,174 @@
 \maketitle
 
 \begin{abstract}
-    Up to $\sim$2000 characters briefly describing the project (i.e. its goals and results).
+    Electronic voting systems based on blockchain technology have emerged as a potential solution to enhance the security and transparency of traditional voting methods. In this system, voters cast their votes electronically, and the results are stored on a decentralized blockchain ledger, which ensures the integrity of the vote by preventing any tampering or manipulation. This system provides a transparent and immutable record of votes, which can be accessed by anyone in the network, thus increasing trust in the electoral process. Nevertheless, the use of blockchain technology in electronic voting systems holds promise for creating a more secure, transparent, and democratic electoral process.
+
+    This project aims to... \todo{finish}
 \end{abstract}
 
 \section{Goals/requirements}
 
-Detailed description of the project goals, requirements, and expected outcomes.
+\desc{
+    Detailed description of the project goals, requirements, and expected outcomes.
+    %
+    Use case Diagrams, examples, or Q/A simulations are welcome.
+}
+
+The project consists of the implementation of a small-scale distributed electronic voting system based on blockchain technology.
 %
-Use case Diagrams, examples, or Q/A simulations are welcome.
+Specifically, the goal is to create a web application where users can authenticate and interact with votes, as described in the use scenarios presented below.
+%
+\todo{improve description}
+
+\subsection*{Functional requirements}
+
+Two main actors can be identified in the system: the \textbf{administrator}, taking care to create new votes, and the \textbf{user}, which interacts with them.
+
+\begin{itemize}
+    \item System administrators can create new votes that all users can participate in;
+    \item System administrators can't cast a vote;
+    \item Users must be able to register and authenticate to the system;
+    \item A user is able to cast a vote up to once per ballot;
+    \item A ballot is a set of mutually exclusive choices with a time limit that cannot be changed;
+    \item While a vote is in "open" state, users are able to see only the turnout;
+    \item Once an election is finished, all users (voters and abstainers) and administrators can
+    see the results;
+    \item Multiple elections can be in "open" state simultaneously.
+\end{itemize}
+
+\subsection*{Non-functional requirements}
+
+\begin{itemize}
+    \item The connection between a user and his vote must be hidden;
+    \item security \todo{to complete}
+\end{itemize}
 
 \subsection{Scenarios}
 
-Informal description of the ways users are expected to interact with your project.
-%
-It should describe \emph{how} and \emph{why} a user should use / interact with the system.
+\desc{
+    Informal description of the ways users are expected to interact with your project.
+    %
+    It should describe \emph{how} and \emph{why} a user should use / interact with the system.
+}
+
+In \cref{fig:use-cases-diagram} are reported the main use cases that emerged from the requirements analysis...
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/use-cases.eps}
+    \caption{Use cases diagram of the ChainVote application.}
+    \label{fig:use-cases-diagram} 
+\end{figure}
 
 \subsection{Self-assessment policy}
 
-\begin{itemize}
-    \item How should the \emph{quality} of the \emph{produced software} be assessed?
-    
-    \item How should the \emph{effectiveness} of the project outcomes be assessed?
-\end{itemize}
+\desc{
+    \begin{itemize}
+        \item How should the \emph{quality} of the \emph{produced software} be assessed?
+        \item How should the \emph{effectiveness} of the project outcomes be assessed?
+    \end{itemize}
+}
+
+Assessment will be made by means of automatic tests. 
+%
+Testing should cover all the requirements reported in the analysis.
 
 \section{Background}
 
-Any preliminary notion necessary to understand the goals, the motivations, the context, or the development of this project.
-%
-\begin{itemize}
-    \item Theoretical aspects
-    
-    \item Used frameworks / models / technologies (and motivation for their choice)
-\end{itemize}
+\desc{
+    Any preliminary notion necessary to understand the goals, the motivations, the context, or the development of this project.
+    %
+    \begin{itemize}
+        \item Theoretical aspects
+        \item Used frameworks / models / technologies (and motivation for their choice)
+    \end{itemize}
+}
 
 \section{Requirements Analysis}
 
-Is there any implicit requirement hidden within this project's requirements?
-%
-Is there any implicit hypothesis hidden within this project's requirements?
-%
-Are there any non-functional requirements implied by this project's requirements?
-
-What model / paradigm / techonology is the best suited to face this project's requirements?
-%
-What's the abstraction gap among the available models / paradigms / techonologies and the problem to be solved?
+\desc{
+    Is there any implicit requirement hidden within this project's requirements?
+    Is there any implicit hypothesis hidden within this project's requirements?
+    Are there any non-functional requirements implied by this project's requirements?
+    What model / paradigm / techonology is the best suited to face this project's requirements?
+    What's the abstraction gap among the available models / paradigms / techonologies and the problem to be solved?
+}
 
 \section{Design}
 
-This is where the logical / abstract contribution of the project is presented.
+In the following section is presented the blockchain network architecture, as well as the application one.
 
-Notice that, when describing a software project, three dimensions need to be taken into account: structure, behaviour, and interaction.
+\subsection{Blockchain architecture}
 
-Always remember to report \textbf{why} a particular design has been chosen.
-Reporting wrong design choices which has been evalued during the design phase is welcome too.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figures/network-architecture.pdf}
+    \caption{High level network architecture}
+    \label{fig:image}
+\end{figure}
 
-\subsection{Structure / Domain Entities}
+\subsection{Application design}
 
-Which entities need to by modelled to reflect the domain?
-%
-(UML Class diagram)
+\desc{
+    This is where the logical / abstract contribution of the project is presented.
+    Notice that, when describing a software project, three dimensions need to be taken into account: structure, behaviour, and interaction.
+    Always remember to report \textbf{why} a particular design has been chosen.
+    Reporting wrong design choices which has been evalued during the design phase is welcome too.
+}
 
-How should entities be modularised?
-%
-(UML Component / Package / Deployment Diagrams)
+\subsubsection{Structure / Domain Entities}
+\desc{
+    Which entities need to by modelled to reflect the domain?
+    (UML Class diagram)
+    How should entities be modularised?
+    (UML Component / Package / Deployment Diagrams)
+}
 
-\subsection{Behaviour}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/codes-core.eps}
+    \caption{Codes classes}
+    \label{fig:} 
+\end{figure}
 
-How should each entity behave?
-%
-(UML State diagram or Activity Diagram)
+\subsubsection{Behaviour}
 
-\subsection{Interaction}
+\desc{
+    How should each entity behave?
+    (UML State diagram or Activity Diagram)
+}
 
-How should entities interact with each other?
-%
-(UML Sequence Diagram)
+\subsubsection{Interaction}
+
+\desc{
+    How should entities interact with each other?
+    (UML Sequence Diagram)
+}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/codes-interaction.eps}
+    \caption{}
+    \label{fig:} 
+\end{figure}
+
+\subsection{Architectural design}
 
 \section{Implementation Details}
 
-Just report interesting / non-trivial / non-obvious implementation details.
-
-This section is expected to be short in case some documentation (e.g. Javadoc or Swagger Spec) has been produced for the software artefacts.
-%
-This this case, the produced documentation should be referenced here.
+\desc{
+    Just report interesting / non-trivial / non-obvious implementation details.
+    This section is expected to be short in case some documentation (e.g. Javadoc or Swagger Spec) has been produced for the software artefacts.
+    This this case, the produced documentation should be referenced here.
+}
 
 \section{Self-assessment / Validation}
 
-Choose a criterion for the evaluation of the produced software and \textbf{its compliance to the requirements above}.
-
-Pseudo-formal or formal criteria are preferred.
-
-In case of a test-driven development, describe tests here and possibly report the amount of passing tests, the total amount of tests and, possibly, the test coverage.
+\desc{
+    Choose a criterion for the evaluation of the produced software and \textbf{its compliance to the requirements above}.
+    Pseudo-formal or formal criteria are preferred.
+    In case of a test-driven development, describe tests here and possibly report the amount of passing tests, the total amount of tests and, possibly, the test coverage.
+}
 
 \section{Deployment Instructions}
 
@@ -150,6 +223,8 @@ Recap what you did \emph{not}
 \subsection{What did we learned}
 
 Racap what did you learned
+
+% --------------------- TO REMOVE ONCE ENDED ------------------------------
 
 \section*{Stylistic Notes}
 
