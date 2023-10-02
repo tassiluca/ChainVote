@@ -133,7 +133,7 @@ In the following section is presented the blockchain network architecture, as we
     \label{fig:image}
 \end{figure}
 
-\subsection{Application design}
+\subsection{Application abstract design}
 
 \desc{
     This is where the logical / abstract contribution of the project is presented.
@@ -150,11 +150,29 @@ In the following section is presented the blockchain network architecture, as we
     (UML Component / Package / Deployment Diagrams)
 }
 
-\begin{figure}
+\subparagraph*{Elections}
+
+\todo{TODO}
+
+\subparagraph*{Codes}
+
+In \cref{fig:codes-design} are summarized the main entities of the domain model concerning codes management.
+%
+In particular:
+%
+\begin{itemize}
+    \item \texttt{OneTimeCode} represents the one time code entity;
+    \item \texttt{CodesGeneratorStrategy} represents the strategy (i.e. the algorithm) used to generate the codes;
+    \item \texttt{CodesRepository} is the interface managing the storage and retrieval of the codes. This interface is \textit{agnostic} from the storage technology and will possibly be implemented in several ways, depending on the adopted one.
+    \item \texttt{CodesManager} is the interface exposing methods to manage the creation, verification and (in)validation of codes. 
+\end{itemize}
+
+
+\begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{figures/codes-core.eps}
-    \caption{Codes classes}
-    \label{fig:} 
+    \includegraphics[width=\linewidth]{figures/codes-design.eps}
+    \caption{}
+    \label{fig:codes-design} 
 \end{figure}
 
 \subsubsection{Behaviour}
@@ -171,11 +189,24 @@ In the following section is presented the blockchain network architecture, as we
     (UML Sequence Diagram)
 }
 
-\begin{figure}
+In the following section are presented the most relevant (non-trivial) interactions grouped by use cases.
+
+\subparagraph*{Use case: casting a new vote for a given election}
+
+\todo{explain creation of a new code + cast a vote}
+
+\begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{figures/codes-interaction.eps}
-    \caption{}
-    \label{fig:} 
+    \includegraphics[width=\linewidth]{figures/code-creation-use-case.eps}
+    \caption{UML sequence diagram for the code creation use case.}
+    \label{fig:code-creation-use-case} 
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figures/cast-vote-use-case.eps}
+    \caption{UML sequence diagram for the use case of creating a new vote for a given election.}
+    \label{fig:cast-vote-use-case} 
 \end{figure}
 
 \subsection{Architectural design}
