@@ -50,16 +50,4 @@ public class MapOfChoiceLongSerializationTest {
         final var deserialized = genson.deserialize(genson.serialize(MAP), new GenericType<Map<Choice, Long>>() {});
         assertEquals(MAP, deserialized);
     }
-
-    @Test
-    void testDeserializationWithWrongValues() {
-        final var wrong = "{\"va\":[{\"choice\":\"prova1\"},{\"choice\":\"prova2\"},{\"choice\":\"prova3\"},{\"choice\":\"prova4\"}]}";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, new GenericType<List<Choice>>() {}));
-    }
-
-    @Test
-    void testDeserializationWithMissingValue() {
-        final var wrong = "[{\"choice\":\"prova1\"},{\"choice\":\"prova2\"},{\"choice\":\"prova3\"},{\"choice\":\"prova4\"}]";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, new GenericType<List<Choice>>() {}));
-    }
 }

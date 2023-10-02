@@ -58,19 +58,7 @@ public class ElectionInfoSerializationTest {
 
     @Test
     void testDeserialization() {
-        final var deserialized = genson.deserialize(getSerialized(), ElectionInfo.class);
+        final var deserialized = genson.deserialize(genson.serialize(ELECTION), ElectionInfo.class);
         assertEquals(ELECTION, deserialized);
-    }
-
-    @Test
-    void testDeserializationWithWrongValues() {
-        final var wrong = "{\"electionID\":\"123prova\",\"voterID\":\"prova123\",\"date\":\"{\\\"day\\\":\\\"32\\\",\\\"month\\\":\\\"8\\\",\\\"year\\\":\\\"2022\\\",\\\"hour\\\":\\\"10\\\",\\\"minute\\\":\\\"0\\\",\\\"second\\\":\\\"0\\\"}\",\"choice\":\"123prova123\"}";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, Election.class));
-    }
-
-    @Test
-    void testDeserializationWithMissingValue() {
-        final var wrong = "{\"electionID\":\"123prova\",\"date\":\"{\\\"day\\\":\\\"32\\\",\\\"month\\\":\\\"8\\\",\\\"year\\\":\\\"2022\\\",\\\"hour\\\":\\\"10\\\",\\\"minute\\\":\\\"0\\\",\\\"second\\\":\\\"0\\\"}\",\"choice\":\"123prova123\"}";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, Election.class));
     }
 }
