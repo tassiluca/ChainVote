@@ -7,45 +7,33 @@ on:
       - report
   create:
     tags:
-      - "*"  # Trigger on all new tags
+      - "*" 
 
 jobs:
-  build:
+  build_latex:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Install Required LaTeX Packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra
-
-    - name: Set up LaTeX
-      uses: xu-cheng/latex-action@v3
-      with:
-        root_file: docs/report.tex
-        args: -pdf  # Add any additional LaTeX build options here
-      env:
-        TEXINPUTS: "./"
-
-    - name: Create Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          docs/report.pdf
-        draft: false
-        prerelease: false
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload Release Asset
-      uses: actions/upload-artifact@v2
-      with:
-        name: pdf-output
-        path: docs/report.pdf
-
-    - name: Set Output URL
-      id: release_url
-      run: echo "::set-output name=url::https://github.com/${GITHUB_REPOSITORY}/releases/tag/${{ steps.create_release.outputs.id }}"
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install Required LaTeX Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra
+      
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: docs/report.tex
+        env:
+          TEXINPUTS: "./"
+      
+      - name: Upload PDF file
+        uses: actions/upload-artifact@v3
+        with:
+          name: PDF
+          path: main.pdf
+  
+      - name: Set Output URL
+        id: release_url
+        run: echo "::set-output name=url::https://github.com/${GITHUB_REPOSITORY}/releases/tag/${{ steps.create_release.outputs.id }}"
