@@ -15,12 +15,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Install Required LaTeX Packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra
-      
+
       - name: Compile LaTeX document
         uses: dante-ev/latex-action@latest
         with:
@@ -28,6 +23,10 @@ jobs:
           root_file: report.tex
           compiler: pdflatex
           args: -interaction=nonstopmode -shell-escape
+      
+      - name: Show PDF file
+        id: show_pdf
+        run: ls -la
       
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
