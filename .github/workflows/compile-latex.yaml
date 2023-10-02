@@ -24,16 +24,18 @@ jobs:
           compiler: pdflatex
           args: -interaction=nonstopmode -shell-escape
       
-      - name: Show PDF file
-        id: show_pdf
-        run: ls -la docs/
-      
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
         with:
           name: PDF
           path: docs/report.pdf
-  
-      - name: Set Output URL
-        id: release_url
-        run: echo "::set-output name=url::https://github.com/${GITHUB_REPOSITORY}/releases/tag/${{ steps.create_release.outputs.id }}"
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            docs/report.pdf
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
