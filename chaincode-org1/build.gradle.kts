@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    api(project(":presentation"))
+    api(project(":chaincode"))
     implementation(libs.fabric.chaincode.shim)
     implementation(libs.genson)
     implementation(libs.json)

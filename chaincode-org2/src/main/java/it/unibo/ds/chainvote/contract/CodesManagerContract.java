@@ -27,11 +27,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import static it.unibo.ds.chainvote.contract.TransientData.CODE;
-import static it.unibo.ds.chainvote.contract.TransientData.ELECTION_ID;
-import static it.unibo.ds.chainvote.contract.TransientData.USER_ID;
-import static it.unibo.ds.chainvote.utils.TransientUtils.getLongFromTransient;
-import static it.unibo.ds.chainvote.utils.TransientUtils.getStringFromTransient;
+import static it.unibo.ds.chaincode.utils.TransientData.CODE;
+import static it.unibo.ds.chaincode.utils.TransientData.ELECTION_ID;
+import static it.unibo.ds.chaincode.utils.TransientData.USER_ID;
+import static it.unibo.ds.chaincode.utils.TransientUtils.getLongFromTransient;
+import static it.unibo.ds.chaincode.utils.TransientUtils.getStringFromTransient;
 
 /**
  * A Hyperledger Fabric contract to manage one-time-codes.

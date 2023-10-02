@@ -58,7 +58,7 @@ public class ElectionInfoSerializationTest {
 
     @Test
     void testDeserialization() {
-        final var deserialized = genson.deserialize(genson.serialize(ELECTION), ElectionInfo.class);
+        final var deserialized = genson.deserialize(getSerialized(), ElectionInfo.class);
         assertEquals(ELECTION, deserialized);
     }
 

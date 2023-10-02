@@ -5,10 +5,12 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="#JAVA_HOME" />
+        <option name="gradleHome" value="/usr/local/Cellar/gradle/8.2.1/libexec" />
+        <option name="gradleJvm" value="17" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/chaincode" />
             <option value="$PROJECT_DIR$/chaincode-org1" />
             <option value="$PROJECT_DIR$/chaincode-org2" />
             <option value="$PROJECT_DIR$/core" />

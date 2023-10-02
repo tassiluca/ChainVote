@@ -14,7 +14,7 @@ public class LocalDateTimeSerializationTest {
 
     private final Genson genson = GensonUtils.create();
     private static final Map<String, Integer> TIME_MAP = Map.of(
-            "y", 2022,
+            "y", 2023,
             "M", 8,
             "d", 20,
             "h", 10,
@@ -33,7 +33,6 @@ public class LocalDateTimeSerializationTest {
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(DATE);
-        System.out.println(serialized);
         assertEquals(getSerialized(), serialized);
     }
 

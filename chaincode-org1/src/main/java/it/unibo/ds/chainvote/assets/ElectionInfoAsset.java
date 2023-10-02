@@ -1,10 +1,16 @@
 package it.unibo.ds.chainvote.assets;
 
+import com.owlike.genson.Genson;
 import com.owlike.genson.annotation.JsonProperty;
+import com.owlike.genson.stream.JsonType;
+import com.owlike.genson.stream.ObjectReader;
+import com.owlike.genson.stream.ValueType;
+import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.assets.ElectionInfo;
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @DataType()

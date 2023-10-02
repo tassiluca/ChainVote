@@ -23,21 +23,21 @@ public final class LocalDateTimeConverter implements Converter<LocalDateTime> {
         writer.endObject();
     }
 
-    private void conditionallyPutInMap(final Map<String, Integer> map, final ObjectReader reader, final String property) {
-        reader.next();
-        if (property.equals(reader.name())) {
-           map.put(property, reader.valueAsInt());
-        } else {
-           throw new JsonBindingException("Malformed LocalDateTime json");
-        }
-    }
-
     @Override
     public LocalDateTime deserialize(final ObjectReader reader, final Context ctx) {
         reader.beginObject();
         Map<String, Integer> dateMap = new HashMap<>();
         List<String> properties = new ArrayList<>(Arrays.asList("year", "month", "day", "hour", "minute", "second"));
-        properties.forEach(property -> conditionallyPutInMap(dateMap, reader, property));
+
+        while (reader.hasNext()) {
+            reader.next();
+            if (properties.contains(reader.name())) {
+                dateMap.put(reader.name(), reader.valueAsInt());
+            } else {
+                throw new JsonBindingException("Malformed LocalDateTime json");
+            }
+        }
+
         reader.endObject();
         return LocalDateTime.of(dateMap.get("year"), dateMap.get("month"), dateMap.get("day"),
                dateMap.get("hour"), dateMap.get("minute"), dateMap.get("second"));
