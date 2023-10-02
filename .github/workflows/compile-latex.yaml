@@ -26,13 +26,13 @@ jobs:
       
       - name: Show PDF file
         id: show_pdf
-        run: ls -la
+        run: ls -la docs/
       
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
         with:
           name: PDF
-          path: report.pdf
+          path: docs/report.pdf
   
       - name: Set Output URL
         id: release_url
