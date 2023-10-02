@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Script to automatize the bring up and down of the blockchain network.
+# TODO move artifacts from /tmp/ to project relative directory?
 
 set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
 
@@ -15,6 +16,11 @@ if [[ $# != 1 || ($1 != "up" && $1 != "down") ]]; then
     exit 1
 fi;
 
+function test() {
+    echo "Ended"
+    exit 1
+}
+
 function upNetwork() {
     echo "Setup binaries"
     if [[ ! -d ./bin/ ]]; then
@@ -22,8 +28,8 @@ function upNetwork() {
     fi;
     export PATH="$PATH:$PWD/bin"
     echo "Up ca-tls rca-org0 rca-org1 rca-org2"
-    docker-compose up -d ca-tls rca-org0 rca-org1 rca-org2
-    sleep 5
+    docker compose up -d --wait ca-tls rca-org0 rca-org1 rca-org2
+    echo "Services up and running!"
     echo "Enrol registrar of each CA and register all entities"
     ./reg.sh
     echo "Enrol entities for each organization"
@@ -32,8 +38,8 @@ function upNetwork() {
     cd ./channels_config
     ./channel_artifacts.sh
     echo "Bring up the whole network"
-    docker-compose up -d
-    sleep 11
+    docker compose up -d --wait
+    echo "Services up and running!"
     echo "Create and joining channels"
     ./channel_creation.sh
 }

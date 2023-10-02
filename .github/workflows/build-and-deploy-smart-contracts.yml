@@ -1,0 +1,33 @@
+name: Build And Deploy Smart Contracts
+
+on:
+  push:
+    tags: '*'
+    branches-ignore:
+      - 'autodelivery**'
+      - 'bump-**'
+      - 'renovate/**'
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu]
+        jvm_version: [8, 11, 17]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Build
+        run: ./gradlew classes testClasses
+      - name: Test
+        run: ./gradlew test
+#      - name: Check
+#        run: ./gradlew check
+      - name: Up network and deploy smart contracts
+        run: ./gradlew upAndDeploy
