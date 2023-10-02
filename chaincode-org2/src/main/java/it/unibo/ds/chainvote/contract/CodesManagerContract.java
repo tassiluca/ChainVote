@@ -68,7 +68,7 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
             // TODO ASAP chaincode-org1 is ready
             //  if (!electionExists(context, electionId)) {
             //      throw new ChaincodeException(
-            //          "The given election doesn't exists", CodeManagerErrors.ALREADY_GENERATED_CODE.toString()
+            //          "The given election doesn't exists", CodeManagerErrors.INVALID_INPUT.toString()
             //      );
             //  }
             try {

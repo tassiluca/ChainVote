@@ -17,5 +17,5 @@ log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "lo
 log4j-slf4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
 
 [plugins]
-java-qa = "org.danilopianini.gradle-java-qa:1.11.0"
+java-qa = "org.danilopianini.gradle-java-qa:1.17.0"
 shadowJar = "com.github.johnrengelman.shadow:8.1.1"
