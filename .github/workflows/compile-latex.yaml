@@ -22,17 +22,18 @@ jobs:
           sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra
       
       - name: Compile LaTeX document
-        uses: xu-cheng/latex-action@v3
+        uses: dante-ev/latex-action@latest
         with:
-          root_file: docs/report.tex
-        env:
-          TEXINPUTS: "./"
+          working_directory: docs/
+          root_file: report.tex
+          compiler: pdflatex
+          args: -interaction=nonstopmode -shell-escape
       
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
         with:
           name: PDF
-          path: main.pdf
+          path: report.pdf
   
       - name: Set Output URL
         id: release_url
