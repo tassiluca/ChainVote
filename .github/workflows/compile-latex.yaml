@@ -1,26 +1,44 @@
-name: compile-latex-action
-run-name: Compiling github
+name: LaTeX Build and Release
+
 on:
   push:
     branches:
-      - main
+      - main      
       - report
+  create:
+    tags:
+      - "*"  # Trigger on all new tags
 
 jobs:
-  compile-latex-action:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: docs/
-          root_file:
-            report.tex
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          artifacts: docs/
-          replacesArtifacts: true
-          tag: ${{ steps.current-time.outputs.time }}
+    - name: Set up LaTeX
+      uses: xu-cheng/latex-action@v2
+      with:
+        root_file: docs/report.tex
+        args: -pdf  # Add any additional LaTeX build options here
 
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          docs/report.pdf
+        draft: false
+        prerelease: false
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Release Asset
+      uses: actions/upload-artifact@v2
+      with:
+        name: pdf-output
+        path: docs/report.pdf
+
+    - name: Set Output URL
+      id: release_url
+      run: echo "::set-output name=url::https://github.com/${GITHUB_REPOSITORY}/releases/tag/${{ steps.create_release.outputs.id }}"
