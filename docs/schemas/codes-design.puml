@@ -1,4 +1,4 @@
-@startuml codes-core
+@startuml codes-design
 
 interface OneTimeCode {
     +getCode(): Long
@@ -8,31 +8,31 @@ interface OneTimeCode {
 
 class OneTimeCodeImpl implements OneTimeCode
 
-interface CodeGeneratorStrategy {
+interface CodesGeneratorStrategy {
     +generateCode(\n    alreadyGeneratedPredicate: Predicate<OneTimeCode>\n):OneTimeCode
     +generateCode(\n    alreadyGenerated: Set<OneTimeCode>\n): OneTimeCode
     +generateCode(): OneTimeCode
 }
-CodeGeneratorStrategy *-up- OneTimeCode
+CodesGeneratorStrategy .up.> OneTimeCode : creates
 
-class SecureRandomGenerator implements CodeGeneratorStrategy
+class SecureRandomGenerator implements CodesGeneratorStrategy
 
-interface CodeRepository<C> {
+interface CodesRepository<C> {
     +get(ctx: C, electionId: String, userId: String): Optional<OneTimeCode>
     +put(ctx: C, electionId: String, userId: String, code: OneTimeCode)
     +replace(ctx: C, electionId: String, code: OneTimeCode)
 }
 
-interface CodeManager<C> {
+interface CodesManager<C> {
     +generateFor(ctx: C, electionId: String, userId: String): OneTimeCode
     +isValid(ctx: C, electionId: String, code: OneTimeCode): boolean
     +invalidate(ctx: C, electionId: String, code: OneTimeCode)
     +verifyCodeOwner(ctx: C, electionId: String, userId: String, code: OneTimeCode): boolean
 }
 
-class CodeManagerImpl<C> implements CodeManager
-CodeManager *-left-- OneTimeCode
-CodeManagerImpl *-- CodeRepository
-CodeManagerImpl *-- CodeGeneratorStrategy
+class CodesManagerImpl<C> implements CodesManager
+CodesManager *-left-- OneTimeCode
+CodesManagerImpl *-- CodesRepository
+CodesManagerImpl *-- CodesGeneratorStrategy
 
 @enduml

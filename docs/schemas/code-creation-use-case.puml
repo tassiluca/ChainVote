@@ -1,6 +1,6 @@
-@startuml codes-interaction
+@startuml code-creation-use-case
 
-actor Client as C
+actor User as C
 participant ":API" as API
 participant ":CodesManagerContract" as CM
 participant ":ElectionContract" as EC
@@ -12,7 +12,7 @@ activate CM
 activate EC
 activate EI
 
-== request new code ==
+== Use case: User request new one time code ==
 
 C ->> API : ""requestCode(usr, election)""
 API ->> CM : ""generateFor(usr, election)""
