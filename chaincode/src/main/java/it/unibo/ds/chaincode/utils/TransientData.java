@@ -6,12 +6,12 @@ package it.unibo.ds.chaincode.utils;
 public enum TransientData {
     USER_ID("userId"),
     ELECTION_ID("electionId"),
+    GOAL("goal"),
     CODE("code"),
     DATE("date"),
     STARTING_DATE("startDate"),
     ENDING_DATE("endDate"),
     VOTERS("voters"),
-    VOTER_ID("voter"),
     CHOICE("choice"),
     LIST("list"),
 

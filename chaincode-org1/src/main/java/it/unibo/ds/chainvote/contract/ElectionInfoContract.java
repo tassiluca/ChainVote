@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static it.unibo.ds.chaincode.utils.TransientData.DATE;
 import static it.unibo.ds.chaincode.utils.TransientData.ELECTION_ID;
 import static it.unibo.ds.chaincode.utils.TransientData.ENDING_DATE;
+import static it.unibo.ds.chaincode.utils.TransientData.GOAL;
 import static it.unibo.ds.chaincode.utils.TransientData.LIST;
 import static it.unibo.ds.chaincode.utils.TransientData.STARTING_DATE;
 import static it.unibo.ds.chaincode.utils.TransientData.VOTERS;
@@ -71,7 +71,7 @@ public final class ElectionInfoContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void createElectionInfo(final Context ctx) {
         applyToTransients(ctx,
-            t -> getStringFromTransient(t, ELECTION_ID.getKey()),
+            t -> getStringFromTransient(t, GOAL.getKey()),
             t -> getLongFromTransient(t, VOTERS.getKey()),
             t -> getDateFromTransient(t, STARTING_DATE.getKey()),
             t -> getDateFromTransient(t, ENDING_DATE.getKey()),

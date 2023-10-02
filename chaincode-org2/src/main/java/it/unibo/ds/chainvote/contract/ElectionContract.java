@@ -29,7 +29,7 @@ import java.util.List;
 import static it.unibo.ds.chaincode.utils.TransientData.CHOICE;
 import static it.unibo.ds.chaincode.utils.TransientData.ELECTION_ID;
 import static it.unibo.ds.chaincode.utils.TransientData.RESULTS;
-import static it.unibo.ds.chaincode.utils.TransientData.VOTER_ID;
+import static it.unibo.ds.chaincode.utils.TransientData.USER_ID;
 import static it.unibo.ds.chaincode.utils.TransientUtils.applyToTransients;
 import static it.unibo.ds.chaincode.utils.TransientUtils.getChoiceFromTransient;
 import static it.unibo.ds.chaincode.utils.TransientUtils.getMapOfResultsFromTransient;
@@ -162,7 +162,7 @@ public final class ElectionContract implements ContractInterface {
 
         return applyToTransients(ctx,
             t -> getChoiceFromTransient(t, CHOICE.getKey()),
-            t -> getStringFromTransient(t, VOTER_ID.getKey()),
+            t -> getStringFromTransient(t, USER_ID.getKey()),
             t -> getStringFromTransient(t, ELECTION_ID.getKey()),
             (choice, voterId, electionId) -> {
                 ChaincodeStub stub = ctx.getStub();

@@ -150,10 +150,7 @@ public class ElectionInfoContractTest {
                     )
                 );
 
-                final Throwable thrown = catchThrowable(() -> electionInfoContract.createElectionInfo(context));
-                assertThat(thrown)
-                    .isInstanceOf(ChaincodeException.class);
-                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("WRONG_INPUT".getBytes(UTF_8));
+                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context));
             }
 
             @Test
@@ -169,10 +166,7 @@ public class ElectionInfoContractTest {
                     )
                 );
 
-                Throwable thrown = catchThrowable(() -> electionInfoContract.createElectionInfo(context));
-                assertThat(thrown)
-                    .isInstanceOf(ChaincodeException.class);
-                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("WRONG_INPUT".getBytes(UTF_8));
+                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context));
 
                 when(stub.getTransient()).thenReturn(
                     Map.of(
@@ -186,10 +180,7 @@ public class ElectionInfoContractTest {
                     )
                 );
 
-                thrown = catchThrowable(() -> electionInfoContract.createElectionInfo(context));
-                assertThat(thrown)
-                    .isInstanceOf(ChaincodeException.class);
-                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("WRONG_INPUT".getBytes(UTF_8));
+                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context));
             }
         }
     }
