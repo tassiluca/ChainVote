@@ -7,7 +7,7 @@ set -e  # Exit immediately if some command (simple or compound) returns a non-ze
 
 if [[ -d ./bin ]]; then 
     echo "A bin folder already exists. Exiting."
-    exit 1
+    exit
 fi;
 
 curl -sSL https://bit.ly/2ysbOFE | bash -s
