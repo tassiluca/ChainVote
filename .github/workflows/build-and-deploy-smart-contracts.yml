@@ -1,8 +1,5 @@
 name: Build And Deploy Smart Contracts
 
-permissions:
-  contents: write
-
 on:
   push:
     tags: '*'
