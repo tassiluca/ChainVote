@@ -27,7 +27,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Build
-        run: ./gradlew classes testClasses
+        run: |
+          cd smart-contracts
+          ./gradlew classes testClasses
       - name: Test
         run: |
           cd smart-contracts
