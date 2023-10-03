@@ -33,4 +33,4 @@ jobs:
 #      - name: Check
 #        run: ./gradlew check
       - name: Up network and deploy smart contracts
-        run: ./gradlew upAndDeploy
+        run: sudo ./gradlew upAndDeploy
