@@ -27,11 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.unibo.ds.chaincode.utils.TransientData.CHOICE;
+import static it.unibo.ds.chaincode.utils.TransientData.CODE;
 import static it.unibo.ds.chaincode.utils.TransientData.ELECTION_ID;
 import static it.unibo.ds.chaincode.utils.TransientData.RESULTS;
 import static it.unibo.ds.chaincode.utils.TransientData.USER_ID;
 import static it.unibo.ds.chaincode.utils.TransientUtils.applyToTransients;
 import static it.unibo.ds.chaincode.utils.TransientUtils.getChoiceFromTransient;
+import static it.unibo.ds.chaincode.utils.TransientUtils.getLongFromTransient;
 import static it.unibo.ds.chaincode.utils.TransientUtils.getMapOfResultsFromTransient;
 import static it.unibo.ds.chaincode.utils.TransientUtils.getStringFromTransient;
 
@@ -49,8 +51,10 @@ import static it.unibo.ds.chaincode.utils.TransientUtils.getStringFromTransient;
 @Default
 public final class ElectionContract implements ContractInterface {
 
-    private static final String CHANNEL_INFO_NAME = "ch1";
-    private static final String CHAINCODE_INFO_NAME = "chaincode-org1";
+    private static final String CHANNEL_INFO_NAME_CH1 = "ch1";
+    private static final String CHAINCODE_INFO_NAME_CH1 = "chaincode-org1";
+    private static final String CHANNEL_INFO_NAME_CH2 = "ch2";
+    private static final String CHAINCODE_INFO_NAME_CH2 = "chaincode-org2";
 
     private final Genson genson = GensonUtils.create();
 
@@ -143,11 +147,12 @@ public final class ElectionContract implements ContractInterface {
         System.out.println("[EC] readElectionInfo");
 
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
-            CHAINCODE_INFO_NAME,
+            CHAINCODE_INFO_NAME_CH1,
             List.of("ElectionInfoContract:readElectionInfo"),
-            CHANNEL_INFO_NAME
+            CHANNEL_INFO_NAME_CH1
         );
-
+        // TODO debug here
+        System.out.println("[EC] readElectionInfo response received: " + response.getStringPayload());
         return genson.deserialize(response.getStringPayload(), ElectionInfo.class);
     }
 
@@ -164,12 +169,24 @@ public final class ElectionContract implements ContractInterface {
             t -> getChoiceFromTransient(t, CHOICE.getKey()),
             t -> getStringFromTransient(t, USER_ID.getKey()),
             t -> getStringFromTransient(t, ELECTION_ID.getKey()),
-            (choice, voterId, electionId) -> {
+            t -> getLongFromTransient(t, CODE.getKey()),
+            (choice, voterId, electionId, code) -> {
                 ChaincodeStub stub = ctx.getStub();
                 if (!electionExists(ctx, electionId)) {
                     String errorMessage = String.format("ElectionAsset %s does not exist", electionId);
                     System.out.println(errorMessage);
                     throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_NOT_FOUND.toString());
+                }
+
+                Chaincode.Response responseIsValid = ctx.getStub().invokeChaincodeWithStringArgs(
+                    CHAINCODE_INFO_NAME_CH2,
+                    List.of("CodesManagerContract:isValid"),
+                    CHANNEL_INFO_NAME_CH2
+                );
+                if (!Boolean.parseBoolean(responseIsValid.getStringPayload())) {
+                    String errorMessage = "Code " + code + " is not valid.";
+                    System.out.println(errorMessage);
+                    throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
                 }
                 Ballot ballot = null;
                 try {
@@ -190,9 +207,12 @@ public final class ElectionContract implements ContractInterface {
                     System.out.println(e.getMessage());
                     throw new ChaincodeException(e.getMessage(), ElectionTransferErrors.ELECTION_INVALID_BALLOT_ARGUMENT.toString());
                 }
+                ctx.getStub().invokeChaincodeWithStringArgs(
+                    CHAINCODE_INFO_NAME_CH2,
+                    List.of("CodesManagerContract:invalidate"),
+                    CHANNEL_INFO_NAME_CH2
+                );
                 String electionSerialized = genson.serialize(election.getAsset());
-                // Required ??
-                deleteAsset(ctx);
                 stub.putStringState(election.getElectionId(), electionSerialized);
                 return ballot;
             }

@@ -150,6 +150,26 @@ public final class TransientUtils {
     }
 
     @FunctionalInterface
+    public interface FourParameterFunction<T1, T2, T3, T4, R> {
+        R apply(T1 t1, T2 t2, T3 t3, T4 t4);
+    }
+
+
+    public static <P1, P2, P3, P4, R> R applyToTransients(final Context context,
+                                                              final Function<Map<String, byte[]>, P1> buildFirst,
+                                                              final Function<Map<String, byte[]>, P2> buildSecond,
+                                                              final Function<Map<String, byte[]>, P3> buildThird,
+                                                              final Function<Map<String, byte[]>, P4> buildForth,
+                                                              final FourParameterFunction<P1, P2, P3, P4, R> action) {
+        final Map<String, byte[]> transientMap = context.getStub().getTransient();
+        final P1 firstParam = buildFirst.apply(transientMap);
+        final P2 secondParam = buildSecond.apply(transientMap);
+        final P3 thirdParam = buildThird.apply(transientMap);
+        final P4 forthParam = buildForth.apply(transientMap);
+        return action.apply(firstParam, secondParam, thirdParam, forthParam);
+    }
+
+    @FunctionalInterface
     public interface FiveParameterFunction<T1, T2, T3, T4, T5, R> {
         R apply(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
     }

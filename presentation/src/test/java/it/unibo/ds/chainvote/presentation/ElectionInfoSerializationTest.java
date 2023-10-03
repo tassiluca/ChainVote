@@ -1,11 +1,9 @@
 package it.unibo.ds.chainvote.presentation;
 
 import com.owlike.genson.Genson;
-import com.owlike.genson.JsonBindingException;
 import it.unibo.ds.core.assets.*;
 import it.unibo.ds.core.factory.ElectionFactory;
 import it.unibo.ds.core.utils.Choice;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -20,7 +18,7 @@ public class ElectionInfoSerializationTest {
 
     private final Genson genson = GensonUtils.create();
     private static final String GOAL = "prova";
-    private static final long VOTERS = 400_000_000;
+    private static final long VOTERS = 400_000_000L;
     private static final Map<String, Integer> START_TIME_MAP = Map.of(
             "y", 2022,
             "M", 8,
@@ -42,23 +40,23 @@ public class ElectionInfoSerializationTest {
     private static final LocalDateTime END_DATE = LocalDateTime.of(END_TIME_MAP.get("y"), END_TIME_MAP.get("M"), END_TIME_MAP.get("d"),
             END_TIME_MAP.get("h"), END_TIME_MAP.get("m"), END_TIME_MAP.get("s"));
     private static final List<Choice> CHOICES = new ArrayList<>(List.of(new Choice("prova1"), new Choice("prova2"), new Choice("prova3")));
-    private static final ElectionInfo ELECTION = ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
+    private static final ElectionInfo ELECTION_INFO = ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
 
     private String getSerialized() {
         return "{\"goal\":\"" + GOAL + "\",\"voters\":\"" + VOTERS + "\",\"startingDate\":\""
                 + genson.serialize(START_DATE) + "\",\"endingDate\":\"" + genson.serialize(END_DATE)
-                + "\",\"choices\":\"" + genson.serialize(ELECTION.getChoices()) + "\"}";
+                + "\",\"choices\":\"" + genson.serialize(ELECTION_INFO.getChoices()) + "\"}";
     }
 
     @Test
     void testSerialization() {
-        final var serialized = genson.serialize(ELECTION);
+        final var serialized = genson.serialize(ELECTION_INFO);
         assertEquals(getSerialized(), serialized.replace("\\", ""));
     }
 
     @Test
     void testDeserialization() {
-        final var deserialized = genson.deserialize(genson.serialize(ELECTION), ElectionInfo.class);
-        assertEquals(ELECTION, deserialized);
+        final var deserialized = genson.deserialize(genson.serialize(ELECTION_INFO), ElectionInfo.class);
+        assertEquals(ELECTION_INFO, deserialized);
     }
 }

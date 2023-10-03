@@ -2,6 +2,7 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.assets.ElectionInfoAsset;
+import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.assets.ElectionInfo;
 import it.unibo.ds.core.factory.ElectionFactory;
 import it.unibo.ds.core.utils.Choice;
@@ -47,7 +48,7 @@ import static it.unibo.ds.chaincode.utils.TransientUtils.getStringFromTransient;
 @Default
 public final class ElectionInfoContract implements ContractInterface {
 
-    private final Genson genson = new Genson();
+    private final Genson genson = GensonUtils.create();
 
     private enum ElectionInfoTransferErrors {
         ELECTION_INFO_NOT_FOUND,
@@ -109,15 +110,16 @@ public final class ElectionInfoContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public ElectionInfo readElectionInfo(final Context ctx) {
+        System.out.println("[EIC] readElectionInfo");
         return applyToTransients(ctx,
             t -> getStringFromTransient(t, ELECTION_ID.getKey()),
             (electionId) -> {
                 if (electionInfoExists(ctx, electionId)) {
                     ChaincodeStub stub = ctx.getStub();
                     String electionJSON = stub.getStringState(electionId);
+                    System.out.println("[EIC] readElectionInfo response: " + electionJSON);
                     return genson.deserialize(electionJSON, ElectionInfo.class);
                 } else {
-                    System.out.println("Throw chaincode");
                     throw new ChaincodeException(String.format("Election info %s does not exist", electionId), ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
                 }
             }
