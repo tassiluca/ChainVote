@@ -5,13 +5,20 @@ import { Identity, Signer, signers } from '@hyperledger/fabric-gateway';
 import * as path from 'path';
 import * as crypto from 'crypto';
 
-export class Config {
-    readonly _keyPath: string;
-    readonly _certPath: string;
-    readonly _peerTlsPath: string; 
-    readonly _peerEndpoint: string;
-    readonly _hostAlias: string;
-    readonly _mspId: string;
+export interface CommunicatorInterface {
+    createGrpcClient(): Promise<grpc.Client>
+    createIdentity(): Promise<Identity>
+    createSigner(): Promise<Signer>
+}
+
+ export class Communicator implements CommunicatorInterface {
+
+    private _keyPath: string;
+    private _certPath: string;
+    private _peerTlsPath: string;
+    private _peerEndpoint: string;
+    private _hostAlias: string;
+    private _mspId: string;
 
     constructor (
         keyPath: string,
