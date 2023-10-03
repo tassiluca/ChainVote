@@ -54,11 +54,11 @@ val peersOrg2 = setOf(
 )
 val allPeers = peersOrg1.plus(peersOrg2)
 val blockchainGroup = "blockchain"
-val blockchainDirectory = File("${projectDir.absolutePath}/blockchain")
+val blockchainDirectory = File("${projectDir.parent}/blockchain")
 
 fun commonEnvironmentsFor(organization: String) = mapOf(
     "CORE_PEER_TLS_ENABLED" to "true",
-    "FABRIC_CFG_PATH" to "${projectDir.absolutePath}/blockchain/channels_config/$organization",
+    "FABRIC_CFG_PATH" to "$blockchainDirectory/channels_config/$organization",
 )
 
 fun environmentsFor(organization: String, peer: Peer) = mapOf(
@@ -205,7 +205,7 @@ tasks.register("upAndDeploy") {
 
 tasks.register("installBinaries") {
     description = "Install Hyperledger Fabric binaries"
-    doLast { executeCommand("./install-binaries.sh") }
+    doLast { executeCommand("${blockchainDirectory.path}/install-binaries.sh") }
 }
 
 tasks.filter { it.group == blockchainGroup }.forEach {

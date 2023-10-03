@@ -1,6 +1,3 @@
-### Binaries ###
-*/bin/
-
 ### Gradle ###
 build/
 .gradle/
@@ -21,13 +18,8 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-### draw.io temp file ###
-*.dtmp
-*.bkp
-
 ### MacOS file system ###
 *.DS_Store
 
-### Chaincode jars/packages ###
+### Jars ###
 *.jar
-*.tar.gz
