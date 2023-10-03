@@ -1,0 +1,6 @@
+### Binaries ###
+bin/
+
+### Chaincode jars/packages ###
+*.jar
+*.tar.gz

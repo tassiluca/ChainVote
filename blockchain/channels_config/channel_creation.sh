@@ -38,4 +38,5 @@ CORE_PEER_ADDRESS=localhost:10051 peer channel join --blockpath /tmp/hyperledger
 peer channel update --channelID ch2 --file /tmp/hyperledger/org2/artifacts/org2MSPanchors.tx --orderer localhost:7050 --ordererTLSHostnameOverride orderer1-org0 --tls --cafile /tmp/hyperledger/org2/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
 echo "Checking if peer1-org2 and peer2-org2 have the same ledger"
 peer channel getinfo --channelID ch2
+
 CORE_PEER_ADDRESS=localhost:10051 peer channel getinfo --channelID ch2

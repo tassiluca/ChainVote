@@ -8,7 +8,8 @@
     "/dist"
   ],
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   },
   "author": "Giovanni Antonioni, Luca Tassinari, Luca Rubboli",
   "license": "ISC",
@@ -26,7 +27,6 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "core-components": "^1.0.11",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.4",
