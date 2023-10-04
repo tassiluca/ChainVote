@@ -20,6 +20,7 @@ import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.Chaincode;
 import org.hyperledger.fabric.shim.ChaincodeException;
+import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
 
 import java.util.List;
@@ -77,12 +78,8 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
     }
 
     private boolean electionExists(final Context context, final String electionId) {
-        final Chaincode.Response response = context.getStub().invokeChaincodeWithStringArgs(
-            "chaincode-org2",
-            List.of("electionExists", electionId),
-            "ch2"
-        );
-        return Boolean.parseBoolean(response.getStringPayload());
+        final String electionSerialized = context.getStub().getStringState(electionId);
+        return (electionSerialized != null && !electionSerialized.isBlank());
     }
 
     /**
@@ -97,17 +94,6 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
         return applyToTransients(context, (electionId, userId, code) ->
             codeManager.isValid(context, electionId, userId, new OneTimeCodeImpl(code))
         );
-    }
-
-    /**
-     * Serialize the isValid result in order to route response as result of a cross-chaincode invocation.
-     * @param context the transaction context. A transient map is expected with the following
-     *                key-value pairs: `electionId`, `userId` and `code`.
-     * @return the boolean value serialized.
-     */
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String isValidSerialized(final Context context) {
-        return genson.serialize(isValid(context));
     }
 
     /**
