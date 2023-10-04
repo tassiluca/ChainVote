@@ -1,8 +1,5 @@
 name: Build And Deploy Smart Contracts
 
-permissions:
-  contents: write
-
 on:
   push:
     tags: '*'
@@ -27,10 +24,18 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Build
-        run: ./gradlew classes testClasses
+        run: |
+          cd smart-contracts
+          ./gradlew classes testClasses
       - name: Test
-        run: ./gradlew test
+        run: |
+          cd smart-contracts
+          ./gradlew test
 #      - name: Check
-#        run: ./gradlew check
-      - name: Up network and deploy smart contracts
-        run: sudo ./gradlew upAndDeploy
+#        run: |
+#         cd smart-contracts
+#         ./gradlew check
+      - name: Up network and test deploy smart contracts
+        run: |
+          cd smart-contracts
+          sudo ./gradlew upAndDeploy
