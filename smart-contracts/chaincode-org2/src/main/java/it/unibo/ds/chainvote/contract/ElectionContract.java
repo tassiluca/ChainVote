@@ -148,11 +148,14 @@ public final class ElectionContract implements ContractInterface {
 
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
             CHAINCODE_INFO_NAME_CH1,
-            List.of("ElectionInfoContract:readElectionInfo"),
+            List.of("ElectionInfoContract:readElectionInfoSerialized"),
             CHANNEL_INFO_NAME_CH1
         );
-        // TODO debug here
-        System.out.println("[EC] readElectionInfo response received: " + response.getStringPayload());
+
+        System.out.println("[EC] readElectionInfo response received as status: " + response.getStatus());
+        System.out.println("[EC] readElectionInfo response received as message: " + response.getMessage());
+        System.out.println("[EC] readElectionInfo response received as payload: " + response.getStringPayload());
+        System.out.println("[EC] readElectionInfo response received: " + response);
         return genson.deserialize(response.getStringPayload(), ElectionInfo.class);
     }
 
@@ -180,7 +183,7 @@ public final class ElectionContract implements ContractInterface {
 
                 Chaincode.Response responseIsValid = ctx.getStub().invokeChaincodeWithStringArgs(
                     CHAINCODE_INFO_NAME_CH2,
-                    List.of("CodesManagerContract:isValid"),
+                    List.of("CodesManagerContract:isValidSerialized"),
                     CHANNEL_INFO_NAME_CH2
                 );
                 if (!Boolean.parseBoolean(responseIsValid.getStringPayload())) {

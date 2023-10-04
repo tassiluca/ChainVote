@@ -117,13 +117,24 @@ public final class ElectionInfoContract implements ContractInterface {
                 if (electionInfoExists(ctx, electionId)) {
                     ChaincodeStub stub = ctx.getStub();
                     String electionJSON = stub.getStringState(electionId);
-                    System.out.println("[EIC] readElectionInfo response: " + electionJSON);
                     return genson.deserialize(electionJSON, ElectionInfo.class);
                 } else {
                     throw new ChaincodeException(String.format("Election info %s does not exist", electionId), ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
                 }
             }
         );
+    }
+
+    /**
+     * Return the {@link ElectionInfoAsset} as String.
+     * @param ctx the {@link Context}.
+     * @return the {@link ElectionInfoAsset}.
+     */
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public String readElectionInfoSerialized(final Context ctx) {
+        System.out.println("[EIC] readElectionInfoSerialized");
+        ElectionInfo electionInfo = readElectionInfo(ctx);
+        return genson.serialize(electionInfo);
     }
 
     /**
@@ -185,8 +196,6 @@ public final class ElectionInfoContract implements ContractInterface {
             queryResults.add(election);
         }
 
-        final String response = genson.serialize(queryResults);
-
-        return response;
+        return genson.serialize(queryResults);
     }
 }

@@ -100,6 +100,17 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
     }
 
     /**
+     * Serialize the isValid result in order to route response as result of a cross-chaincode invocation.
+     * @param context the transaction context. A transient map is expected with the following
+     *                key-value pairs: `electionId`, `userId` and `code`.
+     * @return the boolean value serialized.
+     */
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public String isValidSerialized(final Context context) {
+        return genson.serialize(isValid(context));
+    }
+
+    /**
      * Invalidate the given code for the given election passed in a transient map.
      * After calling this method the code can no longer be used.
      * @param context the transaction context. A transient map is expected with the following
