@@ -65,12 +65,9 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public Long generateFor(final Context context) {
         return applyToTransients(context, (electionId, userId) -> {
-            // TODO ASAP chaincode-org1 is ready
-            //  if (!electionExists(context, electionId)) {
-            //      throw new ChaincodeException(
-            //          "The given election doesn't exists", CodeManagerErrors.INVALID_INPUT.toString()
-            //      );
-            //  }
+            if (!electionExists(context, electionId)) {
+                throw new ChaincodeException("The given election doesn't exists", Error.INVALID_INPUT.toString());
+            }
             try {
                 return codeManager.generateFor(context, electionId, userId).getCode();
             } catch (AlreadyGeneratedCodeException exception) {
@@ -81,9 +78,9 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
 
     private boolean electionExists(final Context context, final String electionId) {
         final Chaincode.Response response = context.getStub().invokeChaincodeWithStringArgs(
-            "chaincode-org1",
+            "chaincode-org2",
             List.of("electionExists", electionId),
-            "ch1"
+            "ch2"
         );
         return Boolean.parseBoolean(response.getStringPayload());
     }
