@@ -1,5 +1,5 @@
 import express, { Application } from "express"
-import userRouter from "../routes/userRoute";
+import userRouter from "../routes/user.route";
 import bodyParser from "body-parser"
 import {defaultErrorHandler} from "core-components";
 import MongooseConfig from "./mongoose.config";

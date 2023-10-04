@@ -3,8 +3,8 @@ import { connect, Contract, Gateway, Identity, Network, Signer} from '@hyperledg
 
 import { TextDecoder } from 'util';
 
-import { CommunicatorInterface } from './communicator';
-import {CommunicatorFactory} from "./communicator.factory";
+import { CommunicatorInterface } from './communicator/communicator';
+import {CommunicatorFactory} from "./communicator/communicator.factory";
 
 /**
  * envOrDefault() will return the value of an environment variable, or a default value if the variable is undefined.
@@ -60,7 +60,6 @@ async function main(): Promise<void> {
         client.close();
     }
 }
-
 main(); 
 
 

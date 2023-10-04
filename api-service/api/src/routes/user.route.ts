@@ -35,14 +35,14 @@ userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
 
 
 /**
- * Retrieve the informations of a user 
+ * Retrieve the information of a user
  */
 userRouter.get("/:email", authenticationHandler, getProfile);
 
 userRouter.get("/", authenticationHandler, getProfile);
 
 /** 
- * Update the informations of a user 
+ * Update the information of a user
  */
 userRouter.put("/:email", authenticationHandler, editProfile);
 
