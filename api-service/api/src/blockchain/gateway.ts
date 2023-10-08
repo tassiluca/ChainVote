@@ -17,7 +17,7 @@ const channelName = envOrDefault('CHANNEL_NAME', 'ch1');
 const chaincodeName = envOrDefault('CHAINCODE_NAME', 'basic');
 
 // The configuration object
-const communicator: CommunicatorInterface = CommunicatorFactory.createCommunicatorForOrg1(
+const communicator: CommunicatorInterface = CommunicatorFactory.org1WithEndpoint(
     "peer1",
     "peer1-org1:7051",
     "peer1-org1"

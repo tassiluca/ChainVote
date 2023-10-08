@@ -2,34 +2,31 @@ import {CommunicatorInterface} from "./communicator";
 import {CommunicatorBuilder} from "./communicator.builder";
 import path from "path";
 
+const ORG1_CRYPTO_PATH = path.resolve('/tmp', 'hyperledger', 'org1');
+const ORG1_MSP_ID = 'org1MSP';
+
+const ORG2_CRYPTO_PATH = path.resolve('/tmp', 'hyperledger', 'org2');
+const ORG2_MSP_ID = 'org2MSP';
 export class CommunicatorFactory {
-    static createCommunicatorForOrg1(peerFolderName: string, peerEndpoint: string, hostAlias: string): CommunicatorInterface {
-
-        const cryptoPath = path.resolve('/tmp', 'hyperledger', 'org1');
-        const mspId = 'org1MSP';
-
+    static org1WithEndpoint(tlsRootFolder: string, peerEndpoint: string, hostAlias: string): CommunicatorInterface {
         return new CommunicatorBuilder()
-            .keyPath(path.resolve(cryptoPath, 'admin', 'msp', 'keystore'))
-            .certPath(path.resolve(cryptoPath, 'admin', 'msp', 'signcerts', 'cert.pem'))
-            .peerTlsPath(path.resolve(cryptoPath, peerFolderName, 'tls-msp', 'tlscacerts', 'tls-0-0-0-0-7052.pem'))
+            .keyPath(path.resolve(ORG1_CRYPTO_PATH, 'admin', 'msp', 'keystore'))
+            .certPath(path.resolve(ORG1_CRYPTO_PATH, 'admin', 'msp', 'signcerts', 'cert.pem'))
+            .peerTlsPath(path.resolve(ORG1_CRYPTO_PATH, tlsRootFolder, 'assets', 'tls-ca', 'tls-ca-cert.pem'))
             .peerEndpoint(peerEndpoint)
             .hostAlias(hostAlias)
-            .mspId(mspId)
+            .mspId(ORG1_MSP_ID)
             .build();
     }
 
-    static createCommunicatorForOrg2(peerFolderName: string, peerEndpoint: string, hostAlias: string): CommunicatorInterface {
-
-        const cryptoPath = path.resolve('/tmp', 'hyperledger', 'org2');
-        const mspId = 'org2MSP';
-
+    static org2WithEndpoint(peerFolderName: string, peerEndpoint: string, hostAlias: string): CommunicatorInterface {
         return new CommunicatorBuilder()
-            .keyPath(path.resolve(cryptoPath, 'admin', 'msp', 'keystore'))
-            .certPath(path.resolve(cryptoPath, 'admin', 'msp', 'signcerts', 'cert.pem'))
-            .peerTlsPath(path.resolve(cryptoPath, peerFolderName, 'tls-msp', 'tlscacerts', 'tls-0-0-0-0-7052.pem'))
+            .keyPath(path.resolve(ORG2_CRYPTO_PATH, 'admin', 'msp', 'keystore'))
+            .certPath(path.resolve(ORG2_CRYPTO_PATH, 'admin', 'msp', 'signcerts', 'cert.pem'))
+            .peerTlsPath(path.resolve(ORG2_CRYPTO_PATH, peerFolderName, 'tls-msp', 'tlscacerts', 'tls-0-0-0-0-7052.pem'))
             .peerEndpoint(peerEndpoint)
             .hostAlias(hostAlias)
-            .mspId(mspId)
+            .mspId(ORG2_MSP_ID)
             .build();
     }
 }
