@@ -1,11 +1,13 @@
 #!/bin/bash
 #
 # Script to automatize the bring up and down of the blockchain network.
-# TODO move artifacts from /tmp/ to project relative directory?
 
 set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
 
-if [[ $# != 1 || ($1 != "up" && $1 != "down") ]]; then
+# Directory where store blockchain artifacts
+ARTIFACTS_DIR=$HOME/$(jq -r '.blockchainDataDirectory' ../config.json)
+
+if [[ "$#" != 1 || ($1 != "up" && $1 != "down") ]]; then
     echo "Usage: ./network [up|down]"
     echo "Description:"
     echo "  Script used to easily bring up and down the network."
@@ -16,12 +18,12 @@ if [[ $# != 1 || ($1 != "up" && $1 != "down") ]]; then
     exit 1
 fi;
 
-function test() {
-    echo "Ended"
-    exit 1
-}
-
 function upNetwork() {
+    echo "Artifacts: $ARTIFACTS_DIR"
+    if [[ ! -d $ARTIFACTS_DIR ]]; then 
+        mkdir -p $ARTIFACTS_DIR 
+    fi;
+    export ARTIFACTS_DIR=$ARTIFACTS_DIR
     echo "Setup binaries"
     if [[ ! -d ./bin/ ]]; then
         ./install-binaries.sh
@@ -36,19 +38,20 @@ function upNetwork() {
     ./enroll.sh
     echo "Creating crypto material"
     cd ./channels_config
-    ./channel_artifacts.sh
+    ./channel_artifacts.sh #$ARTIFACTS_DIR
     echo "Bring up the whole network"
     docker compose up -d --wait
     echo "Services up and running!"
     echo "Create and joining channels"
-    ./channel_creation.sh
+    ./channel_creation.sh #$ARTIFACTS_DIR
 }
 
 function downNetwork() {
+    export ARTIFACTS_DIR=$ARTIFACTS_DIR
     echo "Downing network..."
     docker-compose down
-    echo "Delete /tmp/hyperledger/..."
-    rm -rf /tmp/hyperledger
+    echo "Delete $ARTIFACTS_DIR..."
+    rm -rf $ARTIFACTS_DIR
     echo "Done."
 }
 
