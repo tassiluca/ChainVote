@@ -70,8 +70,8 @@ public final class ElectionInfoContract implements ContractInterface {
      * @param ctx the {@link Context}.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void createElectionInfo(final Context ctx) {
-        applyToTransients(ctx,
+    public String createElectionInfo(final Context ctx) {
+        return applyToTransients(ctx,
             t -> getStringFromTransient(t, GOAL.getKey()),
             t -> getLongFromTransient(t, VOTERS.getKey()),
             t -> getDateFromTransient(t, STARTING_DATE.getKey()),
@@ -94,7 +94,7 @@ public final class ElectionInfoContract implements ContractInterface {
                         .buildElectionInfo(goal, votersNumber, startingDate, endingDate, choicesToUse);
                     String sortedJson = genson.serialize(electionInfo);
                     stub.putStringState(electionId, sortedJson);
-                    return null;
+                    return Utils.calculateID(goal, startingDate, endingDate, choicesToUse);
                 } catch (IllegalArgumentException e) {
                     System.err.println(e.getMessage());
                     throw new ChaincodeException(e.getMessage(), ElectionInfoTransferErrors.ELECTION_INFO_INVALID_ARGUMENT.toString());
@@ -119,7 +119,9 @@ public final class ElectionInfoContract implements ContractInterface {
                     String electionJSON = stub.getStringState(electionId);
                     return genson.deserialize(electionJSON, ElectionInfo.class);
                 } else {
-                    throw new ChaincodeException(String.format("Election info %s does not exist", electionId), ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
+                    String errorMessage = String.format("Election info %s does not exist", electionId);
+                    System.err.println(errorMessage);
+                    throw new ChaincodeException(String.format(errorMessage, electionId), ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
                 }
             }
         );
@@ -170,8 +172,9 @@ public final class ElectionInfoContract implements ContractInterface {
         System.out.println("[EIC] electionInfoExists");
 
         ChaincodeStub stub = ctx.getStub();
-        String electionJSON = stub.getStringState(electionId);
-        return (electionJSON != null && !electionJSON.isEmpty());
+        String electionInfoSerialized = stub.getStringState(electionId);
+        System.out.println("[EIC - electionInfoExists] ElectionInfo " + electionId +  " exists? " + (electionInfoSerialized != null && !electionInfoSerialized.isEmpty()));
+        return (electionInfoSerialized != null && !electionInfoSerialized.isEmpty());
     }
 
     /**

@@ -38,7 +38,9 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
 
     @Override
     public boolean isValid(final C context, final String electionId, final String userId, final OneTimeCode code) {
+        System.out.println("[CMI - isValid] searching..");
         final var searchedCode = repo.get(context, electionId, userId);
+        System.out.println("[CMI - isValid] found " + searchedCode.orElse(null));
         if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
             return false;
         }

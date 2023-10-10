@@ -97,20 +97,11 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean isValid(final Context context) {
-        return applyToTransients(context, (electionId, userId, code) ->
-            codeManager.isValid(context, electionId, userId, new OneTimeCodeImpl(code))
+        return applyToTransients(context, (electionId, userId, code) -> {
+            System.out.println("[CMC - isValid] Received request for election " + electionId + " user " + userId + " and code " + code);
+                    return codeManager.isValid(context, electionId, userId, new OneTimeCodeImpl(code));
+                }
         );
-    }
-
-    /**
-     * Serialize the isValid result in order to route response as result of a cross-chaincode invocation.
-     * @param context the transaction context. A transient map is expected with the following
-     *                key-value pairs: `electionId`, `userId` and `code`.
-     * @return the boolean value serialized.
-     */
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String isValidSerialized(final Context context) {
-        return genson.serialize(isValid(context));
     }
 
     /**

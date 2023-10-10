@@ -58,10 +58,13 @@ public final class ElectionContract implements ContractInterface {
 
     private final Genson genson = GensonUtils.create();
 
-    private enum ElectionTransferErrors {
+    private enum ElectionContractErrors {
         ELECTION_NOT_FOUND,
         ELECTION_ALREADY_EXISTS,
-        ELECTION_INVALID_ARGUMENT,
+        ELECTION_INFO_RETRIEVAL_INVALID_ARGUMENT,
+        ELECTION_INVALID_CODE_TO_CAST_VOTE,
+        ELECTION_INVALID_BUILD_ARGUMENT,
+        ELECTION_INVALID_BALLOT_BUILD_ARGUMENT,
         ELECTION_INVALID_BALLOT_ARGUMENT
     }
 
@@ -89,15 +92,15 @@ public final class ElectionContract implements ContractInterface {
             (electionId, results) -> {
                 ChaincodeStub stub = ctx.getStub();
                 if (electionExists(ctx, electionId)) {
-                    String errorMessage = String.format("ElectionAsset %s already exists", electionId);
+                    String errorMessage = String.format("Election %s already exists", electionId);
                     System.err.println(errorMessage);
-                    throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_ALREADY_EXISTS.toString());
+                    throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_ALREADY_EXISTS.toString());
                 }
                 ElectionInfo electionInfo = null;
                 try {
                     electionInfo = readElectionInfo(ctx);
                 } catch (NullPointerException e) {
-                    throw new ChaincodeException(e.getMessage(), ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
+                    throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INFO_RETRIEVAL_INVALID_ARGUMENT.toString());
                 }
                 try {
                     Election election = ElectionFactory
@@ -107,7 +110,7 @@ public final class ElectionContract implements ContractInterface {
                     stub.putStringState(electionAsset.getElectionId(), sortedJson);
                 } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
-                    throw new ChaincodeException(e.getMessage(), ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
+                    throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BUILD_ARGUMENT.toString());
                 }
                 return null;
         });
@@ -129,9 +132,9 @@ public final class ElectionContract implements ContractInterface {
                     String electionSerialized = stub.getStringState(electionId);
                     return new ElectionAsset(electionId, genson.deserialize(electionSerialized, Election.class));
                 } else {
-                    String errorMessage = String.format("ElectionAsset %s does not exist", electionId);
+                    String errorMessage = String.format("Election %s does not exist", electionId);
                     System.out.println(errorMessage);
-                    throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_NOT_FOUND.toString());
+                    throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
                 }
             }
         );
@@ -151,24 +154,18 @@ public final class ElectionContract implements ContractInterface {
             List.of("ElectionInfoContract:readElectionInfoSerialized"),
             CHANNEL_INFO_NAME_CH1
         );
-
-        System.out.println("[EC] readElectionInfo response received as status: " + response.getStatus());
-        System.out.println("[EC] readElectionInfo response received as message: " + response.getMessage());
-        System.out.println("[EC] readElectionInfo response received as payload: " + response.getStringPayload());
-        System.out.println("[EC] readElectionInfo response received: " + response);
         return genson.deserialize(response.getStringPayload(), ElectionInfo.class);
     }
 
     /**
      * Cast a {@link Ballot} in an existing {@link Election}.
      * @param ctx the {@link Context}.
-     * @return the {@link Ballot} cast.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Ballot castVote(final Context ctx) {
+    public void castVote(final Context ctx) {
         System.out.println("[EC] castVote");
 
-        return applyToTransients(ctx,
+        applyToTransients(ctx,
             t -> getChoiceFromTransient(t, CHOICE.getKey()),
             t -> getStringFromTransient(t, USER_ID.getKey()),
             t -> getStringFromTransient(t, ELECTION_ID.getKey()),
@@ -176,21 +173,21 @@ public final class ElectionContract implements ContractInterface {
             (choice, voterId, electionId, code) -> {
                 ChaincodeStub stub = ctx.getStub();
                 if (!electionExists(ctx, electionId)) {
-                    String errorMessage = String.format("ElectionAsset %s does not exist", electionId);
+                    String errorMessage = String.format("Election %s does not exist", electionId);
                     System.out.println(errorMessage);
-                    throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_NOT_FOUND.toString());
+                    throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
                 }
+                System.out.println("[EC - castVote] After asserted the election exists");
 
-                Chaincode.Response responseIsValid = ctx.getStub().invokeChaincodeWithStringArgs(
-                    CHAINCODE_INFO_NAME_CH2,
-                    List.of("CodesManagerContract:isValidSerialized"),
-                    CHANNEL_INFO_NAME_CH2
-                );
-                if (!Boolean.parseBoolean(responseIsValid.getStringPayload())) {
+                CodesManagerContract cmc = new CodesManagerContract();
+                boolean isCodeValid = cmc.isValid(ctx);
+
+                if (!isCodeValid) {
                     String errorMessage = "Code " + code + " is not valid.";
                     System.out.println(errorMessage);
-                    throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
+                    throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CODE_TO_CAST_VOTE.toString());
                 }
+
                 Ballot ballot = null;
                 try {
                     ballot = new BallotImpl.Builder().electionID(electionId)
@@ -200,24 +197,22 @@ public final class ElectionContract implements ContractInterface {
                         .build();
                 } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
-                    throw new ChaincodeException(e.getMessage(), ElectionTransferErrors.ELECTION_INVALID_ARGUMENT.toString());
+                    throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_BUILD_ARGUMENT.toString());
                 }
+                System.out.println("[EC - castVote] Built the ballot, retrieving ElectionInfo and Election");
                 ElectionInfo electionInfo = readElectionInfo(ctx);
                 ElectionAsset election = readElectionAsset(ctx);
                 try {
                     ElectionManagerImpl.getInstance().castVote(election.getAsset(), electionInfo, ballot);
                 } catch (IllegalStateException | IllegalArgumentException e) {
                     System.out.println(e.getMessage());
-                    throw new ChaincodeException(e.getMessage(), ElectionTransferErrors.ELECTION_INVALID_BALLOT_ARGUMENT.toString());
+                    throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_ARGUMENT.toString());
                 }
-                ctx.getStub().invokeChaincodeWithStringArgs(
-                    CHAINCODE_INFO_NAME_CH2,
-                    List.of("CodesManagerContract:invalidate"),
-                    CHANNEL_INFO_NAME_CH2
-                );
+                System.out.println("[EC - castVote] Vote casted, invalidating code");
+                cmc.invalidate(ctx);
                 String electionSerialized = genson.serialize(election.getAsset());
                 stub.putStringState(election.getElectionId(), electionSerialized);
-                return ballot;
+                return null;
             }
         );
     }
@@ -238,7 +233,7 @@ public final class ElectionContract implements ContractInterface {
                 if (!electionExists(ctx, electionId)) {
                     String errorMessage = String.format("Election %s does not exist", electionId);
                     System.out.println(errorMessage);
-                    throw new ChaincodeException(errorMessage, ElectionTransferErrors.ELECTION_NOT_FOUND.toString());
+                    throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
                 }
                 stub.delState(electionId);
 
@@ -250,14 +245,15 @@ public final class ElectionContract implements ContractInterface {
     /**
      * Check if an {@link ElectionAsset} exists.
      * @param ctx the {@link Context}.
-     * @param electionID the {@link ElectionAsset}'s ID.
+     * @param electionId the {@link ElectionAsset}'s ID.
      * @return if the {@link ElectionAsset} exists.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    private boolean electionExists(final Context ctx, final String electionID) {
+    private boolean electionExists(final Context ctx, final String electionId) {
         System.out.println("[EC] electionExists");
         ChaincodeStub stub = ctx.getStub();
-        String electionSerialized = stub.getStringState(electionID);
+        String electionSerialized = stub.getStringState(electionId);
+        System.out.println("[EC - electionExists] Election " + electionId +  " exists? " + (electionSerialized != null && !electionSerialized.isEmpty()));
         return (electionSerialized != null && !electionSerialized.isEmpty());
     }
 
