@@ -5,10 +5,13 @@
 set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
 
 # Substitute ${ARTIFACTS_DIR} placeholder in configtx.yaml
-cp -frT core.yaml generated/core.yaml
-cp -frT orderer.yaml generated/orderer.yaml
-cp -frT configtx.yaml generated/configtx.yaml
-sed -i '' 's#$(ARTIFACTS_DIR)#'$ARTIFACTS_DIR'#g' generated/configtx.yaml
+if [[ ! -d generated ]]; then 
+    mkdir generated 
+fi;
+cp -f ./core.yaml ./generated/core.yaml
+cp -f ./orderer.yaml ./generated/orderer.yaml
+cp -f ./configtx.yaml ./generated/configtx.yaml
+sed -i '' 's#$(ARTIFACTS_DIR)#'$ARTIFACTS_DIR'#g' ./generated/configtx.yaml
 
 export FABRIC_CFG_PATH=$PWD/generated
 
