@@ -43,6 +43,7 @@ subprojects {
 data class Chaincode(val name: String, val organization: String)
 val chaincodeOrg1 = Chaincode("chaincode-org1", "org1")
 val chaincodeOrg2 = Chaincode("chaincode-org2", "org2")
+
 data class Peer(val organization: String, val name: String, val address: String)
 val peersOrg1 = setOf(
     Peer("org1", "peer1", "localhost:7051"),
