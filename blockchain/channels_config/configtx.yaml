@@ -184,6 +184,8 @@ Application: &ApplicationDefaults
     # Organizations is the list of orgs which are defined as participants on
     # the application side of the network
     Organizations:
+        - *org1
+        - *org2
 
     # Policies defines the set of policies at this level of the config tree
     # For Application policies, their canonical path is
@@ -256,6 +258,7 @@ Orderer: &OrdererDefaults
     # Organizations is the list of orgs which are defined as participants on
     # the orderer side of the network
     Organizations:
+        - *org0
 
     # Policies defines the set of policies at this level of the config tree
     # For Orderer policies, their canonical path is

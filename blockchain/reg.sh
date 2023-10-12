@@ -23,10 +23,12 @@ fabric-ca-client register -d --id.name orderer3-org0 --id.secret orderer3PW --id
 # Identities for the organization 1
 fabric-ca-client register -d --id.name peer1-org1 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7052
 fabric-ca-client register -d --id.name peer2-org1 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7052
+fabric-ca-client register -d --id.name client-org1 --id.secret clientPW --id.type client -u https://0.0.0.0:7052
 
 # Identities for the organization 2 
 fabric-ca-client register -d --id.name peer1-org2 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7052
 fabric-ca-client register -d --id.name peer2-org2 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7052
+fabric-ca-client register -d --id.name client-org2 --id.secret clientPW --id.type client -u https://0.0.0.0:7052
 
 #####################################################################################################################
 # Bring up RCA-ORG0
@@ -58,7 +60,7 @@ sleep 5
 fabric-ca-client register -d --id.name peer1-org1 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7054
 fabric-ca-client register -d --id.name peer2-org1 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7054
 fabric-ca-client register -d --id.name admin-org1 --id.secret org1AdminPW --id.type admin -u https://0.0.0.0:7054
-fabric-ca-client register -d --id.name user-org1 --id.secret org1UserPW --id.type user -u https://0.0.0.0:7054
+fabric-ca-client register -d --id.name client-org1 --id.secret clientPW --id.type client -u https://0.0.0.0:7054
 
 #####################################################################################################################
 # Bring up RCA-ORG2
@@ -74,6 +76,6 @@ sleep 5
 fabric-ca-client register -d --id.name peer1-org2 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7055
 fabric-ca-client register -d --id.name peer2-org2 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7055
 fabric-ca-client register -d --id.name admin-org2 --id.secret org2AdminPW --id.type admin -u https://0.0.0.0:7055
-fabric-ca-client register -d --id.name user-org2 --id.secret org2UserPW --id.type user -u https://0.0.0.0:7055
+fabric-ca-client register -d --id.name client-org2 --id.secret clientPW --id.type client -u https://0.0.0.0:7055
 
 echo "All CA and registration done"

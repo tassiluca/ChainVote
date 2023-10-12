@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:14-alpine
 
 WORKDIR /usr/src/app
 COPY package.json ./
@@ -6,12 +6,11 @@ COPY tsconfig.json ./
 COPY src ./src
 COPY secrets ./secrets
 
-RUN ls -al
 RUN npm install --legacy-peer-deps --verbose --registry http://host.docker.internal:4873/
 RUN npm run build
 
 
-FROM node:20-alpine
+FROM node:14-alpine
 
 WORKDIR /usr/src/app
 COPY package.json ./

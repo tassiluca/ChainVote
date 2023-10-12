@@ -16,7 +16,7 @@ const CHANNEL1_NAME = "ch1";
 (async () => {
     const communicator = CommunicatorFactory.org1WithEndpoint(
         "peer2",
-        "peer2-org1:8051",
+        "localhost:8051",
         "peer2-org1"
     );
 
@@ -56,10 +56,10 @@ export async function createElectionData(req: Request, res: Response, next: Next
     }*/
     try {
 
-        const allAssets: Uint8Array = await contract.evaluateTransaction('getAllAssets');
+        /*const allAssets: Uint8Array = await contract.evaluateTransaction('getAllAssets');
         const resultJson = utf8Decoder.decode(allAssets);
-        res.status(StatusCodes.OK).send(JSON.parse(resultJson));
-        /*
+        res.status(StatusCodes.OK).send(JSON.parse(resultJson));*/
+
         const submission: Uint8Array = await contract.submit('createElectionInfo', {
             transientData: {
                 goal: "Test",
@@ -89,9 +89,10 @@ export async function createElectionData(req: Request, res: Response, next: Next
         });
 
         const resultJson = utf8Decoder.decode(submission);
-        res.status(StatusCodes.OK).send(JSON.parse(resultJson));*/
-    } catch (Error) {
-        next(Error)
+        res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+    } catch (error) {
+        console.log(error.cause);
+        next(error)
     }
 
 }
