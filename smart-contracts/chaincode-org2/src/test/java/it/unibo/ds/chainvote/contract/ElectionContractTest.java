@@ -5,6 +5,10 @@ import it.unibo.ds.chaincode.utils.TransientData;
 import it.unibo.ds.chainvote.assets.ElectionAsset;
 import it.unibo.ds.chainvote.assets.ElectionInfoAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
+import it.unibo.ds.core.codes.AlreadyGeneratedCodeException;
+import it.unibo.ds.core.codes.CodeManager;
+import it.unibo.ds.core.codes.CodeManagerImpl;
+import it.unibo.ds.core.codes.OneTimeCode;
 import it.unibo.ds.core.factory.ElectionFactory;
 import it.unibo.ds.core.utils.Choice;
 import org.hyperledger.fabric.contract.Context;
@@ -15,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +74,8 @@ public class ElectionContractTest {
     private Context context;
     private ChaincodeStub stub;
     private ElectionContract ec;
+    private static final String CHANNEL_INFO_NAME = "ch1";
+    private static final String CHAINCODE_INFO_NAME = "chaincode-org1";
 
     @BeforeEach
     void setup() {
@@ -84,33 +91,19 @@ public class ElectionContractTest {
         @BeforeEach
         void setup() {
             ec = mock(ElectionContract.class);
-            when(ec.readElectionInfo(context)).thenReturn(ELECTION_INFO_ASSET.getAsset());
+            when(ec.readElectionInfo(context, ELECTION_ID)).thenReturn(ELECTION_INFO_ASSET.getAsset());
         }
 
         @Nested
         class TestCorrectlyCreateElection {
             @Test
             void whenCreateElectionWithResults() {
-                when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        TransientData.RESULTS.getKey(), genson.serialize(RESULTS_FULL).getBytes(UTF_8)
-                    )
-                );
-
-                assertDoesNotThrow(() -> ec.createElection(context));
+                assertDoesNotThrow(() -> ec.createElection(context, ELECTION_ID, RESULTS_FULL));
             }
 
             @Test
             void whenCreateElectionWithEmptyResults() {
-                when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        TransientData.RESULTS.getKey(), genson.serialize(RESULTS_EMPTY).getBytes(UTF_8)
-                    )
-                );
-
-                assertDoesNotThrow(() -> ec.createElection(context));
+                assertDoesNotThrow(() -> ec.createElection(context, ELECTION_ID, RESULTS_EMPTY));
             }
         }
 
@@ -120,15 +113,7 @@ public class ElectionContractTest {
             @Test
             void whenCreateElectionWithoutElectionInfo() {
                 ElectionContract electionContract = new ElectionContract();
-                when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        TransientData.RESULTS.getKey(), genson.serialize(RESULTS_FULL).getBytes(UTF_8)
-                    )
-                );
 
-                final String CHANNEL_INFO_NAME = "ch1";
-                final String CHAINCODE_INFO_NAME = "chaincode-org1";
                 when(context.getStub().invokeChaincodeWithStringArgs(
                     CHAINCODE_INFO_NAME,
                     List.of("ElectionInfoContract:readElectionInfo"),
@@ -136,8 +121,7 @@ public class ElectionContractTest {
                 )).thenReturn(
                     new Chaincode.Response(500, "", "".getBytes(UTF_8))
                 );
-
-                assertThrows(NullPointerException.class, () -> electionContract.createElection(context));
+                assertThrows(ChaincodeException.class, () -> electionContract.createElection(context, ELECTION_ID, RESULTS_FULL));
             }
 
             @Test
@@ -146,26 +130,18 @@ public class ElectionContractTest {
                 Map<Choice, Long> wrongResults = new HashMap<>(RESULTS_FULL);
                 wrongResults.put(new Choice("test-wrong-choice"), 0L);
 
-                when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        TransientData.RESULTS.getKey(), genson.serialize(wrongResults).getBytes(UTF_8)
-                    )
-                );
-
-                final String CHANNEL_INFO_NAME = "ch1";
-                final String CHAINCODE_INFO_NAME = "chaincode-org1";
                 when(context.getStub().invokeChaincodeWithStringArgs(
                     CHAINCODE_INFO_NAME,
-                    List.of("ElectionInfoContract:readElectionInfo"),
+                    List.of("ElectionInfoContract:readElectionInfo", ELECTION_ID),
                     CHANNEL_INFO_NAME
                 )).thenReturn(
                     new Chaincode.Response(200, "", genson.serialize(ELECTION_INFO_ASSET.getAsset()).getBytes(UTF_8))
                 );
 
-                final Throwable thrown = catchThrowable(() -> electionContract.createElection(context));
+                final Throwable thrown = catchThrowable(() -> electionContract.createElection(context, ELECTION_ID, wrongResults));
                 assertThat(thrown)
                     .isInstanceOf(ChaincodeException.class);
+                System.out.println(new String(((ChaincodeException) thrown).getPayload(), UTF_8));
                 assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ELECTION_INVALID_ARGUMENT".getBytes(UTF_8));
             }
         }
@@ -178,8 +154,6 @@ public class ElectionContractTest {
         void setup() {
             ec = new ElectionContract();
 
-            final String CHANNEL_INFO_NAME = "ch1";
-            final String CHAINCODE_INFO_NAME = "chaincode-org1";
             when(context.getStub().invokeChaincodeWithStringArgs(
                 CHAINCODE_INFO_NAME,
                 List.of("ElectionInfoContract:readElectionInfo"),
@@ -194,15 +168,8 @@ public class ElectionContractTest {
 
             @Test
             void whenReadANonExistingAsset() {
-                when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        TransientData.RESULTS.getKey(), genson.serialize(RESULTS_EMPTY).getBytes(UTF_8)
-                    )
-                );
-
-                assertThrows(ChaincodeException.class, () -> ec.readElectionAsset(context));
-                final Throwable thrown = catchThrowable(() -> ec.readElectionAsset(context));
+                assertThrows(ChaincodeException.class, () -> ec.readElectionAsset(context, ELECTION_ID));
+                final Throwable thrown = catchThrowable(() -> ec.readElectionAsset(context, ELECTION_ID));
                 assertThat(thrown)
                     .isInstanceOf(ChaincodeException.class);
                 assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ELECTION_NOT_FOUND".getBytes(UTF_8));
@@ -219,8 +186,6 @@ public class ElectionContractTest {
             void setup() {
                 electionContract = new ElectionContract();
 
-                final String CHANNEL_INFO_NAME = "ch1";
-                final String CHAINCODE_INFO_NAME = "chaincode-org1";
                 when(context.getStub().invokeChaincodeWithStringArgs(
                     CHAINCODE_INFO_NAME,
                     List.of("ElectionInfoContract:readElectionInfo"),
@@ -247,14 +212,23 @@ public class ElectionContractTest {
 
                 @Test
                 void whenCastVoteWithValidBallot() {
+                    CodesManagerContract cmc = new CodesManagerContract();
+
                     when(stub.getTransient()).thenReturn(
-                        Map.of(
-                            TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                            TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8),
-                            TransientData.CHOICE.getKey(), genson.serialize(CHOICE_ELECTION.get(0)).getBytes(UTF_8)
-                        )
+                            Map.of(
+                                    TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
+                                    TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8)
+                            )
                     );
-                    assertDoesNotThrow(() -> electionContract.castVote(context));
+
+                    Long otc = cmc.generateFor(context);
+                    when(stub.getTransient()).thenReturn(
+                            Map.of(
+                                    TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8),
+                                    TransientData.CODE.getKey(), genson.serialize(otc).getBytes(UTF_8)
+                            )
+                    );
+                    assertDoesNotThrow(() -> electionContract.castVote(context, CHOICE_ELECTION.get(0), ELECTION_ID));
                 }
             }
 
@@ -263,16 +237,24 @@ public class ElectionContractTest {
 
                 @Test
                 void whenCastVoteWithInvalidBallotChoice() {
+                    CodesManagerContract cmc = new CodesManagerContract();
+
                     when(stub.getTransient()).thenReturn(
-                        Map.of(
-                            TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                            TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8),
-                            TransientData.CHOICE.getKey(), genson.serialize(new Choice("test-wrong-choice")).getBytes(UTF_8)
-                        )
+                            Map.of(
+                                    TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
+                                    TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8)
+                            )
                     );
 
-                    assertThrows(ChaincodeException.class, () -> electionContract.castVote(context));
-                    final Throwable thrown = catchThrowable(() -> electionContract.castVote(context));
+                    Long otc = cmc.generateFor(context);
+                    when(stub.getTransient()).thenReturn(
+                            Map.of(
+                                    TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8),
+                                    TransientData.CODE.getKey(), genson.serialize(otc).getBytes(UTF_8)
+                            )
+                    );
+                    assertThrows(ChaincodeException.class, () -> electionContract.castVote(context, new Choice("test-wrong-choice"), ELECTION_ID));
+                    final Throwable thrown = catchThrowable(() -> electionContract.castVote(context, new Choice("test-wrong-choice"), ELECTION_ID));
                     assertThat(thrown)
                         .isInstanceOf(ChaincodeException.class);
                     assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ELECTION_INVALID_BALLOT_ARGUMENT".getBytes(UTF_8));
@@ -280,19 +262,39 @@ public class ElectionContractTest {
 
                 @Test
                 void whenCastVoteWithInvalidBallotElectionId() {
+                    CodesManagerContract cmc = new CodesManagerContract();
+
                     when(stub.getTransient()).thenReturn(
-                        Map.of(
-                            TransientData.ELECTION_ID.getKey(), (ELECTION_ID + "wrong").getBytes(UTF_8),
-                            TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8),
-                            TransientData.CHOICE.getKey(), genson.serialize(CHOICE_ELECTION.get(0)).getBytes(UTF_8)
-                        )
+                            Map.of(
+                                    TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
+                                    TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8)
+                            )
                     );
 
-                    assertThrows(ChaincodeException.class, () -> electionContract.castVote(context));
-                    final Throwable thrown = catchThrowable(() -> electionContract.castVote(context));
+                    Long otc = cmc.generateFor(context);
+                    when(stub.getTransient()).thenReturn(
+                            Map.of(
+                                    TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8),
+                                    TransientData.CODE.getKey(), genson.serialize(otc).getBytes(UTF_8)
+                            )
+                    );
+
+                    assertThrows(ChaincodeException.class, () -> electionContract.castVote(context, CHOICE_ELECTION.get(0), ELECTION_ID + "wrong"));
+                    final Throwable thrown = catchThrowable(() -> electionContract.castVote(context, CHOICE_ELECTION.get(0), ELECTION_ID + "wrong"));
                     assertThat(thrown)
                         .isInstanceOf(ChaincodeException.class);
                     assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ELECTION_NOT_FOUND".getBytes(UTF_8));
+                }
+
+                @Test
+                void whenCastVoteWithRandomCode() {
+                    when(stub.getTransient()).thenReturn(
+                            Map.of(
+                                    TransientData.USER_ID.getKey(), VOTER_ID.getBytes(UTF_8),
+                                    TransientData.CODE.getKey(), genson.serialize(123456789L).getBytes(UTF_8)
+                            )
+                    );
+                    assertThrows(ChaincodeException.class, () -> electionContract.castVote(context, CHOICE_ELECTION.get(0), ELECTION_ID));
                 }
             }
         }
@@ -327,14 +329,8 @@ public class ElectionContractTest {
 
                 @Test
                 void whenDeleteWithInvalidElectionId() {
-                    when(stub.getTransient()).thenReturn(
-                        Map.of(
-                            TransientData.ELECTION_ID.getKey(), (ELECTION_ID + "wrong").getBytes(UTF_8)
-                        )
-                    );
-
-                    assertThrows(ChaincodeException.class, () -> electionContract.deleteAsset(context));
-                    final Throwable thrown = catchThrowable(() -> electionContract.deleteAsset(context));
+                    assertThrows(ChaincodeException.class, () -> electionContract.deleteAsset(context, ELECTION_ID + "wrong"));
+                    final Throwable thrown = catchThrowable(() -> electionContract.deleteAsset(context, ELECTION_ID + "wrong"));
                     assertThat(thrown)
                         .isInstanceOf(ChaincodeException.class);
 

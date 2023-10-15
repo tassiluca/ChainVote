@@ -138,7 +138,7 @@ final class CodeManagerContractTest {
                     new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE))
                 ).getBytes(UTF_8)
             );
-            assertTrue(contract.isValid(context));
+            assertTrue(contract.isValid(context, ELECTION_ID));
         }
 
         @Test
@@ -147,7 +147,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
-            assertFalse(contract.isValid(context));
+            assertFalse(contract.isValid(context, ELECTION_ID));
         }
 
         @Test
@@ -158,14 +158,14 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(invalidCode);
-            assertFalse(contract.isValid(context));
+            assertFalse(contract.isValid(context, ELECTION_ID));
         }
 
         @Test
         void whenInvalidate() {
             final var code = new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE));
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(genson.serialize(code).getBytes(UTF_8));
-            contract.invalidate(context);
+            contract.invalidate(context, ELECTION_ID);
             final var consumedCode = code.getCode();
             assertDoesNotThrow(consumedCode::consume);
             final var consumedAsset = new OneTimeCodeAsset(ELECTION_ID, USER_ID, consumedCode);
@@ -181,7 +181,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(invalidCode);
-            final Throwable thrown = catchThrowable(() -> contract.invalidate(context));
+            final Throwable thrown = catchThrowable(() -> contract.invalidate(context, ELECTION_ID));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("The code has already been consumed");

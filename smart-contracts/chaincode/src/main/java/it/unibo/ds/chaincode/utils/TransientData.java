@@ -6,16 +6,8 @@ package it.unibo.ds.chaincode.utils;
 public enum TransientData {
     USER_ID("userId"),
     ELECTION_ID("electionId"),
-    GOAL("goal"),
     CODE("code"),
-    DATE("date"),
-    STARTING_DATE("startDate"),
-    ENDING_DATE("endDate"),
-    VOTERS("voters"),
-    CHOICE("choice"),
-    LIST("list"),
-
-    // Map elements
+    // TODO refactor tests and remove RESULTS from here
     RESULTS("results");
 
     private final String key;
