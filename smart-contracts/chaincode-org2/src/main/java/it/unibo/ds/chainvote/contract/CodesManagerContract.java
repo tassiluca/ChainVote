@@ -1,18 +1,10 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
+import it.unibo.ds.chaincode.utils.ArgsData;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.core.codes.AlreadyConsumedCodeException;
-import it.unibo.ds.core.codes.AlreadyGeneratedCodeException;
-import it.unibo.ds.core.codes.CodeManager;
-import it.unibo.ds.core.codes.CodeManagerImpl;
-import it.unibo.ds.core.codes.CodeRepository;
-import it.unibo.ds.core.codes.NotValidCodeException;
-import it.unibo.ds.core.codes.OneTimeCode;
-import it.unibo.ds.core.codes.OneTimeCodeImpl;
-import org.apache.commons.lang3.function.TriFunction;
-import org.apache.logging.log4j.util.TriConsumer;
+import it.unibo.ds.core.codes.*;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
@@ -23,15 +15,10 @@ import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
-import static it.unibo.ds.chaincode.utils.TransientData.CODE;
-import static it.unibo.ds.chaincode.utils.TransientData.ELECTION_ID;
-import static it.unibo.ds.chaincode.utils.TransientData.USER_ID;
-import static it.unibo.ds.chaincode.utils.TransientUtils.getLongFromTransient;
-import static it.unibo.ds.chaincode.utils.TransientUtils.getStringFromTransient;
+import static it.unibo.ds.chaincode.utils.TransientData.*;
+import static it.unibo.ds.chaincode.utils.TransientUtils.*;
 
 /**
  * A Hyperledger Fabric contract to manage one-time-codes.
@@ -64,7 +51,10 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public Long generateFor(final Context context) {
-        return applyToTransients(context, (electionId, userId) -> {
+        return applyToTransients(context,
+                t -> getStringFromTransient(t, ELECTION_ID.getKey()),
+                t -> getStringFromTransient(t, USER_ID.getKey()),
+                (electionId, userId) -> {
             // TODO ASAP chaincode-org1 is ready
             //  if (!electionExists(context, electionId)) {
             //      throw new ChaincodeException(
@@ -82,7 +72,7 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
     private boolean electionExists(final Context context, final String electionId) {
         final Chaincode.Response response = context.getStub().invokeChaincodeWithStringArgs(
             "chaincode-org1",
-            List.of("electionExists", electionId),
+            List.of("electionExists", ArgsData.ELECTION_ID.getKey() + ":" + electionId),
             "ch1"
         );
         return Boolean.parseBoolean(response.getStringPayload());
@@ -96,11 +86,14 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
      * @return true if the given code is still valid, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean isValid(final Context context) {
-        return applyToTransients(context, (electionId, userId, code) -> {
-            System.out.println("[CMC - isValid] Received request for election " + electionId + " user " + userId + " and code " + code);
+    public boolean isValid(final Context context, String electionId) {
+        return applyToTransients(context,
+                t -> getStringFromTransient(t, USER_ID.getKey()),
+                t -> getLongFromTransient(t, CODE.getKey()),
+                (userId, code) -> {
+                    System.out.println("[CMC - isValid] Received request for election " + electionId + " user " + userId + " and code " + code);
                     return codeManager.isValid(context, electionId, userId, new OneTimeCodeImpl(code));
-                }
+            }
         );
     }
 
@@ -111,8 +104,11 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
      *                key-value pairs: `electionId`, `userId` and `code`.
      */
     @Transaction
-    public void invalidate(final Context context) {
-        doWithTransients(context, (electionId, userId, code) -> {
+    public void invalidate(final Context context, String electionId) {
+        doWithTransients(context,
+                t -> getStringFromTransient(t, USER_ID.getKey()),
+                t -> getLongFromTransient(t, CODE.getKey()),
+                (userId, code) -> {
             try {
                 codeManager.invalidate(context, electionId, userId, new OneTimeCodeImpl(code));
             } catch (AlreadyConsumedCodeException exception) {
@@ -131,31 +127,13 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean verifyCodeOwner(final Context context) {
-        return applyToTransients(context, (electionId, userId, code) ->
+        return applyToTransients(context,
+                t -> getStringFromTransient(t, ELECTION_ID.getKey()),
+                t -> getStringFromTransient(t, USER_ID.getKey()),
+                t -> getLongFromTransient(t, CODE.getKey()),
+                (electionId, userId, code) ->
             codeManager.verifyCodeOwner(context, electionId, userId, new OneTimeCodeImpl(code))
         );
-    }
-
-    private void doWithTransients(final Context context, final TriConsumer<String, String, Long> action) {
-        applyToTransients(context, (electionId, userId, code) -> {
-            action.accept(electionId, userId, code);
-            return null;
-        });
-    }
-
-    private <T> T applyToTransients(final Context context, final TriFunction<String, String, Long, T> action) {
-        final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getStringFromTransient(transientMap, ELECTION_ID.getKey());
-        final String userId = getStringFromTransient(transientMap, USER_ID.getKey());
-        final Long code = getLongFromTransient(transientMap, CODE.getKey());
-        return action.apply(electionId, userId, code);
-    }
-
-    private <T> T applyToTransients(final Context context, final BiFunction<String, String, T> action) {
-        final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final String electionId = getStringFromTransient(transientMap, ELECTION_ID.getKey());
-        final String userId = getStringFromTransient(transientMap, USER_ID.getKey());
-        return action.apply(electionId, userId);
     }
 
     @Override

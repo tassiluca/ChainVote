@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -129,6 +130,16 @@ public final class TransientUtils {
         final P1 firstParam = buildFirst.apply(transientMap);
         final P2 secondParam = buildSecond.apply(transientMap);
         return action.apply(firstParam, secondParam);
+    }
+
+    public static <P1, P2> void doWithTransients(final Context context,
+                                                  final Function<Map<String, byte[]>, P1> buildFirst,
+                                                  final Function<Map<String, byte[]>, P2> buildSecond,
+                                                  final BiConsumer<P1, P2> action) {
+        final Map<String, byte[]> transientMap = context.getStub().getTransient();
+        final P1 firstParam = buildFirst.apply(transientMap);
+        final P2 secondParam = buildSecond.apply(transientMap);
+        action.accept(firstParam, secondParam);
     }
 
     @FunctionalInterface
