@@ -17,8 +17,12 @@ public final class BallotImpl implements Ballot {
     private final LocalDateTime date;
     private final Choice choice;
 
-    private BallotImpl(final String electionID, final String voterCodeID, final LocalDateTime date,
-                       final Choice choice) {
+    private BallotImpl(
+        final String electionID,
+        final String voterCodeID,
+        final LocalDateTime date,
+       final Choice choice
+    ) {
         this.electionID = electionID;
         this.voterCodeID = voterCodeID;
         this.date = date;
@@ -45,24 +49,21 @@ public final class BallotImpl implements Ballot {
         return this.choice;
     }
 
-
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-
-        Ballot other = (Ballot) obj;
-
+        final Ballot other = (Ballot) obj;
         return getDate().equals(other.getDate())
-                && getChoice().equals(other.getChoice())
-                && Objects.deepEquals(
-                        new String[] {getElectionID(), getVoterID()},
-                        new String[] {other.getElectionID(), other.getVoterID()});
+            && getChoice().equals(other.getChoice())
+            && Objects.deepEquals(
+                new String[] {getElectionID(), getVoterID()},
+                new String[] {other.getElectionID(), other.getVoterID()}
+            );
     }
 
     @Override
@@ -73,8 +74,8 @@ public final class BallotImpl implements Ballot {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [electionID="
-                + this.electionID + ", voterID="
-                + this.voterCodeID + ", date=" + this.date + ", choice=" + this.choice + "]";
+            + this.electionID + ", voterID="
+            + this.voterCodeID + ", date=" + this.date + ", choice=" + this.choice + "]";
     }
 
     /**
@@ -90,8 +91,9 @@ public final class BallotImpl implements Ballot {
         private void check(final Object input) {
             Objects.requireNonNull(input);
         }
+
         private void checkString(final String input, final String inputValue) {
-            if (input.equals("")) {
+            if (input.isEmpty()) {
                 throw new IllegalArgumentException("Invalid " + inputValue + ": " + input);
             }
         }
@@ -99,7 +101,7 @@ public final class BallotImpl implements Ballot {
         private void checkChoice(final Choice choice, final List<Choice> choices) {
             if (!choices.contains(choice)) {
                 throw new IllegalArgumentException("Choice expressed " + choice
-                        + " is not in possible choices: " + choices);
+                    + " is not in possible choices: " + choices);
             }
         }
 
@@ -134,9 +136,9 @@ public final class BallotImpl implements Ballot {
         @Override
         public Ballot build() {
             return new BallotImpl(this.electionId.orElseThrow(),
-                    this.voterId.orElseThrow(),
-                    this.date.orElseThrow(),
-                    this.choice.orElseThrow());
+                this.voterId.orElseThrow(),
+                this.date.orElseThrow(),
+                this.choice.orElseThrow());
         }
     }
 }

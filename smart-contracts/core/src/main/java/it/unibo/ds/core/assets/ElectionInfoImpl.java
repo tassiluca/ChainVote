@@ -79,10 +79,10 @@ public final class ElectionInfoImpl implements ElectionInfo {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        ElectionInfo other = (ElectionInfo) obj;
+        final ElectionInfo other = (ElectionInfo) obj;
         return getElectionID().equals(other.getElectionID())
             && getGoal().equals(other.getGoal())
             && getVotersNumber() == other.getVotersNumber()

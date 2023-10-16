@@ -75,7 +75,7 @@ public class ElectionFactory {
 
     private static List<Choice> initializeChoices(final List<Choice> choices) {
         checkChoices(choices);
-        List<Choice> retList = new ArrayList<>();
+        final List<Choice> retList = new ArrayList<>();
         choices.stream().distinct()
             .filter(ElectionFactory::isAValidChoice)
             .forEach(choice -> retList.add(new Choice(choice)));
@@ -91,7 +91,7 @@ public class ElectionFactory {
         final long votersNumber
     ) {
         checkResults(results, votersNumber, choices);
-        Map<Choice, Long> retResults = new HashMap<>();
+        final Map<Choice, Long> retResults = new HashMap<>();
         results.keySet().forEach(choice -> retResults.put(choice, results.get(choice)));
         choices.stream()
             .filter(choice -> !results.containsKey(choice))

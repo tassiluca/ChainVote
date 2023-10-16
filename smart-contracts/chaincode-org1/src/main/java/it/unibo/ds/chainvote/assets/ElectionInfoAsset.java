@@ -1,20 +1,14 @@
 package it.unibo.ds.chainvote.assets;
 
-import com.owlike.genson.Genson;
 import com.owlike.genson.annotation.JsonProperty;
-import com.owlike.genson.stream.JsonType;
-import com.owlike.genson.stream.ObjectReader;
-import com.owlike.genson.stream.ValueType;
-import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.assets.ElectionInfo;
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 
-import java.io.IOException;
 import java.util.Objects;
 
 @DataType()
-public class ElectionInfoAsset {
+public final class ElectionInfoAsset {
 
     @Property()
     private final String electionId;
@@ -22,10 +16,12 @@ public class ElectionInfoAsset {
     @Property()
     private final ElectionInfo asset;
 
-    public ElectionInfoAsset(@JsonProperty("electionID") final String electionId,
-                             @JsonProperty("asset") final ElectionInfo asset) {
+    public ElectionInfoAsset(
+        @JsonProperty("electionID") final String electionId,
+        @JsonProperty("asset") final ElectionInfo asset
+    ) {
         this.asset = asset;
-        this.electionId = electionId.equals("") ? this.asset.getElectionID() : electionId;
+        this.electionId = electionId.isEmpty() ? this.asset.getElectionID() : electionId;
     }
 
     public ElectionInfo getAsset() {

@@ -18,13 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ElectionInfoContractTest {
+final class ElectionInfoContractTest {
 
     private static final String ELECTION_ID = "test-election";
     private static final String GOAL = "a test for election";
@@ -38,7 +37,7 @@ public class ElectionInfoContractTest {
         "s", 0
     );
     private static final Map<String, Integer> END_TIME_MAP = Map.of(
-        "y", LocalDateTime.now().getYear()+1,
+        "y", LocalDateTime.now().getYear() + 1,
         "M", 8,
         "d", 22,
         "h", 10,
@@ -63,7 +62,6 @@ public class ElectionInfoContractTest {
     void setup() {
         context = mock(Context.class);
         stub = mock(ChaincodeStub.class);
-
         when(context.getStub()).thenReturn(stub);
     }
 
@@ -103,6 +101,4 @@ public class ElectionInfoContractTest {
             }
         }
     }
-
-
 }

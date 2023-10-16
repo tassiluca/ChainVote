@@ -68,7 +68,7 @@ final class ElectionTest {
         .buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
 
     @Nested
-    class TestBuild {
+    static class TestBuild {
 
         @Test
         void testStandardCorrectBuild() {
@@ -170,13 +170,13 @@ final class ElectionTest {
     }
 
     @Nested
-    class TestCastVotes {
+    static class TestCastVotes {
 
         @Test
         void testCorrectVote() {
-            Election election = ElectionFactory.buildElection(ELECTION_INFO);
+            final Election election = ElectionFactory.buildElection(ELECTION_INFO);
             assertEquals(0L, election.getResults().values().stream().reduce(Long::sum).orElseThrow());
-            Choice castedChoice = ELECTION_INFO.getChoices().get(0);
+            final Choice castedChoice = ELECTION_INFO.getChoices().get(0);
             Ballot ballot = new BallotImpl.Builder()
                 .electionID(Utils.calculateID(GOAL, START_DATE, END_DATE, CHOICES))
                 .voterID("voter1")
@@ -191,8 +191,7 @@ final class ElectionTest {
 
         @Test
         void testWrongVoteChoiceNotInChoice() {
-            Election election = ElectionFactory
-                .buildElection(ELECTION_INFO);
+            final Election election = ElectionFactory.buildElection(ELECTION_INFO);
             Choice castedChoice = new Choice("Wrong choice");
             Ballot ballot = new BallotImpl.Builder()
                 .electionID(Utils.calculateID(GOAL, START_DATE, END_DATE, CHOICES))
@@ -207,12 +206,11 @@ final class ElectionTest {
 
         @Test
         void testWrongVoteCastExceedVotersNumber() {
-            int size = ELECTION_INFO.getChoices().size();
-            Function<Choice, Long> valueMapper = c -> (long) (VOTERS / size);
-            Map<Choice, Long> resultsToSet = ELECTION_INFO.getChoices().stream()
+            final int size = ELECTION_INFO.getChoices().size();
+            final Function<Choice, Long> valueMapper = c -> (long) (VOTERS / size);
+            final Map<Choice, Long> resultsToSet = ELECTION_INFO.getChoices().stream()
                 .collect(Collectors.toMap(Function.identity(), valueMapper));
-            Election election = ElectionFactory
-                .buildElection(ELECTION_INFO, resultsToSet);
+            final Election election = ElectionFactory.buildElection(ELECTION_INFO, resultsToSet);
             int i = 0;
             while (election.getResults().values().stream().reduce(Long::sum).orElseThrow() < VOTERS) {
                 Choice castedChoice = ELECTION_INFO.getChoices().get(0);
@@ -224,8 +222,8 @@ final class ElectionTest {
                     .build();
                 ElectionManagerImpl.getInstance().castVote(election, ELECTION_INFO, ballot);
             }
-            Choice castedChoice = ELECTION_INFO.getChoices().get(0);
-            Ballot ballot = new BallotImpl.Builder()
+            final Choice castedChoice = ELECTION_INFO.getChoices().get(0);
+            final Ballot ballot = new BallotImpl.Builder()
                 .electionID(Utils.calculateID(GOAL, START_DATE, END_DATE, CHOICES))
                 .voterID("voter" + i)
                 .date(LocalDateTime.now())

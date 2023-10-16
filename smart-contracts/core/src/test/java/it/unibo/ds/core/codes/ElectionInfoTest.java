@@ -64,7 +64,7 @@ final class ElectionInfoTest {
             .buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
 
     @Nested
-    class TestBuild {
+    static class TestBuild {
 
         @Test
         void testCorrectBuild() {
@@ -72,7 +72,7 @@ final class ElectionInfoTest {
             assertEquals(GOAL, ELECTION_INFO.getGoal());
             assertEquals(START_DATE, ELECTION_INFO.getStartingDate());
             assertEquals(END_DATE, ELECTION_INFO.getEndingDate());
-            List<Choice> choiceToUse = new ArrayList<>(CHOICES);
+            final List<Choice> choiceToUse = new ArrayList<>(CHOICES);
             if (!choiceToUse.contains(FixedVotes.INFORMAL_BALLOT.getChoice())) {
                 choiceToUse.add(FixedVotes.INFORMAL_BALLOT.getChoice());
             }
@@ -87,7 +87,7 @@ final class ElectionInfoTest {
 
         @Test
         void testWrongBuildEmptyGoal() {
-            String goal = "";
+            final String goal = "";
             assertThrows(IllegalArgumentException.class, () ->
                 ElectionFactory.buildElectionInfo(goal, VOTERS, START_DATE, END_DATE, CHOICES)
             );
@@ -95,7 +95,7 @@ final class ElectionInfoTest {
 
         @Test
         void testWrongBuildZeroVoters() {
-            long voters = 0;
+            final long voters = 0;
             assertThrows(IllegalArgumentException.class, () ->
                 ElectionFactory.buildElectionInfo(GOAL, voters, START_DATE, END_DATE, CHOICES)
             );
@@ -124,7 +124,7 @@ final class ElectionInfoTest {
                 "m", 0,
                 "s", 0
             );
-            LocalDateTime startDateSame = LocalDateTime.of(
+            final LocalDateTime startDateSame = LocalDateTime.of(
                 startMapSame.get("y"),
                 startMapSame.get("M"),
                 startMapSame.get("d"),
@@ -132,7 +132,7 @@ final class ElectionInfoTest {
                 startMapSame.get("m"),
                 startMapSame.get("s")
             );
-            LocalDateTime endDateSame = LocalDateTime.of(
+            final LocalDateTime endDateSame = LocalDateTime.of(
                 endMapSame.get("y"),
                 endMapSame.get("M"),
                 endMapSame.get("d"),
@@ -143,7 +143,7 @@ final class ElectionInfoTest {
             assertThrows(IllegalArgumentException.class, () ->
                 ElectionFactory.buildElectionInfo(GOAL, VOTERS, startDateSame, endDateSame, CHOICES)
             );
-            Map<String, Integer> startMapBigger = Map.of(
+            final Map<String, Integer> startMapBigger = Map.of(
                 "y", 2024,
                 "M", 8,
                 "d", 22,
@@ -151,7 +151,7 @@ final class ElectionInfoTest {
                 "m", 0,
                 "s", 0
             );
-            Map<String, Integer> endMapLower = Map.of(
+            final Map<String, Integer> endMapLower = Map.of(
                 "y", 2022,
                 "M", 8,
                 "d", 22,
@@ -159,7 +159,7 @@ final class ElectionInfoTest {
                 "m", 0,
                 "s", 0
             );
-            LocalDateTime startDateBigger = LocalDateTime.of(
+            final LocalDateTime startDateBigger = LocalDateTime.of(
                 startMapBigger.get("y"),
                 startMapBigger.get("M"),
                 startMapBigger.get("d"),
@@ -167,7 +167,7 @@ final class ElectionInfoTest {
                 startMapBigger.get("m"),
                 startMapBigger.get("s")
             );
-            LocalDateTime endDateLower = LocalDateTime.of(
+            final LocalDateTime endDateLower = LocalDateTime.of(
                 endMapLower.get("y"),
                 endMapLower.get("M"),
                 endMapLower.get("d"),
@@ -196,7 +196,7 @@ final class ElectionInfoTest {
             assertThrows(IllegalArgumentException.class, () ->
                 ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, onlyAChoiceAndABlank)
             );
-            List<Choice> duplicateChoices = new ArrayList<>(List.of(
+            final List<Choice> duplicateChoices = new ArrayList<>(List.of(
                 new Choice("test1"),
                 new Choice("test2"),
                 new Choice("test2"))
@@ -204,7 +204,7 @@ final class ElectionInfoTest {
             assertThrows(IllegalArgumentException.class, () ->
                 ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, duplicateChoices)
             );
-            List<Choice> duplicateBlankChoices = new ArrayList<>(List.of(
+            final List<Choice> duplicateBlankChoices = new ArrayList<>(List.of(
                 new Choice("test1"),
                 FixedVotes.INFORMAL_BALLOT.getChoice(),
                 FixedVotes.INFORMAL_BALLOT.getChoice(),

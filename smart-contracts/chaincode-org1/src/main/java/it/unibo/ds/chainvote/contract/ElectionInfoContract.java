@@ -27,12 +27,12 @@ import java.util.List;
  * Contracts managing {@link ElectionInfo}.
  */
 @Contract(
-        name = "ElectionInfoContract",
-        info = @Info(
-            title = "Election Info Contract",
-            description = "Contract used to manage election info"
-        ),
-        transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
+    name = "ElectionInfoContract",
+    info = @Info(
+        title = "Election Info Contract",
+        description = "Contract used to manage election info"
+    ),
+    transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
 )
 
 @Default
@@ -47,20 +47,18 @@ public final class ElectionInfoContract implements ContractInterface {
     }
 
     /**
-     * Initialize Ledger.
-     * @param ctx the {@link Context}.
-     */
-    @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void initLedger(final Context ctx) {
-        ChaincodeStub stub = ctx.getStub();
-    }
-
-    /**
      * Create a {@link ElectionInfoAsset}.
      * @param ctx the {@link Context}.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public String createElectionInfo(final Context ctx, String goal, Long votersNumber, LocalDateTime startingDate, LocalDateTime endingDate, List<Choice> choices) {
+    public String createElectionInfo(
+        final Context ctx,
+        final String goal,
+        final Long votersNumber,
+        final LocalDateTime startingDate,
+        final LocalDateTime endingDate,
+        final List<Choice> choices
+    ) {
         ChaincodeStub stub = ctx.getStub();
         String electionId = Utils.calculateID(goal, startingDate, endingDate, choices);
         if (electionInfoExists(ctx, electionId)) {
@@ -87,7 +85,7 @@ public final class ElectionInfoContract implements ContractInterface {
      * @return the {@link ElectionInfoAsset}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public ElectionInfo readElectionInfo(final Context ctx, String electionId) {
+    public ElectionInfo readElectionInfo(final Context ctx, final String electionId) {
         System.out.println("[EIC] readElectionInfo");
         if (electionInfoExists(ctx, electionId)) {
             ChaincodeStub stub = ctx.getStub();
@@ -103,10 +101,11 @@ public final class ElectionInfoContract implements ContractInterface {
     /**
      * Return the {@link ElectionInfoAsset} as String.
      * @param ctx the {@link Context}.
+     * @param electionId the election identifier.
      * @return the {@link ElectionInfoAsset}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String readElectionInfoSerialized(final Context ctx, String electionId) {
+    public String readElectionInfoSerialized(final Context ctx, final String electionId) {
         System.out.println("[EIC] readElectionInfoSerialized");
         ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
         return ArgsData.ELECTION_INFO.getKey() + ":" + genson.serialize(electionInfo);
@@ -115,9 +114,10 @@ public final class ElectionInfoContract implements ContractInterface {
     /**
      * Delete an {@link ElectionInfoAsset}.
      * @param ctx the {@link Context}.
+     * @param electionId the election identifier.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void deleteAsset(final Context ctx, String electionId) {
+    public void deleteAsset(final Context ctx, final String electionId) {
         System.out.println("[EIC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
         if (!electionInfoExists(ctx, electionId)) {
@@ -134,7 +134,7 @@ public final class ElectionInfoContract implements ContractInterface {
      * @return if the {@link ElectionInfoAsset} exists.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    private boolean electionInfoExists(final Context ctx, String electionId) {
+    private boolean electionInfoExists(final Context ctx, final String electionId) {
         System.out.println("[EIC] electionInfoExists");
 
         ChaincodeStub stub = ctx.getStub();

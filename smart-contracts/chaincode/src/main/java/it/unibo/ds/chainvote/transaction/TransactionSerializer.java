@@ -17,16 +17,16 @@ import java.util.List;
 import java.util.Map;
 
 @Serializer()
-public class TransactionSerializer implements SerializerInterface {
+public final class TransactionSerializer implements SerializerInterface {
 
     private final Genson genson = GensonUtils.create();
 
-    private String getFromStringFormattedAsKeyValue(String formatted, int idx) {
+    private String getFromStringFormattedAsKeyValue(final String formatted, final int idx) {
         return formatted.split(":", 2)[idx];
     }
 
     @Override
-    public byte[] toBuffer(Object value, TypeSchema ts) {
+    public byte[] toBuffer(final Object value, final TypeSchema ts) {
         System.out.println("[TS - toBuffer]");
         System.out.println("TS: " + ts);
         System.out.println("Value: " + value);
@@ -60,7 +60,7 @@ public class TransactionSerializer implements SerializerInterface {
     }
 
     @Override
-    public Object fromBuffer(byte[] buffer, TypeSchema ts) {
+    public Object fromBuffer(final byte[] buffer, final TypeSchema ts) {
         System.out.println("[TS - fromBuffer]");
         System.out.println("TS: " + ts);
         System.out.println("Buffer: " + new String(buffer, StandardCharsets.UTF_8));
@@ -75,11 +75,11 @@ public class TransactionSerializer implements SerializerInterface {
             System.out.println("It's a choice: " + genson.deserialize(value, Choice.class));
             return genson.deserialize(value, Choice.class);
         } else if (key.equals(ArgsData.CHOICES.getKey())) {
-            System.out.println("It's a list of choices: " + genson.deserialize(value, new GenericType<List<Choice>>() {}));
-            return genson.deserialize(value, new GenericType<List<Choice>>() {});
+            System.out.println("It's a list of choices: " + genson.deserialize(value, new GenericType<List<Choice>>() { }));
+            return genson.deserialize(value, new GenericType<List<Choice>>() { });
         } else if (key.equals(ArgsData.RESULTS.getKey())) {
-            System.out.println("It's a result: " + genson.deserialize(value, new GenericType<Map<Choice, Long>>() {}));
-            return genson.deserialize(value, new GenericType<Map<Choice, Long>>() {});
+            System.out.println("It's a result: " + genson.deserialize(value, new GenericType<Map<Choice, Long>>() { }));
+            return genson.deserialize(value, new GenericType<Map<Choice, Long>>() { });
         } else if (key.equals(ArgsData.VOTERS.getKey())) {
             System.out.println("It's a long: " + Long.valueOf(value));
             return Long.valueOf(value);

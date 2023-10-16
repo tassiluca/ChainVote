@@ -54,7 +54,7 @@ public final class ElectionImpl implements Election {
         if (DEBUG) {
             this.voteAccountability.put(ballot.getVoterID(), ballot.getChoice());
         }
-        long oldValue = this.results.get(ballot.getChoice());
+        final long oldValue = this.results.get(ballot.getChoice());
         return this.results.replace(ballot.getChoice(), oldValue, oldValue + 1);
     }
 
@@ -64,10 +64,10 @@ public final class ElectionImpl implements Election {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        Election other = (Election) obj;
+        final Election other = (Election) obj;
         return this.getBallots().equals(other.getBallots()) && this.getResults().equals(other.getResults());
     }
 
