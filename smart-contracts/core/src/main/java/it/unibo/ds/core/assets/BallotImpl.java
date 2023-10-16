@@ -1,7 +1,6 @@
 package it.unibo.ds.core.assets;
 
 import it.unibo.ds.core.utils.Choice;
-import it.unibo.ds.core.utils.Utils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Optional;
 /**
  * A {@link Ballot} implementation.
  */
-
 public final class BallotImpl implements Ballot {
 
     private final String electionID;

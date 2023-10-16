@@ -1,14 +1,18 @@
 package it.unibo.ds.core.assets;
 
-import it.unibo.ds.core.manager.ElectionManagerImpl;
 import it.unibo.ds.core.utils.Choice;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The {@link Election} implementation.
  */
-//TODO scorporare le informazioni delle elezioni dai risultati!
+// TODO scorporare le informazioni delle elezioni dai risultati!
 public final class ElectionImpl implements Election {
 
     private static final boolean DEBUG = false;
@@ -21,11 +25,7 @@ public final class ElectionImpl implements Election {
     // Keep all the choices of the ballots (Not to query if the voter has already voted)
     private final List<Choice> ballots;
 
-    private ElectionImpl() {
-        this(new HashMap<>(), new ArrayList<>());
-    }
-    private ElectionImpl(final Map<Choice, Long> results,
-                         final List<Choice> ballots) {
+    private ElectionImpl(final Map<Choice, Long> results, final List<Choice> ballots) {
         this.results = results;
         this.ballots = ballots;
         if (DEBUG) {
@@ -58,25 +58,23 @@ public final class ElectionImpl implements Election {
         return this.results.replace(ballot.getChoice(), oldValue, oldValue + 1);
     }
 
+    // TODO (IMPORTANT!): Definition of 'equals()' without corresponding definition of 'hashCode()'
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-
         if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
-
         Election other = (Election) obj;
-
         return this.getBallots().equals(other.getBallots()) && this.getResults().equals(other.getResults());
     }
 
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode())
-                + ", results=" + this.getResults() + ", ballots=" + this.getBallots() + "]";
+            + ", results=" + this.getResults() + ", ballots=" + this.getBallots() + "]";
     }
 
     /**
@@ -99,7 +97,7 @@ public final class ElectionImpl implements Election {
         }
 
         @Override
-        public ElectionBuilder ballots(List<Choice> ballots) {
+        public ElectionBuilder ballots(final List<Choice> ballots) {
             this.check(ballots);
             this.ballots = Optional.of(ballots);
             return this;
@@ -107,8 +105,7 @@ public final class ElectionImpl implements Election {
 
         @Override
         public Election build() {
-            return new ElectionImpl(this.results.orElse(new HashMap<>()),
-                    this.ballots.orElse(new ArrayList<>()));
+            return new ElectionImpl(this.results.orElse(new HashMap<>()), this.ballots.orElse(new ArrayList<>()));
         }
     }
 }

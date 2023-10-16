@@ -1,44 +1,72 @@
 package it.unibo.ds.core.factory;
 
-import it.unibo.ds.core.assets.*;
+import it.unibo.ds.core.assets.Election;
+import it.unibo.ds.core.assets.ElectionImpl;
+import it.unibo.ds.core.assets.ElectionInfo;
+import it.unibo.ds.core.assets.ElectionInfoImpl;
 import it.unibo.ds.core.utils.Choice;
 import it.unibo.ds.core.utils.FixedVotes;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * A factory for an {@link Election}.
+ */
 public class ElectionFactory {
 
-    public static ElectionInfo buildElectionInfo(String goal, long votersNumber, LocalDateTime startingDate,
-                                          LocalDateTime endingDate, List<Choice> choices) {
+    /**
+     * TODO document.
+     * @param goal
+     * @param votersNumber
+     * @param startingDate
+     * @param endingDate
+     * @param choices
+     * @return .
+     */
+    public static ElectionInfo buildElectionInfo(
+        final String goal,
+        final long votersNumber,
+        final LocalDateTime startingDate,
+        final LocalDateTime endingDate,
+        final List<Choice> choices
+    ) {
         checkVoters(votersNumber);
         checkData(startingDate, endingDate);
-        List<Choice> choicesToUse = initializeChoices(choices);
-
         return new ElectionInfoImpl.Builder()
-                .goal(goal)
-                .voters(votersNumber)
-                .start(startingDate)
-                .end(endingDate)
-                .choices(choicesToUse)
-                .build();
+            .goal(goal)
+            .voters(votersNumber)
+            .start(startingDate)
+            .end(endingDate)
+            .choices(initializeChoices(choices))
+            .build();
     }
 
-    public static Election buildElection(ElectionInfo electionInfo) {
+    /**
+     * TODO document.
+     * @param electionInfo
+     * @return .
+     */
+    public static Election buildElection(final ElectionInfo electionInfo) {
         return buildElection(electionInfo, new HashMap<>());
     }
 
-    public static Election buildElection(ElectionInfo electionInfo, Map<Choice, Long> results) {
-        Map<Choice, Long> resultsToUse = initializeResults(results, electionInfo.getChoices()
-                , electionInfo.getVotersNumber());
-        List<Choice> ballotsToUse = new ArrayList<>();
-
+    /**
+     * TODO document.
+     * @param electionInfo
+     * @param results
+     * @return .
+     */
+    public static Election buildElection(final ElectionInfo electionInfo, final Map<Choice, Long> results) {
         checkDataAndResults(electionInfo.getEndingDate(), results);
-
         return new ElectionImpl.Builder()
-                .results(resultsToUse)
-                .ballots(ballotsToUse)
-                .build();
+            .results(initializeResults(results, electionInfo.getChoices(), electionInfo.getVotersNumber()))
+            .ballots(new ArrayList<>())
+            .build();
     }
 
     private static boolean isAValidChoice(final Choice choice) {
@@ -49,22 +77,25 @@ public class ElectionFactory {
         checkChoices(choices);
         List<Choice> retList = new ArrayList<>();
         choices.stream().distinct()
-                .filter(ElectionFactory::isAValidChoice)
-                .forEach(choice -> retList.add(new Choice(choice)));
+            .filter(ElectionFactory::isAValidChoice)
+            .forEach(choice -> retList.add(new Choice(choice)));
         if (!retList.contains(FixedVotes.INFORMAL_BALLOT.getChoice())) {
             retList.add(FixedVotes.INFORMAL_BALLOT.getChoice());
         }
         return retList;
     }
 
-    private static Map<Choice, Long> initializeResults(final Map<Choice, Long> results, final List<Choice> choices, final long votersNumber) {
+    private static Map<Choice, Long> initializeResults(
+        final Map<Choice, Long> results,
+        final List<Choice> choices,
+        final long votersNumber
+    ) {
         checkResults(results, votersNumber, choices);
         Map<Choice, Long> retResults = new HashMap<>();
-        results.keySet()
-                .forEach(choice -> retResults.put(choice, results.get(choice)));
+        results.keySet().forEach(choice -> retResults.put(choice, results.get(choice)));
         choices.stream()
-                .filter(choice -> !results.containsKey(choice))
-                .forEach(choice -> retResults.put(choice, (long) 0));
+            .filter(choice -> !results.containsKey(choice))
+            .forEach(choice -> retResults.put(choice, (long) 0));
         if (!retResults.containsKey(FixedVotes.INFORMAL_BALLOT.getChoice())) {
             retResults.put(FixedVotes.INFORMAL_BALLOT.getChoice(), (long) 0);
         }
