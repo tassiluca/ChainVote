@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static it.unibo.ds.chaincode.utils.TransientUtils.getLongFromTransient;
-import static it.unibo.ds.chaincode.utils.TransientUtils.getStringFromTransient;
+import static it.unibo.ds.chainvote.utils.TransientUtils.getLongFromTransient;
+import static it.unibo.ds.chainvote.utils.TransientUtils.getStringFromTransient;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;

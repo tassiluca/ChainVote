@@ -1,7 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chaincode.utils.ArgsData;
+import it.unibo.ds.chainvote.utils.ArgsData;
 import it.unibo.ds.chainvote.assets.ElectionInfoAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.assets.ElectionInfo;
@@ -29,10 +29,10 @@ import java.util.List;
 @Contract(
         name = "ElectionInfoContract",
         info = @Info(
-                title = "Election Info Contract",
-                description = "Contract used to manage election info"
+            title = "Election Info Contract",
+            description = "Contract used to manage election info"
         ),
-        transactionSerializer = "it.unibo.ds.chaincode.transaction.TransactionSerializer"
+        transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
 )
 
 @Default

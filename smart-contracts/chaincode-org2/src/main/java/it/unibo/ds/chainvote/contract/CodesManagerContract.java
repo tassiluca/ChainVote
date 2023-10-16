@@ -1,8 +1,8 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chaincode.utils.Pair;
-import it.unibo.ds.chaincode.utils.TransientUtils;
+import it.unibo.ds.chainvote.utils.Pair;
+import it.unibo.ds.chainvote.utils.TransientUtils;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.chainvote.utils.UserCodeData;

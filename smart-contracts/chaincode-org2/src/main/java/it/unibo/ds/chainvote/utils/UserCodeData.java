@@ -1,8 +1,5 @@
 package it.unibo.ds.chainvote.utils;
 
-import it.unibo.ds.chaincode.utils.Pair;
-import it.unibo.ds.chaincode.utils.TransientUtils;
-
 import java.util.Map;
 
 /**

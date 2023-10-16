@@ -1,4 +1,4 @@
-package it.unibo.ds.chaincode.utils;
+package it.unibo.ds.chainvote.utils;
 
 import java.util.Objects;
 

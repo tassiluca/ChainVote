@@ -1,8 +1,8 @@
-package it.unibo.ds.chaincode.transaction;
+package it.unibo.ds.chainvote.transaction;
 
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
-import it.unibo.ds.chaincode.utils.ArgsData;
+import it.unibo.ds.chainvote.utils.ArgsData;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.assets.Election;
 import it.unibo.ds.core.assets.ElectionInfo;
