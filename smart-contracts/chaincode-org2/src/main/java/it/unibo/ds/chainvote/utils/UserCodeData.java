@@ -8,9 +8,7 @@ import java.util.Map;
 public enum UserCodeData {
     USER_ID("userId"),
     ELECTION_ID("electionId"),
-    CODE("code"),
-    // TODO refactor tests and remove RESULTS from here
-    RESULTS("results");
+    CODE("code");
 
     private final String key;
 

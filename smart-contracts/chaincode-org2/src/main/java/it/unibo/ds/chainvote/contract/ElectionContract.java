@@ -150,17 +150,15 @@ public final class ElectionContract implements ContractInterface {
     public void castVote(final Context ctx, final Choice choice, final String electionId) {
         final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(ctx.getStub().getTransient());
         System.out.println("[EC] castVote");
-        ChaincodeStub stub = ctx.getStub();
         if (!electionExists(ctx, electionId)) {
             String errorMessage = String.format("Election %s does not exist", electionId);
-            System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
         }
 
         CodesManagerContract cmc = new CodesManagerContract();
 
         if (!cmc.isValid(ctx, electionId)) {
-            String errorMessage = "Code " + codeUserPair._2() + " is not valid.";
+            String errorMessage = "The given one-time-code is not valid.";
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CODE_TO_CAST_VOTE.toString());
         }
@@ -186,7 +184,7 @@ public final class ElectionContract implements ContractInterface {
         }
         cmc.invalidate(ctx, electionId);
         String electionSerialized = genson.serialize(election.getAsset());
-        stub.putStringState(election.getElectionId(), electionSerialized);
+        ctx.getStub().putStringState(election.getElectionId(), electionSerialized);
     }
 
     /**
