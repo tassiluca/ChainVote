@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.ds.chainvote.assets.ElectionAsset;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
+import it.unibo.ds.chainvote.utils.UserCodeData;
 import it.unibo.ds.core.assets.ElectionImpl;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.hyperledger.fabric.contract.Context;
@@ -54,12 +55,7 @@ final class CodeManagerContractTest {
 
         @BeforeEach
         void setup() {
-            when(stub.getTransient()).thenReturn(
-                Map.of(
-                    "userId", USER_ID.getBytes(UTF_8),
-                    "electionId", ELECTION_ID.getBytes(UTF_8)
-                )
-            );
+            when(stub.getTransient()).thenReturn(Map.of(UserCodeData.USER_ID.getKey(), USER_ID.getBytes(UTF_8)));
             // by default suppose the election already exists
             when(context.getStub().getStringState(ELECTION_ID)).thenReturn(genson.serialize(
                 new ElectionAsset(ELECTION_ID, new ElectionImpl.Builder().build()))
@@ -69,7 +65,7 @@ final class CodeManagerContractTest {
         @Test
         void whenNotAlreadyRequested() {
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final long generatedCode = contract.generateFor(context);
+            final long generatedCode = contract.generateFor(context, ELECTION_ID);
             verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(generatedCode))
             ));
@@ -82,7 +78,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
-            final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
+            final Throwable thrown = catchThrowable(() -> contract.generateFor(context, ELECTION_ID));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("A one-time-code for the given election and user has already been generated");
@@ -94,7 +90,7 @@ final class CodeManagerContractTest {
         void whenElectionDoesNotExists() {
             when(context.getStub().getStringState(ELECTION_ID)).thenReturn("");
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
+            final Throwable thrown = catchThrowable(() -> contract.generateFor(context, ELECTION_ID));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("The given election doesn't exists");

@@ -1,10 +1,19 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chaincode.utils.TransientData;
+import it.unibo.ds.chaincode.utils.Pair;
+import it.unibo.ds.chaincode.utils.TransientUtils;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.core.codes.*;
+import it.unibo.ds.chainvote.utils.UserCodeData;
+import it.unibo.ds.core.codes.AlreadyConsumedCodeException;
+import it.unibo.ds.core.codes.AlreadyGeneratedCodeException;
+import it.unibo.ds.core.codes.CodeManager;
+import it.unibo.ds.core.codes.CodeManagerImpl;
+import it.unibo.ds.core.codes.CodeRepository;
+import it.unibo.ds.core.codes.NotValidCodeException;
+import it.unibo.ds.core.codes.OneTimeCode;
+import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
@@ -15,8 +24,7 @@ import org.hyperledger.fabric.shim.ledger.CompositeKey;
 
 import java.util.Optional;
 
-import static it.unibo.ds.chaincode.utils.TransientData.*;
-import static it.unibo.ds.chaincode.utils.TransientUtils.*;
+import static it.unibo.ds.chainvote.utils.UserCodeData.USER_ID;
 
 /**
  * A Hyperledger Fabric contract to manage one-time-codes.
@@ -44,26 +52,21 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
     /**
      * Generate a new one-time-code for the given user and election passed in a transient map.
      * @param context the transaction context. A transient map is expected with the following
-     *                key-value pairs: `userId` and `electionId`.
+     *                key-value pairs: {@link UserCodeData#USER_ID}.
+     * @param electionId the election identifier
      * @return the code asset.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Long generateFor(final Context context) {
-        return applyToTransients(
-            context,
-            t -> getStringFromTransient(t, ELECTION_ID.getKey()),
-            t -> getStringFromTransient(t, USER_ID.getKey()),
-            (electionId, userId) -> {
-                if (!electionExists(context, electionId)) {
-                    throw new ChaincodeException("The given election doesn't exists", Error.INVALID_INPUT.toString());
-                }
-                try {
-                    return codeManager.generateFor(context, electionId, userId).getCode();
-                } catch (AlreadyGeneratedCodeException exception) {
-                    throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
-                }
-            }
-        );
+    public Long generateFor(final Context context, final String electionId) {
+        final var userId = TransientUtils.getStringFromTransient(context.getStub().getTransient(), USER_ID.getKey());
+        if (!electionExists(context, electionId)) {
+            throw new ChaincodeException("The given election doesn't exists", Error.INVALID_INPUT.toString());
+        }
+        try {
+            return codeManager.generateFor(context, electionId, userId).getCode();
+        } catch (AlreadyGeneratedCodeException exception) {
+            throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
+        }
     }
 
     private boolean electionExists(final Context context, final String electionId) {
@@ -74,57 +77,46 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
     /**
      * Check if the given code is still valid, i.e. has not been consumed yet for the given election.
      * @param context the transaction context. A transient map is expected with the following
-     *                key-value pairs: {@link TransientData#USER_ID} and {@link TransientData#CODE}
+     *                key-value pairs: {@link UserCodeData#USER_ID} and {@link UserCodeData#CODE}.
      * @param electionId the election identifier
      * @return true if the given code is still valid, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean isValid(final Context context, final String electionId) {
-        return applyToTransients(context,
-            t -> getStringFromTransient(t, USER_ID.getKey()),
-            t -> getLongFromTransient(t, CODE.getKey()),
-            (userId, code) -> codeManager.isValid(context, electionId, userId, new OneTimeCodeImpl(code))
-        );
+        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
+        return codeManager.isValid(context, electionId, codeUserPair._1(), new OneTimeCodeImpl(codeUserPair._2()));
     }
 
     /**
      * Invalidate the given code for the given election passed in a transient map.
      * After calling this method the code can no longer be used.
      * @param context the transaction context. A transient map is expected with the following
-     *                key-value pairs: {@link TransientData#USER_ID} and {@link TransientData#CODE}.
+     *                key-value pairs: {@link UserCodeData#USER_ID} and {@link UserCodeData#CODE}.
      * @param electionId the election identifier
      */
     @Transaction
-    public void invalidate(final Context context, String electionId) {
-        doWithTransients(context,
-            t -> getStringFromTransient(t, USER_ID.getKey()),
-            t -> getLongFromTransient(t, CODE.getKey()),
-            (userId, code) -> {
-                try {
-                    codeManager.invalidate(context, electionId, userId, new OneTimeCodeImpl(code));
-                } catch (AlreadyConsumedCodeException exception) {
-                    throw new ChaincodeException(exception.getMessage(), Error.ALREADY_INVALIDATED_CODE.toString());
-                } catch (NotValidCodeException exception) {
-                    throw new ChaincodeException(exception.getMessage(), Error.INVALID_INPUT.toString());
-                }
-            }
-        );
+    public void invalidate(final Context context, final String electionId) {
+        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
+        try {
+            codeManager.invalidate(context, electionId, codeUserPair._1(), new OneTimeCodeImpl(codeUserPair._2()));
+        } catch (AlreadyConsumedCodeException exception) {
+            throw new ChaincodeException(exception.getMessage(), Error.ALREADY_INVALIDATED_CODE.toString());
+        } catch (NotValidCodeException exception) {
+            throw new ChaincodeException(exception.getMessage(), Error.INVALID_INPUT.toString());
+        }
     }
 
     /**
      * Verifies if the given code has been generated for the given user and election passed in a transient map.
      * @param context the transaction context. A transient map is expected with the following
-     *                key-value pairs:  {@link TransientData#USER_ID} and {@link TransientData#CODE}.
+     *                key-value pairs:  {@link UserCodeData#USER_ID} and {@link UserCodeData#CODE}.
      * @param electionId the election identifier
      * @return true if the given code is correct, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean verifyCodeOwner(final Context context, final String electionId) {
-        return applyToTransients(context,
-            t -> getStringFromTransient(t, USER_ID.getKey()),
-            t -> getLongFromTransient(t, CODE.getKey()),
-            (userId, code) -> codeManager.verifyCodeOwner(context, electionId, userId, new OneTimeCodeImpl(code))
-        );
+        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
+        return codeManager.verifyCodeOwner(context, electionId, codeUserPair._1(), new OneTimeCodeImpl(codeUserPair._2()));
     }
 
     @Override

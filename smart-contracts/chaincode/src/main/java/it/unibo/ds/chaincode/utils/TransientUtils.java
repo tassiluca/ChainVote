@@ -1,23 +1,15 @@
 package it.unibo.ds.chaincode.utils;
 
-import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.core.utils.Choice;
-import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeException;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * A utility class exposing method to extract and convert data from the transient map.
+ * A utility class exposing utilities methods to extract and convert data from the transient map.
  */
 public final class TransientUtils {
 
@@ -25,6 +17,8 @@ public final class TransientUtils {
         INCOMPLETE_INPUT,
         WRONG_INPUT
     }
+
+    private static final Genson GENSON = GensonUtils.create();
 
     private TransientUtils() { }
 
@@ -64,81 +58,5 @@ public final class TransientUtils {
             final String errorMsg = "The `" + key + "`s input was expected to be a Long.";
             throw new ChaincodeException(errorMsg, Error.WRONG_INPUT.toString());
         }
-    }
-
-    /**
-     * @param transientData the {@link Map} containing the transient data.
-     * @param key the key of the entry to extract.
-     * @return the {@link Choice} associated to the given key.
-     */
-    public static Choice getChoiceFromTransient(final Map<String, byte[]> transientData, final String key) {
-        return getFromTransient(transientData, key, b -> {
-            Genson genson = GensonUtils.create();
-            return genson.deserialize(getStringFromTransient(transientData, key), Choice.class);
-        });
-    }
-
-    /**
-     * @param transientData the {@link Map} containing the transient data.
-     * @param key the key of the entry to extract.
-     * @return the {@link Choice} associated to the given key.
-     */
-    public static LocalDateTime getDateFromTransient(final Map<String, byte[]> transientData, final String key) {
-        final Genson genson = GensonUtils.create();
-        return getFromTransient(transientData, key, b ->
-                genson.deserialize(getStringFromTransient(transientData, key), LocalDateTime.class)
-        );
-    }
-
-    /**
-     * @param transientData the {@link Map} containing the transient data.
-     * @param key the key of the entry to extract.
-     * @return the {@link Choice} associated to the given key.
-     */
-    public static List<Choice> getListFromTransient(final Map<String, byte[]> transientData, final String key) {
-        final Genson genson = GensonUtils.create();
-        return getFromTransient(transientData, key, b ->
-            genson.deserialize(getStringFromTransient(transientData, key).replaceAll("\"", "\\\""), new GenericType<>() { })
-        );
-    }
-
-    /**
-     * @param transientData the {@link Map} containing the transient data.
-     * @return the {@link Map} of results associated to the given keys.
-     */
-    public static Map<Choice, Long> getMapOfResultsFromTransient(final Map<String, byte[]> transientData, final String key) {
-        final Genson genson = GensonUtils.create();
-        return getFromTransient(transientData, key, b ->
-            genson.deserialize(getStringFromTransient(transientData, key), new GenericType<Map<Choice, Long>>() { })
-        );
-    }
-
-
-    public static <P, R> R applyToTransients(final Context context,
-                                             final Function<Map<String, byte[]>, P> build,
-                                             final Function<P, R> action) {
-        final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final P param = build.apply(transientMap);
-        return action.apply(param);
-    }
-
-    public static <P1, P2, R> R applyToTransients(final Context context,
-                                                  final Function<Map<String, byte[]>, P1> buildFirst,
-                                                  final Function<Map<String, byte[]>, P2> buildSecond,
-                                                  final BiFunction<P1, P2, R> action) {
-        final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final P1 firstParam = buildFirst.apply(transientMap);
-        final P2 secondParam = buildSecond.apply(transientMap);
-        return action.apply(firstParam, secondParam);
-    }
-
-    public static <P1, P2> void doWithTransients(final Context context,
-                                                  final Function<Map<String, byte[]>, P1> buildFirst,
-                                                  final Function<Map<String, byte[]>, P2> buildSecond,
-                                                  final BiConsumer<P1, P2> action) {
-        final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final P1 firstParam = buildFirst.apply(transientMap);
-        final P2 secondParam = buildSecond.apply(transientMap);
-        action.accept(firstParam, secondParam);
     }
 }

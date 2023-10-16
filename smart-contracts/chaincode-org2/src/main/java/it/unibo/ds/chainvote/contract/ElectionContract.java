@@ -2,11 +2,12 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import it.unibo.ds.chaincode.utils.ArgsData;
-import it.unibo.ds.chaincode.utils.TransientData;
+import it.unibo.ds.chaincode.utils.Pair;
 import it.unibo.ds.chaincode.utils.TransientUtils;
 import it.unibo.ds.chainvote.assets.ElectionAsset;
 import it.unibo.ds.chainvote.assets.ElectionInfoAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
+import it.unibo.ds.chainvote.utils.UserCodeData;
 import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.assets.Election;
@@ -147,51 +148,46 @@ public final class ElectionContract implements ContractInterface {
      * @param ctx the {@link Context}.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void castVote(final Context ctx, Choice choice, String electionId) {
-        TransientUtils.doWithTransients(ctx,
-            t -> TransientUtils.getStringFromTransient(t, TransientData.USER_ID.getKey()),
-            t -> TransientUtils.getStringFromTransient(t, TransientData.CODE.getKey()),
-            (voterId, code) -> {
-                System.out.println("[EC] castVote");
-                ChaincodeStub stub = ctx.getStub();
-                if (!electionExists(ctx, electionId)) {
-                    String errorMessage = String.format("Election %s does not exist", electionId);
-                    System.out.println(errorMessage);
-                    throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
-                }
+    public void castVote(final Context ctx, final Choice choice, final String electionId) {
+        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(ctx.getStub().getTransient());
+        System.out.println("[EC] castVote");
+        ChaincodeStub stub = ctx.getStub();
+        if (!electionExists(ctx, electionId)) {
+            String errorMessage = String.format("Election %s does not exist", electionId);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
+        }
 
-                CodesManagerContract cmc = new CodesManagerContract();
+        CodesManagerContract cmc = new CodesManagerContract();
 
-                if (!cmc.isValid(ctx, electionId)) {
-                    String errorMessage = "Code " + code + " is not valid.";
-                    System.out.println(errorMessage);
-                    throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CODE_TO_CAST_VOTE.toString());
-                }
+        if (!cmc.isValid(ctx, electionId)) {
+            String errorMessage = "Code " + codeUserPair._2() + " is not valid.";
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CODE_TO_CAST_VOTE.toString());
+        }
 
-                Ballot ballot = null;
-                try {
-                    ballot = new BallotImpl.Builder().electionID(electionId)
-                        .voterID(voterId)
-                        .date(LocalDateTime.now())
-                        .choice(choice)
-                        .build();
-                } catch (IllegalArgumentException e) {
-                    System.out.println(e.getMessage());
-                    throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_BUILD_ARGUMENT.toString());
-                }
-                ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
-                ElectionAsset election = readElectionAsset(ctx, electionId);
-                try {
-                    ElectionManagerImpl.getInstance().castVote(election.getAsset(), electionInfo, ballot);
-                } catch (IllegalStateException | IllegalArgumentException e) {
-                    System.out.println(e.getMessage());
-                    throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_ARGUMENT.toString());
-                }
-                cmc.invalidate(ctx, electionId);
-                String electionSerialized = genson.serialize(election.getAsset());
-                stub.putStringState(election.getElectionId(), electionSerialized);
-            }
-        );
+        Ballot ballot = null;
+        try {
+            ballot = new BallotImpl.Builder().electionID(electionId)
+                .voterID(codeUserPair._1())
+                .date(LocalDateTime.now())
+                .choice(choice)
+                .build();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_BUILD_ARGUMENT.toString());
+        }
+        ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
+        ElectionAsset election = readElectionAsset(ctx, electionId);
+        try {
+            ElectionManagerImpl.getInstance().castVote(election.getAsset(), electionInfo, ballot);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_ARGUMENT.toString());
+        }
+        cmc.invalidate(ctx, electionId);
+        String electionSerialized = genson.serialize(election.getAsset());
+        stub.putStringState(election.getElectionId(), electionSerialized);
     }
 
     /**

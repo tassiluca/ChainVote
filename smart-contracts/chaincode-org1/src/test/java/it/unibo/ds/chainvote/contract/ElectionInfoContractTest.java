@@ -1,7 +1,6 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chaincode.utils.TransientData;
 import it.unibo.ds.chainvote.assets.ElectionInfoAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.factory.ElectionFactory;
@@ -16,11 +15,9 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
