@@ -1,4 +1,4 @@
-FROM hyperledger/fabric-ca:1.5
+FROM hyperledger/fabric-ca:1.5.7
 RUN apt update && apt upgrade -y
 RUN apt install curl -y
 RUN apt install jq -y
