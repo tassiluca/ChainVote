@@ -203,10 +203,7 @@ public class ElectionContractTest {
                     new Chaincode.Response(200, "", genson.serialize(ELECTION_INFO_ASSET.getAsset()).getBytes(UTF_8))
                 );
                 when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        UserCodeData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        UserCodeData.RESULTS.getKey(), genson.serialize(RESULTS_EMPTY).getBytes(UTF_8)
-                    )
+                    Map.of(UserCodeData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8))
                 );
                 when(stub.getStringState(ELECTION_ID)).thenReturn(
                     genson.serialize(ELECTION_ASSET.getAsset())
