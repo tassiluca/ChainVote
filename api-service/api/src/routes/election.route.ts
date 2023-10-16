@@ -1,13 +1,12 @@
 import { Router } from "express";
-import { createElectionData } from "../controllers/election";
+import { getElectionData } from "../controllers/election";
 
 
 const electionRouter = Router();
 
 /**
- * Add new election data.
+ * Get the election data
  */
-electionRouter.post("/data", createElectionData);
-
+electionRouter.get("/data", getElectionData);
 
 export default electionRouter;

@@ -8,7 +8,7 @@
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts",
     "test": "jest --silent --forceExit",
-    "start": "node dist/blockchain/gateway.js"
+    "start": "node dist/app.js"
   },
   "author": "Giovanni Antonioni, Luca Tassinari, Luca Rubboli",
   "license": "ISC",
