@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A hyperledger custom serializer for calling the smart contract transactions
+ * with custom data types.
+ */
 @Serializer()
 public final class TransactionSerializer implements SerializerInterface {
 

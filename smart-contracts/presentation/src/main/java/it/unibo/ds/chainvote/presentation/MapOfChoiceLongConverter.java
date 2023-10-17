@@ -5,6 +5,7 @@ import com.owlike.genson.Converter;
 import com.owlike.genson.Genson;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
+import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.utils.Choice;
 
 import java.util.HashMap;
@@ -12,6 +13,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A results converter from class object to json string and vice-versa.
+ */
 public class MapOfChoiceLongConverter implements Converter<Map<Choice, Long>> {
 
     @Override

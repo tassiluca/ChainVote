@@ -21,11 +21,11 @@ public class ElectionFactory {
 
     /**
      * TODO document.
-     * @param goal
-     * @param votersNumber
-     * @param startingDate
-     * @param endingDate
-     * @param choices
+     * @param goal TODO
+     * @param votersNumber TODO
+     * @param startingDate TODO
+     * @param endingDate TODO
+     * @param choices TODO
      * @return .
      */
     public static ElectionInfo buildElectionInfo(
@@ -48,8 +48,8 @@ public class ElectionFactory {
 
     /**
      * TODO document.
-     * @param electionInfo
-     * @return .
+     * @param electionInfo TODO
+     * @return TODO
      */
     public static Election buildElection(final ElectionInfo electionInfo) {
         return buildElection(electionInfo, new HashMap<>());
@@ -57,9 +57,9 @@ public class ElectionFactory {
 
     /**
      * TODO document.
-     * @param electionInfo
-     * @param results
-     * @return .
+     * @param electionInfo TODO
+     * @param results TODO
+     * @return TODO
      */
     public static Election buildElection(final ElectionInfo electionInfo, final Map<Choice, Long> results) {
         checkDataAndResults(electionInfo.getEndingDate(), results);

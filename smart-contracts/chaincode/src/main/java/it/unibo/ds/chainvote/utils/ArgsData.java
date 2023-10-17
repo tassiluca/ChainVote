@@ -1,18 +1,32 @@
 package it.unibo.ds.chainvote.utils;
 
+/**
+ * An enum containing all the inputs key of the parameters
+ * TODO document better (now for just generate)
+ */
 public enum ArgsData {
-    ELECTION_ID("electionId"),
-    GOAL("goal"),
-    DATE("date"),
-    STARTING_DATE("startDate"),
-    ENDING_DATE("endDate"),
-    VOTERS("voters"),
-    CHOICE("choice"),
-    CHOICES("choices"),
-    RESULTS("results"),
 
-    // The following are used in ToBuffer
+    /** The election identifier key. */
+    ELECTION_ID("electionId"),
+    /** The goal key. */
+    GOAL("goal"),
+    /** The date key. */
+    DATE("date"),
+    /** The starting date key. */
+    STARTING_DATE("startDate"),
+    /** The ending date key. */
+    ENDING_DATE("endDate"),
+    /** The voters number key. */
+    VOTERS("voters"),
+    /** The choice key. */
+    CHOICE("choice"),
+    /** The choices key. */
+    CHOICES("choices"),
+    /** The results key. */
+    RESULTS("results"),
+    /** Election info key. */
     ELECTION_INFO("electionInfo"),
+    /** Election key. */
     ELECTION("election");
 
     private final String key;
@@ -21,6 +35,9 @@ public enum ArgsData {
         this.key = key;
     }
 
+    /**
+     * @return the json entry key for the argument.
+     */
     public String getKey() {
         return key;
     }

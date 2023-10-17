@@ -7,11 +7,15 @@ import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
 import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.assets.Ballot;
+import it.unibo.ds.core.codes.OneTimeCode;
 import it.unibo.ds.core.utils.Choice;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
+/**
+ * A {@link Ballot} converter from class object to json string and vice-versa.
+ */
 public class BallotConverter implements Converter<Ballot> {
 
     @Override

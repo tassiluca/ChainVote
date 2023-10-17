@@ -7,6 +7,10 @@ import org.hyperledger.fabric.contract.annotation.Property;
 
 import java.util.Objects;
 
+/**
+ * Hyperledger fabric {@link Election} asset.
+ * TODO improve documentation
+ */
 @DataType()
 public final class ElectionAsset {
 
@@ -16,16 +20,29 @@ public final class ElectionAsset {
     @Property()
     private final Election asset;
 
-    public ElectionAsset(@JsonProperty("electionID") final String electionId,
-                         @JsonProperty("asset") final Election asset) {
+    /**
+     * Creates a new election asset.
+     * @param electionId the election identifier
+     * @param asset TODO
+     */
+    public ElectionAsset(
+        @JsonProperty("electionID") final String electionId,
+        @JsonProperty("asset") final Election asset
+    ) {
         this.asset = asset;
         this.electionId = electionId;
     }
 
+    /**
+     * @return TODO
+     */
     public Election getAsset() {
         return this.asset;
     }
 
+    /**
+     * @return TODO
+     */
     public String getElectionId() {
         return this.electionId;
     }

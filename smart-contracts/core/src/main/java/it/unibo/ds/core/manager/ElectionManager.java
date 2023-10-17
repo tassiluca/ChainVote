@@ -11,9 +11,9 @@ public interface ElectionManager {
 
     /**
      * TODO document.
-     * @param election
-     * @param electionInfo
-     * @param ballot
+     * @param election TODO
+     * @param electionInfo TODO
+     * @param ballot TODO
      */
     void castVote(Election election, ElectionInfo electionInfo, Ballot ballot);
 }

@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * Contracts managing {@link ElectionInfo}.
+ * TODO improve documentation
  */
 @Contract(
     name = "ElectionInfoContract",
@@ -34,7 +35,6 @@ import java.util.List;
     ),
     transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
 )
-
 @Default
 public final class ElectionInfoContract implements ContractInterface {
 
@@ -49,6 +49,12 @@ public final class ElectionInfoContract implements ContractInterface {
     /**
      * Create a {@link ElectionInfoAsset}.
      * @param ctx the {@link Context}.
+     * @param goal the goal of the election
+     * @param votersNumber the max number of voters
+     * @param startingDate the starting date
+     * @param endingDate the ending date
+     * @param choices the choices a user can submit
+     * @return the {@link ElectionInfo} identifier
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public String createElectionInfo(
@@ -59,14 +65,13 @@ public final class ElectionInfoContract implements ContractInterface {
         final LocalDateTime endingDate,
         final List<Choice> choices
     ) {
-        ChaincodeStub stub = ctx.getStub();
-        String electionId = Utils.calculateID(goal, startingDate, endingDate, choices);
+        final ChaincodeStub stub = ctx.getStub();
+        final String electionId = Utils.calculateID(goal, startingDate, endingDate, choices);
         if (electionInfoExists(ctx, electionId)) {
             String errorMessage = String.format("Election info %s already exists", electionId);
             System.err.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_ALREADY_EXISTS.toString());
         }
-
         try {
             ElectionInfo electionInfo = ElectionFactory
                 .buildElectionInfo(goal, votersNumber, startingDate, endingDate, choices);
@@ -82,6 +87,7 @@ public final class ElectionInfoContract implements ContractInterface {
     /**
      * Return the {@link ElectionInfoAsset}.
      * @param ctx the {@link Context}.
+     * @param electionId the election identifier.
      * @return the {@link ElectionInfoAsset}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
@@ -136,7 +142,6 @@ public final class ElectionInfoContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     private boolean electionInfoExists(final Context ctx, final String electionId) {
         System.out.println("[EIC] electionInfoExists");
-
         ChaincodeStub stub = ctx.getStub();
         String electionInfoSerialized = stub.getStringState(electionId);
         System.out.println("[EIC - electionInfoExists] ElectionInfo " + electionId +  " exists? " + (electionInfoSerialized != null && !electionInfoSerialized.isEmpty()));
@@ -151,20 +156,16 @@ public final class ElectionInfoContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public String getAllAssets(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
-
-        List<ElectionInfo> queryResults = new ArrayList<ElectionInfo>();
-
+        List<ElectionInfo> queryResults = new ArrayList<>();
         // To retrieve all assets from the ledger use getStateByRange with empty startKey & endKey.
         // Giving empty startKey & endKey is interpreted as all the keys from beginning to end.
         // As another example, if you use startKey = 'asset0', endKey = 'asset9' ,
         // then getStateByRange will retrieve asset with keys between asset0 (inclusive) and asset9 (exclusive) in lexical order.
         QueryResultsIterator<KeyValue> results = stub.getStateByRange("", "");
-
         for (KeyValue result: results) {
             ElectionInfo election = genson.deserialize(result.getStringValue(), ElectionInfo.class);
             queryResults.add(election);
         }
-
         return genson.serialize(queryResults);
     }
 }
