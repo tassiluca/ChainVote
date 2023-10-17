@@ -1,6 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
+import it.unibo.ds.chainvote.utils.ArgsData;
 import it.unibo.ds.chainvote.assets.ElectionInfoAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.assets.ElectionInfo;
@@ -18,31 +19,20 @@ import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.KeyValue;
 import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static it.unibo.ds.chaincode.utils.TransientData.ELECTION_ID;
-import static it.unibo.ds.chaincode.utils.TransientData.ENDING_DATE;
-import static it.unibo.ds.chaincode.utils.TransientData.GOAL;
-import static it.unibo.ds.chaincode.utils.TransientData.LIST;
-import static it.unibo.ds.chaincode.utils.TransientData.STARTING_DATE;
-import static it.unibo.ds.chaincode.utils.TransientData.VOTERS;
-import static it.unibo.ds.chaincode.utils.TransientUtils.applyToTransients;
-import static it.unibo.ds.chaincode.utils.TransientUtils.getDateFromTransient;
-import static it.unibo.ds.chaincode.utils.TransientUtils.getListFromTransient;
-import static it.unibo.ds.chaincode.utils.TransientUtils.getLongFromTransient;
-import static it.unibo.ds.chaincode.utils.TransientUtils.getStringFromTransient;
 
 /**
  * Contracts managing {@link ElectionInfo}.
  */
 @Contract(
-        name = "ElectionInfoContract",
-        info = @Info(
-                title = "Election Info Contract",
-                description = "Contract used to manage election info"
-        )
+    name = "ElectionInfoContract",
+    info = @Info(
+        title = "Election Info Contract",
+        description = "Contract used to manage election info"
+    ),
+    transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
 )
 
 @Default
@@ -57,50 +47,36 @@ public final class ElectionInfoContract implements ContractInterface {
     }
 
     /**
-     * Initialize Ledger.
-     * @param ctx the {@link Context}.
-     */
-    @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void initLedger(final Context ctx) {
-        ChaincodeStub stub = ctx.getStub();
-    }
-
-    /**
      * Create a {@link ElectionInfoAsset}.
      * @param ctx the {@link Context}.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void createElectionInfo(final Context ctx) {
-        applyToTransients(ctx,
-            t -> getStringFromTransient(t, GOAL.getKey()),
-            t -> getLongFromTransient(t, VOTERS.getKey()),
-            t -> getDateFromTransient(t, STARTING_DATE.getKey()),
-            t -> getDateFromTransient(t, ENDING_DATE.getKey()),
-            t -> getListFromTransient(t, LIST.getKey()),
-            (goal, votersNumber, startingDate, endingDate, choices) -> {
+    public String createElectionInfo(
+        final Context ctx,
+        final String goal,
+        final Long votersNumber,
+        final LocalDateTime startingDate,
+        final LocalDateTime endingDate,
+        final List<Choice> choices
+    ) {
+        ChaincodeStub stub = ctx.getStub();
+        String electionId = Utils.calculateID(goal, startingDate, endingDate, choices);
+        if (electionInfoExists(ctx, electionId)) {
+            String errorMessage = String.format("Election info %s already exists", electionId);
+            System.err.println(errorMessage);
+            throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_ALREADY_EXISTS.toString());
+        }
 
-                List<Choice> choicesToUse = choices.stream().map(o -> (Choice) o).collect(Collectors.toList());
-
-                ChaincodeStub stub = ctx.getStub();
-                String electionId = Utils.calculateID(goal, startingDate, endingDate, choicesToUse);
-                if (electionInfoExists(ctx, electionId)) {
-                    String errorMessage = String.format("Election info %s already exists", electionId);
-                    System.err.println(errorMessage);
-                    throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_ALREADY_EXISTS.toString());
-                }
-
-                try {
-                    ElectionInfo electionInfo = ElectionFactory
-                        .buildElectionInfo(goal, votersNumber, startingDate, endingDate, choicesToUse);
-                    String sortedJson = genson.serialize(electionInfo);
-                    stub.putStringState(electionId, sortedJson);
-                    return null;
-                } catch (IllegalArgumentException e) {
-                    System.err.println(e.getMessage());
-                    throw new ChaincodeException(e.getMessage(), ElectionInfoTransferErrors.ELECTION_INFO_INVALID_ARGUMENT.toString());
-                }
-            }
-        );
+        try {
+            ElectionInfo electionInfo = ElectionFactory
+                .buildElectionInfo(goal, votersNumber, startingDate, endingDate, choices);
+            String sortedJson = genson.serialize(electionInfo);
+            stub.putStringState(electionId, sortedJson);
+            return electionId;
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            throw new ChaincodeException(e.getMessage(), ElectionInfoTransferErrors.ELECTION_INFO_INVALID_ARGUMENT.toString());
+        }
     }
 
     /**
@@ -109,44 +85,47 @@ public final class ElectionInfoContract implements ContractInterface {
      * @return the {@link ElectionInfoAsset}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public ElectionInfo readElectionInfo(final Context ctx) {
+    public ElectionInfo readElectionInfo(final Context ctx, final String electionId) {
         System.out.println("[EIC] readElectionInfo");
-        return applyToTransients(ctx,
-            t -> getStringFromTransient(t, ELECTION_ID.getKey()),
-            (electionId) -> {
-                if (electionInfoExists(ctx, electionId)) {
-                    ChaincodeStub stub = ctx.getStub();
-                    String electionJSON = stub.getStringState(electionId);
-                    System.out.println("[EIC] readElectionInfo response: " + electionJSON);
-                    return genson.deserialize(electionJSON, ElectionInfo.class);
-                } else {
-                    throw new ChaincodeException(String.format("Election info %s does not exist", electionId), ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
-                }
-            }
-        );
+        if (electionInfoExists(ctx, electionId)) {
+            ChaincodeStub stub = ctx.getStub();
+            String electionJSON = stub.getStringState(electionId);
+            return genson.deserialize(electionJSON, ElectionInfo.class);
+        } else {
+            String errorMessage = String.format("Election info %s does not exist", electionId);
+            System.err.println(errorMessage);
+            throw new ChaincodeException(String.format(errorMessage, electionId), ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
+        }
+    }
+
+    /**
+     * Return the {@link ElectionInfoAsset} as String.
+     * @param ctx the {@link Context}.
+     * @param electionId the election identifier.
+     * @return the {@link ElectionInfoAsset}.
+     */
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public String readElectionInfoSerialized(final Context ctx, final String electionId) {
+        System.out.println("[EIC] readElectionInfoSerialized");
+        ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
+        return ArgsData.ELECTION_INFO.getKey() + ":" + genson.serialize(electionInfo);
     }
 
     /**
      * Delete an {@link ElectionInfoAsset}.
      * @param ctx the {@link Context}.
+     * @param electionId the election identifier.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void deleteAsset(final Context ctx) {
+    public void deleteAsset(final Context ctx, final String electionId) {
         System.out.println("[EIC] deleteAsset");
-
-        applyToTransients(ctx,
-            t -> getStringFromTransient(t, ELECTION_ID.getKey()),
-            (electionId) -> {
-                ChaincodeStub stub = ctx.getStub();
-                if (!electionInfoExists(ctx, electionId)) {
-                    String errorMessage = String.format("Election info %s does not exist", electionId);
-                    System.out.println(errorMessage);
-                    throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
-                }
-                stub.delState(electionId);
-                return null;
-            }
-        );
+        ChaincodeStub stub = ctx.getStub();
+        if (!electionInfoExists(ctx, electionId)) {
+            String errorMessage = String.format("Election info %s does not exist", electionId);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
+        }
+        stub.delState(electionId);
     }
 
     /**
@@ -155,12 +134,13 @@ public final class ElectionInfoContract implements ContractInterface {
      * @return if the {@link ElectionInfoAsset} exists.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    private boolean electionInfoExists(final Context ctx, String electionId) {
+    private boolean electionInfoExists(final Context ctx, final String electionId) {
         System.out.println("[EIC] electionInfoExists");
 
         ChaincodeStub stub = ctx.getStub();
-        String electionJSON = stub.getStringState(electionId);
-        return (electionJSON != null && !electionJSON.isEmpty());
+        String electionInfoSerialized = stub.getStringState(electionId);
+        System.out.println("[EIC - electionInfoExists] ElectionInfo " + electionId +  " exists? " + (electionInfoSerialized != null && !electionInfoSerialized.isEmpty()));
+        return (electionInfoSerialized != null && !electionInfoSerialized.isEmpty());
     }
 
     /**
@@ -185,8 +165,6 @@ public final class ElectionInfoContract implements ContractInterface {
             queryResults.add(election);
         }
 
-        final String response = genson.serialize(queryResults);
-
-        return response;
+        return genson.serialize(queryResults);
     }
 }

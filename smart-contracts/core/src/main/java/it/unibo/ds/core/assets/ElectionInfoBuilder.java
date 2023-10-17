@@ -5,6 +5,9 @@ import it.unibo.ds.core.utils.Choice;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * A builder for {@link ElectionInfo}.
+ */
 public interface ElectionInfoBuilder {
 
     /**

@@ -1,7 +1,6 @@
 package it.unibo.ds.core.assets;
 
 import it.unibo.ds.core.utils.Choice;
-import it.unibo.ds.core.utils.FixedVotes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,7 +10,10 @@ import java.util.Optional;
 
 import static it.unibo.ds.core.utils.Utils.isDateBetween;
 
-public class ElectionInfoImpl implements ElectionInfo {
+/**
+ * TODO document.
+ */
+public final class ElectionInfoImpl implements ElectionInfo {
 
     private final String goal;
 
@@ -23,8 +25,13 @@ public class ElectionInfoImpl implements ElectionInfo {
 
     private final List<Choice> choices;
 
-    private ElectionInfoImpl(final String goal, final long votersNumber, final LocalDateTime startingDate,
-                         final LocalDateTime endingDate, final List<Choice> choices) {
+    private ElectionInfoImpl(
+        final String goal,
+        final long votersNumber,
+        final LocalDateTime startingDate,
+        final LocalDateTime endingDate,
+        final List<Choice> choices
+    ) {
         this.goal = goal;
         this.votersNumber = votersNumber;
         this.startingDate = startingDate;
@@ -72,19 +79,16 @@ public class ElectionInfoImpl implements ElectionInfo {
         if (this == obj) {
             return true;
         }
-
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-
-        ElectionInfo other = (ElectionInfo) obj;
-
+        final ElectionInfo other = (ElectionInfo) obj;
         return getElectionID().equals(other.getElectionID())
-                && getGoal().equals(other.getGoal())
-                && getVotersNumber() == other.getVotersNumber()
-                && Objects.deepEquals(
-                new LocalDateTime[] {getStartingDate(), getEndingDate()},
-                new LocalDateTime[] {other.getStartingDate(), other.getEndingDate()});
+            && getGoal().equals(other.getGoal())
+            && getVotersNumber() == other.getVotersNumber()
+            && Objects.deepEquals(
+            new LocalDateTime[] {getStartingDate(), getEndingDate()},
+            new LocalDateTime[] {other.getStartingDate(), other.getEndingDate()});
     }
 
     @Override
@@ -95,9 +99,9 @@ public class ElectionInfoImpl implements ElectionInfo {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode())
-                + ", goal=" + this.goal + ", voters=" + this.votersNumber + ", starting="
-                + this.startingDate + ", ending="
-                + this.endingDate + ", choices=" + this.choices + "]";
+            + ", goal=" + this.goal + ", voters=" + this.votersNumber + ", starting="
+            + this.startingDate + ", ending="
+            + this.endingDate + ", choices=" + this.choices + "]";
     }
 
     /**
@@ -114,8 +118,9 @@ public class ElectionInfoImpl implements ElectionInfo {
         private void check(final Object input) {
             Objects.requireNonNull(input);
         }
+
         private void checkString(final String input) {
-            if (input.equals("")) {
+            if (input.isEmpty()) {
                 throw new IllegalArgumentException("Invalid " + input);
             }
         }
@@ -157,10 +162,10 @@ public class ElectionInfoImpl implements ElectionInfo {
         @Override
         public ElectionInfo build() {
             return new ElectionInfoImpl(this.goal.orElseThrow(),
-                    this.votersNumber.orElseThrow(),
-                    this.startingDate.orElseThrow(),
-                    this.endingDate.orElseThrow(),
-                    this.choices.orElseThrow());
+                this.votersNumber.orElseThrow(),
+                this.startingDate.orElseThrow(),
+                this.endingDate.orElseThrow(),
+                this.choices.orElseThrow());
         }
     }
 }

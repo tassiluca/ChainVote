@@ -41,7 +41,7 @@ public final class Choice {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Choice choice1 = (Choice) o;
+        final Choice choice1 = (Choice) o;
         return Objects.equals(choice, choice1.choice);
     }
 
