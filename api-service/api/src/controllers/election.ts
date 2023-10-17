@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import {CommunicatorFactory} from "../blockchain/communicator/communicator.factory";
 import * as grpc from "@grpc/grpc-js";
 import {connect, Contract, Gateway, Identity, Network, Signer} from "@hyperledger/fabric-gateway";
-import {TextDecoder} from "util";
+import {TextDecoder, TextEncoder} from "util";
 import {StatusCodes} from "http-status-codes";
 
 let client: grpc.Client, identity: Identity, signer: Signer;
@@ -14,6 +14,8 @@ let contract: Contract, network: Network;
 
 const CHANNEL1_NAME = "ch1";
 const utf8Decoder = new TextDecoder();
+const utf8Encoder = new TextEncoder();
+
 const communicator = CommunicatorFactory.org1WithEndpoint(
     "peer1",
     "localhost:7051",
@@ -52,7 +54,7 @@ async function getGateway() : Promise<Gateway> {
  * @param res response object
  * @param next next function
  */
-export async function getElectionData(req: Request, res: Response, next: NextFunction) {
+export async function getAllAssets(req: Request, res: Response, next: NextFunction) {
     try {
         gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
         network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
@@ -74,7 +76,7 @@ export async function getElectionData(req: Request, res: Response, next: NextFun
  * @param res response object
  * @param next next function
  */
-export async function createElectionData(req: Request, res: Response, next: NextFunction){
+export async function createElectionInfo(req: Request, res: Response, next: NextFunction){
 
     try {
         gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
@@ -127,5 +129,50 @@ export async function createElectionData(req: Request, res: Response, next: Next
         console.log(error.cause);
         return next(error)
     }
+}
 
+/**
+ * Read the election data with a specific id
+ * @param req
+ * @param res
+ * @param next
+ */
+export async function readElectionInfo(req: Request, res: Response, next: NextFunction){
+    try {
+        gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
+        network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
+        contract = network.getContract("chaincode-org1");
+
+        const electionId: Uint8Array = utf8Encoder.encode(req.params.electionId);
+        const submission: Uint8Array = await contract.evaluateTransaction('readElectionInfoSerialized', electionId);
+        const resultJson = utf8Decoder.decode(submission);
+        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+
+    } catch (error) {
+        console.log(error.cause);
+        return next(error)
+    }
+}
+
+
+/**
+ * Delete the election data with a specific id
+ * @param req
+ * @param res
+ * @param next
+ */
+export async function deleteAsset(req: Request, res: Response, next: NextFunction) {
+    try {
+        gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
+        network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
+        contract = network.getContract("chaincode-org1");
+
+        const assetId: Uint8Array = utf8Encoder.encode(req.params.electionId);
+        await contract.submitTransaction('deleteAsset', assetId);
+        return res.status(StatusCodes.OK).send({message: "Asset deleted successfully"});
+
+    } catch (error) {
+        console.log(error.cause);
+        return next(error)
+    }
 }

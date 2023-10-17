@@ -1,17 +1,26 @@
 import { Router } from "express";
-import {createElectionData, getElectionData} from "../controllers/election";
+import {createElectionInfo, getAllAssets, readElectionInfo} from "../controllers/election";
 
 
 const electionRouter = Router();
 
 /**
- * Get the election data
+ * Get all the election data
  */
-electionRouter.get("/data", getElectionData);
+electionRouter.get("/data", getAllAssets);
+
+/**
+ * Return a specific election data
+ */
+electionRouter.get("/data/:electionId", readElectionInfo);
 
 /**
  * Create a new election data
  */
-electionRouter.post("/data", createElectionData);
+electionRouter.post("/data", createElectionInfo);
 
+
+/**
+ * Delete a specific election data
+ */
 export default electionRouter;
