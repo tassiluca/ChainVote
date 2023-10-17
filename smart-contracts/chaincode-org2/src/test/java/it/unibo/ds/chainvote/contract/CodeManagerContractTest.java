@@ -2,8 +2,11 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import it.unibo.ds.chainvote.assets.ElectionAsset;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
+import it.unibo.ds.chainvote.utils.UserCodeData;
+import it.unibo.ds.core.assets.ElectionImpl;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeException;
@@ -21,8 +24,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,18 +55,17 @@ final class CodeManagerContractTest {
 
         @BeforeEach
         void setup() {
-            when(stub.getTransient()).thenReturn(
-                Map.of(
-                    "userId", USER_ID.getBytes(UTF_8),
-                    "electionId", ELECTION_ID.getBytes(UTF_8)
-                )
+            when(stub.getTransient()).thenReturn(Map.of(UserCodeData.USER_ID.getKey(), USER_ID.getBytes(UTF_8)));
+            // by default suppose the election already exists
+            when(context.getStub().getStringState(ELECTION_ID)).thenReturn(genson.serialize(
+                new ElectionAsset(ELECTION_ID, new ElectionImpl.Builder().build()))
             );
         }
 
         @Test
         void whenNotAlreadyRequested() {
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final long generatedCode = contract.generateFor(context);
+            final long generatedCode = contract.generateFor(context, ELECTION_ID);
             verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(generatedCode))
             ));
@@ -76,11 +78,23 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
-            final Throwable thrown = catchThrowable(() -> contract.generateFor(context));
+            final Throwable thrown = catchThrowable(() -> contract.generateFor(context, ELECTION_ID));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("A one-time-code for the given election and user has already been generated");
             assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ALREADY_GENERATED_CODE".getBytes(UTF_8));
+        }
+
+        @Test
+        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
+        void whenElectionDoesNotExists() {
+            when(context.getStub().getStringState(ELECTION_ID)).thenReturn("");
+            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
+            final Throwable thrown = catchThrowable(() -> contract.generateFor(context, ELECTION_ID));
+            assertThat(thrown)
+                .isInstanceOf(ChaincodeException.class)
+                .hasMessage("The given election doesn't exists");
+            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INVALID_INPUT".getBytes(UTF_8));
         }
     }
 
@@ -104,7 +118,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
-            assertTrue(contract.verifyCodeOwner(context));
+            assertTrue(contract.verifyCodeOwner(context, ELECTION_ID));
         }
 
         @Test
@@ -113,7 +127,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
-            assertFalse(contract.verifyCodeOwner(context));
+            assertFalse(contract.verifyCodeOwner(context, ELECTION_ID));
         }
     }
 
@@ -138,7 +152,7 @@ final class CodeManagerContractTest {
                     new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE))
                 ).getBytes(UTF_8)
             );
-            assertTrue(contract.isValid(context));
+            assertTrue(contract.isValid(context, ELECTION_ID));
         }
 
         @Test
@@ -147,7 +161,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
-            assertFalse(contract.isValid(context));
+            assertFalse(contract.isValid(context, ELECTION_ID));
         }
 
         @Test
@@ -158,14 +172,14 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(invalidCode);
-            assertFalse(contract.isValid(context));
+            assertFalse(contract.isValid(context, ELECTION_ID));
         }
 
         @Test
         void whenInvalidate() {
             final var code = new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE));
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(genson.serialize(code).getBytes(UTF_8));
-            contract.invalidate(context);
+            contract.invalidate(context, ELECTION_ID);
             final var consumedCode = code.getCode();
             assertDoesNotThrow(consumedCode::consume);
             final var consumedAsset = new OneTimeCodeAsset(ELECTION_ID, USER_ID, consumedCode);
@@ -181,7 +195,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(invalidCode);
-            final Throwable thrown = catchThrowable(() -> contract.invalidate(context));
+            final Throwable thrown = catchThrowable(() -> contract.invalidate(context, ELECTION_ID));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("The code has already been consumed");

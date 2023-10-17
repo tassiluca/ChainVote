@@ -1,12 +1,8 @@
 package it.unibo.ds.core.manager;
 
-import it.unibo.ds.core.assets.*;
-import it.unibo.ds.core.utils.Choice;
-import it.unibo.ds.core.utils.FixedVotes;
-
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import it.unibo.ds.core.assets.Ballot;
+import it.unibo.ds.core.assets.Election;
+import it.unibo.ds.core.assets.ElectionInfo;
 
 import static it.unibo.ds.core.utils.Utils.isDateBetween;
 
@@ -31,7 +27,7 @@ public final class ElectionManagerImpl implements ElectionManager {
     }
 
     @Override
-    public void castVote(Election election, ElectionInfo electionInfo, Ballot ballot) {
+    public void castVote(final Election election, final ElectionInfo electionInfo, final Ballot ballot) {
         this.checkBallot(electionInfo, election, ballot);
         if (!election.castVote(ballot)) {
             throw new IllegalStateException("Something went wrong casting vote");

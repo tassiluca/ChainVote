@@ -1,5 +1,8 @@
-### Gradle ###
+### Binaries ###
 build/
+bin/
+
+### Gradle ###
 .gradle/
 
 #### IDEs ###

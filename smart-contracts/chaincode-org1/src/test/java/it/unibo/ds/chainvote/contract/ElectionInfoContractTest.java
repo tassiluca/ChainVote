@@ -1,36 +1,29 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chaincode.utils.TransientData;
 import it.unibo.ds.chainvote.assets.ElectionInfoAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.factory.ElectionFactory;
 import it.unibo.ds.core.utils.Choice;
 import it.unibo.ds.core.utils.FixedVotes;
 import org.hyperledger.fabric.contract.Context;
-import org.hyperledger.fabric.shim.Chaincode;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ElectionInfoContractTest {
+final class ElectionInfoContractTest {
 
     private static final String ELECTION_ID = "test-election";
     private static final String GOAL = "a test for election";
@@ -44,7 +37,7 @@ public class ElectionInfoContractTest {
         "s", 0
     );
     private static final Map<String, Integer> END_TIME_MAP = Map.of(
-        "y", LocalDateTime.now().getYear()+1,
+        "y", LocalDateTime.now().getYear() + 1,
         "M", 8,
         "d", 22,
         "h", 10,
@@ -69,7 +62,6 @@ public class ElectionInfoContractTest {
     void setup() {
         context = mock(Context.class);
         stub = mock(ChaincodeStub.class);
-
         when(context.getStub()).thenReturn(stub);
     }
 
@@ -86,104 +78,27 @@ public class ElectionInfoContractTest {
 
             @Test
             void whenCreateElectionInfoCorrectly() {
-                when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        TransientData.VOTERS.getKey(), genson.serialize(VOTERS).getBytes(UTF_8),
-                        TransientData.STARTING_DATE.getKey(), genson.serialize(START_DATE).getBytes(UTF_8),
-                        TransientData.ENDING_DATE.getKey(), genson.serialize(END_DATE).getBytes(UTF_8),
-                        TransientData.LIST.getKey(), genson.serialize(CHOICE_ELECTION).getBytes(UTF_8)
-                    )
-                );
-
-                assertDoesNotThrow(() -> ec.createElectionInfo(context));
+                assertDoesNotThrow(() -> ec.createElectionInfo(context, GOAL, VOTERS, START_DATE, END_DATE, CHOICE_ELECTION));
             }
         }
 
         @Nested
         class TestFailToCreateElection {
 
-            private void createElectionInfo(Map<String, byte[]> parameters) {
-                ElectionInfoContract electionInfoContract = new ElectionInfoContract();
-                when(stub.getTransient()).thenReturn(parameters);
-                electionInfoContract.createElectionInfo(context);
-            }
-
-            @Test
-            void whenCreateElectionInfoWithoutAParameter() {
-                Map<String, byte[]> params = Map.of(
-                    TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                    TransientData.VOTERS.getKey(), genson.serialize(VOTERS).getBytes(UTF_8),
-                    TransientData.STARTING_DATE.getKey(), genson.serialize(START_DATE).getBytes(UTF_8),
-                    TransientData.ENDING_DATE.getKey(), genson.serialize(END_DATE).getBytes(UTF_8),
-                    TransientData.LIST.getKey(), genson.serialize(CHOICE_ELECTION).getBytes(UTF_8)
-                );
-                Map<String, byte[]> paramsNoElection = new HashMap<>(params);
-                paramsNoElection.remove(TransientData.ELECTION_ID.getKey());
-                Map<String, byte[]> paramsNoVoters = new HashMap<>(params);
-                paramsNoVoters.remove(TransientData.VOTERS.getKey());
-                Map<String, byte[]> paramsNoStartingDate = new HashMap<>(params);
-                paramsNoStartingDate.remove(TransientData.STARTING_DATE.getKey());
-                Map<String, byte[]> paramsNoEndingDate = new HashMap<>(params);
-                paramsNoEndingDate.remove(TransientData.ENDING_DATE.getKey());
-                Map<String, byte[]> paramsNoChoice = new HashMap<>(params);
-                paramsNoChoice.remove(TransientData.LIST.getKey());
-
-                List<Map<String, byte[]>> paramsList = new ArrayList<>(List.of(paramsNoElection, paramsNoVoters, paramsNoStartingDate,
-                    paramsNoEndingDate, paramsNoChoice));
-
-                for (Map<String, byte[]> parameter : paramsList) {
-                    assertThrows(ChaincodeException.class, () -> createElectionInfo(parameter));
-                }
-            }
-
             @Test
             void whenCreateElectionWithWrongDate() {
                 ElectionInfoContract electionInfoContract = new ElectionInfoContract();
-                when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        TransientData.VOTERS.getKey(), genson.serialize(VOTERS).getBytes(UTF_8),
-                        TransientData.STARTING_DATE.getKey(), genson.serialize(START_DATE).getBytes(UTF_8),
-                        TransientData.ENDING_DATE.getKey(), genson.serialize(START_DATE).getBytes(UTF_8),
-                        TransientData.LIST.getKey(), genson.serialize(CHOICE_ELECTION).getBytes(UTF_8)
-                    )
-                );
-
-                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context));
+                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context, GOAL, VOTERS, START_DATE, START_DATE, CHOICE_ELECTION));
             }
 
             @Test
             void whenCreateElectionWithEmptyOrOnlyBlankChoice() {
                 ElectionInfoContract electionInfoContract = new ElectionInfoContract();
-                when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        TransientData.VOTERS.getKey(), genson.serialize(VOTERS).getBytes(UTF_8),
-                        TransientData.STARTING_DATE.getKey(), genson.serialize(START_DATE).getBytes(UTF_8),
-                        TransientData.ENDING_DATE.getKey(), genson.serialize(END_DATE).getBytes(UTF_8),
-                        TransientData.LIST.getKey(), genson.serialize(new ArrayList<Choice>()).getBytes(UTF_8)
-                    )
-                );
-
-                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context));
-
-                when(stub.getTransient()).thenReturn(
-                    Map.of(
-                        TransientData.ELECTION_ID.getKey(), ELECTION_ID.getBytes(UTF_8),
-                        TransientData.VOTERS.getKey(), genson.serialize(VOTERS).getBytes(UTF_8),
-                        TransientData.STARTING_DATE.getKey(), genson.serialize(START_DATE).getBytes(UTF_8),
-                        TransientData.ENDING_DATE.getKey(), genson.serialize(END_DATE).getBytes(UTF_8),
-                        TransientData.LIST.getKey(), genson.serialize(new ArrayList<>(List.of(
-                            FixedVotes.INFORMAL_BALLOT.getChoice(), FixedVotes.INFORMAL_BALLOT.getChoice(),
-                            FixedVotes.INFORMAL_BALLOT.getChoice()))).getBytes(UTF_8)
-                    )
-                );
-
-                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context));
+                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context, GOAL, VOTERS, START_DATE, END_DATE, new ArrayList<Choice>()));
+                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context, GOAL, VOTERS, START_DATE, END_DATE, new ArrayList<>(List.of(
+                        FixedVotes.INFORMAL_BALLOT.getChoice(), FixedVotes.INFORMAL_BALLOT.getChoice(),
+                        FixedVotes.INFORMAL_BALLOT.getChoice()))));
             }
         }
     }
-
-
 }

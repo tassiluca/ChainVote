@@ -3,7 +3,6 @@ package it.unibo.ds.core.assets;
 import it.unibo.ds.core.utils.Choice;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * A {@link Ballot} builder interface.
