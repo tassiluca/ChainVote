@@ -46,61 +46,77 @@ async function getGateway() : Promise<Gateway> {
 }
 
 
+/**
+ * Get all the election data
+ * @param req request object
+ * @param res response object
+ * @param next next function
+ */
 export async function getElectionData(req: Request, res: Response, next: NextFunction) {
-    /*const grantAccess = ac.can(res.locals.user.role).readAny('users').granted;
-    if(grantAccess) {
-        throw new UnauthorizedError("Can't create the resource");
-
-    }*/
     try {
-        gatewayOrg1 = await getGateway();
+        gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
         network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
         contract = network.getContract("chaincode-org1");
 
         const allAssets: Uint8Array = await contract.evaluateTransaction('getAllAssets');
         const resultJson = utf8Decoder.decode(allAssets);
 
-        res.status(StatusCodes.OK).send(JSON.parse(resultJson));
-        /* const submission: Uint8Array = await contract.submit('createElectionInfo', {
-            transientData: {
-                goal: "Test",
-                voters: "100",
-                startDate: JSON.stringify({
-                    year: 2023,
-                    month: 1,
-                    day: 20,
-                    hour: 10,
-                    minute: 0,
-                    second: 0,
-                }),
-                endDate: JSON.stringify({
-                    year: 2023,
-                    month: 1,
-                    day: 21,
-                    hour: 0,
-                    minute: 0,
-                    second: 0,
-                }),
-                list: JSON.stringify([
-                    {choice: "prova1"},
-                    {choice: "prova2"},
-                    {choice: "prova3"},
-                ]),
-            },
-        });
-
-        const resultJson = utf8Decoder.decode(submission);
-        res.status(StatusCodes.OK).send(JSON.parse(resultJson));*/
+        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
         console.log(error.cause);
-        next(error)
-    } finally {
-        gatewayOrg1.close();
-        client.close();
+        return next(error)
     }
 }
 
+/**
+ * Create the election data
+ * @param req request object
+ * @param res response object
+ * @param next next function
+ */
+export async function createElectionData(req: Request, res: Response, next: NextFunction){
 
-export async function createElectionData(req: Request, res: Response, next: NextFunction) {
+    try {
+        gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
+        network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
+        contract = network.getContract("chaincode-org1");
+
+        const data = {
+            goal: Buffer.from("Test"),
+            voters: Buffer.from("100"),
+            startDate: Buffer.from(JSON.stringify({
+                year: "2023",
+                month: "2",
+                day: "20",
+                hour: "10",
+                minute: "0",
+                second: "0",
+            })),
+            endDate: Buffer.from(JSON.stringify({
+                year: "2023",
+                month: "2",
+                day: "21",
+                hour: "0",
+                minute: "0",
+                second: "0",
+            })),
+            list: Buffer.from(JSON.stringify({value: [
+                {choice: "prova1"},
+                {choice: "prova2"},
+                {choice: "prova3"},
+            ]}))
+        }
+
+        const submission: Uint8Array = await contract.submit('createElectionInfo', {
+            transientData: data
+        });
+
+        const resultJson = utf8Decoder.decode(submission);
+        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+
+    } catch (error) {
+        console.log(error.cause);
+        return next(error)
+    }
 
 }
