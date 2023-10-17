@@ -16,7 +16,7 @@ const CHANNEL1_NAME = "ch1";
 const utf8Decoder = new TextDecoder();
 const communicator = CommunicatorFactory.org1WithEndpoint(
     "peer1",
-    "peer1-org1:7051",
+    "localhost:7051",
     "peer1-org1"
 );
 
@@ -81,34 +81,43 @@ export async function createElectionData(req: Request, res: Response, next: Next
         network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
         contract = network.getContract("chaincode-org1");
 
-        const data = {
-            goal: Buffer.from("Test"),
-            voters: Buffer.from("100"),
-            startDate: Buffer.from(JSON.stringify({
-                year: "2023",
-                month: "2",
-                day: "20",
-                hour: "10",
-                minute: "0",
-                second: "0",
-            })),
-            endDate: Buffer.from(JSON.stringify({
-                year: "2023",
-                month: "2",
-                day: "21",
-                hour: "0",
-                minute: "0",
-                second: "0",
-            })),
-            list: Buffer.from(JSON.stringify({value: [
+        const startDate = {
+            year: 2023,
+            month: 8,
+            day: 20,
+            hour: 10,
+            minute: 0,
+            second: 0
+        };
+
+        const endDate = {
+            year: 2023,
+            month: 8,
+            day: 21,
+            hour: 10,
+            minute: 0,
+            second: 0
+        }
+
+        const choices =  {
+            value: [
                 {choice: "prova1"},
                 {choice: "prova2"},
                 {choice: "prova3"},
-            ]}))
+                {choice: "prova4"}
+            ]
         }
 
+        const data = [
+            "goal:prova2",
+            "voters:100",
+            `startDate:${JSON.stringify(startDate)}`,
+            `endDate: ${JSON.stringify(endDate)}`,
+            `choices:${JSON.stringify(choices)}`
+        ];
+
         const submission: Uint8Array = await contract.submit('createElectionInfo', {
-            transientData: data
+            arguments: data
         });
 
         const resultJson = utf8Decoder.decode(submission);
