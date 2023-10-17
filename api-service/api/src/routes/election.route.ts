@@ -1,5 +1,11 @@
 import { Router } from "express";
-import {createElectionInfo, getAllAssets, readElectionInfo} from "../controllers/election";
+import {
+    createElectionInfo,
+    deleteAsset,
+    //electionInfoExists,
+    getAllAssets,
+    readElectionInfo
+} from "../controllers/election.info";
 
 
 const electionRouter = Router();
@@ -19,8 +25,14 @@ electionRouter.get("/data/:electionId", readElectionInfo);
  */
 electionRouter.post("/data", createElectionInfo);
 
-
 /**
  * Delete a specific election data
  */
+electionRouter.delete("/data/:electionId", deleteAsset);
+
+/**
+ * Check if a specific election data exists
+ */
+// electionRouter.get("/data/:electionId/exists", electionInfoExists);
+
 export default electionRouter;
