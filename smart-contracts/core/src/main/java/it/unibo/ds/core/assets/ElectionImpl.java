@@ -8,15 +8,9 @@ import java.util.*;
 /**
  * The {@link Election} implementation.
  */
-//TODO scorporare le informazioni delle elezioni dai risultati!
 public final class ElectionImpl implements Election {
 
-    private static final boolean DEBUG = false;
-
     private final Map<Choice, Long> results;
-
-    // Only for debug
-    private Map<String, Choice> voteAccountability;
 
     // Keep all the choices of the ballots (Not to query if the voter has already voted)
     private final List<Choice> ballots;
@@ -28,9 +22,6 @@ public final class ElectionImpl implements Election {
                          final List<Choice> ballots) {
         this.results = results;
         this.ballots = ballots;
-        if (DEBUG) {
-            this.voteAccountability = new HashMap<>();
-        }
     }
 
     @Override
@@ -44,16 +35,8 @@ public final class ElectionImpl implements Election {
     }
 
     @Override
-    public Optional<Map<String, Choice>> getAccountability() {
-        return DEBUG ? Optional.of(Map.copyOf(this.voteAccountability)) : Optional.empty();
-    }
-
-    @Override
     public boolean castVote(final Ballot ballot) {
         this.ballots.add(ballot.getChoice());
-        if (DEBUG) {
-            this.voteAccountability.put(ballot.getVoterID(), ballot.getChoice());
-        }
         long oldValue = this.results.get(ballot.getChoice());
         return this.results.replace(ballot.getChoice(), oldValue, oldValue + 1);
     }

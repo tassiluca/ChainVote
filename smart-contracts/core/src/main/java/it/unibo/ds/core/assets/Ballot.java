@@ -10,25 +10,25 @@ import java.time.LocalDateTime;
 public interface Ballot {
 
     /**
-     * Return the {@link Election} ID the {@link Ballot} is related to.
-     * @return the {@link Election} ID.
+     * Return the {@link Election} id the {@link Ballot} is related to.
+     * @return the {@link Election} id.
      */
-    String getElectionID();
+    String getElectionId();
 
     /**
-     * Return the {@link Ballot}'s voter ID.
-     * @return the {@link Ballot}'s voter ID.
+     * Return the {@link Ballot}'s voter id.
+     * @return the {@link Ballot}'s voter id.
      */
-    String getVoterID();
+    String getVoterId();
 
     /**
-     * Return the {@link LocalDateTime} the vote is casted.
+     * Return the {@link LocalDateTime} the vote is cast.
      * @return the {@link LocalDateTime}.
      */
     LocalDateTime getDate();
 
     /**
-     * Return the {@link Ballot}'s {@link Choice} casted.
+     * Return the {@link Ballot}'s {@link Choice} cast.
      * @return the {@link Choice}.
      */
     Choice getChoice();

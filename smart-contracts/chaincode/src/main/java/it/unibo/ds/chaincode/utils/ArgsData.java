@@ -1,5 +1,8 @@
 package it.unibo.ds.chaincode.utils;
 
+/**
+ * An enum describing the common arguments data expected as transaction inputs.
+ */
 public enum ArgsData {
     ELECTION_ID("electionId"),
     GOAL("goal"),

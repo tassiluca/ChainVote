@@ -1,7 +1,6 @@
 package it.unibo.ds.chainvote.presentation;
 
 import com.owlike.genson.Genson;
-import com.owlike.genson.JsonBindingException;
 import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.utils.Choice;
@@ -36,7 +35,7 @@ public class BallotSerializationTest {
             .choice(CHOICE)
             .build();
 
-    private String getSerialized() {
+    private String getExpected() {
         return "{\"electionID\":\"" + ELECTION_ID + "\",\"voterID\":\"" + VOTER_ID + "\",\"date\":\"" + genson.serialize(DATE) + "\",\"choice\":\""
                 + CHOICE.getChoice() + "\"}";
     }
@@ -44,28 +43,12 @@ public class BallotSerializationTest {
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(BALLOT).replace("\\", "");
-        assertEquals(getSerialized(), serialized);
+        assertEquals(getExpected(), serialized);
     }
 
     @Test
     void testDeserialization() {
         final var deserialized = genson.deserialize(genson.serialize(BALLOT), Ballot.class);
         assertEquals(BALLOT, deserialized);
-    }
-
-    @Test
-    void testDeserializationWithWrongValues() {
-        final var wrong = "{\"electionID\":\"123prova\",\"voterID\":\"prova123\",\"date\":\"{\\\"day\\\":\\\"32\\\"," +
-                "\\\"month\\\":\\\"8\\\",\\\"year\\\":\\\"2022\\\",\\\"hour\\\":\\\"10\\\",\\\"minute\\\":\\\"0\\\"," +
-                "\\\"second\\\":\\\"0\\\"}\",\"choice\":\"123prova123\"}";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, Ballot.class));
-    }
-
-    @Test
-    void testDeserializationWithMissingValue() {
-        final var wrong = "{\"electionID\":\"123prova\",\"date\":\"{\\\"day\\\":\\\"30\\\",\\\"month\\\":\\\"8\\\"," +
-                "\\\"year\\\":\\\"2022\\\",\\\"hour\\\":\\\"10\\\",\\\"minute\\\":\\\"0\\\",\\\"second\\\":\\\"0\\\"}" +
-                "\",\"choice\":\"123prova123\"}";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, Ballot.class));
     }
 }

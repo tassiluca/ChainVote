@@ -14,13 +14,9 @@ import static it.unibo.ds.core.utils.Utils.isDateBetween;
 public class ElectionInfoImpl implements ElectionInfo {
 
     private final String goal;
-
     private final long votersNumber;
-
     private final LocalDateTime startingDate;
-
     private final LocalDateTime endingDate;
-
     private final List<Choice> choices;
 
     private ElectionInfoImpl(final String goal, final long votersNumber, final LocalDateTime startingDate,

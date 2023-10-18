@@ -17,8 +17,8 @@ public class BallotConverter implements Converter<Ballot> {
     @Override
     public void serialize(final Ballot object, final ObjectWriter writer, final Context ctx) {
         writer.beginObject();
-        writer.writeString("electionID", object.getElectionID());
-        writer.writeString("voterID", object.getVoterID());
+        writer.writeString("electionID", object.getElectionId());
+        writer.writeString("voterID", object.getVoterId());
         String date = GensonUtils.create().serialize(object.getDate());
         writer.writeString("date", date);
         writer.writeString("choice", object.getChoice().getChoice());

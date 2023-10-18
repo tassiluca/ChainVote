@@ -28,6 +28,14 @@ public final class TransientUtils {
 
     private TransientUtils() { }
 
+    /**
+     * Parses the data from transient.
+     * @param transientData the transient map.
+     * @param key the data's label used to index it.
+     * @param converter a function that build the data given the bytes read from the transient.
+     * @return the data parsed from the transient labelled by the key.
+     * @param <X> the generic type of the data parsed.
+     */
     private static <X> X getFromTransient(
         final Map<String, byte[]> transientData,
         final String key,
@@ -41,19 +49,21 @@ public final class TransientUtils {
     }
 
     /**
-     * @param transientData the {@link Map} containing the transient data
-     * @param key the key of the entry to extract
-     * @return the {@link String} associated to the given key
-     * @throws ChaincodeException if the requested key is not present in the map
+     * Parses a string labelled by the key from the transient.
+     * @param transientData the {@link Map} containing the transient data.
+     * @param key the key of the entry to extract.
+     * @return the {@link String} associated to the given key.
+     * @throws ChaincodeException if the requested key is not present in the map.
      */
     public static String getStringFromTransient(final Map<String, byte[]> transientData, final String key) {
         return getFromTransient(transientData, key, b -> new String(b, StandardCharsets.UTF_8));
     }
 
     /**
-     * @param transientData the {@link Map} containing the transient data
-     * @param key the key of the entry to extract
-     * @return the {@link Long} associated to the given key
+     * Parses a long labelled by the key from the transient.
+     * @param transientData the {@link Map} containing the transient data.
+     * @param key the key of the entry to extract.
+     * @return the {@link Long} associated to the given key.
      * @throws ChaincodeException if the requested key is not present in the map
      * or the associated value cannot be converted to a Long.
      */
@@ -67,6 +77,7 @@ public final class TransientUtils {
     }
 
     /**
+     * Parses a {@link Choice} labelled by the key from the transient.
      * @param transientData the {@link Map} containing the transient data.
      * @param key the key of the entry to extract.
      * @return the {@link Choice} associated to the given key.
@@ -79,9 +90,10 @@ public final class TransientUtils {
     }
 
     /**
+     * Parses a {@link LocalDateTime} labelled by the key from the transient.
      * @param transientData the {@link Map} containing the transient data.
      * @param key the key of the entry to extract.
-     * @return the {@link Choice} associated to the given key.
+     * @return the {@link LocalDateTime} associated to the given key.
      */
     public static LocalDateTime getDateFromTransient(final Map<String, byte[]> transientData, final String key) {
         final Genson genson = GensonUtils.create();
@@ -91,9 +103,10 @@ public final class TransientUtils {
     }
 
     /**
+     * Parses a {@link List} of {@link Choice}s labelled by the key from the transient.
      * @param transientData the {@link Map} containing the transient data.
      * @param key the key of the entry to extract.
-     * @return the {@link Choice} associated to the given key.
+     * @return the {@link List} of {@link Choice}s associated to the given key.
      */
     public static List<Choice> getListFromTransient(final Map<String, byte[]> transientData, final String key) {
         final Genson genson = GensonUtils.create();
@@ -103,7 +116,9 @@ public final class TransientUtils {
     }
 
     /**
+     * Parses a {@link Map} of {@link Choice}s and {@link Long} labelled by the key from the transient.
      * @param transientData the {@link Map} containing the transient data.
+     * @param key the key of the entry to extract.
      * @return the {@link Map} of results associated to the given keys.
      */
     public static Map<Choice, Long> getMapOfResultsFromTransient(final Map<String, byte[]> transientData, final String key) {
@@ -113,15 +128,17 @@ public final class TransientUtils {
         );
     }
 
-
-    public static <P, R> R applyToTransients(final Context context,
-                                             final Function<Map<String, byte[]>, P> build,
-                                             final Function<P, R> action) {
-        final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final P param = build.apply(transientMap);
-        return action.apply(param);
-    }
-
+    /**
+     * Build 2 parameters as specified in buildFirst and buildSecond from the transient and applies the action.
+     * @param context The {@link Context} containing the transient.
+     * @param buildFirst The {@link Function} used to build first parameter from transient.
+     * @param buildSecond The {@link Function} used to build second parameter from transient.
+     * @param action The {@link BiFunction} in which parameters has to be used.
+     * @return The result of the action.
+     * @param <P1> The {@link Class} of the first parameter.
+     * @param <P2> The {@link Class} of the second parameter.
+     * @param <R> The returning {@link java.lang.reflect.Type} of the action.
+     */
     public static <P1, P2, R> R applyToTransients(final Context context,
                                                   final Function<Map<String, byte[]>, P1> buildFirst,
                                                   final Function<Map<String, byte[]>, P2> buildSecond,
@@ -132,6 +149,15 @@ public final class TransientUtils {
         return action.apply(firstParam, secondParam);
     }
 
+    /**
+     * Build 2 parameters as specified in buildFirst and buildSecond from the transient and applies the action.
+     * @param context The {@link Context} containing the transient.
+     * @param buildFirst The {@link Function} used to build first parameter from transient.
+     * @param buildSecond The {@link Function} used to build second parameter from transient.
+     * @param action The {@link BiConsumer} in which parameters has to be used.
+     * @param <P1> The {@link Class} of the first parameter.
+     * @param <P2> The {@link Class} of the second parameter.
+     */
     public static <P1, P2> void doWithTransients(final Context context,
                                                   final Function<Map<String, byte[]>, P1> buildFirst,
                                                   final Function<Map<String, byte[]>, P2> buildSecond,
@@ -147,7 +173,19 @@ public final class TransientUtils {
         R apply(T1 t1, T2 t2, T3 t3);
     }
 
-
+    /**
+     * Build 2 parameters as specified in buildFirst and buildSecond from the transient and applies the action.
+     * @param context The {@link Context} containing the transient.
+     * @param buildFirst The {@link Function} used to build first parameter from transient.
+     * @param buildSecond The {@link Function} used to build second parameter from transient.
+     * @param buildThird The {@link Function} used to build third parameter from transient.
+     * @param action The {@link ThreeParameterFunction} in which parameters has to be used.
+     * @return The result of the action.
+     * @param <P1> The {@link Class} of the first parameter.
+     * @param <P2> The {@link Class} of the second parameter.
+     * @param <P3> The {@link Class} of the third parameter.
+     * @param <R> The returning {@link java.lang.reflect.Type} of the action.
+     */
     public static <P1, P2, P3, R> R applyToTransients(final Context context,
                                                               final Function<Map<String, byte[]>, P1> buildFirst,
                                                               final Function<Map<String, byte[]>, P2> buildSecond,
@@ -158,48 +196,6 @@ public final class TransientUtils {
         final P2 secondParam = buildSecond.apply(transientMap);
         final P3 thirdParam = buildThird.apply(transientMap);
         return action.apply(firstParam, secondParam, thirdParam);
-    }
-
-    @FunctionalInterface
-    public interface FourParameterFunction<T1, T2, T3, T4, R> {
-        R apply(T1 t1, T2 t2, T3 t3, T4 t4);
-    }
-
-
-    public static <P1, P2, P3, P4, R> R applyToTransients(final Context context,
-                                                              final Function<Map<String, byte[]>, P1> buildFirst,
-                                                              final Function<Map<String, byte[]>, P2> buildSecond,
-                                                              final Function<Map<String, byte[]>, P3> buildThird,
-                                                              final Function<Map<String, byte[]>, P4> buildForth,
-                                                              final FourParameterFunction<P1, P2, P3, P4, R> action) {
-        final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final P1 firstParam = buildFirst.apply(transientMap);
-        final P2 secondParam = buildSecond.apply(transientMap);
-        final P3 thirdParam = buildThird.apply(transientMap);
-        final P4 forthParam = buildForth.apply(transientMap);
-        return action.apply(firstParam, secondParam, thirdParam, forthParam);
-    }
-
-    @FunctionalInterface
-    public interface FiveParameterFunction<T1, T2, T3, T4, T5, R> {
-        R apply(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
-    }
-
-
-    public static <P1, P2, P3, P4, P5, R> R applyToTransients(final Context context,
-                                                  final Function<Map<String, byte[]>, P1> buildFirst,
-                                                  final Function<Map<String, byte[]>, P2> buildSecond,
-                                                  final Function<Map<String, byte[]>, P3> buildThird,
-                                                  final Function<Map<String, byte[]>, P4> buildForth,
-                                                  final Function<Map<String, byte[]>, P5> buildFifth,
-                                                  final FiveParameterFunction<P1, P2, P3, P4, P5, R> action) {
-        final Map<String, byte[]> transientMap = context.getStub().getTransient();
-        final P1 firstParam = buildFirst.apply(transientMap);
-        final P2 secondParam = buildSecond.apply(transientMap);
-        final P3 thirdParam = buildThird.apply(transientMap);
-        final P4 forthParam = buildForth.apply(transientMap);
-        final P5 fifthParam = buildFifth.apply(transientMap);
-        return action.apply(firstParam, secondParam, thirdParam, forthParam, fifthParam);
     }
 }
 

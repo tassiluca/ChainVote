@@ -90,10 +90,7 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
         return applyToTransients(context,
                 t -> getStringFromTransient(t, USER_ID.getKey()),
                 t -> getLongFromTransient(t, CODE.getKey()),
-                (userId, code) -> {
-                    System.out.println("[CMC - isValid] Received request for election " + electionId + " user " + userId + " and code " + code);
-                    return codeManager.isValid(context, electionId, userId, new OneTimeCodeImpl(code));
-            }
+                (userId, code) -> codeManager.isValid(context, electionId, userId, new OneTimeCodeImpl(code))
         );
     }
 

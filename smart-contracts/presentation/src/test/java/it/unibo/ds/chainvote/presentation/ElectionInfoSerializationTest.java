@@ -42,7 +42,7 @@ public class ElectionInfoSerializationTest {
     private static final List<Choice> CHOICES = new ArrayList<>(List.of(new Choice("prova1"), new Choice("prova2"), new Choice("prova3")));
     private static final ElectionInfo ELECTION_INFO = ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
 
-    private String getSerialized() {
+    private String getExpected() {
         return "{\"goal\":\"" + GOAL + "\",\"voters\":\"" + VOTERS + "\",\"startingDate\":\""
                 + genson.serialize(START_DATE) + "\",\"endingDate\":\"" + genson.serialize(END_DATE)
                 + "\",\"choices\":\"" + genson.serialize(ELECTION_INFO.getChoices()) + "\"}";
@@ -51,18 +51,12 @@ public class ElectionInfoSerializationTest {
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(ELECTION_INFO);
-        System.out.println(serialized);
-        assertEquals(getSerialized(), serialized.replace("\\", ""));
+        assertEquals(getExpected(), serialized.replace("\\", ""));
     }
 
     @Test
     void testDeserialization() {
-        var prova = genson.deserialize("{\"goal\":\"prova\",\"voters\":\"100\",\"startingDate\":\"{\\\"year\\\":\\\"2023\\\",\\\"month\\\":\\\"8\\\",\\\"day\\\":\\\"20\\\",\\\"hour\\\":\\\"10\\\",\\\"minute\\\":\\\"0\\\",\\\"second\\\":\\\"0\\\"}\",\"endingDate\":\"{\\\"year\\\":\\\"2024\\\",\\\"month\\\":\\\"8\\\",\\\"day\\\":\\\"20\\\",\\\"hour\\\":\\\"10\\\",\\\"minute\\\":\\\"0\\\",\\\"second\\\":\\\"0\\\"}\",\"choices\":\"{\\\"value\\\":[{\\\"choice\\\":\\\"prova1\\\"},{\\\"choice\\\":\\\"prova2\\\"},{\\\"choice\\\":\\\"prova3\\\"},{\\\"choice\\\":\\\"prova4\\\"},{\\\"choice\\\":\\\"BLANK VOTE\\\"}]}\"}", ElectionInfo.class);
-        System.out.println(prova);
-        /*
         final var deserialized = genson.deserialize(genson.serialize(ELECTION_INFO), ElectionInfo.class);
         assertEquals(ELECTION_INFO, deserialized);
-
-         */
     }
 }
