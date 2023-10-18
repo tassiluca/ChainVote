@@ -10,14 +10,14 @@ public class StringSerializationTest {
     private final Genson genson = GensonUtils.create();
     private static final String TO_TEST = "prova";
 
-    private String getSerialized() {
+    private String getExpected() {
         return "{value:prova}";
     }
 
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(TO_TEST);
-        assertEquals(getSerialized(), serialized.replace("\"", ""));
+        assertEquals(getExpected(), serialized.replace("\"", ""));
     }
 
     @Test

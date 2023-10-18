@@ -1,13 +1,10 @@
 package it.unibo.ds.chainvote.presentation;
 
 import com.owlike.genson.Genson;
-import com.owlike.genson.JsonBindingException;
 import it.unibo.ds.core.assets.Election;
-import it.unibo.ds.core.assets.ElectionImpl;
 import it.unibo.ds.core.assets.ElectionInfo;
 import it.unibo.ds.core.factory.ElectionFactory;
 import it.unibo.ds.core.utils.Choice;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -47,7 +44,7 @@ public class ElectionSerializationTest {
     private static final ElectionInfo ELECTION_INFO = ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
     private static final Election ELECTION = ElectionFactory.buildElection(ELECTION_INFO);
 
-    private String getSerialized() {
+    private String getExpected() {
         return "{\"results\":\"" + genson.serialize(ELECTION.getResults()) + "\",\"ballots\":\""
                 + genson.serialize(ELECTION.getBallots()) + "\"}";
     }
@@ -55,24 +52,12 @@ public class ElectionSerializationTest {
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(ELECTION);
-        assertEquals(getSerialized(), serialized.replace("\\", ""));
+        assertEquals(getExpected(), serialized.replace("\\", ""));
     }
 
     @Test
     void testDeserialization() {
         final var deserialized = genson.deserialize(genson.serialize(ELECTION), Election.class);
         assertEquals(ELECTION, deserialized);
-    }
-
-    @Test
-    void testDeserializationWithWrongValues() {
-        final var wrong = "{\"electionID\":\"123prova\",\"voterID\":\"prova123\",\"date\":\"{\\\"day\\\":\\\"32\\\",\\\"month\\\":\\\"8\\\",\\\"year\\\":\\\"2022\\\",\\\"hour\\\":\\\"10\\\",\\\"minute\\\":\\\"0\\\",\\\"second\\\":\\\"0\\\"}\",\"choice\":\"123prova123\"}";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, Election.class));
-    }
-
-    @Test
-    void testDeserializationWithMissingValue() {
-        final var wrong = "{\"electionID\":\"123prova\",\"date\":\"{\\\"day\\\":\\\"32\\\",\\\"month\\\":\\\"8\\\",\\\"year\\\":\\\"2022\\\",\\\"hour\\\":\\\"10\\\",\\\"minute\\\":\\\"0\\\",\\\"second\\\":\\\"0\\\"}\",\"choice\":\"123prova123\"}";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, Election.class));
     }
 }

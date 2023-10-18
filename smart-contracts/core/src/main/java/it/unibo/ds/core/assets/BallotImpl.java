@@ -30,12 +30,12 @@ public final class BallotImpl implements Ballot {
     }
 
     @Override
-    public String getElectionID() {
+    public String getElectionId() {
         return this.electionID;
     }
 
     @Override
-    public String getVoterID() {
+    public String getVoterId() {
         return this.voterCodeID;
     }
 
@@ -61,14 +61,14 @@ public final class BallotImpl implements Ballot {
         return getDate().equals(other.getDate())
             && getChoice().equals(other.getChoice())
             && Objects.deepEquals(
-                new String[] {getElectionID(), getVoterID()},
-                new String[] {other.getElectionID(), other.getVoterID()}
+                new String[] {getElectionId(), getVoterId()},
+                new String[] {other.getElectionId(), other.getVoterId()}
             );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getElectionID(), getVoterID(), getDate(), getChoice());
+        return Objects.hash(getElectionId(), getVoterId(), getDate(), getChoice());
     }
 
     @Override

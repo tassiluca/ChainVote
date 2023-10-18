@@ -68,7 +68,7 @@ final class ElectionInfoTest {
 
         @Test
         void testCorrectBuild() {
-            assertEquals(Utils.calculateID(GOAL, START_DATE, END_DATE, CHOICES), ELECTION_INFO.getElectionID());
+            assertEquals(Utils.calculateID(GOAL, START_DATE, END_DATE, CHOICES), ELECTION_INFO.getElectionId());
             assertEquals(GOAL, ELECTION_INFO.getGoal());
             assertEquals(START_DATE, ELECTION_INFO.getStartingDate());
             assertEquals(END_DATE, ELECTION_INFO.getEndingDate());

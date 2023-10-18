@@ -20,13 +20,13 @@ import java.util.Map;
 public class ElectionFactory {
 
     /**
-     * TODO document.
-     * @param goal TODO
-     * @param votersNumber TODO
-     * @param startingDate TODO
-     * @param endingDate TODO
-     * @param choices TODO
-     * @return .
+     * Build an {@link ElectionInfo} checking if parameters are correct.
+     * @param goal the goal of the {@link ElectionInfo} to build.
+     * @param votersNumber the maximum number of voters of the {@link ElectionInfo} to build.
+     * @param startingDate the starting {@link LocalDateTime} of the {@link ElectionInfo} to build.
+     * @param endingDate the ending {@link LocalDateTime} of the {@link ElectionInfo} to build.
+     * @param choices the {@link List} of {@link Choice}s  of the {@link ElectionInfo} to build.
+     * @return the new {@link ElectionInfo}.
      */
     public static ElectionInfo buildElectionInfo(
         final String goal,
@@ -47,19 +47,19 @@ public class ElectionFactory {
     }
 
     /**
-     * TODO document.
-     * @param electionInfo TODO
-     * @return TODO
+     * Build an {@link Election} given the {@link ElectionInfo}.
+     * @param electionInfo the {@link ElectionInfo} used to build the {@link Election}.
+     * @return the new {@link Election}.
      */
     public static Election buildElection(final ElectionInfo electionInfo) {
         return buildElection(electionInfo, new HashMap<>());
     }
 
     /**
-     * TODO document.
-     * @param electionInfo TODO
-     * @param results TODO
-     * @return TODO
+     * Build an {@link Election} given the {@link ElectionInfo} and a starting result.
+     * @param electionInfo the {@link ElectionInfo} used to build the {@link Election}.
+     * @param results the {@link Map} representing the starting result used to build the {@link Election}.
+     * @return the new {@link Election}.
      */
     public static Election buildElection(final ElectionInfo electionInfo, final Map<Choice, Long> results) {
         checkDataAndResults(electionInfo.getEndingDate(), results);

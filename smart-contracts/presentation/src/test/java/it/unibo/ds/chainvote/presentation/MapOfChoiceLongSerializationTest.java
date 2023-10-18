@@ -2,13 +2,11 @@ package it.unibo.ds.chainvote.presentation;
 
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
-import com.owlike.genson.JsonBindingException;
 import it.unibo.ds.core.utils.Choice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,14 +33,14 @@ public class MapOfChoiceLongSerializationTest {
         MAP.put(CHOICE4, LONG4);
     }
 
-    private String getSerialized() {
+    private String getExpected() {
         return "{\"value\":{\"Choice{choice='prova2'}\":{\"value\":2},\"Choice{choice='prova1'}\":{\"value\":1},\"Choice{choice='prova4'}\":{\"value\":4},\"Choice{choice='prova3'}\":{\"value\":3}}}";
     }
 
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(MAP);
-        assertEquals(getSerialized(), serialized);
+        assertEquals(getExpected(), serialized);
     }
 
     @Test

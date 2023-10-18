@@ -11,18 +11,14 @@ import java.util.Optional;
 import static it.unibo.ds.core.utils.Utils.isDateBetween;
 
 /**
- * TODO document.
+ * An {@link ElectionInfo} implementation.
  */
 public final class ElectionInfoImpl implements ElectionInfo {
 
     private final String goal;
-
     private final long votersNumber;
-
     private final LocalDateTime startingDate;
-
     private final LocalDateTime endingDate;
-
     private final List<Choice> choices;
 
     private ElectionInfoImpl(
@@ -40,7 +36,7 @@ public final class ElectionInfoImpl implements ElectionInfo {
     }
 
     @Override
-    public String getElectionID() {
+    public String getElectionId() {
         return String.valueOf(this.hashCode());
     }
 
@@ -83,7 +79,7 @@ public final class ElectionInfoImpl implements ElectionInfo {
             return false;
         }
         final ElectionInfo other = (ElectionInfo) obj;
-        return getElectionID().equals(other.getElectionID())
+        return getElectionId().equals(other.getElectionId())
             && getGoal().equals(other.getGoal())
             && getVotersNumber() == other.getVotersNumber()
             && Objects.deepEquals(
