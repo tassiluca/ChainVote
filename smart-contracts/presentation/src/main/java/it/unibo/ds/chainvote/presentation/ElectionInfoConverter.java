@@ -3,6 +3,7 @@ package it.unibo.ds.chainvote.presentation;
 import com.owlike.genson.*;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
+import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.assets.ElectionInfo;
 import it.unibo.ds.core.assets.ElectionInfoImpl;
 import it.unibo.ds.core.utils.Choice;
@@ -11,6 +12,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * A {@link ElectionInfo} converter from class object to json string and vice-versa.
+ */
 public class ElectionInfoConverter implements Converter<ElectionInfo> {
 
     @Override

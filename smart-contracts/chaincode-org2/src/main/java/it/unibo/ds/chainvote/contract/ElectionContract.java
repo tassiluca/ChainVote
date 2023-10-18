@@ -1,11 +1,10 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
+import com.owlike.genson.JsonBindingException;
+import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.chainvote.utils.ArgsData;
 import it.unibo.ds.chainvote.utils.Pair;
-import it.unibo.ds.chainvote.assets.ElectionAsset;
-import it.unibo.ds.chainvote.assets.ElectionInfoAsset;
-import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.chainvote.utils.UserCodeData;
 import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.assets.BallotImpl;
@@ -48,37 +47,26 @@ public final class ElectionContract implements ContractInterface {
 
     private static final String CHANNEL_INFO_NAME_CH1 = "ch1";
     private static final String CHAINCODE_INFO_NAME_CH1 = "chaincode-org1";
-    private static final String CHANNEL_INFO_NAME_CH2 = "ch2";
-    private static final String CHAINCODE_INFO_NAME_CH2 = "chaincode-org2";
-
     private final Genson genson = GensonUtils.create();
 
     private enum ElectionContractErrors {
         ELECTION_NOT_FOUND,
         ELECTION_ALREADY_EXISTS,
-        ELECTION_INFO_RETRIEVAL_INVALID_ARGUMENT,
-        ELECTION_INVALID_CODE_TO_CAST_VOTE,
+        ELECTION_INFO_NOT_FOUND,
+        ELECTION_INVALID_CREDENTIALS_TO_CAST_VOTE,
         ELECTION_INVALID_BUILD_ARGUMENT,
-        ELECTION_INVALID_BALLOT_BUILD_ARGUMENT,
-        ELECTION_INVALID_BALLOT_ARGUMENT
+        ELECTION_INVALID_BALLOT_ARGUMENTS,
+        ELECTION_INVALID_BALLOT_CAST_ARGUMENTS
     }
 
     /**
-     * Initialize Ledger.
-     * @param ctx the {@link Context}.
+     * Create an {@link Election}.
+     * @param ctx The {@link Context}.
+     * @param electionId The id of the {@link ElectionInfo} and the {@link Election}.
+     * @param results The initial results of the {@link Election} to create.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void initLedger(final Context ctx) {
-        System.out.println("[EC] initLedger");
-        // ChaincodeStub stub = ctx.getStub();
-    }
-
-    /**
-     * Create a {@link ElectionAsset}.
-     * @param ctx the {@link Context}.
-     */
-    @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void createElection(final Context ctx, String electionId, Map<Choice, Long> results) {
+    public void createElection(final Context ctx, final String electionId, final Map<Choice, Long> results) {
         System.out.println("[EC] createElection");
         ChaincodeStub stub = ctx.getStub();
         if (electionExists(ctx, electionId)) {
@@ -89,33 +77,34 @@ public final class ElectionContract implements ContractInterface {
         ElectionInfo electionInfo = null;
         try {
             electionInfo = readElectionInfo(ctx, electionId);
-        } catch (NullPointerException e) {
-            throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INFO_RETRIEVAL_INVALID_ARGUMENT.toString());
+        } catch (JsonBindingException e) {
+            throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INFO_NOT_FOUND.toString());
         }
         try {
             Election election = ElectionFactory
                 .buildElection(electionInfo, results);
-            ElectionAsset electionAsset = new ElectionAsset(electionId, election);
-            String sortedJson = genson.serialize(electionAsset.getAsset());
-            stub.putStringState(electionAsset.getElectionId(), sortedJson);
-        } catch (IllegalArgumentException e) {
+            String sortedJson = genson.serialize(election);
+            stub.putStringState(electionId, sortedJson);
+            // TODO check if it's the right exception
+        } catch (NullPointerException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
             throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BUILD_ARGUMENT.toString());
         }
     }
 
     /**
-     * Return the {@link ElectionAsset}.
+     * Return the {@link Election}.
      * @param ctx the {@link Context}.
-     * @return the {@link ElectionAsset}.
+     * @param electionId the id of the {@link Election} to retrieve.
+     * @return the {@link Election}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public ElectionAsset readElectionAsset(final Context ctx, String electionId) {
+    public Election readElection(final Context ctx, String electionId) {
         System.out.println("[EC] readElectionAsset");
         if (electionExists(ctx, electionId)) {
             ChaincodeStub stub = ctx.getStub();
             String electionSerialized = stub.getStringState(electionId);
-            return new ElectionAsset(electionId, genson.deserialize(electionSerialized, Election.class));
+            return genson.deserialize(electionSerialized, Election.class);
         } else {
             String errorMessage = String.format("Election %s does not exist", electionId);
             System.out.println(errorMessage);
@@ -124,34 +113,37 @@ public final class ElectionContract implements ContractInterface {
     }
 
     /**
-     * Return the {@link ElectionInfoAsset}.
+     * Return the {@link ElectionInfo}.
      * @param ctx the {@link Context}.
-     * @return the {@link ElectionInfoAsset}.
+     * @param electionId the id of the {@link ElectionInfo} to retrieve.
+     * @return the {@link ElectionInfo}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public ElectionInfo readElectionInfo(final Context ctx, String electionId) {
+    public ElectionInfo readElectionInfo(final Context ctx, final String electionId) {
         System.out.println("[EC] readElectionInfo");
-
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
-            CHAINCODE_INFO_NAME_CH1,
-            List.of("ElectionInfoContract:readElectionInfoSerialized", ArgsData.ELECTION_ID.getKey() + ":" + electionId),
-            CHANNEL_INFO_NAME_CH1
+                CHAINCODE_INFO_NAME_CH1,
+                List.of("ElectionInfoContract:readElectionInfo", ArgsData.ELECTION_ID.getKey() + ":" + electionId),
+                CHANNEL_INFO_NAME_CH1
         );
-        String electionDeserialized = genson.deserialize(response.getStringPayload(), String.class).split(":", 2)[1];
-
+        String electionDeserialized = response.getStringPayload();
         return genson.deserialize(electionDeserialized, ElectionInfo.class);
     }
 
     /**
-     * Cast a {@link Ballot} in an existing {@link Election}.
+     * Cast a vote in an existing {@link Election}.
      * @param ctx the {@link Context}.
+     * @param choice the {@link Choice} of the vote.
+     * @param electionId the id of the {@link Election} where the vote is cast.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void castVote(final Context ctx, final Choice choice, final String electionId) {
-        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(ctx.getStub().getTransient());
+    public void castVote(final Context ctx, Choice choice, String electionId) {
         System.out.println("[EC] castVote");
+        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(ctx.getStub().getTransient());
+
         if (!electionExists(ctx, electionId)) {
             String errorMessage = String.format("Election %s does not exist", electionId);
+            System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
         }
 
@@ -160,7 +152,7 @@ public final class ElectionContract implements ContractInterface {
         if (!cmc.isValid(ctx, electionId)) {
             String errorMessage = "The given one-time-code is not valid.";
             System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CODE_TO_CAST_VOTE.toString());
+            throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CREDENTIALS_TO_CAST_VOTE.toString());
         }
 
         Ballot ballot = null;
@@ -170,32 +162,34 @@ public final class ElectionContract implements ContractInterface {
                 .date(LocalDateTime.now())
                 .choice(choice)
                 .build();
+        // TODO check if it's the right exception
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_BUILD_ARGUMENT.toString());
+            throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_ARGUMENTS.toString());
         }
         ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
-        ElectionAsset election = readElectionAsset(ctx, electionId);
+        Election election = readElection(ctx, electionId);
         try {
-            ElectionManagerImpl.getInstance().castVote(election.getAsset(), electionInfo, ballot);
+            ElectionManagerImpl.getInstance().castVote(election, electionInfo, ballot);
+            // TODO check if it's the right exception
         } catch (IllegalStateException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_ARGUMENT.toString());
+            throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_CAST_ARGUMENTS.toString());
         }
         cmc.invalidate(ctx, electionId);
-        String electionSerialized = genson.serialize(election.getAsset());
-        ctx.getStub().putStringState(election.getElectionId(), electionSerialized);
+        String electionSerialized = genson.serialize(election);
+        ctx.getStub().putStringState(electionId, electionSerialized);
     }
 
     /**
-     * Delete an {@link ElectionAsset}.
+     * Delete an {@link Election}.
      * @param ctx the {@link Context}.
+     * @param electionId the id of the {@link Election} to delete.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void deleteAsset(final Context ctx, String electionId) {
+    public void deleteAsset(final Context ctx, final String electionId) {
         System.out.println("[EC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
-
         if (!electionExists(ctx, electionId)) {
             String errorMessage = String.format("Election %s does not exist", electionId);
             System.out.println(errorMessage);
@@ -205,10 +199,10 @@ public final class ElectionContract implements ContractInterface {
     }
 
     /**
-     * Check if an {@link ElectionAsset} exists.
+     * Check if an {@link Election} exists.
      * @param ctx the {@link Context}.
-     * @param electionId the {@link ElectionAsset}'s ID.
-     * @return if the {@link ElectionAsset} exists.
+     * @param electionId the {@link Election}'s id.
+     * @return a boolean representing if the {@link Election} exists.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     private boolean electionExists(final Context ctx, final String electionId) {
@@ -221,26 +215,22 @@ public final class ElectionContract implements ContractInterface {
     /**
      * Return all the existing {@link Election}s.
      * @param ctx the {@link Context}.
-     * @return the {@link Election}s.
+     * @return the {@link Election}s serialized.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public String getAllAssets(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
-
         List<Election> queryResults = new ArrayList<Election>();
-
         // To retrieve all assets from the ledger use getStateByRange with empty startKey & endKey.
         // Giving empty startKey & endKey is interpreted as all the keys from beginning to end.
         // As another example, if you use startKey = 'asset0', endKey = 'asset9' ,
         // then getStateByRange will retrieve asset with keys between asset0 (inclusive) and asset9 (exclusive) in lexical order.
         QueryResultsIterator<KeyValue> results = stub.getStateByRange("", "");
-
         for (KeyValue result: results) {
             Election election = genson.deserialize(result.getStringValue(), Election.class);
             // System.out.println(election);
             queryResults.add(election);
         }
-
         return genson.serialize(queryResults);
     }
 }

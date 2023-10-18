@@ -16,6 +16,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+/**
+<<<<<<< HEAD:smart-contracts/chaincode/src/main/java/it/unibo/ds/chainvote/transaction/TransactionSerializer.java
+ * A hyperledger custom serializer for calling the smart contract transactions
+ * with custom data types.
+=======
+ * The serializer used in place of parsing arguments from api calls to args used in chaincode.
+>>>>>>> refactor-rubboli:smart-contracts/chaincode/src/main/java/it/unibo/ds/chaincode/transaction/TransactionSerializer.java
+ */
 @Serializer()
 public final class TransactionSerializer implements SerializerInterface {
 
@@ -25,12 +33,17 @@ public final class TransactionSerializer implements SerializerInterface {
         return formatted.split(":", 2)[idx];
     }
 
+    /**
+     * Serialize the value into bytes.
+     * @param value The {@link Object} to serialize.
+     * @param ts The {@link TypeSchema} of the value.
+     * @return The bytes representing the value serialized.
+     */
     @Override
     public byte[] toBuffer(final Object value, final TypeSchema ts) {
         System.out.println("[TS - toBuffer]");
         System.out.println("TS: " + ts);
         System.out.println("Value: " + value);
-        System.out.println("Value class: " + value.getClass());
         String beforeOutput = "";
         if (value.getClass().equals(LocalDateTime.class)) {
             System.out.println("It's a date");
@@ -47,10 +60,12 @@ public final class TransactionSerializer implements SerializerInterface {
         } else if (value instanceof Map<?, ?>) {
             System.out.println("It's a result");
             beforeOutput = ArgsData.RESULTS.getKey() + ":";
-        } else if (value.getClass().equals(String.class) && getFromStringFormattedAsKeyValue((String) value, 0).equals(ArgsData.ELECTION_INFO.getKey())) {
+        } else if (value.getClass().equals(ElectionInfo.class)) {
             System.out.println("It's an electionInfo");
-        } else if (value.getClass().equals(String.class) && getFromStringFormattedAsKeyValue((String) value, 0).equals(ArgsData.ELECTION.getKey())) {
+            beforeOutput = ArgsData.ELECTION_INFO.getKey() + ":";
+        } else if (value.getClass().equals(Election.class)) {
             System.out.println("It's an election");
+            beforeOutput = ArgsData.ELECTION.getKey() + ":";
         } else if (value.getClass().equals(String.class)) {
             System.out.println("It's a string");
         } else if (value.getClass().equals(Boolean.class)) {
@@ -59,11 +74,15 @@ public final class TransactionSerializer implements SerializerInterface {
         return (beforeOutput + genson.serialize(value)).getBytes(StandardCharsets.UTF_8);
     }
 
+    /**
+     * Deserialize the object previously serialized in bytes.
+     * @param buffer Byte buffer from the wire.
+     * @param ts     TypeSchema representing the type.
+     * @return The {@link Object} deserialized.
+     */
     @Override
     public Object fromBuffer(final byte[] buffer, final TypeSchema ts) {
         System.out.println("[TS - fromBuffer]");
-        System.out.println("TS: " + ts);
-        System.out.println("Buffer: " + new String(buffer, StandardCharsets.UTF_8));
         String key = getFromStringFormattedAsKeyValue(new String(buffer, StandardCharsets.UTF_8), 0);
         String value = getFromStringFormattedAsKeyValue(new String(buffer, StandardCharsets.UTF_8), 1);
         System.out.println("Key: " + key);

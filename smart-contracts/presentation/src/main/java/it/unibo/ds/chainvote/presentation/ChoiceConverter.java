@@ -5,10 +5,14 @@ import com.owlike.genson.Converter;
 import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
+import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.utils.Choice;
 
 import java.time.LocalDateTime;
 
+/**
+ * A {@link Choice} converter from class object to json string and vice-versa.
+ */
 public class ChoiceConverter  implements Converter<Choice> {
 
     @Override

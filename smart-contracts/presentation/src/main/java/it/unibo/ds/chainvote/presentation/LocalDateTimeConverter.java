@@ -5,10 +5,14 @@ import com.owlike.genson.Converter;
 import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
+import it.unibo.ds.core.assets.Ballot;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * A {@link LocalDateTime} converter from class object to json string and vice-versa.
+ */
 public final class LocalDateTimeConverter implements Converter<LocalDateTime> {
 
     @Override

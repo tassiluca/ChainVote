@@ -24,12 +24,6 @@ public interface Election {
     List<Choice> getBallots();
 
     /**
-     * Return an {@link Optional} containing the structure of accountability of the {@link Election} if present.
-     * @return an {@link Optional} of the accountability of the {@link Election}.
-     */
-    Optional<Map<String, Choice>> getAccountability();
-
-    /**
      * Cast a {@link Ballot} in the {@link Election} if it's valid.
      * @param ballot the {@link Ballot} to cast.
      * @return if the {@link Ballot} is correctly casted.

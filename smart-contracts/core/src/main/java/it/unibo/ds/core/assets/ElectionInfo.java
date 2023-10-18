@@ -6,15 +6,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * TODO document.
+ * An interface modeling the informative aspect of an {@link Election}
  */
 public interface ElectionInfo {
 
     /**
-     * Return the {@link Election}'s ID.
-     * @return the {@link Election}'s ID.
+     * Return the {@link Election}'s id.
+     * @return the {@link Election}'s id.
      */
-    String getElectionID();
+    String getElectionId();
 
     /**
      * Return the {@link Election}'s goal.

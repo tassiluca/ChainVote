@@ -6,11 +6,15 @@ import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
+import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.utils.Choice;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A list of {@link Choice} converter from class object to json string and vice-versa.
+ */
 public class ListOfChoiceConverter implements Converter<List<Choice>> {
 
     @Override

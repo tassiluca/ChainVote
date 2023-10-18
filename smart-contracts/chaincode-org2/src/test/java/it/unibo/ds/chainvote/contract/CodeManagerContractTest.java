@@ -2,12 +2,11 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.unibo.ds.chainvote.assets.ElectionAsset;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.chainvote.utils.UserCodeData;
-import it.unibo.ds.core.assets.ElectionImpl;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
+import it.unibo.ds.core.factory.ElectionFactory;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
@@ -57,9 +56,13 @@ final class CodeManagerContractTest {
         void setup() {
             when(stub.getTransient()).thenReturn(Map.of(UserCodeData.USER_ID.getKey(), USER_ID.getBytes(UTF_8)));
             // by default suppose the election already exists
+            // TODO previously the thenReturn was filled with Election
+            /*
             when(context.getStub().getStringState(ELECTION_ID)).thenReturn(genson.serialize(
-                new ElectionAsset(ELECTION_ID, new ElectionImpl.Builder().build()))
+                    ElectionFactory.buildElection(ElectionFactory.buildElectionInfo()))
             );
+
+             */
         }
 
         @Test

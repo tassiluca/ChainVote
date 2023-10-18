@@ -13,6 +13,7 @@ public interface CodeManager<C> {
      * @param electionId the election identifier
      * @param userId the user identifier
      * @return a new {@link OneTimeCode} instance for the given user and election.
+     * @throws AlreadyGeneratedCodeException if a code for the given election and user has already been generated.
      */
     OneTimeCode generateFor(C context, String electionId, String userId) throws AlreadyGeneratedCodeException;
 
@@ -21,6 +22,7 @@ public interface CodeManager<C> {
      * @param electionId the election identifier
      * @param userId the user identifier
      * @return a new {@link OneTimeCode} instance for the given user and election.
+     * @throws AlreadyGeneratedCodeException if a code for the given election and user has already been generated.
      */
     default OneTimeCode generateFor(final String electionId, final String userId) throws AlreadyGeneratedCodeException {
         return generateFor(null, electionId, userId);
@@ -54,6 +56,8 @@ public interface CodeManager<C> {
      * @param electionId the election identifier
      * @param userId the user identifier
      * @param code the code to be validated
+     * @throws NotValidCodeException if the given code is not valid.
+     * @throws AlreadyConsumedCodeException if the given code has already been consumed.
      */
     void invalidate(C context, String electionId, String userId, OneTimeCode code)
         throws NotValidCodeException, AlreadyConsumedCodeException;
@@ -64,6 +68,8 @@ public interface CodeManager<C> {
      * @param electionId the election identifier
      * @param userId the user identifier
      * @param code the code to be validated
+     * @throws NotValidCodeException if the given code is not valid.
+     * @throws AlreadyConsumedCodeException if the given code has already been consumed.
      */
     default void invalidate(
         final String electionId,

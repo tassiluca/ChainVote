@@ -5,20 +5,23 @@ import com.owlike.genson.Converter;
 import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.assets.Ballot;
+import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.utils.Choice;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
+/**
+ * A {@link Ballot} converter from class object to json string and vice-versa.
+ */
 public class BallotConverter implements Converter<Ballot> {
 
     @Override
     public void serialize(final Ballot object, final ObjectWriter writer, final Context ctx) {
         writer.beginObject();
-        writer.writeString("electionID", object.getElectionID());
-        writer.writeString("voterID", object.getVoterID());
+        writer.writeString("electionID", object.getElectionId());
+        writer.writeString("voterID", object.getVoterId());
         String date = GensonUtils.create().serialize(object.getDate());
         writer.writeString("date", date);
         writer.writeString("choice", object.getChoice().getChoice());
