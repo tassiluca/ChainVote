@@ -1,49 +1,14 @@
-import { Request, Response, NextFunction } from "express";
-import {CommunicatorFactory} from "../blockchain/communicator/communicator.factory";
-import * as grpc from "@grpc/grpc-js";
-import {connect, Contract, Gateway, Identity, Network, Signer} from "@hyperledger/fabric-gateway";
-import {TextDecoder, TextEncoder} from "util";
+import {NextFunction, Request, Response} from "express";
+import {Contract, Gateway, Network} from "@hyperledger/fabric-gateway";
+
 import {StatusCodes} from "http-status-codes";
+import GrpcClientPool from "../blockchain/grpc.client.pool";
+import {Org1Peer} from "../blockchain/peer.enum";
 
-let client: grpc.Client, identity: Identity, signer: Signer;
-let gatewayOrg1: Gateway;
-let contract: Contract, network: Network;
-
-
-const CHANNEL1_NAME = "ch1";
+const channelName = "ch1";
+const contractName = "chaincode-org1";
 const utf8Decoder = new TextDecoder();
 const utf8Encoder = new TextEncoder();
-
-const communicator = CommunicatorFactory.org1WithEndpoint(
-    "peer1",
-    "localhost:7051",
-    "peer1-org1"
-);
-
-async function getGateway() : Promise<Gateway> {
-
-    client= await communicator.createGrpcClient();
-    identity = await communicator.createIdentity();
-    signer = await communicator.createSigner();
-
-    return connect({
-        client,
-        identity,
-        signer,
-        evaluateOptions: () => {
-            return {deadline: Date.now() + 5000}; // 5 seconds
-        },
-        endorseOptions: () => {
-            return {deadline: Date.now() + 15000}; // 15 seconds
-        },
-        submitOptions: () => {
-            return {deadline: Date.now() + 5000}; // 5 seconds
-        },
-        commitStatusOptions: () => {
-            return {deadline: Date.now() + 60000}; // 1 minute
-        },
-    });
-}
 
 /**
  * Get all the election data
@@ -53,9 +18,9 @@ async function getGateway() : Promise<Gateway> {
  */
 export async function getAllAssets(req: Request, res: Response, next: NextFunction) {
     try {
-        gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
-        network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
-        contract = network.getContract("chaincode-org1");
+        const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
+        const network: Network = gatewayOrg1.getNetwork(channelName);
+        const contract: Contract = network.getContract(contractName);
 
         const allAssets: Uint8Array = await contract.evaluateTransaction('getAllAssets');
         const resultJson = utf8Decoder.decode(allAssets);
@@ -76,9 +41,9 @@ export async function getAllAssets(req: Request, res: Response, next: NextFuncti
 export async function createElectionInfo(req: Request, res: Response, next: NextFunction){
 
     try {
-        gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
-        network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
-        contract = network.getContract("chaincode-org1");
+        const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
+        const network: Network = gatewayOrg1.getNetwork(channelName);
+        const contract: Contract = network.getContract(contractName);
 
         const startDate = {
             year: 2023,
@@ -136,9 +101,9 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
  */
 export async function readElectionInfo(req: Request, res: Response, next: NextFunction){
     try {
-        gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
-        network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
-        contract = network.getContract("chaincode-org1");
+        const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
+        const network: Network = gatewayOrg1.getNetwork(channelName);
+        const contract: Contract = network.getContract(contractName);
 
         const electionId: Uint8Array = utf8Encoder.encode(req.params.electionId);
         const submission: Uint8Array = await contract.evaluateTransaction('readElectionInfoSerialized', electionId);
@@ -159,9 +124,9 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
  */
 export async function deleteAsset(req: Request, res: Response, next: NextFunction) {
     try {
-        gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
-        network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
-        contract = network.getContract("chaincode-org1");
+        const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
+        const network: Network = gatewayOrg1.getNetwork(channelName);
+        const contract: Contract = network.getContract(contractName);
 
         const assetId: Uint8Array = utf8Encoder.encode(req.params.electionId);
         await contract.submitTransaction('deleteAsset', assetId);

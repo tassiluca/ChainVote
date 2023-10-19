@@ -12,22 +12,22 @@ const electionInfoRouter = Router();
 /**
  * Get all the election data
  */
-electionInfoRouter.get("/data", getAllAssets);
+electionInfoRouter.get("/", getAllAssets);
 
 /**
  * Return a specific election data
  */
-electionInfoRouter.get("/data/:electionId", readElectionInfo);
+electionInfoRouter.get("/:electionId", readElectionInfo);
 
 /**
  * Create a new election data
  */
-electionInfoRouter.post("/data", createElectionInfo);
+electionInfoRouter.post("/", createElectionInfo);
 
 /**
  * Delete a specific election data
  */
-electionInfoRouter.delete("/data/:electionId", deleteAsset);
+electionInfoRouter.delete("/:electionId", deleteAsset);
 
 /**
  * Check if a specific election data exists
