@@ -48,7 +48,7 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         const startDate = {
             year: 2023,
             month: 8,
-            day: 20,
+            day: 22,
             hour: 10,
             minute: 0,
             second: 0
@@ -57,7 +57,7 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         const endDate = {
             year: 2023,
             month: 8,
-            day: 21,
+            day: 23,
             hour: 10,
             minute: 0,
             second: 0

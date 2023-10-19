@@ -1,10 +1,11 @@
 import express, { Application } from "express"
-import userRouter from "../routes/user.route";
-import electionInfoRouter from "../routes/election.info.route";
 import bodyParser from "body-parser"
 import {defaultErrorHandler} from "core-components";
 import MongooseConfig from "./mongoose.config";
 
+import userRouter from "../routes/user.route";
+import electionInfoRouter from "../routes/election.info.route";
+import electionRouter from "../routes/election.route";
 
 const ExpressConfig = (): Application => {
   MongooseConfig();
@@ -17,6 +18,7 @@ const ExpressConfig = (): Application => {
   
   // Routes initialization
   app.use("/users", userRouter);
+  app.use("/election", electionRouter);
   app.use("/election/info", electionInfoRouter);
 
   // Use custom error handler.
