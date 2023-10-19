@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-// import { ac } from "../configs/accesscontrol.config";
-// import {UnauthorizedError} from "core-components";
 import {CommunicatorFactory} from "../blockchain/communicator/communicator.factory";
 import * as grpc from "@grpc/grpc-js";
 import {connect, Contract, Gateway, Identity, Network, Signer} from "@hyperledger/fabric-gateway";
@@ -174,26 +172,3 @@ export async function deleteAsset(req: Request, res: Response, next: NextFunctio
         return next(error)
     }
 }
-
-/**
- * Check if the election data with a specific id exists
- * @param req
- * @param res
- * @param next
- */
-/* export async function electionInfoExists(req: Request, res: Response, next: NextFunction) {
-    try {
-        gatewayOrg1 = gatewayOrg1 == undefined ? await getGateway() : gatewayOrg1;
-        network = gatewayOrg1.getNetwork(CHANNEL1_NAME);
-        contract = network.getContract("chaincode-org1");
-
-        const electionId: Uint8Array = utf8Encoder.encode(req.params.electionId);
-        const submission: Uint8Array = await contract.evaluateTransaction('electionInfoExists', electionId);
-        const resultJson = utf8Decoder.decode(submission);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
-
-    } catch (error) {
-        console.log(error.cause);
-        return next(error)
-    }
-} */

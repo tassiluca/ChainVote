@@ -33,7 +33,6 @@ const limitStorage = new RedisLimiterStorage();
 
 userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
 
-
 /**
  * Retrieve the information of a user
  */
