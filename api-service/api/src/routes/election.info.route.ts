@@ -7,31 +7,31 @@ import {
 } from "../controllers/election.info";
 
 
-const electionRouter = Router();
+const electionInfoRouter = Router();
 
 /**
  * Get all the election data
  */
-electionRouter.get("/data", getAllAssets);
+electionInfoRouter.get("/data", getAllAssets);
 
 /**
  * Return a specific election data
  */
-electionRouter.get("/data/:electionId", readElectionInfo);
+electionInfoRouter.get("/data/:electionId", readElectionInfo);
 
 /**
  * Create a new election data
  */
-electionRouter.post("/data", createElectionInfo);
+electionInfoRouter.post("/data", createElectionInfo);
 
 /**
  * Delete a specific election data
  */
-electionRouter.delete("/data/:electionId", deleteAsset);
+electionInfoRouter.delete("/data/:electionId", deleteAsset);
 
 /**
  * Check if a specific election data exists
  */
 // electionRouter.get("/data/:electionId/exists", electionInfoExists);
 
-export default electionRouter;
+export default electionInfoRouter;
