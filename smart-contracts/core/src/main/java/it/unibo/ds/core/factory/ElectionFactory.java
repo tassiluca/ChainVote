@@ -27,6 +27,7 @@ public class ElectionFactory {
      * @param endingDate the ending {@link LocalDateTime} of the {@link ElectionInfo} to build.
      * @param choices the {@link List} of {@link Choice}s  of the {@link ElectionInfo} to build.
      * @return the new {@link ElectionInfo}.
+     * @throws IllegalArgumentException in case checks on parameters fail.
      */
     public static ElectionInfo buildElectionInfo(
         final String goal,
@@ -50,16 +51,22 @@ public class ElectionFactory {
      * Build an {@link Election} given the {@link ElectionInfo}.
      * @param electionInfo the {@link ElectionInfo} used to build the {@link Election}.
      * @return the new {@link Election}.
+     * @throws IllegalArgumentException in case of an already closed {@link Election}.
      */
     public static Election buildElection(final ElectionInfo electionInfo) {
         return buildElection(electionInfo, new HashMap<>());
     }
 
     /**
-     * Build an {@link Election} given the {@link ElectionInfo} and a starting result.
+     * Build an {@link Election} given the {@link ElectionInfo} and a starting results.
+     * This method build the starting results from the given one by filling it with all
+     * the missing {@link Choice}, it only checks that the given one doesn't contain invalid
+     * choices or the sum of votes expressed in the results is lower than the voters number.
+     * In case of an already closed {@link Election}, results must not be empty.
      * @param electionInfo the {@link ElectionInfo} used to build the {@link Election}.
      * @param results the {@link Map} representing the starting result used to build the {@link Election}.
      * @return the new {@link Election}.
+     * @throws IllegalArgumentException in case checks on parameters fail.
      */
     public static Election buildElection(final ElectionInfo electionInfo, final Map<Choice, Long> results) {
         checkDataAndResults(electionInfo.getEndingDate(), results);
