@@ -31,8 +31,8 @@ public class ElectionInfoConverter implements Converter<ElectionInfo> {
 
     @Override
     public ElectionInfo deserialize(final ObjectReader reader, final Context ctx) {
-        reader.beginObject();
         Genson genson = GensonUtils.create();
+        reader.beginObject();
         ElectionInfo election = null;
         String goal = null;
         long voters = 0;

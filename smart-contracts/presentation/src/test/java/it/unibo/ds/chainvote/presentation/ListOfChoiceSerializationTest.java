@@ -21,7 +21,7 @@ public class ListOfChoiceSerializationTest {
     private static final List<Choice> LIST = new ArrayList<>(Arrays.asList(CHOICE1, CHOICE2, CHOICE3, CHOICE4));
 
     private String getExpected() {
-        return "{\"value\":[{\"choice\":\"prova1\"},{\"choice\":\"prova2\"},{\"choice\":\"prova3\"},{\"choice\":\"prova4\"}]}";
+        return "[{\"choice\":\"prova1\"},{\"choice\":\"prova2\"},{\"choice\":\"prova3\"},{\"choice\":\"prova4\"}]";
     }
 
     @Test

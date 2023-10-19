@@ -23,9 +23,7 @@ public class LocalDateTimeSerializationTest {
             TIME_MAP.get("h"), TIME_MAP.get("m"), TIME_MAP.get("s"));
 
     private String getExpected() {
-        return "{\"year\":\"" + TIME_MAP.get("y") + "\",\"month\":\"" + TIME_MAP.get("M") + "\",\"day\":\""
-                + TIME_MAP.get("d") + "\",\"hour\":\"" + TIME_MAP.get("h") + "\",\"minute\":\""
-                + TIME_MAP.get("m") + "\",\"second\":\"" + TIME_MAP.get("s") + "\"}";
+        return "\"2023-08-20T10:00:00\"";
     }
 
     @Test

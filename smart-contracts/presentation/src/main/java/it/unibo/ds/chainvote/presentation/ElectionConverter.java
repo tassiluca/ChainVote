@@ -28,8 +28,8 @@ public class ElectionConverter implements Converter<Election> {
 
     @Override
     public Election deserialize(final ObjectReader reader, final Context ctx) {
-        reader.beginObject();
         Genson genson = GensonUtils.create();
+        reader.beginObject();
         Election election = null;
         Map<Choice, Long> results = null;
         List<Choice> ballots = null;

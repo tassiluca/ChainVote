@@ -22,39 +22,27 @@ public class MapOfChoiceLongConverter implements Converter<Map<Choice, Long>> {
     public void serialize(final Map<Choice, Long> object, final ObjectWriter writer, final Context ctx) {
         Genson genson = GensonUtils.create();
         writer.beginObject();
-        writer.beginArray();
         for (Choice choice: object.keySet()) {
-            writer.beginObject();
-            writer.writeString("key", genson.serialize(choice));
-            writer.writeString("value", genson.serialize(object.get(choice)));
-            writer.endObject();
+            writer.writeString(genson.serialize(choice) + ":");
+            writer.writeString(genson.serialize(object.get(choice)));
         }
-        writer.endArray();
         writer.endObject();
     }
 
     @Override
     public Map<Choice, Long> deserialize(final ObjectReader reader, final Context ctx) {
-        reader.beginObject();
         Map<Choice, Long> retMap = new HashMap<>();
-        reader.next();
-        if ("value".equals(reader.name())) {
-            reader.beginObject();
-            while (reader.hasNext()) {
-                reader.next();
-                Pattern p = Pattern.compile("\\'.*?\\'");
-                Matcher m = p.matcher(reader.name());
-                Choice choice = null;
-                if (m.find()) {
-                    choice = new Choice((String) m.group().subSequence(1, m.group().length()-1));
-                }
-                reader.beginObject();
-                reader.next();
-                long voters = reader.valueAsLong();
-                reader.endObject();
-                retMap.put(choice, voters);
+        reader.beginObject();
+        while (reader.hasNext()) {
+            reader.next();
+            Choice choice = null;
+            Pattern p = Pattern.compile("\\'.*?\\'");
+            Matcher m = p.matcher(reader.name());
+            if (m.find()) {
+                choice = new Choice((String) m.group().subSequence(1, m.group().length()-1));
             }
-            reader.endObject();
+            long voters = reader.valueAsLong();
+            retMap.put(choice, voters);
         }
         reader.endObject();
         return retMap;

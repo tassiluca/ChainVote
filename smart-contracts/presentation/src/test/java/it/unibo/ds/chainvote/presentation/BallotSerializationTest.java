@@ -37,7 +37,7 @@ public class BallotSerializationTest {
 
     private String getExpected() {
         return "{\"electionID\":\"" + ELECTION_ID + "\",\"voterID\":\"" + VOTER_ID + "\",\"date\":\"" + genson.serialize(DATE) + "\",\"choice\":\""
-                + CHOICE.getChoice() + "\"}";
+                + genson.serialize(CHOICE) + "\"}";
     }
 
     @Test
