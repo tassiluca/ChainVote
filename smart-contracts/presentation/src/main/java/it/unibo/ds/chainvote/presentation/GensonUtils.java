@@ -39,8 +39,9 @@ public final class GensonUtils {
             .withConverter(new ElectionInfoConverter(), ElectionInfo.class)
             .withConverter(new ElectionInfoConverter(), ElectionInfoImpl.class)
             .withConverter(new ChoiceConverter(), Choice.class)
-            .withDeserializer(new ListOfChoiceConverter(), new GenericType<List<Choice>>() {})
-            .withDeserializer(new MapOfChoiceLongConverter(), new GenericType<Map<Choice, Long>>() {})
+            .withConverter(new ListOfChoiceConverter(), new GenericType<List<Choice>>() {})
+            .withConverter(new MapOfChoiceLongConverter(), new GenericType<Map<Choice, Long>>() {})
+                /*
             .withConverterFactory(new ChainedFactory() {
                 @Override
                 protected Converter<?> create(final Type type, final Genson genson, final Converter<?> nextConverter) {
@@ -51,6 +52,8 @@ public final class GensonUtils {
                     }
                 }
             })
+
+                 */
             .create();
     }
 

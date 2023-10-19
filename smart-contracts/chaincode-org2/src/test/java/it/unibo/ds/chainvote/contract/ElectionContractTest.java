@@ -34,6 +34,8 @@ public class ElectionContractTest {
 
     private static final String ELECTION_ID = "test-election";
     private static final String GOAL = "a test for election";
+    private static final String CHANNEL_INFO_NAME_CH1 = "ch1";
+    private static final String CHAINCODE_INFO_NAME_CH1 = "chaincode-org1";
     private static final long VOTERS = 400_000_000L;
     private static final Map<String, Integer> START_TIME_MAP = Map.of(
         "y", 2022,
@@ -83,7 +85,13 @@ public class ElectionContractTest {
         @BeforeEach
         void setup() {
             ec = mock(ElectionContract.class);
-            when(ec.readElectionInfo(context, ELECTION_ID)).thenReturn(ELECTION_INFO);
+            when(context.getStub().invokeChaincodeWithStringArgs(
+                    CHAINCODE_INFO_NAME_CH1,
+                    List.of("ElectionInfoContract:readElectionInfo", ArgsData.ELECTION_ID.getKey() + ":" + ELECTION_ID),
+                    CHANNEL_INFO_NAME_CH1
+            )).thenReturn(
+                    new Chaincode.Response(200, "", genson.serialize(ELECTION_INFO).getBytes(UTF_8))
+            );
         }
 
         @Nested
@@ -217,8 +225,8 @@ public class ElectionContractTest {
 
             @Test
             void whenDeleteWithInvalidElectionId() {
-                assertThrows(ChaincodeException.class, () -> electionContract.deleteAsset(context, ELECTION_ID + "wrong"));
-                final Throwable thrown = catchThrowable(() -> electionContract.deleteAsset(context, ELECTION_ID + "wrong"));
+                assertThrows(ChaincodeException.class, () -> electionContract.deleteElection(context, ELECTION_ID + "wrong"));
+                final Throwable thrown = catchThrowable(() -> electionContract.deleteElection(context, ELECTION_ID + "wrong"));
                 assertThat(thrown)
                     .isInstanceOf(ChaincodeException.class);
 
