@@ -20,34 +20,29 @@ public class ListOfChoiceConverter implements Converter<List<Choice>> {
     @Override
     public void serialize(final List<Choice> object, final ObjectWriter writer, final Context ctx) {
         Genson genson = GensonUtils.create();
-        writer.beginObject();
+        writer.beginArray();
         for (Choice choice: object) {
             writer.writeString("choice", genson.serialize(choice));
         }
-        writer.endObject();
+        writer.endArray();
     }
 
     @Override
     public List<Choice> deserialize(final ObjectReader reader, final Context ctx) {
-        reader.beginObject();
         List<Choice> choices = new ArrayList<>();
-        reader.next();
-        if ("value".equals(reader.name())) {
-            reader.beginArray();
-            while (reader.hasNext()) {
-                reader.next();
-                reader.beginObject();
-                reader.next();
-                if ("choice".equals(reader.name())) {
-                    choices.add(new Choice(reader.valueAsString()));
-                } else {
-                    throw new JsonBindingException("Malformed json: missing value");
-                }
-                reader.endObject();
+        reader.beginArray();
+        while (reader.hasNext()) {
+            reader.next();
+            reader.beginObject();
+            reader.next();
+            if ("choice".equals(reader.name())) {
+                choices.add(new Choice(reader.valueAsString()));
+            } else {
+                throw new JsonBindingException("Malformed json: missing value");
             }
-            reader.endArray();
+            reader.endObject();
         }
-        reader.endObject();
+        reader.endArray();
         return choices;
     }
 }

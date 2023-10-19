@@ -119,7 +119,7 @@ public final class ElectionContract implements ContractInterface {
      * @return the {@link ElectionInfo}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public ElectionInfo readElectionInfo(final Context ctx, final String electionId) {
+    private ElectionInfo readElectionInfo(final Context ctx, final String electionId) {
         System.out.println("[EC] readElectionInfo");
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
                 CHAINCODE_INFO_NAME_CH1,
@@ -132,14 +132,15 @@ public final class ElectionContract implements ContractInterface {
 
     /**
      * Cast a vote in an existing {@link Election}.
-     * @param ctx the {@link Context}.
+     * @param ctx the {@link Context}.  A transient map is expected with the following
+     *        key-value pairs: {@link UserCodeData#USER_ID} and {@link UserCodeData#CODE}..
      * @param choice the {@link Choice} of the vote.
      * @param electionId the id of the {@link Election} where the vote is cast.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void castVote(final Context ctx, Choice choice, String electionId) {
         System.out.println("[EC] castVote");
-        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(ctx.getStub().getTransient());
+        final Pair<String, Long> userCodePair = UserCodeData.getUserCodePairFrom(ctx.getStub().getTransient());
 
         if (!electionExists(ctx, electionId)) {
             String errorMessage = String.format("Election %s does not exist", electionId);
@@ -158,7 +159,7 @@ public final class ElectionContract implements ContractInterface {
         Ballot ballot = null;
         try {
             ballot = new BallotImpl.Builder().electionID(electionId)
-                .voterID(codeUserPair._1())
+                .voterID(userCodePair._1())
                 .date(LocalDateTime.now())
                 .choice(choice)
                 .build();
@@ -187,7 +188,7 @@ public final class ElectionContract implements ContractInterface {
      * @param electionId the id of the {@link Election} to delete.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void deleteAsset(final Context ctx, final String electionId) {
+    public void deleteElection(final Context ctx, final String electionId) {
         System.out.println("[EC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
         if (!electionExists(ctx, electionId)) {
@@ -218,7 +219,7 @@ public final class ElectionContract implements ContractInterface {
      * @return the {@link Election}s serialized.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String getAllAssets(final Context ctx) {
+    public String getAllElection(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
         List<Election> queryResults = new ArrayList<Election>();
         // To retrieve all assets from the ledger use getStateByRange with empty startKey & endKey.

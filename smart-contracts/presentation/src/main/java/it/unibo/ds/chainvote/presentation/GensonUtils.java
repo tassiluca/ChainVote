@@ -39,49 +39,8 @@ public final class GensonUtils {
             .withConverter(new ElectionInfoConverter(), ElectionInfo.class)
             .withConverter(new ElectionInfoConverter(), ElectionInfoImpl.class)
             .withConverter(new ChoiceConverter(), Choice.class)
-            .withDeserializer(new ListOfChoiceConverter(), new GenericType<List<Choice>>() {})
-            .withDeserializer(new MapOfChoiceLongConverter(), new GenericType<Map<Choice, Long>>() {})
-            .withConverterFactory(new ChainedFactory() {
-                @Override
-                protected Converter<?> create(final Type type, final Genson genson, final Converter<?> nextConverter) {
-                    if (Wrapper.toAnnotatedElement(nextConverter).isAnnotationPresent(HandleClassMetadata.class)) {
-                        return new LiteralAsObjectConverter<>(nextConverter);
-                    } else {
-                        return nextConverter;
-                    }
-                }
-            })
+            .withDeserializer(new ListOfChoiceConverter(), new GenericType<>() { })
+            .withDeserializer(new MapOfChoiceLongConverter(), new GenericType<>() { })
             .create();
-    }
-
-    private static class LiteralAsObjectConverter<T> implements Converter<T> {
-        private final Converter<T> concreteConverter;
-
-        LiteralAsObjectConverter(final Converter<T> concreteConverter) {
-            this.concreteConverter = concreteConverter;
-        }
-
-        @Override
-        public void serialize(final T object, final ObjectWriter writer, final Context ctx) throws Exception {
-            writer.beginObject().writeName("value");
-            concreteConverter.serialize(object, writer, ctx);
-            writer.endObject();
-        }
-
-        @Override
-        public T deserialize(final ObjectReader reader, final Context ctx) throws Exception {
-            reader.beginObject();
-            T instance = null;
-            while (reader.hasNext()) {
-                reader.next();
-                if (reader.name().equals("value")) {
-                    instance = concreteConverter.deserialize(reader, ctx);
-                } else {
-                    throw new IllegalStateException(String.format("Encountered unexpected property named '%s'", reader.name()));
-                }
-            }
-            reader.endObject();
-            return instance;
-        }
     }
 }

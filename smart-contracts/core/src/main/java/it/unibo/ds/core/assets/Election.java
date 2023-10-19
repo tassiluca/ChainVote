@@ -26,7 +26,7 @@ public interface Election {
     /**
      * Cast a {@link Ballot} in the {@link Election} if it's valid.
      * @param ballot the {@link Ballot} to cast.
-     * @return if the {@link Ballot} is correctly casted.
+     * @return if the {@link Ballot} is correctly cast.
      */
     boolean castVote(Ballot ballot);
 }

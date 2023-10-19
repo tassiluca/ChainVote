@@ -10,10 +10,10 @@ import it.unibo.ds.core.assets.ElectionInfo;
 public interface ElectionManager {
 
     /**
-     * TODO document.
-     * @param election TODO
-     * @param electionInfo TODO
-     * @param ballot TODO
+     * Cast a vote given by the {@link Ballot} in the {@link Election}, given the {@link ElectionInfo}.
+     * @param election the {@link Election} in which the vote is registered.
+     * @param electionInfo the {@link ElectionInfo} of the {@link Election}.
+     * @param ballot the {@link Ballot} containing the vote to cast.
      */
     void castVote(Election election, ElectionInfo electionInfo, Ballot ballot);
 }

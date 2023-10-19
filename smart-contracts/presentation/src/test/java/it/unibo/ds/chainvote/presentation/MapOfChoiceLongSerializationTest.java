@@ -34,7 +34,7 @@ public class MapOfChoiceLongSerializationTest {
     }
 
     private String getExpected() {
-        return "{\"value\":{\"Choice{choice='prova2'}\":{\"value\":2},\"Choice{choice='prova1'}\":{\"value\":1},\"Choice{choice='prova4'}\":{\"value\":4},\"Choice{choice='prova3'}\":{\"value\":3}}}";
+        return "{\"Choice{choice='prova2'}\":2,\"Choice{choice='prova1'}\":1,\"Choice{choice='prova4'}\":4,\"Choice{choice='prova3'}\":3}";
     }
 
     @Test

@@ -11,13 +11,13 @@ public class StringSerializationTest {
     private static final String TO_TEST = "prova";
 
     private String getExpected() {
-        return "{value:prova}";
+        return "\"prova\"";
     }
 
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(TO_TEST);
-        assertEquals(getExpected(), serialized.replace("\"", ""));
+        assertEquals(getExpected(), serialized);
     }
 
     @Test
