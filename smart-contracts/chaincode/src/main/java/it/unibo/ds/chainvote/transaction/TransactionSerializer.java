@@ -17,12 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
-<<<<<<< HEAD:smart-contracts/chaincode/src/main/java/it/unibo/ds/chainvote/transaction/TransactionSerializer.java
  * A hyperledger custom serializer for calling the smart contract transactions
  * with custom data types.
-=======
- * The serializer used in place of parsing arguments from api calls to args used in chaincode.
->>>>>>> refactor-rubboli:smart-contracts/chaincode/src/main/java/it/unibo/ds/chaincode/transaction/TransactionSerializer.java
  */
 @Serializer()
 public final class TransactionSerializer implements SerializerInterface {
