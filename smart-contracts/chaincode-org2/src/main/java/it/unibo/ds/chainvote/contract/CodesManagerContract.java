@@ -36,11 +36,10 @@ import static it.unibo.ds.chainvote.utils.UserCodeData.USER_ID;
         description = "Contract used to manage one-time-codes"
     )
 )
-public final class CodesManagerContract implements ContractInterface, CodeRepository<Context> {
+public final class CodesManagerContract implements ContractInterface {
 
     static final String CODES_COLLECTION = "CodesCollection";
-    private final CodeManager<Context> codeManager = new CodeManagerImpl<>(this);
-    private final Genson genson = GensonUtils.create();
+    private final CodeManager<Context> codeManager = new CodeManagerImpl<>(new LedgerRepository());
 
     private enum Error {
         INCOMPLETE_INPUT,
@@ -119,29 +118,34 @@ public final class CodesManagerContract implements ContractInterface, CodeReposi
         return codeManager.verifyCodeOwner(context, electionId, codeUserPair._1(), new OneTimeCodeImpl(codeUserPair._2()));
     }
 
-    @Override
-    public Optional<OneTimeCode> get(final Context context, final String electionId, final String userId) {
-        final OneTimeCodeAsset data = genson.deserialize(
-            context.getStub().getPrivateData(
+    private static class LedgerRepository implements CodeRepository<Context> {
+
+        private final Genson genson = GensonUtils.create();
+
+        @Override
+        public Optional<OneTimeCode> get(final Context context, final String electionId, final String userId) {
+            final OneTimeCodeAsset data = genson.deserialize(
+                context.getStub().getPrivateData(
+                    CODES_COLLECTION,
+                    new CompositeKey(electionId, userId).toString()
+                ),
+                OneTimeCodeAsset.class
+            );
+            return Optional.ofNullable(data).map(OneTimeCodeAsset::getCode);
+        }
+
+        @Override
+        public void put(final Context context, final String electionId, final String userId, final OneTimeCode code) {
+            context.getStub().putPrivateData(
                 CODES_COLLECTION,
-                new CompositeKey(electionId, userId).toString()
-            ),
-            OneTimeCodeAsset.class
-        );
-        return Optional.ofNullable(data).map(OneTimeCodeAsset::getCode);
-    }
+                new CompositeKey(electionId, userId).toString(),
+                genson.serialize(new OneTimeCodeAsset(electionId, userId, code))
+            );
+        }
 
-    @Override
-    public void put(final Context context, final String electionId, final String userId, final OneTimeCode code) {
-        context.getStub().putPrivateData(
-            CODES_COLLECTION,
-            new CompositeKey(electionId, userId).toString(),
-            genson.serialize(new OneTimeCodeAsset(electionId, userId, code))
-        );
-    }
-
-    @Override
-    public void replace(final Context context, final String electionId, final String userId, final OneTimeCode code) {
-        put(context, electionId, userId, code);
+        @Override
+        public void replace(final Context context, final String electionId, final String userId, final OneTimeCode code) {
+            put(context, electionId, userId, code);
+        }
     }
 }

@@ -28,6 +28,17 @@ jobs:
           cd smart-contracts
           ./gradlew classes testClasses
 
+  Javadoc:
+    runs-on: ubuntu-latest
+    needs: [ Build ]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Generate javadoc
+        run: |
+          cd smart-contracts
+          ./gradlew javadoc
+
   Test:
     strategy:
       matrix:
