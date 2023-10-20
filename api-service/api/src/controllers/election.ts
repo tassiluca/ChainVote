@@ -57,8 +57,84 @@ export async function readElection(req: Request, res: Response, next: NextFuncti
 }
 
 /**
- * Get the information for a specific election
+ * Cast a vote for a specific election
  * @param req
  * @param res
  * @param next
  */
+export async function castVote(req: Request, res: Response, next: NextFunction) {
+    try {
+        const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
+        const network: Network = gatewayOrg2.getNetwork(channelName);
+        const contract: Contract = network.getContract(contractName);
+
+        const electionId: string = req.params.electionId;
+        const choice: string = req.body.choice;
+        const userId: string = req.body.userId;
+        const code: string = req.body.code;
+
+        const submission: Uint8Array = await contract.submit('castVote', {
+            arguments: [
+                `electionId:${electionId}`,
+                `choice:${choice}`
+            ],
+            transientData: {
+                userId: userId,
+                code: code
+            }
+        });
+
+        const resultJson = utf8Decoder.decode(submission);
+        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+    } catch (error) {
+        return next(error)
+    }
+}
+
+/**
+ * Delete an election
+ * @param req
+ * @param res
+ * @param next
+ */
+export async function deleteAsset(req: Request, res: Response, next: NextFunction) {
+    try {
+        const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
+        const network: Network = gatewayOrg2.getNetwork(channelName);
+        const contract: Contract = network.getContract(contractName);
+
+        const electionId: string = req.params.electionId;
+        const submission: Uint8Array = await contract.submit('deleteAsset', {
+            arguments: [`electionId:${electionId}`]
+        });
+
+        const resultJson = utf8Decoder.decode(submission);
+        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+    } catch (error) {
+        return next(error)
+    }
+}
+
+/**
+ * Return all the existing elections in the ledger
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+export async function getAllAssets(req: Request, res: Response, next: NextFunction) {
+    try {
+        const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
+        const network: Network = gatewayOrg2.getNetwork(channelName);
+        const contract: Contract = network.getContract(contractName);
+
+        const submission: Uint8Array = await contract.evaluate('getAllAssets', {
+            arguments: []
+        });
+
+        const resultJson = utf8Decoder.decode(submission);
+        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+    } catch (error) {
+        return next(error)
+    }
+}

@@ -22,7 +22,7 @@ export async function getAllAssets(req: Request, res: Response, next: NextFuncti
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
-        const allAssets: Uint8Array = await contract.evaluateTransaction('getAllAssets');
+        const allAssets: Uint8Array = await contract.evaluate('ElectionInfoContract:getAllAssets');
         const resultJson = utf8Decoder.decode(allAssets);
 
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
