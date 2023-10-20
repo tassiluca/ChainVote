@@ -93,3 +93,32 @@ export async function invalidate(req: Request, res: Response, next: NextFunction
         return next(error)
     }
 }
+
+/**
+ * Verify if a code belongs to the specified user
+ * @param req
+ * @param res
+ * @param next
+ */
+export async function verifyCodeOwner(req: Request, res: Response, next: NextFunction) {
+    try {
+        const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
+        const network: Network = gatewayOrg1.getNetwork(channelName);
+        const contract: Contract = network.getContract(contractName);
+
+        const code = req.body.code;
+        const userId = req.body.userId;
+
+        const codeRequest: Uint8Array = await contract.evaluate('CodesManagerContract:verifyCodeOwner', {
+            transientData: {
+                "code": code,
+                "userId": userId
+            }
+        });
+
+        const resultJson = utf8Decoder.decode(codeRequest);
+        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+    } catch (error) {
+        return next(error)
+    }
+}
