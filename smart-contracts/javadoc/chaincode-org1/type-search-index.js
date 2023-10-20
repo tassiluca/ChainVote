@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"it.unibo.ds.chainvote.contract","l":"ElectionInfoContract"}];updateSearchResults();

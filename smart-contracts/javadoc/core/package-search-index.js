@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"it.unibo.ds.core.assets"},{"l":"it.unibo.ds.core.codes"},{"l":"it.unibo.ds.core.factory"},{"l":"it.unibo.ds.core.manager"},{"l":"it.unibo.ds.core.utils"}];updateSearchResults();

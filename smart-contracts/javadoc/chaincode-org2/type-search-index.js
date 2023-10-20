@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"it.unibo.ds.chainvote.contract","l":"CodesManagerContract"},{"p":"it.unibo.ds.chainvote.contract","l":"ElectionContract"},{"p":"it.unibo.ds.chainvote.assets","l":"OneTimeCodeAsset"},{"p":"it.unibo.ds.chainvote.utils","l":"UserCodeData"}];updateSearchResults();
