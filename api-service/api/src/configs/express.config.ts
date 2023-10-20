@@ -6,6 +6,7 @@ import MongooseConfig from "./mongoose.config";
 import userRouter from "../routes/user.route";
 import electionInfoRouter from "../routes/election.info.route";
 import electionRouter from "../routes/election.route";
+import codesRoute from "../routes/codes.route";
 
 const ExpressConfig = (): Application => {
   MongooseConfig();
@@ -20,7 +21,8 @@ const ExpressConfig = (): Application => {
   app.use("/users", userRouter);
   app.use("/election", electionRouter);
   app.use("/election/info", electionInfoRouter);
-
+  app.use("/code", codesRoute);
+  
   // Use custom error handler.
   app.use(defaultErrorHandler);
   return app
