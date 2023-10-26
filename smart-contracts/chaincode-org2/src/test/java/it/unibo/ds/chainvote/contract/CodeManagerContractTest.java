@@ -106,7 +106,7 @@ final class CodeManagerContractTest {
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("The given election doesn't exists");
-            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INVALID_INPUT".getBytes(UTF_8));
+            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCORRECT_INPUT".getBytes(UTF_8));
         }
     }
 
