@@ -21,7 +21,7 @@ export async function createElection(req: Request, res: Response, next: NextFunc
         const contract: Contract = network.getContract(contractName);
 
         const electionId: string = req.body.electionId
-        const submission: Uint8Array = await contract.submit('createElectionInfo', {
+        const submission: Uint8Array = await contract.submit('ElectionContract:createElection', {
             arguments: [`electionId:${electionId}`]
         });
 
@@ -45,7 +45,7 @@ export async function readElection(req: Request, res: Response, next: NextFuncti
         const contract: Contract = network.getContract(contractName);
 
         const electionId: string = req.params.electionId;
-        const submission: Uint8Array = await contract.evaluate('readElection', {
+        const submission: Uint8Array = await contract.evaluate('ElectionContract:readElection', {
             arguments: [`electionId:${electionId}`]
         });
 
@@ -73,7 +73,7 @@ export async function castVote(req: Request, res: Response, next: NextFunction) 
         const userId: string = req.body.userId;
         const code: string = req.body.code;
 
-        const submission: Uint8Array = await contract.submit('castVote', {
+        const submission: Uint8Array = await contract.submit('ElectionContract:castVote', {
             arguments: [
                 `electionId:${electionId}`,
                 `choice:${choice}`
@@ -104,7 +104,7 @@ export async function deleteAsset(req: Request, res: Response, next: NextFunctio
         const contract: Contract = network.getContract(contractName);
 
         const electionId: string = req.params.electionId;
-        const submission: Uint8Array = await contract.submit('deleteAsset', {
+        const submission: Uint8Array = await contract.submit('ElectionContract:deleteAsset', {
             arguments: [`electionId:${electionId}`]
         });
 
@@ -117,7 +117,6 @@ export async function deleteAsset(req: Request, res: Response, next: NextFunctio
 
 /**
  * Return all the existing elections in the ledger
- *
  * @param req
  * @param res
  * @param next
@@ -128,7 +127,7 @@ export async function getAllAssets(req: Request, res: Response, next: NextFuncti
         const network: Network = gatewayOrg2.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
-        const submission: Uint8Array = await contract.evaluate('getAllAssets', {
+        const submission: Uint8Array = await contract.evaluate('ElectionContract:getAllAssets', {
             arguments: []
         });
 

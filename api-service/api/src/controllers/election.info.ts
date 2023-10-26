@@ -26,7 +26,6 @@ export async function getAllAssets(req: Request, res: Response, next: NextFuncti
 
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        console.log(error.cause);
         return next(error)
     }
 }
@@ -79,7 +78,7 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
             `choices:${JSON.stringify(choices)}`
         ];
 
-        const submission: Uint8Array = await contract.submit('createElectionInfo', {
+        const submission: Uint8Array = await contract.submit('ElectionInfoContract:createElectionInfo', {
             arguments: data
         });
 
@@ -87,7 +86,6 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
 
     } catch (error) {
-        console.log(error.cause);
         return next(error)
     }
 }
@@ -105,12 +103,11 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
         const contract: Contract = network.getContract(contractName);
 
         const electionId: Uint8Array = utf8Encoder.encode(req.params.electionId);
-        const submission: Uint8Array = await contract.evaluateTransaction('readElectionInfoSerialized', electionId);
+        const submission: Uint8Array = await contract.evaluateTransaction('ElectionInfoContract:readElectionInfoSerialized', electionId);
         const resultJson = utf8Decoder.decode(submission);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
 
     } catch (error) {
-        console.log(error.cause);
         return next(error)
     }
 }
@@ -128,11 +125,10 @@ export async function deleteAsset(req: Request, res: Response, next: NextFunctio
         const contract: Contract = network.getContract(contractName);
 
         const assetId: Uint8Array = utf8Encoder.encode(req.params.electionId);
-        await contract.submitTransaction('deleteAsset', assetId);
+        await contract.submitTransaction('ElectionInfoContract:deleteAsset', assetId);
         return res.status(StatusCodes.OK).send({message: "Asset deleted successfully"});
 
     } catch (error) {
-        console.log(error.cause);
         return next(error)
     }
 }
