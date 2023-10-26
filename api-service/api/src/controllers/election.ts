@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import {StatusCodes} from "http-status-codes";
-import {Contract, Gateway, Network} from "@hyperledger/fabric-gateway";
+import { StatusCodes } from "http-status-codes";
+import { Contract, Gateway, Network } from "@hyperledger/fabric-gateway";
 import GrpcClientPool from "../blockchain/grpc.client.pool";
-import {Org2Peer} from "../blockchain/peer.enum";
+import { Org2Peer } from "../blockchain/peer.enum";
+import transformHyperledgerError from "../blockchain/errors/error.handling";
 
 const channelName = "ch2";
 const contractName = "chaincode-org2";
@@ -28,7 +29,7 @@ export async function createElection(req: Request, res: Response, next: NextFunc
         const resultJson = utf8Decoder.decode(submission);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -52,7 +53,7 @@ export async function readElection(req: Request, res: Response, next: NextFuncti
         const resultJson = utf8Decoder.decode(submission);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -87,7 +88,7 @@ export async function castVote(req: Request, res: Response, next: NextFunction) 
         const resultJson = utf8Decoder.decode(submission);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -111,7 +112,7 @@ export async function deleteAsset(req: Request, res: Response, next: NextFunctio
         const resultJson = utf8Decoder.decode(submission);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -134,6 +135,6 @@ export async function getAllAssets(req: Request, res: Response, next: NextFuncti
         const resultJson = utf8Decoder.decode(submission);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }

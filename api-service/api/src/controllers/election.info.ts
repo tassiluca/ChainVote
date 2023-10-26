@@ -4,6 +4,7 @@ import {Contract, Gateway, Network} from "@hyperledger/fabric-gateway";
 import {StatusCodes} from "http-status-codes";
 import GrpcClientPool from "../blockchain/grpc.client.pool";
 import {Org1Peer} from "../blockchain/peer.enum";
+import transformHyperledgerError from "../blockchain/errors/error.handling";
 
 const channelName = "ch1";
 const contractName = "chaincode-org1";
@@ -23,10 +24,9 @@ export async function getAllAssets(req: Request, res: Response, next: NextFuncti
         const contract: Contract = network.getContract(contractName);
         const allAssets: Uint8Array = await contract.evaluate('ElectionInfoContract:getAllAssets');
         const resultJson = utf8Decoder.decode(allAssets);
-
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -86,7 +86,7 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
 
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -108,7 +108,7 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
 
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -129,6 +129,6 @@ export async function deleteAsset(req: Request, res: Response, next: NextFunctio
         return res.status(StatusCodes.OK).send({message: "Asset deleted successfully"});
 
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }

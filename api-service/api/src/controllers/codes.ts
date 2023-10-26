@@ -4,6 +4,7 @@ import GrpcClientPool from "../blockchain/grpc.client.pool";
 
 import {Org2Peer} from "../blockchain/peer.enum";
 import {StatusCodes} from "http-status-codes";
+import transformHyperledgerError from "../blockchain/errors/error.handling";
 
 const channelName = "ch2";
 const contractName = "chaincode-org2";
@@ -34,7 +35,7 @@ export async function generateFor(req: Request, res: Response, next: NextFunctio
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
         console.log(error);
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -63,7 +64,7 @@ export async function isValid(req: Request, res: Response, next: NextFunction) {
         const resultJson = utf8Decoder.decode(codeRequest);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -92,7 +93,7 @@ export async function invalidate(req: Request, res: Response, next: NextFunction
         const resultJson = utf8Decoder.decode(codeRequest);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
 
@@ -121,6 +122,6 @@ export async function verifyCodeOwner(req: Request, res: Response, next: NextFun
         const resultJson = utf8Decoder.decode(codeRequest);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
-        return next(error)
+        return next(transformHyperledgerError(error));
     }
 }
