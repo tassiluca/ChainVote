@@ -185,7 +185,7 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <dd>the code asset.</dd>
 <dt>Throws:</dt>
 <dd><code>org.hyperledger.fabric.shim.ChaincodeException</code> - with <code>CodesManagerContract.Error.INCORRECT_INPUT</code> payload if the given election doesn't exist
- or <code>CodesManagerContract.Error.ALREADY_GENERATED_CODE</code> payload if the given code is not valid.</dd>
+ or the seed is blank and <code>CodesManagerContract.Error.ALREADY_GENERATED_CODE</code> payload if the given code is not valid.</dd>
 </dl>
 </section>
 </li>
@@ -219,7 +219,7 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <dd><code>electionId</code> - the election identifier</dd>
 <dt>Throws:</dt>
 <dd><code>org.hyperledger.fabric.shim.ChaincodeException</code> - with <code>CodesManagerContract.Error.ALREADY_INVALIDATED_CODE</code> payload if the given code was already
- been invalidated or with <code>CodesManagerContract.Error.INCORRECT_INPUT</code> if the given code is not valid.</dd>
+ been invalidated and with <code>CodesManagerContract.Error.INCORRECT_INPUT</code> if the given code is not valid.</dd>
 </dl>
 </section>
 </li>
