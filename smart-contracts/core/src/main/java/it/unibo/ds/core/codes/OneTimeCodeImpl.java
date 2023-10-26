@@ -24,9 +24,9 @@ public final class OneTimeCodeImpl implements OneTimeCode {
     }
 
     @Override
-    public void consume() throws AlreadyConsumedCodeException {
+    public void consume() throws InvalidCodeException {
         if (this.consumed) {
-            throw new AlreadyConsumedCodeException("The code has already been consumed");
+            throw new InvalidCodeException("The code has already been consumed");
         }
         this.consumed = true;
     }

@@ -71,13 +71,13 @@ class CodeManagerTest {
     void testCodeInvalidationMultipleTimes() {
         final OneTimeCode code = assertDoesNotThrow(() -> localManager.generateCodeFor(ELECTION_ID, USER_ID));
         assertDoesNotThrow(() -> localManager.invalidate(ELECTION_ID, USER_ID, code));
-        assertThrows(AlreadyConsumedCodeException.class, () -> localManager.invalidate(ELECTION_ID, USER_ID, code));
+        assertThrows(InvalidCodeException.class, () -> localManager.invalidate(ELECTION_ID, USER_ID, code));
     }
 
     @Test
     void testAttemptInvalidationOnUnknownCode() {
         assertThrows(
-            NotValidCodeException.class,
+            IncorrectCodeException.class,
             () -> localManager.invalidate(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
         );
     }

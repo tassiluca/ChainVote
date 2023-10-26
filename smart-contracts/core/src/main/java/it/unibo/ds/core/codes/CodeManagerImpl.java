@@ -72,10 +72,10 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
         final String electionId,
         final String userId,
         final OneTimeCode code
-    ) throws NotValidCodeException, AlreadyConsumedCodeException {
+    ) throws IncorrectCodeException, InvalidCodeException {
         final var searchedCode = codeRepository.get(context, electionId, userId);
         if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
-            throw new NotValidCodeException("The given code is not associated to the given user for the given voting");
+            throw new IncorrectCodeException("The given code is not associated to the given user for the given voting");
         }
         searchedCode.get().consume();
         codeRepository.replace(context, electionId, userId, searchedCode.get());

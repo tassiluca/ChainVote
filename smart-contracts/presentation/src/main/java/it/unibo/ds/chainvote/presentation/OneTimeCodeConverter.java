@@ -5,7 +5,7 @@ import com.owlike.genson.Converter;
 import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.core.codes.AlreadyConsumedCodeException;
+import it.unibo.ds.core.codes.InvalidCodeException;
 import it.unibo.ds.core.codes.OneTimeCode;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
 
@@ -40,7 +40,7 @@ public final class OneTimeCodeConverter implements Converter<OneTimeCode> {
         if (code == null || consumed == null) {
             throw new JsonBindingException("Malformed json: missing value");
         } else if (consumed) {
-            try { code.consume(); } catch (AlreadyConsumedCodeException ignored) { }
+            try { code.consume(); } catch (InvalidCodeException ignored) { }
         }
         return code;
     }

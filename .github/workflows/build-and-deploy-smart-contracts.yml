@@ -2,10 +2,10 @@ name: Build And Deploy Smart Contracts
 
 on:
   push:
-    branches-ignore:
-      - 'autodelivery**'
-      - 'bump-**'
-      - 'renovate/**'
+    branches:
+      - 'main'
+      - 'master'
+      - 'develop'
     paths-ignore:
       - 'README.md'
       - 'CHANGELOG.md'

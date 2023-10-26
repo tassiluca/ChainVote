@@ -2,7 +2,7 @@ package it.unibo.ds.chainvote.presentation;
 
 import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
-import it.unibo.ds.core.codes.AlreadyConsumedCodeException;
+import it.unibo.ds.core.codes.InvalidCodeException;
 import it.unibo.ds.core.codes.OneTimeCode;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ class OneTimeCodeSerializationTest {
 
     private OneTimeCode getConsumedOTC() {
         final var code = new OneTimeCodeImpl(CODE);
-        try { code.consume(); } catch (AlreadyConsumedCodeException ignored) { }
+        try { code.consume(); } catch (InvalidCodeException ignored) { }
         return code;
     }
 

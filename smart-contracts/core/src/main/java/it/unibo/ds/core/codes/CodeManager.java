@@ -80,11 +80,11 @@ public interface CodeManager<C> {
      * @param electionId the election identifier
      * @param userId the user identifier
      * @param code the code to be validated
-     * @throws NotValidCodeException if the given code is not valid.
-     * @throws AlreadyConsumedCodeException if the given code has already been consumed.
+     * @throws IncorrectCodeException if the given code is not correct for the given election and user.
+     * @throws InvalidCodeException if the given code has already been invalidated.
      */
     void invalidate(C context, String electionId, String userId, OneTimeCode code)
-        throws NotValidCodeException, AlreadyConsumedCodeException;
+        throws IncorrectCodeException, InvalidCodeException;
 
     /**
      * Invalidate the given code for the given election.
@@ -92,14 +92,14 @@ public interface CodeManager<C> {
      * @param electionId the election identifier
      * @param userId the user identifier
      * @param code the code to be validated
-     * @throws NotValidCodeException if the given code is not valid.
-     * @throws AlreadyConsumedCodeException if the given code has already been consumed.
+     * @throws IncorrectCodeException if the given code is not correct for the given election and user.
+     * @throws InvalidCodeException if the given code has already been invalidated.
      */
     default void invalidate(
         final String electionId,
         final String userId,
         final OneTimeCode code
-    ) throws NotValidCodeException, AlreadyConsumedCodeException {
+    ) throws IncorrectCodeException, InvalidCodeException {
         invalidate(null, electionId, userId, code);
     }
 
