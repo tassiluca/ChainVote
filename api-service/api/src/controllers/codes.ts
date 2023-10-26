@@ -22,8 +22,9 @@ export async function generateFor(req: Request, res: Response, next: NextFunctio
         const contract: Contract = network.getContract(contractName);
 
         const userId = req.body.userId;
+        const electionId = req.params.electionId
         const codeRequest: Uint8Array = await contract.submit('CodesManagerContract:generateFor', {
-            arguments: [`userId:${userId}`],
+            arguments: [electionId],
             transientData: {
                 "userId": userId,
             }
@@ -32,6 +33,7 @@ export async function generateFor(req: Request, res: Response, next: NextFunctio
         const resultJson = utf8Decoder.decode(codeRequest);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
+        console.log(error);
         return next(error)
     }
 }

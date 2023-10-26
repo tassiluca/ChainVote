@@ -34,6 +34,10 @@ export function getPeerOrganization(peer: Org1Peer | Org2Peer): string {
 }
 
 
+function getPeerPort(peer: Org1Peer | Org2Peer): string {
+    return peer.split(':')[1];
+}
+
 /**
  * Return the host address of the peer
  *
@@ -41,5 +45,5 @@ export function getPeerOrganization(peer: Org1Peer | Org2Peer): string {
  * @param isLocalhost a boolean flag to indicate if the peer is running on localhost
  */
 export function getPeerHost(peer: Org1Peer | Org2Peer): string {
-    return peer
+    return `localhost:${getPeerPort(peer)}`;
 }

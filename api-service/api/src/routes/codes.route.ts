@@ -3,7 +3,7 @@ import {generateFor, invalidate, isValid, verifyCodeOwner} from "../controllers/
 
 const codesRoute =  Router();
 
-codesRoute.post("/generate", generateFor);
+codesRoute.post("/generate/:electionId", generateFor);
 
 
 codesRoute.post("/isValid", isValid);

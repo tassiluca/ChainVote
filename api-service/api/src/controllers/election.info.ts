@@ -21,7 +21,6 @@ export async function getAllAssets(req: Request, res: Response, next: NextFuncti
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-
         const allAssets: Uint8Array = await contract.evaluate('ElectionInfoContract:getAllAssets');
         const resultJson = utf8Decoder.decode(allAssets);
 

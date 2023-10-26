@@ -12,7 +12,7 @@ const electionInfoRouter = Router();
 /**
  * Get all the election data
  */
-electionInfoRouter.get("/", getAllAssets);
+electionInfoRouter.get("/all", getAllAssets);
 
 /**
  * Return a specific election data

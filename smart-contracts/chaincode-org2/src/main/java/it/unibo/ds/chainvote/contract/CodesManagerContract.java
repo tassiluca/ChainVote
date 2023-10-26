@@ -58,9 +58,10 @@ public final class CodesManagerContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public Long generateFor(final Context context, final String electionId) {
         final var userId = TransientUtils.getStringFromTransient(context.getStub().getTransient(), USER_ID.getKey());
-        if (!electionExists(context, electionId)) {
+        /*if (!electionExists(context, electionId)) {
             throw new ChaincodeException("The given election doesn't exists", Error.INVALID_INPUT.toString());
-        }
+        }*/
+
         try {
             return codeManager.generateFor(context, electionId, userId).getCode();
         } catch (AlreadyGeneratedCodeException exception) {
