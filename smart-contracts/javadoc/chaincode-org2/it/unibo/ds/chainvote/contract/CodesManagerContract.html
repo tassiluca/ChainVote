@@ -110,11 +110,12 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#generateFor(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">generateFor</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;context,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#generateCodeFor(org.hyperledger.fabric.contract.Context,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;context,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;seed)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Generate a new one-time-code for the given user and election passed in a transient map.</div>
+<div class="block">Generate a new one-time-code for the given election and user.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidate(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">invalidate</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;context,
@@ -169,18 +170,22 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="generateFor(org.hyperledger.fabric.contract.Context,java.lang.String)">
-<h3>generateFor</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a></span>&nbsp;<span class="element-name">generateFor</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</span></div>
-<div class="block">Generate a new one-time-code for the given user and election passed in a transient map.</div>
+<section class="detail" id="generateCodeFor(org.hyperledger.fabric.contract.Context,java.lang.String,java.lang.String)">
+<h3>generateCodeFor</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">generateCodeFor</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;seed)</span></div>
+<div class="block">Generate a new one-time-code for the given election and user.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>context</code> - the transaction context. A transient map is expected with the following
-                key-value pairs: <a href="../utils/UserCodeData.html#USER_ID"><code>UserCodeData.USER_ID</code></a>.</dd>
+<dd><code>context</code> - the transaction context. A transient map is expected with the <code>userId</code> key-value entry.</dd>
 <dd><code>electionId</code> - the election identifier</dd>
+<dd><code>seed</code> - a random (non-deterministic) seed for the code generation</dd>
 <dt>Returns:</dt>
 <dd>the code asset.</dd>
+<dt>Throws:</dt>
+<dd><code>org.hyperledger.fabric.shim.ChaincodeException</code> - with <code>CodesManagerContract.Error.INCORRECT_INPUT</code> payload if the given election doesn't exist
+ or <code>CodesManagerContract.Error.ALREADY_GENERATED_CODE</code> payload if the given code is not valid.</dd>
 </dl>
 </section>
 </li>
@@ -193,7 +198,7 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>context</code> - the transaction context. A transient map is expected with the following
-                key-value pairs: <a href="../utils/UserCodeData.html#USER_ID"><code>UserCodeData.USER_ID</code></a> and <a href="../utils/UserCodeData.html#CODE"><code>UserCodeData.CODE</code></a>.</dd>
+                key-value entries: <code>userId</code> and <code>code</code>.</dd>
 <dd><code>electionId</code> - the election identifier</dd>
 <dt>Returns:</dt>
 <dd>true if the given code is still valid, false otherwise.</dd>
@@ -210,8 +215,11 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>context</code> - the transaction context. A transient map is expected with the following
-                key-value pairs: <a href="../utils/UserCodeData.html#USER_ID"><code>UserCodeData.USER_ID</code></a> and <a href="../utils/UserCodeData.html#CODE"><code>UserCodeData.CODE</code></a>.</dd>
+                key-value pairs: <code>userId</code> and <code>code</code>.</dd>
 <dd><code>electionId</code> - the election identifier</dd>
+<dt>Throws:</dt>
+<dd><code>org.hyperledger.fabric.shim.ChaincodeException</code> - with <code>CodesManagerContract.Error.ALREADY_INVALIDATED_CODE</code> payload if the given code was already
+ been invalidated or with <code>CodesManagerContract.Error.INCORRECT_INPUT</code> if the given code is not valid.</dd>
 </dl>
 </section>
 </li>
@@ -224,7 +232,7 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>context</code> - the transaction context. A transient map is expected with the following
-                key-value pairs:  <a href="../utils/UserCodeData.html#USER_ID"><code>UserCodeData.USER_ID</code></a> and <a href="../utils/UserCodeData.html#CODE"><code>UserCodeData.CODE</code></a>.</dd>
+                key-value pairs: <code>userId</code> and <code>code</code>.</dd>
 <dd><code>electionId</code> - the election identifier</dd>
 <dt>Returns:</dt>
 <dd>true if the given code is correct, false otherwise.</dd>

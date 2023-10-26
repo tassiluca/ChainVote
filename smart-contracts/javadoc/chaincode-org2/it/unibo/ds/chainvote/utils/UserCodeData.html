@@ -108,12 +108,8 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">The one-time-code entry key.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#ELECTION_ID" class="member-name-link">ELECTION_ID</a></code></div>
+<div class="col-first odd-row-color"><code><a href="#USER_ID" class="member-name-link">USER_ID</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">The election identifier entry key.</div>
-</div>
-<div class="col-first even-row-color"><code><a href="#USER_ID" class="member-name-link">USER_ID</a></code></div>
-<div class="col-last even-row-color">
 <div class="block">The user identifier entry key.</div>
 </div>
 </div>
@@ -133,7 +129,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getKey()" class="member-name-link">getKey</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static it.unibo.ds.chainvote.utils.Pair&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static it.unibo.ds.chainvote.utils.Pair&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getUserCodePairFrom(java.util.Map)" class="member-name-link">getUserCodePairFrom</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>byte[]&gt;&nbsp;transientData)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="UserCodeData.html" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></code></div>
@@ -172,13 +168,6 @@ the order they are declared.</div>
 <h3>USER_ID</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="UserCodeData.html" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></span>&nbsp;<span class="element-name">USER_ID</span></div>
 <div class="block">The user identifier entry key.</div>
-</section>
-</li>
-<li>
-<section class="detail" id="ELECTION_ID">
-<h3>ELECTION_ID</h3>
-<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="UserCodeData.html" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></span>&nbsp;<span class="element-name">ELECTION_ID</span></div>
-<div class="block">The election identifier entry key.</div>
 </section>
 </li>
 <li>
@@ -240,7 +229,7 @@ not permitted.)</div>
 <li>
 <section class="detail" id="getUserCodePairFrom(java.util.Map)">
 <h3>getUserCodePairFrom</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">it.unibo.ds.chainvote.utils.Pair&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&gt;</span>&nbsp;<span class="element-name">getUserCodePairFrom</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>byte[]&gt;&nbsp;transientData)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">it.unibo.ds.chainvote.utils.Pair&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">getUserCodePairFrom</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>byte[]&gt;&nbsp;transientData)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>transientData</code> - the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link"><code>Map</code></a> containing the transient data</dd>

@@ -72,13 +72,13 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary" aria-labelledby="class-summary-tab0">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color class-summary class-summary-tab5"><a href="AlreadyConsumedCodeException.html" title="class in it.unibo.ds.core.codes">AlreadyConsumedCodeException</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab5"><a href="AlreadyGeneratedCodeException.html" title="class in it.unibo.ds.core.codes">AlreadyGeneratedCodeException</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab5">
-<div class="block">Signals that the <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> has already been consumed.</div>
-</div>
-<div class="col-first odd-row-color class-summary class-summary-tab5"><a href="AlreadyGeneratedCodeException.html" title="class in it.unibo.ds.core.codes">AlreadyGeneratedCodeException</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab5">
 <div class="block">Signals that the <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> has already been generated.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="CodeGeneratorStrategy.html" title="interface in it.unibo.ds.core.codes">CodeGeneratorStrategy</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="block">An interface modeling a <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> generator strategy.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="CodeManager.html" title="interface in it.unibo.ds.core.codes">CodeManager</a>&lt;C&gt;</div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
@@ -93,9 +93,17 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color class-summary class-summary-tab1">
 <div class="block">An interface with method to store/retrieve from a data source the one-time-codes data.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab5"><a href="NotValidCodeException.html" title="class in it.unibo.ds.core.codes">NotValidCodeException</a></div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="HashGenerator.html" title="class in it.unibo.ds.core.codes">HashGenerator</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">An implementation of <a href="CodeGeneratorStrategy.html" title="interface in it.unibo.ds.core.codes"><code>CodeGeneratorStrategy</code></a> that uses a hash function.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab5"><a href="IncorrectCodeException.html" title="class in it.unibo.ds.core.codes">IncorrectCodeException</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab5">
+<div class="block">Signals that the <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> is not correct.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab5"><a href="InvalidCodeException.html" title="class in it.unibo.ds.core.codes">InvalidCodeException</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab5">
-<div class="block">Signals that the <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> is not valid.</div>
+<div class="block">Signals that the <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> has already been consumed.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
@@ -104,6 +112,10 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="OneTimeCodeImpl.html" title="class in it.unibo.ds.core.codes">OneTimeCodeImpl</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">A simple <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> implementation.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SecureRandomGenerator.html" title="class in it.unibo.ds.core.codes">SecureRandomGenerator</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">An implementation of <a href="CodeGeneratorStrategy.html" title="interface in it.unibo.ds.core.codes"><code>CodeGeneratorStrategy</code></a> that uses <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/SecureRandom.html" title="class or interface in java.security" class="external-link"><code>SecureRandom</code></a>.</div>
 </div>
 </div>
 </div>

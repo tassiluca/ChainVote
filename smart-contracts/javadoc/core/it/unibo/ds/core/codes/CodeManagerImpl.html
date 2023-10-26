@@ -98,7 +98,8 @@ implements <a href="CodeManager.html" title="interface in it.unibo.ds.core.codes
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(it.unibo.ds.core.codes.CodeRepository)" class="member-name-link">CodeManagerImpl</a><wbr>(<a href="CodeRepository.html" title="interface in it.unibo.ds.core.codes">CodeRepository</a>&lt;<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&gt;&nbsp;repo)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(it.unibo.ds.core.codes.CodeRepository,it.unibo.ds.core.codes.CodeGeneratorStrategy)" class="member-name-link">CodeManagerImpl</a><wbr>(<a href="CodeRepository.html" title="interface in it.unibo.ds.core.codes">CodeRepository</a>&lt;<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&gt;&nbsp;repo,
+ <a href="CodeGeneratorStrategy.html" title="interface in it.unibo.ds.core.codes">CodeGeneratorStrategy</a>&nbsp;generator)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Creates a new manager.</div>
 </div>
@@ -117,34 +118,42 @@ implements <a href="CodeManager.html" title="interface in it.unibo.ds.core.codes
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#generateFor(C,java.lang.String,java.lang.String)" class="member-name-link">generateFor</a><wbr>(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#generateCodeFor(C,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor</a><wbr>(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userId)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Generates a new <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> for the given election.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidate(C,java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)" class="member-name-link">invalidate</a><wbr>(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#generateCodeFor(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor</a><wbr>(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userId,
- <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a>&nbsp;code)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;arg)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Invalidate the given code for the given election.</div>
+<div class="block">Generates a new <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> for the given election.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isValid(C,java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)" class="member-name-link">isValid</a><wbr>(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidate(C,java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)" class="member-name-link">invalidate</a><wbr>(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userId,
  <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a>&nbsp;code)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Check if the given code is still valid, i.e.</div>
+<div class="block">Invalidate the given code for the given election.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#verifyCodeOwner(C,java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)" class="member-name-link">verifyCodeOwner</a><wbr>(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isValid(C,java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)" class="member-name-link">isValid</a><wbr>(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userId,
  <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a>&nbsp;code)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Check if the given code is still valid, i.e.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#verifyCodeOwner(C,java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)" class="member-name-link">verifyCodeOwner</a><wbr>(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userId,
+ <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a>&nbsp;code)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Verifies if the given code has been generated for the given user and election.</div>
 </div>
 </div>
@@ -155,7 +164,7 @@ implements <a href="CodeManager.html" title="interface in it.unibo.ds.core.codes
 <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-it.unibo.ds.core.codes.CodeManager">Methods inherited from interface&nbsp;it.unibo.ds.core.codes.<a href="CodeManager.html" title="interface in it.unibo.ds.core.codes">CodeManager</a></h3>
-<code><a href="CodeManager.html#generateFor(java.lang.String,java.lang.String)">generateFor</a>, <a href="CodeManager.html#invalidate(java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)">invalidate</a>, <a href="CodeManager.html#isValid(java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)">isValid</a>, <a href="CodeManager.html#verifyCodeOwner(java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)">verifyCodeOwner</a></code></div>
+<code><a href="CodeManager.html#generateCodeFor(java.lang.String,java.lang.String)">generateCodeFor</a>, <a href="CodeManager.html#generateCodeFor(java.lang.String,java.lang.String,java.lang.String)">generateCodeFor</a>, <a href="CodeManager.html#invalidate(java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)">invalidate</a>, <a href="CodeManager.html#isValid(java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)">isValid</a>, <a href="CodeManager.html#verifyCodeOwner(java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)">verifyCodeOwner</a></code></div>
 </section>
 </li>
 </ul>
@@ -168,13 +177,15 @@ implements <a href="CodeManager.html" title="interface in it.unibo.ds.core.codes
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(it.unibo.ds.core.codes.CodeRepository)">
+<section class="detail" id="&lt;init&gt;(it.unibo.ds.core.codes.CodeRepository,it.unibo.ds.core.codes.CodeGeneratorStrategy)">
 <h3>CodeManagerImpl</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">CodeManagerImpl</span><wbr><span class="parameters">(<a href="CodeRepository.html" title="interface in it.unibo.ds.core.codes">CodeRepository</a>&lt;<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&gt;&nbsp;repo)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">CodeManagerImpl</span><wbr><span class="parameters">(<a href="CodeRepository.html" title="interface in it.unibo.ds.core.codes">CodeRepository</a>&lt;<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&gt;&nbsp;repo,
+ <a href="CodeGeneratorStrategy.html" title="interface in it.unibo.ds.core.codes">CodeGeneratorStrategy</a>&nbsp;generator)</span></div>
 <div class="block">Creates a new manager.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>repo</code> - the <a href="CodeRepository.html" title="interface in it.unibo.ds.core.codes"><code>CodeRepository</code></a> to use to retrieve/store data.</dd>
+<dd><code>generator</code> - TODO</dd>
 </dl>
 </section>
 </li>
@@ -187,21 +198,46 @@ implements <a href="CodeManager.html" title="interface in it.unibo.ds.core.codes
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="generateFor(C,java.lang.String,java.lang.String)">
-<h3 id="generateFor(java.lang.Object,java.lang.String,java.lang.String)">generateFor</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a></span>&nbsp;<span class="element-name">generateFor</span><wbr><span class="parameters">(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
+<section class="detail" id="generateCodeFor(C,java.lang.String,java.lang.String)">
+<h3 id="generateCodeFor(java.lang.Object,java.lang.String,java.lang.String)">generateCodeFor</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a></span>&nbsp;<span class="element-name">generateCodeFor</span><wbr><span class="parameters">(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userId)</span>
-                        throws <span class="exceptions"><a href="AlreadyGeneratedCodeException.html" title="class in it.unibo.ds.core.codes">AlreadyGeneratedCodeException</a></span></div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="CodeManager.html#generateFor(C,java.lang.String,java.lang.String)">CodeManager</a></code></span></div>
+                            throws <span class="exceptions"><a href="AlreadyGeneratedCodeException.html" title="class in it.unibo.ds.core.codes">AlreadyGeneratedCodeException</a></span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="CodeManager.html#generateCodeFor(C,java.lang.String,java.lang.String)">CodeManager</a></code></span></div>
 <div class="block">Generates a new <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> for the given election.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="CodeManager.html#generateFor(C,java.lang.String,java.lang.String)">generateFor</a></code>&nbsp;in interface&nbsp;<code><a href="CodeManager.html" title="interface in it.unibo.ds.core.codes">CodeManager</a>&lt;<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&gt;</code></dd>
+<dd><code><a href="CodeManager.html#generateCodeFor(C,java.lang.String,java.lang.String)">generateCodeFor</a></code>&nbsp;in interface&nbsp;<code><a href="CodeManager.html" title="interface in it.unibo.ds.core.codes">CodeManager</a>&lt;<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&gt;</code></dd>
 <dt>Parameters:</dt>
 <dd><code>context</code> - the context of the transaction</dd>
 <dd><code>electionId</code> - the election identifier</dd>
 <dd><code>userId</code> - the user identifier</dd>
+<dt>Returns:</dt>
+<dd>a new <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> instance for the given user and election.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="AlreadyGeneratedCodeException.html" title="class in it.unibo.ds.core.codes">AlreadyGeneratedCodeException</a></code> - if a code for the given election and user has already been generated.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="generateCodeFor(C,java.lang.String,java.lang.String,java.lang.String)">
+<h3 id="generateCodeFor(java.lang.Object,java.lang.String,java.lang.String,java.lang.String)">generateCodeFor</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a></span>&nbsp;<span class="element-name">generateCodeFor</span><wbr><span class="parameters">(<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&nbsp;context,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userId,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;arg)</span>
+                            throws <span class="exceptions"><a href="AlreadyGeneratedCodeException.html" title="class in it.unibo.ds.core.codes">AlreadyGeneratedCodeException</a></span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="CodeManager.html#generateCodeFor(C,java.lang.String,java.lang.String,java.lang.String)">CodeManager</a></code></span></div>
+<div class="block">Generates a new <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> for the given election.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="CodeManager.html#generateCodeFor(C,java.lang.String,java.lang.String,java.lang.String)">generateCodeFor</a></code>&nbsp;in interface&nbsp;<code><a href="CodeManager.html" title="interface in it.unibo.ds.core.codes">CodeManager</a>&lt;<a href="CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&gt;</code></dd>
+<dt>Parameters:</dt>
+<dd><code>context</code> - the context of the transaction</dd>
+<dd><code>electionId</code> - the election identifier</dd>
+<dd><code>userId</code> - the user identifier</dd>
+<dd><code>arg</code> - a string argument to be used in the generation phase</dd>
 <dt>Returns:</dt>
 <dd>a new <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes"><code>OneTimeCode</code></a> instance for the given user and election.</dd>
 <dt>Throws:</dt>
@@ -238,8 +274,8 @@ implements <a href="CodeManager.html" title="interface in it.unibo.ds.core.codes
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userId,
  <a href="OneTimeCode.html" title="interface in it.unibo.ds.core.codes">OneTimeCode</a>&nbsp;code)</span>
-                throws <span class="exceptions"><a href="NotValidCodeException.html" title="class in it.unibo.ds.core.codes">NotValidCodeException</a>,
-<a href="AlreadyConsumedCodeException.html" title="class in it.unibo.ds.core.codes">AlreadyConsumedCodeException</a></span></div>
+                throws <span class="exceptions"><a href="IncorrectCodeException.html" title="class in it.unibo.ds.core.codes">IncorrectCodeException</a>,
+<a href="InvalidCodeException.html" title="class in it.unibo.ds.core.codes">InvalidCodeException</a></span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="CodeManager.html#invalidate(C,java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)">CodeManager</a></code></span></div>
 <div class="block">Invalidate the given code for the given election.
  After calling this method the code can no longer be used.</div>
@@ -252,8 +288,8 @@ implements <a href="CodeManager.html" title="interface in it.unibo.ds.core.codes
 <dd><code>userId</code> - the user identifier</dd>
 <dd><code>code</code> - the code to be validated</dd>
 <dt>Throws:</dt>
-<dd><code><a href="NotValidCodeException.html" title="class in it.unibo.ds.core.codes">NotValidCodeException</a></code> - if the given code is not valid.</dd>
-<dd><code><a href="AlreadyConsumedCodeException.html" title="class in it.unibo.ds.core.codes">AlreadyConsumedCodeException</a></code> - if the given code has already been consumed.</dd>
+<dd><code><a href="IncorrectCodeException.html" title="class in it.unibo.ds.core.codes">IncorrectCodeException</a></code> - if the given code is not correct for the given election and user.</dd>
+<dd><code><a href="InvalidCodeException.html" title="class in it.unibo.ds.core.codes">InvalidCodeException</a></code> - if the given code has already been invalidated.</dd>
 </dl>
 </section>
 </li>
