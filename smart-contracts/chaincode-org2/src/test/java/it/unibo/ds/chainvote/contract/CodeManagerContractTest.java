@@ -90,7 +90,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
-            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID, ""));
+            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID, SEED));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("A one-time-code for the given election and user has already been generated");
@@ -106,6 +106,16 @@ final class CodeManagerContractTest {
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("The given election doesn't exists");
+            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCORRECT_INPUT".getBytes(UTF_8));
+        }
+
+        @Test
+        void whenSeedIsEmpty() {
+            when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
+            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID, ""));
+            assertThat(thrown)
+                .isInstanceOf(ChaincodeException.class)
+                .hasMessage("Seed cannot be blank");
             assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCORRECT_INPUT".getBytes(UTF_8));
         }
     }

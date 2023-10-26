@@ -47,12 +47,14 @@ public final class CodesManagerContract implements ContractInterface {
      * @param seed a random (non-deterministic) seed for the code generation
      * @return the code asset.
      * @throws ChaincodeException with {@link Error#INCORRECT_INPUT} payload if the given election doesn't exist
-     * or {@link Error#ALREADY_GENERATED_CODE} payload if the given code is not valid.
+     * or the seed is blank and {@link Error#ALREADY_GENERATED_CODE} payload if the given code is not valid.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public String generateCodeFor(final Context context, final String electionId, final String seed) {
         final var userId = TransientUtils.getStringFromTransient(context.getStub().getTransient(), USER_ID.getKey());
-        if (!electionExists(context, electionId)) {
+        if (seed.isBlank()) {
+            throw new ChaincodeException("Seed cannot be blank", Error.INCORRECT_INPUT.toString());
+        } else if (!electionExists(context, electionId)) {
             throw new ChaincodeException("The given election doesn't exists", Error.INCORRECT_INPUT.toString());
         }
         try {
@@ -87,7 +89,7 @@ public final class CodesManagerContract implements ContractInterface {
      *                key-value pairs: {@code userId} and {@code code}.
      * @param electionId the election identifier
      * @throws ChaincodeException with {@link Error#ALREADY_INVALIDATED_CODE} payload if the given code was already
-     * been invalidated or with {@link Error#INCORRECT_INPUT} if the given code is not valid.
+     * been invalidated and with {@link Error#INCORRECT_INPUT} if the given code is not valid.
      */
     @Transaction
     public void invalidate(final Context context, final String electionId) {
