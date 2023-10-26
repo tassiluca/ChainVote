@@ -2,7 +2,7 @@ package it.unibo.ds.chainvote.presentation;
 
 import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
-import it.unibo.ds.core.codes.AlreadyConsumedCodeException;
+import it.unibo.ds.core.codes.InvalidCodeException;
 import it.unibo.ds.core.codes.OneTimeCode;
 import it.unibo.ds.core.codes.OneTimeCodeImpl;
 import org.junit.jupiter.api.Test;
@@ -13,11 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class OneTimeCodeSerializationTest {
 
     private final Genson genson = GensonUtils.create();
-    private static final Long CODE = 123L;
+    private static final String CODE = "123";
 
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(getOTC());
+        System.out.println(serialized);
         assertEquals(getSerialized(), serialized);
     }
 
@@ -40,12 +41,6 @@ class OneTimeCodeSerializationTest {
     }
 
     @Test
-    void testDeserializationWithWrongType() {
-        final var wrong = "{\"otc\":\"wrong\",\"consumed\":\"false\"}";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, OneTimeCode.class));
-    }
-
-    @Test
     void testDeserializationWithMissingValue() {
         final var wrong = "{\"other\": \"wrong\"}";
         assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, OneTimeCode.class));
@@ -63,7 +58,7 @@ class OneTimeCodeSerializationTest {
 
     private OneTimeCode getConsumedOTC() {
         final var code = new OneTimeCodeImpl(CODE);
-        try { code.consume(); } catch (AlreadyConsumedCodeException ignored) { }
+        try { code.consume(); } catch (InvalidCodeException ignored) { }
         return code;
     }
 

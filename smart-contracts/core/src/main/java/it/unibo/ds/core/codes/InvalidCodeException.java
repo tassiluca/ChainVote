@@ -3,13 +3,13 @@ package it.unibo.ds.core.codes;
 /**
  * Signals that the {@link OneTimeCode} has already been consumed.
  */
-public class AlreadyConsumedCodeException extends Exception {
+public class InvalidCodeException extends Exception {
 
     /**
      * Constructs the exception with the specified detail message.
      * @param message the String that contains a detailed message
      */
-    public AlreadyConsumedCodeException(final String message) {
+    public InvalidCodeException(final String message) {
         super(message);
     }
 
@@ -19,7 +19,7 @@ public class AlreadyConsumedCodeException extends Exception {
      * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      *              (A null value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
-    public AlreadyConsumedCodeException(final String message, final Throwable cause) {
+    public InvalidCodeException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -29,7 +29,7 @@ public class AlreadyConsumedCodeException extends Exception {
      * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      *              (A null value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
-    public AlreadyConsumedCodeException(final Throwable cause) {
+    public InvalidCodeException(final Throwable cause) {
         super(cause);
     }
 }
