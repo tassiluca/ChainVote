@@ -8,37 +8,58 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public final class CodeManagerImpl<C> implements CodeManager<C> {
 
-    private final CodeGeneratorStrategy codeGenerator = new SecureRandomGenerator();
-    private final CodeRepository<C> repo;
+    private final CodeGeneratorStrategy codeGenerator;
+    private final CodeRepository<C> codeRepository;
 
     /**
      * Creates a new manager.
      * @param repo the {@link CodeRepository} to use to retrieve/store data.
+     * @param generator TODO
      */
     @SuppressFBWarnings("EI2")
-    public CodeManagerImpl(final CodeRepository<C> repo) {
-        this.repo = repo;
+    public CodeManagerImpl(final CodeRepository<C> repo, final CodeGeneratorStrategy generator) {
+        this.codeRepository = repo;
+        this.codeGenerator = generator;
     }
 
     @Override
-    public OneTimeCode generateFor(
+    public OneTimeCode generateCodeFor(
         final C context,
         final String electionId,
         final String userId
     ) throws AlreadyGeneratedCodeException {
-        if (repo.get(context, electionId, userId).isPresent()) {
+        return generate(context, electionId, userId, codeGenerator.generateCode());
+    }
+
+    @Override
+    public OneTimeCode generateCodeFor(
+        final C context,
+        final String electionId,
+        final String userId,
+        final String arg
+    ) throws AlreadyGeneratedCodeException {
+        return generate(context, electionId, userId, codeGenerator.generateCode(arg));
+    }
+
+    private OneTimeCode generate(
+        final C context,
+        final String electionId,
+        final String userId,
+        final OneTimeCode generatedCode
+    ) throws AlreadyGeneratedCodeException {
+        if (codeRepository.get(context, electionId, userId).isPresent()) {
             throw new AlreadyGeneratedCodeException(
                 "A one-time-code for the given election and user has already been generated"
             );
         }
-        final var generated = codeGenerator.generateCode();
-        repo.put(context, electionId, userId, generated);
-        return generated;
+        codeRepository.put(context, electionId, userId, generatedCode);
+        return generatedCode;
     }
+
 
     @Override
     public boolean isValid(final C context, final String electionId, final String userId, final OneTimeCode code) {
-        final var searchedCode = repo.get(context, electionId, userId);
+        final var searchedCode = codeRepository.get(context, electionId, userId);
         if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
             return false;
         }
@@ -52,17 +73,22 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
         final String userId,
         final OneTimeCode code
     ) throws NotValidCodeException, AlreadyConsumedCodeException {
-        final var searchedCode = repo.get(context, electionId, userId);
+        final var searchedCode = codeRepository.get(context, electionId, userId);
         if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
             throw new NotValidCodeException("The given code is not associated to the given user for the given voting");
         }
         searchedCode.get().consume();
-        repo.replace(context, electionId, userId, searchedCode.get());
+        codeRepository.replace(context, electionId, userId, searchedCode.get());
     }
 
     @Override
-    public boolean verifyCodeOwner(final C context, final String electionId, final String userId, final OneTimeCode code) {
-        final var searchedCode = repo.get(context, electionId, userId);
+    public boolean verifyCodeOwner(
+        final C context,
+        final String electionId,
+        final String userId,
+        final OneTimeCode code
+    ) {
+        final var searchedCode = codeRepository.get(context, electionId, userId);
         return searchedCode.isPresent() && searchedCode.get().equals(code);
     }
 }

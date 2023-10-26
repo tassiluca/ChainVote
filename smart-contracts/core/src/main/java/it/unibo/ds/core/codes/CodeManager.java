@@ -15,7 +15,19 @@ public interface CodeManager<C> {
      * @return a new {@link OneTimeCode} instance for the given user and election.
      * @throws AlreadyGeneratedCodeException if a code for the given election and user has already been generated.
      */
-    OneTimeCode generateFor(C context, String electionId, String userId) throws AlreadyGeneratedCodeException;
+    OneTimeCode generateCodeFor(C context, String electionId, String userId) throws AlreadyGeneratedCodeException;
+
+    /**
+     * Generates a new {@link OneTimeCode} for the given election.
+     * @param context the context of the transaction
+     * @param electionId the election identifier
+     * @param userId the user identifier
+     * @param arg a string argument to be used in the generation phase
+     * @return a new {@link OneTimeCode} instance for the given user and election.
+     * @throws AlreadyGeneratedCodeException if a code for the given election and user has already been generated.
+     */
+    OneTimeCode generateCodeFor(C context, String electionId, String userId, String arg)
+        throws AlreadyGeneratedCodeException;
 
     /**
      * Generates a new {@link OneTimeCode}.
@@ -24,8 +36,20 @@ public interface CodeManager<C> {
      * @return a new {@link OneTimeCode} instance for the given user and election.
      * @throws AlreadyGeneratedCodeException if a code for the given election and user has already been generated.
      */
-    default OneTimeCode generateFor(final String electionId, final String userId) throws AlreadyGeneratedCodeException {
-        return generateFor(null, electionId, userId);
+    default OneTimeCode generateCodeFor(final String electionId, final String userId) throws AlreadyGeneratedCodeException {
+        return generateCodeFor((C) null, electionId, userId);
+    }
+
+    /**
+     * Generates a new {@link OneTimeCode} for the given election.
+     * @param electionId the election identifier
+     * @param userId the user identifier
+     * @param arg a string argument to be used in the generation phase
+     * @return a new {@link OneTimeCode} instance for the given user and election.
+     * @throws AlreadyGeneratedCodeException if a code for the given election and user has already been generated.
+     */
+    default OneTimeCode generateCodeFor(final String electionId, final String userId, String arg) throws AlreadyGeneratedCodeException {
+        return generateCodeFor(null, electionId, userId, arg);
     }
 
     /**

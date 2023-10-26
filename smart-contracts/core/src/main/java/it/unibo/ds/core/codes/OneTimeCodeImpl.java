@@ -7,19 +7,19 @@ import java.util.Objects;
  */
 public final class OneTimeCodeImpl implements OneTimeCode {
 
-    private final Long code;
+    private final String code;
     private boolean consumed;
 
     /**
      * Creates a new one time code.
-     * @param code the generated random number associated to this code.
+     * @param code the generated random code.
      */
-    public OneTimeCodeImpl(final Long code) {
+    public OneTimeCodeImpl(final String code) {
         this.code = code;
     }
 
     @Override
-    public Long getCode() {
+    public String getCode() {
         return this.code;
     }
 

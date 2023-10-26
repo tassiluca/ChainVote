@@ -1,27 +1,23 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
+import it.unibo.ds.chainvote.utils.ArgsData;
 import it.unibo.ds.chainvote.utils.Pair;
 import it.unibo.ds.chainvote.utils.TransientUtils;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.chainvote.utils.UserCodeData;
-import it.unibo.ds.core.codes.AlreadyConsumedCodeException;
-import it.unibo.ds.core.codes.AlreadyGeneratedCodeException;
-import it.unibo.ds.core.codes.CodeManager;
-import it.unibo.ds.core.codes.CodeManagerImpl;
-import it.unibo.ds.core.codes.CodeRepository;
-import it.unibo.ds.core.codes.NotValidCodeException;
-import it.unibo.ds.core.codes.OneTimeCode;
-import it.unibo.ds.core.codes.OneTimeCodeImpl;
+import it.unibo.ds.core.codes.*;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
 import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.Transaction;
+import org.hyperledger.fabric.shim.Chaincode;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
 
+import java.util.List;
 import java.util.Optional;
 
 import static it.unibo.ds.chainvote.utils.UserCodeData.USER_ID;
@@ -39,10 +35,9 @@ import static it.unibo.ds.chainvote.utils.UserCodeData.USER_ID;
 public final class CodesManagerContract implements ContractInterface {
 
     static final String CODES_COLLECTION = "CodesCollection";
-    private final CodeManager<Context> codeManager = new CodeManagerImpl<>(new LedgerRepository());
+    private final CodeManager<Context> codeManager = new CodeManagerImpl<>(new LedgerRepository(), new HashGenerator());
 
     private enum Error {
-        INCOMPLETE_INPUT,
         INVALID_INPUT,
         ALREADY_GENERATED_CODE,
         ALREADY_INVALIDATED_CODE
@@ -53,16 +48,17 @@ public final class CodesManagerContract implements ContractInterface {
      * @param context the transaction context. A transient map is expected with the following
      *                key-value pairs: {@link UserCodeData#USER_ID}.
      * @param electionId the election identifier
+     * @param seed a random (non-deterministic) seed for the code generation
      * @return the code asset.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Long generateFor(final Context context, final String electionId) {
+    public String generateCodeFor(final Context context, final String electionId, final String seed) {
         final var userId = TransientUtils.getStringFromTransient(context.getStub().getTransient(), USER_ID.getKey());
         if (!electionExists(context, electionId)) {
             throw new ChaincodeException("The given election doesn't exists", Error.INVALID_INPUT.toString());
         }
         try {
-            return codeManager.generateFor(context, electionId, userId).getCode();
+            return codeManager.generateCodeFor(context, electionId, userId, seed).getCode();
         } catch (AlreadyGeneratedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
         }
@@ -82,7 +78,7 @@ public final class CodesManagerContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean isValid(final Context context, final String electionId) {
-        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
+        final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
         return codeManager.isValid(context, electionId, codeUserPair._1(), new OneTimeCodeImpl(codeUserPair._2()));
     }
 
@@ -95,7 +91,7 @@ public final class CodesManagerContract implements ContractInterface {
      */
     @Transaction
     public void invalidate(final Context context, final String electionId) {
-        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
+        final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
         try {
             codeManager.invalidate(context, electionId, codeUserPair._1(), new OneTimeCodeImpl(codeUserPair._2()));
         } catch (AlreadyConsumedCodeException exception) {
@@ -114,7 +110,7 @@ public final class CodesManagerContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean verifyCodeOwner(final Context context, final String electionId) {
-        final Pair<String, Long> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
+        final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
         return codeManager.verifyCodeOwner(context, electionId, codeUserPair._1(), new OneTimeCodeImpl(codeUserPair._2()));
     }
 

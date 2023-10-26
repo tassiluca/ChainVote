@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static it.unibo.ds.chainvote.contract.CodesManagerContract.CODES_COLLECTION;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -36,7 +37,8 @@ final class CodeManagerContractTest {
 
     private static final String ELECTION_ID = "test-election";
     private static final String USER_ID = "mrossi";
-    private static final Long CODE = 123L;
+    private static final String CODE = "123";
+    private static final String SEED = Integer.toString(new Random().nextInt());
     private static final String KEY = new CompositeKey(ELECTION_ID, USER_ID).toString();
 
     private final Genson genson = GensonUtils.create();
@@ -75,7 +77,7 @@ final class CodeManagerContractTest {
         @Test
         void whenNotAlreadyRequested() {
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final long generatedCode = contract.generateFor(context, ELECTION_ID);
+            final String generatedCode = contract.generateCodeFor(context, ELECTION_ID, SEED);
             verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(generatedCode))
             ));
@@ -85,10 +87,10 @@ final class CodeManagerContractTest {
         @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenAlreadyExists() {
             final byte[] mockedCode = genson.serialize(
-                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
+                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
-            final Throwable thrown = catchThrowable(() -> contract.generateFor(context, ELECTION_ID));
+            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID, ""));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("A one-time-code for the given election and user has already been generated");
@@ -100,7 +102,7 @@ final class CodeManagerContractTest {
         void whenElectionDoesNotExists() {
             when(context.getStub().getStringState(ELECTION_ID)).thenReturn("");
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final Throwable thrown = catchThrowable(() -> contract.generateFor(context, ELECTION_ID));
+            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID, SEED));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("The given election doesn't exists");
@@ -117,7 +119,7 @@ final class CodeManagerContractTest {
                 Map.of(
                     "userId", USER_ID.getBytes(UTF_8),
                     "electionId", ELECTION_ID.getBytes(UTF_8),
-                    "code", Long.toString(CODE).getBytes(UTF_8)
+                    "code", CODE.getBytes(UTF_8)
                 )
             );
         }
@@ -134,7 +136,7 @@ final class CodeManagerContractTest {
         @Test
         void whenCodeIsIncorrect() {
             final byte[] wrongCode = genson.serialize(
-                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
+                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
             assertFalse(contract.verifyCodeOwner(context, ELECTION_ID));
@@ -150,7 +152,7 @@ final class CodeManagerContractTest {
                 Map.of(
                     "userId", USER_ID.getBytes(UTF_8),
                     "electionId", ELECTION_ID.getBytes(UTF_8),
-                    "code", Long.toString(CODE).getBytes(UTF_8)
+                    "code", CODE.getBytes(UTF_8)
                 )
             );
         }
@@ -168,7 +170,7 @@ final class CodeManagerContractTest {
         @Test
         void whenCodeIsIncorrect() {
             final byte[] wrongCode = genson.serialize(
-                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(0L))
+                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
             assertFalse(contract.isValid(context, ELECTION_ID));

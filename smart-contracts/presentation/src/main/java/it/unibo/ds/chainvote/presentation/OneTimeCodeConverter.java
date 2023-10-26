@@ -17,7 +17,7 @@ public final class OneTimeCodeConverter implements Converter<OneTimeCode> {
     @Override
     public void serialize(final OneTimeCode object, final ObjectWriter writer, final Context ctx) {
         writer.beginObject();
-        writer.writeString("otc", Long.toString(object.getCode()));
+        writer.writeString("otc", object.getCode());
         writer.writeString("consumed", Boolean.toString(object.consumed()));
         writer.endObject();
     }
@@ -30,7 +30,7 @@ public final class OneTimeCodeConverter implements Converter<OneTimeCode> {
         while (reader.hasNext()) {
             reader.next();
             if ("otc".equals(reader.name())) {
-                code = new OneTimeCodeImpl(reader.valueAsLong());
+                code = new OneTimeCodeImpl(reader.valueAsString());
             } else if ("consumed".equals(reader.name())) {
                 consumed = reader.valueAsBoolean();
             } else {

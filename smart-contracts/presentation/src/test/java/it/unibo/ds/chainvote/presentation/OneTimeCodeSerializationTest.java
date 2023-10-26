@@ -13,11 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class OneTimeCodeSerializationTest {
 
     private final Genson genson = GensonUtils.create();
-    private static final Long CODE = 123L;
+    private static final String CODE = "123";
 
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(getOTC());
+        System.out.println(serialized);
         assertEquals(getSerialized(), serialized);
     }
 
@@ -37,12 +38,6 @@ class OneTimeCodeSerializationTest {
     void testConsumedDeserialization() {
         final var consumedDeserialized = genson.deserialize(getConsumedSerialized(), OneTimeCode.class);
         assertEquals(getConsumedOTC(), consumedDeserialized);
-    }
-
-    @Test
-    void testDeserializationWithWrongType() {
-        final var wrong = "{\"otc\":\"wrong\",\"consumed\":\"false\"}";
-        assertThrows(JsonBindingException.class, () -> genson.deserialize(wrong, OneTimeCode.class));
     }
 
     @Test

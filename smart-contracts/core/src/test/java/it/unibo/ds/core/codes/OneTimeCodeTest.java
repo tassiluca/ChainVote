@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 )
 class OneTimeCodeTest {
 
-    private static final long GENERATED_CODE = 123;
+    private static final String GENERATED_CODE = "123";
     private OneTimeCode code;
 
     @BeforeEach
