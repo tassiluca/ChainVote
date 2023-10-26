@@ -1,5 +1,6 @@
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
+import kotlin.io.path.Path
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -37,6 +38,12 @@ subprojects {
 
     tasks.test {
         useJUnitPlatform()
+    }
+
+    tasks.javadoc {
+        val javadocDir = file(Path(rootProject.projectDir.absolutePath, "build", "javadoc", project.name))
+        javadocDir.mkdirs()
+        setDestinationDir(javadocDir)
     }
 }
 

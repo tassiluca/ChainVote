@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 )
 class OneTimeCodeTest {
 
-    private static final long GENERATED_CODE = 123;
+    private static final String GENERATED_CODE = "123";
     private OneTimeCode code;
 
     @BeforeEach
@@ -34,7 +34,7 @@ class OneTimeCodeTest {
     @Test
     void testConsumeMultipleTimes() {
         assertDoesNotThrow(code::consume);
-        assertThrows(AlreadyConsumedCodeException.class, () -> code.consume());
+        assertThrows(InvalidCodeException.class, () -> code.consume());
     }
 
     @Test

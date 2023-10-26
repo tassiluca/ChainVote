@@ -2,11 +2,10 @@ name: Build And Deploy Smart Contracts
 
 on:
   push:
-    tags: '*'
-    branches-ignore:
-      - 'autodelivery**'
-      - 'bump-**'
-      - 'renovate/**'
+    branches:
+      - 'main'
+      - 'master'
+      - 'develop'
     paths-ignore:
       - 'README.md'
       - 'CHANGELOG.md'
@@ -32,12 +31,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ Build ]
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Generate javadoc
-        run: |
-          cd smart-contracts
-          ./gradlew javadoc
+      - name: Deploy JavaDoc 🚀
+        uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          javadoc-branch: api-doc
+          java-version: 17
+          target-folder: smart-contracts
+          project: gradle
+          custom-command: |
+            pushd smart-contracts
+            ./gradlew javadoc
+            popd
+            mkdir -p ./build/docs/javadoc
+            cp -r ./smart-contracts/build/javadoc/ ./build/docs/javadoc
 
   Test:
     strategy:
