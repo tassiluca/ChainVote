@@ -1,9 +1,10 @@
 package it.unibo.ds.chainvote.contract;
 
+import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
+import it.unibo.ds.chainvote.presentation.SerializerCustomUtils;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.chainvote.utils.ArgsData;
 import it.unibo.ds.chainvote.utils.Pair;
 import it.unibo.ds.chainvote.utils.UserCodeData;
 import it.unibo.ds.core.assets.Ballot;
@@ -22,8 +23,6 @@ import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.Chaincode;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
-import org.hyperledger.fabric.shim.ledger.KeyValue;
-import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,6 +51,7 @@ public final class ElectionContract implements ContractInterface {
     private enum ElectionContractErrors {
         ELECTION_NOT_FOUND,
         ELECTION_ALREADY_EXISTS,
+        ELECTION_READ_WHILE_OPEN,
         ELECTION_INFO_NOT_FOUND,
         ELECTION_INVALID_CREDENTIALS_TO_CAST_VOTE,
         ELECTION_INVALID_BUILD_ARGUMENT,
@@ -66,7 +66,7 @@ public final class ElectionContract implements ContractInterface {
      * @param results The initial results of the {@link Election} to create.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void createElection(final Context ctx, final String electionId, final Map<Choice, Long> results) {
+    public void createElection(final Context ctx, final String electionId, final Map<String, Long> results) {
         System.out.println("[EC] createElection");
         ChaincodeStub stub = ctx.getStub();
         if (electionExists(ctx, electionId)) {
@@ -99,8 +99,8 @@ public final class ElectionContract implements ContractInterface {
      * @return the {@link Election}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public Election readElection(final Context ctx, String electionId) {
-        System.out.println("[EC] readElectionAsset");
+    private Election readElection(final Context ctx, String electionId) {
+        System.out.println("[EC] readElection");
         if (electionExists(ctx, electionId)) {
             ChaincodeStub stub = ctx.getStub();
             String electionSerialized = stub.getStringState(electionId);
@@ -110,6 +110,40 @@ public final class ElectionContract implements ContractInterface {
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
         }
+    }
+
+    /**
+     * Return the {@link Election} information of electionId and affluence.
+     * @param ctx the {@link Context}.
+     * @param electionId the id of the {@link Election} to retrieve open information (electionId and affluence).
+     * @return the {@link String} representing the {@link Election} serialized in order to get info about affluence.
+     */
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public String readOpenElection(final Context ctx, String electionId) {
+        System.out.println("[EC] readOpenElection");
+        Election election = readElection(ctx, electionId);
+        ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
+        return SerializerCustomUtils.serializeForAffluence(election, electionInfo);
+    }
+
+    /**
+     * Return the {@link Election} if it's already closed.
+     * @param ctx the {@link Context}.
+     * @param electionId the id of the {@link Election} to retrieve.
+     * @return the {@link Election}.
+     * @throws ChaincodeException in case {@link Election} retrieved is still open.
+     */
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public Election readClosedElection(final Context ctx, String electionId) {
+        System.out.println("[EC] readClosedElection");
+        Election election = readElection(ctx, electionId);
+        ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
+        if (electionInfo.isOpen()) {
+            String errorMessage = String.format("Election %s is still open", electionId);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_READ_WHILE_OPEN.toString());
+        }
+        return election;
     }
 
     /**
@@ -123,7 +157,7 @@ public final class ElectionContract implements ContractInterface {
         System.out.println("[EC] readElectionInfo");
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
                 CHAINCODE_INFO_NAME_CH1,
-                List.of("ElectionInfoContract:readElectionInfo", ArgsData.ELECTION_ID.getKey() + ":" + electionId),
+                List.of("ElectionInfoContract:readElectionInfo", electionId),
                 CHANNEL_INFO_NAME_CH1
         );
         String electionDeserialized = response.getStringPayload();
@@ -220,19 +254,28 @@ public final class ElectionContract implements ContractInterface {
      * @return the {@link Election}s serialized.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String getAllElection(final Context ctx) {
-        ChaincodeStub stub = ctx.getStub();
-        List<Election> queryResults = new ArrayList<Election>();
-        // To retrieve all assets from the ledger use getStateByRange with empty startKey & endKey.
-        // Giving empty startKey & endKey is interpreted as all the keys from beginning to end.
-        // As another example, if you use startKey = 'asset0', endKey = 'asset9' ,
-        // then getStateByRange will retrieve asset with keys between asset0 (inclusive) and asset9 (exclusive) in lexical order.
-        QueryResultsIterator<KeyValue> results = stub.getStateByRange("", "");
-        for (KeyValue result: results) {
-            Election election = genson.deserialize(result.getStringValue(), Election.class);
-            // System.out.println(election);
-            queryResults.add(election);
+    public List<String> getAllElection(final Context ctx) {
+        System.out.println("[EC] getAllElection");
+
+        List<String> electionsSerialized = new ArrayList<>();
+
+        Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
+                CHAINCODE_INFO_NAME_CH1,
+                List.of("ElectionInfoContract:getAllElectionInfo"),
+                CHANNEL_INFO_NAME_CH1
+        );
+        String electionInfosSerialized = genson.deserialize(response.getStringPayload(), String.class);
+        System.out.println("[EC] getAllElection response from GAEI: " + electionInfosSerialized);
+        List<ElectionInfo> electionInfos = GensonUtils.create().deserialize(electionInfosSerialized, new GenericType<>() { });
+
+        for (ElectionInfo electionInfo : electionInfos) {
+            String electionId = electionInfo.getElectionId();
+            Election election = this.readElection(ctx, electionId);
+            electionsSerialized.add(SerializerCustomUtils.serializeForAffluence(election, electionInfo));
         }
-        return genson.serialize(queryResults);
+
+        System.out.println("[EC] getAllElection results serialized: " + genson.serialize(electionsSerialized));
+
+        return electionsSerialized;
     }
 }

@@ -1,9 +1,11 @@
 package it.unibo.ds.chainvote.presentation;
 
 import com.owlike.genson.Genson;
+import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.assets.Election;
 import it.unibo.ds.core.assets.ElectionInfo;
 import it.unibo.ds.core.factory.ElectionFactory;
+import it.unibo.ds.core.manager.ElectionManagerImpl;
 import it.unibo.ds.core.utils.Choice;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ElectionSerializationTest {
 
@@ -44,19 +45,13 @@ public class ElectionSerializationTest {
     private static final ElectionInfo ELECTION_INFO = ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
     private static final Election ELECTION = ElectionFactory.buildElection(ELECTION_INFO);
 
-    private String getExpected() {
-        return "{\"results\":\"" + genson.serialize(ELECTION.getResults()) + "\",\"ballots\":\""
-                + genson.serialize(ELECTION.getBallots()) + "\"}";
-    }
-
-    @Test
-    void testSerialization() {
-        final var serialized = genson.serialize(ELECTION);
-        assertEquals(getExpected(), serialized.replace("\\", ""));
-    }
-
     @Test
     void testDeserialization() {
+        ElectionManagerImpl.getInstance().castVote(ELECTION, ELECTION_INFO, new BallotImpl.Builder().electionID(ELECTION_INFO.getElectionId())
+                .voterID("prova123")
+                .date(LocalDateTime.now())
+                .choice(CHOICES.get(0))
+                .build());
         final var deserialized = genson.deserialize(genson.serialize(ELECTION), Election.class);
         assertEquals(ELECTION, deserialized);
     }

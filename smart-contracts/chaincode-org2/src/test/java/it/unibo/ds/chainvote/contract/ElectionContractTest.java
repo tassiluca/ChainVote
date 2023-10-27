@@ -163,11 +163,16 @@ public class ElectionContractTest {
 
             @Test
             void whenReadANonExistingAsset() {
-                assertThrows(ChaincodeException.class, () -> ec.readElection(context, ELECTION_ID));
-                final Throwable thrown = catchThrowable(() -> ec.readElection(context, ELECTION_ID));
-                assertThat(thrown)
+                assertThrows(ChaincodeException.class, () -> ec.readOpenElection(context, ELECTION_ID));
+                assertThrows(ChaincodeException.class, () -> ec.readClosedElection(context, ELECTION_ID));
+                final Throwable thrownOpen = catchThrowable(() -> ec.readOpenElection(context, ELECTION_ID));
+                assertThat(thrownOpen)
                         .isInstanceOf(ChaincodeException.class);
-                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ELECTION_NOT_FOUND".getBytes(UTF_8));
+                assertThat(((ChaincodeException) thrownOpen).getPayload()).isEqualTo("ELECTION_NOT_FOUND".getBytes(UTF_8));
+                final Throwable thrownClosed = catchThrowable(() -> ec.readClosedElection(context, ELECTION_ID));
+                assertThat(thrownClosed)
+                        .isInstanceOf(ChaincodeException.class);
+                assertThat(((ChaincodeException) thrownClosed).getPayload()).isEqualTo("ELECTION_NOT_FOUND".getBytes(UTF_8));
             }
         }
     }

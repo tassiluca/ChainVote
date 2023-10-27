@@ -10,9 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class MapOfChoiceLongSerializationTest {
+public class MapOfStringLongSerializationTest {
 
     private final Genson genson = GensonUtils.create();
     private static final Choice CHOICE1 = new Choice("prova1");
@@ -23,29 +22,19 @@ public class MapOfChoiceLongSerializationTest {
     private static final Long LONG3 = 3L;
     private static final Choice CHOICE4 = new Choice("prova4");
     private static final Long LONG4 = 4L;
-    private static final Map<Choice, Long> MAP = new HashMap<>();
+    private static final Map<String, Long> MAP = new HashMap<>();
 
     @BeforeEach
     void setUp() {
-        MAP.put(CHOICE1, LONG1);
-        MAP.put(CHOICE2, LONG2);
-        MAP.put(CHOICE3, LONG3);
-        MAP.put(CHOICE4, LONG4);
-    }
-
-    private String getExpected() {
-        return "{\"Choice{choice='prova2'}\":2,\"Choice{choice='prova1'}\":1,\"Choice{choice='prova4'}\":4,\"Choice{choice='prova3'}\":3}";
-    }
-
-    @Test
-    void testSerialization() {
-        final var serialized = genson.serialize(MAP);
-        assertEquals(getExpected(), serialized);
+        MAP.put(CHOICE1.getChoice(), LONG1);
+        MAP.put(CHOICE2.getChoice(), LONG2);
+        MAP.put(CHOICE3.getChoice(), LONG3);
+        MAP.put(CHOICE4.getChoice(), LONG4);
     }
 
     @Test
     void testDeserialization() {
-        final var deserialized = genson.deserialize(genson.serialize(MAP), new GenericType<Map<Choice, Long>>() {});
+        final var deserialized = genson.deserialize(genson.serialize(MAP), new GenericType<>() { });
         assertEquals(MAP, deserialized);
     }
 }

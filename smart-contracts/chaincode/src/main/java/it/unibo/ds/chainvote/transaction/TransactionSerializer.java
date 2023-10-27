@@ -2,7 +2,6 @@ package it.unibo.ds.chainvote.transaction;
 
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.utils.ArgsData;
 import it.unibo.ds.chainvote.presentation.GensonUtils;
 import it.unibo.ds.core.assets.Election;
 import it.unibo.ds.core.assets.ElectionInfo;
@@ -13,6 +12,7 @@ import org.hyperledger.fabric.contract.metadata.TypeSchema;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +25,6 @@ public final class TransactionSerializer implements SerializerInterface {
 
     private final Genson genson = GensonUtils.create();
 
-    private String getFromStringFormattedAsKeyValue(final String formatted, final int idx) {
-        return formatted.split(":", 2)[idx];
-    }
-
     /**
      * Serialize the value into bytes.
      * @param value the {@link Object} to serialize.
@@ -37,24 +33,7 @@ public final class TransactionSerializer implements SerializerInterface {
      */
     @Override
     public byte[] toBuffer(final Object value, final TypeSchema ts) {
-        String beforeOutput = "";
-        if (value.getClass().equals(LocalDateTime.class)) {
-            beforeOutput = ArgsData.DATE.getKey() + ":";
-        } else if (value.getClass().equals(Choice.class)) {
-            beforeOutput = ArgsData.CHOICE.getKey() + ":";
-        } else if (value.getClass().equals(Long.class)) {
-            beforeOutput = ArgsData.VOTERS.getKey() + ":";
-        } else if (value instanceof List<?>) {
-            beforeOutput = ArgsData.CHOICES.getKey() + ":";
-        } else if (value instanceof Map<?, ?>) {
-            beforeOutput = ArgsData.RESULTS.getKey() + ":";
-        } else if (value.getClass().equals(ElectionInfo.class)) {
-            beforeOutput = ArgsData.ELECTION_INFO.getKey() + ":";
-        } else if (value.getClass().equals(Election.class)) {
-            beforeOutput = ArgsData.ELECTION.getKey() + ":";
-        } else if (value.getClass().equals(String.class)) { }
-        else if (value.getClass().equals(Boolean.class)) { }
-        return (beforeOutput + genson.serialize(value)).getBytes(StandardCharsets.UTF_8);
+        return genson.serialize(value).getBytes(StandardCharsets.UTF_8);
     }
 
     /**
@@ -65,24 +44,43 @@ public final class TransactionSerializer implements SerializerInterface {
      */
     @Override
     public Object fromBuffer(final byte[] buffer, final TypeSchema ts) {
-        String key = getFromStringFormattedAsKeyValue(new String(buffer, StandardCharsets.UTF_8), 0);
-        String value = getFromStringFormattedAsKeyValue(new String(buffer, StandardCharsets.UTF_8), 1);
-        if (key.equals(ArgsData.DATE.getKey()) || key.equals(ArgsData.STARTING_DATE.getKey()) || key.equals(ArgsData.ENDING_DATE.getKey())) {
-            return genson.deserialize(value, LocalDateTime.class);
-        } else if (key.equals(ArgsData.CHOICE.getKey())) {
-            return genson.deserialize(value, Choice.class);
-        } else if (key.equals(ArgsData.CHOICES.getKey())) {
-            return genson.deserialize(value, new GenericType<List<Choice>>() { });
-        } else if (key.equals(ArgsData.RESULTS.getKey())) {
-            return genson.deserialize(value, new GenericType<Map<Choice, Long>>() { });
-        } else if (key.equals(ArgsData.VOTERS.getKey())) {
-            return Long.valueOf(value);
-        } else if (key.equals(ArgsData.ELECTION.getKey())) {
-            return genson.deserialize(value, Election.class);
-        } else if (key.equals(ArgsData.ELECTION_INFO.getKey())) {
-            return genson.deserialize(value, ElectionInfo.class);
+        System.out.println("[TS] fromBuffer");
+        String value = new String(buffer, StandardCharsets.UTF_8);
+        System.out.println("[TS fb] value: " + value);
+        String type = ts.get("schema").toString();
+        String key = "";
+        if (ts.getRef() == null) {
+            key = ts.getType();
         } else {
-            return value;
+            key = ts.getRef().split("/")[type.split("/").length-1];
         }
+        System.out.println("[TS fb] key type: " + key);
+        System.out.print("Value deserialized: ");
+        switch (key) {
+            case "List":
+                System.out.println(genson.deserialize(value, new GenericType<List<Choice>>() { }));
+                return genson.deserialize(value, new GenericType<List<Choice>>() { });
+            case "Map":
+                System.out.println(genson.deserialize(value, new GenericType<Map<String, Long>>() { }));
+                return genson.deserialize(value, new GenericType<Map<String, Long>>() { });
+            case "integer":
+                System.out.println(Long.valueOf(value));
+                return Long.valueOf(value);
+            case "Election":
+                System.out.println(genson.deserialize(value, Election.class));
+                return genson.deserialize(value, Election.class);
+            case "ElectionInfo":
+                System.out.println(genson.deserialize(value, ElectionInfo.class));
+                return genson.deserialize(value, ElectionInfo.class);
+            case "LocalDateTime":
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                System.out.println("That's a date.. " + LocalDateTime.parse(value, formatter));
+                return LocalDateTime.parse(value, formatter);
+            case "Choice":
+                System.out.println(genson.deserialize(value, Choice.class));
+                return genson.deserialize(value, Choice.class);
+        }
+        System.out.println("It's a string " + value);
+        return value;
     }
 }

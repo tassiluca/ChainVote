@@ -1,5 +1,7 @@
 package it.unibo.ds.core.utils;
 
+import it.unibo.ds.core.assets.ElectionInfo;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ public final class Utils {
     }
 
     /**
-     * Calculates the hashcode of a {@link it.unibo.ds.core.assets.Election}.
+     * Calculates the hashcode of an {@link it.unibo.ds.core.assets.Election}.
      * @param goal the {@link it.unibo.ds.core.assets.Election} goal.
      * @param start the {@link it.unibo.ds.core.assets.Election} starting {@link LocalDateTime}.
      * @param end the {@link it.unibo.ds.core.assets.Election} ending {@link LocalDateTime}.
@@ -38,5 +40,15 @@ public final class Utils {
             choicesToUse.add(FixedVotes.INFORMAL_BALLOT.getChoice());
         }
         return String.valueOf(Objects.hash(goal, start, end, choicesToUse));
+    }
+
+    /**
+     * Calculates the hashcode of an {@link it.unibo.ds.core.assets.Election}.
+     * @param electionInfo the {@link ElectionInfo} used to calculate hashcode.
+     * @return the hashcode without need to build it.
+     */
+    public static String calculateID(final ElectionInfo electionInfo) {
+        return calculateID(electionInfo.getGoal(), electionInfo.getStartingDate(),
+                electionInfo.getEndingDate(), electionInfo.getChoices());
     }
 }

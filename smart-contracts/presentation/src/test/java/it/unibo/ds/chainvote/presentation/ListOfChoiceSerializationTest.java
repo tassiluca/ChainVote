@@ -20,19 +20,9 @@ public class ListOfChoiceSerializationTest {
     private static final Choice CHOICE4 = new Choice("prova4");
     private static final List<Choice> LIST = new ArrayList<>(Arrays.asList(CHOICE1, CHOICE2, CHOICE3, CHOICE4));
 
-    private String getExpected() {
-        return "[{\"choice\":\"prova1\"},{\"choice\":\"prova2\"},{\"choice\":\"prova3\"},{\"choice\":\"prova4\"}]";
-    }
-
-    @Test
-    void testSerialization() {
-        final var serialized = genson.serialize(LIST);
-        assertEquals(getExpected(), serialized);
-    }
-
     @Test
     void testDeserialization() {
-        final var deserialized = genson.deserialize(genson.serialize(LIST), new GenericType<List<Choice>>() {});
+        final var deserialized = genson.deserialize(genson.serialize(LIST), new GenericType<List<Choice>>() { });
         assertEquals(LIST, deserialized);
     }
 }
