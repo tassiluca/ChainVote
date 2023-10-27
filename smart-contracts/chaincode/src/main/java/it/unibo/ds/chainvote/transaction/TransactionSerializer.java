@@ -33,7 +33,11 @@ public final class TransactionSerializer implements SerializerInterface {
      */
     @Override
     public byte[] toBuffer(final Object value, final TypeSchema ts) {
-        return genson.serialize(value).getBytes(StandardCharsets.UTF_8);
+        if (value.getClass().equals(String.class)) {
+            return ((String) value).getBytes(StandardCharsets.UTF_8);
+        } else {
+            return genson.serialize(value).getBytes(StandardCharsets.UTF_8);
+        }
     }
 
     /**

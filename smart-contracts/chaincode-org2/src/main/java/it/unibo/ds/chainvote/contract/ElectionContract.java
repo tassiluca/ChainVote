@@ -264,7 +264,7 @@ public final class ElectionContract implements ContractInterface {
                 List.of("ElectionInfoContract:getAllElectionInfo"),
                 CHANNEL_INFO_NAME_CH1
         );
-        String electionInfosSerialized = genson.deserialize(response.getStringPayload(), String.class);
+        String electionInfosSerialized = response.getStringPayload();
         System.out.println("[EC] getAllElection response from GAEI: " + electionInfosSerialized);
         List<ElectionInfo> electionInfos = GensonUtils.create().deserialize(electionInfosSerialized, new GenericType<>() { });
 
