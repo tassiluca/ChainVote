@@ -8,7 +8,8 @@
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts",
     "test": "jest --silent --forceExit",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "generate-docs": "tsc && node ./dist/doc/doc-gen.js"
   },
   "author": "Giovanni Antonioni, Luca Tassinari, Luca Rubboli",
   "license": "ISC",
@@ -24,7 +25,7 @@
     "redis": "^4.6.8"
   },
   "devDependencies": {
-    "@tsconfig/node14": "^1.0.3",
+    "@tsconfig/node16": "^1.0.3",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.5",
