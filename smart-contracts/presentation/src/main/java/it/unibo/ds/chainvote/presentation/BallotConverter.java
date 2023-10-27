@@ -2,7 +2,6 @@ package it.unibo.ds.chainvote.presentation;
 
 import com.owlike.genson.Context;
 import com.owlike.genson.Converter;
-import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
@@ -11,6 +10,7 @@ import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.utils.Choice;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
 
 /**
@@ -20,18 +20,20 @@ public class BallotConverter implements Converter<Ballot> {
 
     @Override
     public void serialize(final Ballot object, final ObjectWriter writer, final Context ctx) {
-        Genson genson = GensonUtils.create();
         writer.beginObject();
         writer.writeString("electionID", object.getElectionId());
         writer.writeString("voterID", object.getVoterId());
-        writer.writeString("date", genson.serialize(object.getDate()));
-        writer.writeString("choice", genson.serialize(object.getChoice()));
+        writer.writeName("date");
+        writer.writeValue(object.getDate().format(DateTimeFormatter.ISO_DATE_TIME));
+        writer.writeName("choice");
+        writer.beginObject();
+        writer.writeString("choice", object.getChoice().getChoice());
+        writer.endObject();
         writer.endObject();
     }
 
     @Override
     public Ballot deserialize(final ObjectReader reader, final Context ctx) {
-        Genson genson = GensonUtils.create();
         reader.beginObject();
         String electionID = null;
         String voterID = null;
@@ -45,9 +47,13 @@ public class BallotConverter implements Converter<Ballot> {
             } else if ("voterID".equals(reader.name())) {
                 voterID = reader.valueAsString();
             } else if ("date".equals(reader.name())) {
-                date = genson.deserialize(reader.valueAsString(), LocalDateTime.class);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                date = LocalDateTime.parse(reader.valueAsString(), formatter);
             } else if ("choice".equals(reader.name())) {
-                choice = genson.deserialize(reader.valueAsString(), Choice.class);
+                reader.beginObject();
+                reader.next();
+                choice = new Choice(reader.valueAsString());
+                reader.endObject();
             } else {
                 throw new JsonBindingException("Malformed json");
             }

@@ -15,7 +15,7 @@ public interface Election {
      * Return the {@link Election}'s results.
      * @return the {@link Election}'s results.
      */
-    Map<Choice, Long> getResults();
+    Map<String, Long> getResults();
 
     /**
      * Return the {@link Election}'s list of {@link Ballot}s.

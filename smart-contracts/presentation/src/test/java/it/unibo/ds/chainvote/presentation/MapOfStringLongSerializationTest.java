@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MapOfChoiceLongSerializationTest {
+public class MapOfStringLongSerializationTest {
 
     private final Genson genson = GensonUtils.create();
     private static final Choice CHOICE1 = new Choice("prova1");

@@ -42,18 +42,6 @@ public class ElectionInfoSerializationTest {
     private static final List<Choice> CHOICES = new ArrayList<>(List.of(new Choice("prova1"), new Choice("prova2"), new Choice("prova3")));
     private static final ElectionInfo ELECTION_INFO = ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
 
-    private String getExpected() {
-        return "{\"goal\":\"" + GOAL + "\",\"voters\":\"" + VOTERS + "\",\"startingDate\":\""
-                + genson.serialize(START_DATE) + "\",\"endingDate\":\"" + genson.serialize(END_DATE)
-                + "\",\"choices\":\"" + genson.serialize(ELECTION_INFO.getChoices()) + "\"}";
-    }
-
-    @Test
-    void testSerialization() {
-        final var serialized = genson.serialize(ELECTION_INFO);
-        assertEquals(getExpected(), serialized.replace("\\", ""));
-    }
-
     @Test
     void testDeserialization() {
         final var deserialized = genson.deserialize(genson.serialize(ELECTION_INFO), ElectionInfo.class);

@@ -143,6 +143,7 @@ public final class ElectionInfoContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public String getAllElectionInfo(final Context ctx) {
+        System.out.println("[EIC] getAllElectionInfo");
         ChaincodeStub stub = ctx.getStub();
         List<ElectionInfo> queryResults = new ArrayList<>();
         // To retrieve all assets from the ledger use getStateByRange with empty startKey & endKey.
@@ -154,6 +155,7 @@ public final class ElectionInfoContract implements ContractInterface {
             ElectionInfo election = genson.deserialize(result.getStringValue(), ElectionInfo.class);
             queryResults.add(election);
         }
+        System.out.println("[GAEI] results: " + genson.serialize(queryResults));
         return genson.serialize(queryResults);
     }
 }

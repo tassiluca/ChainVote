@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ final class ElectionInfoContractTest {
 
             @Test
             void whenCreateElectionInfoCorrectly() {
-                assertDoesNotThrow(() -> ec.createElectionInfo(context, GOAL, VOTERS, START_DATE, END_DATE, CHOICE_ELECTION));
+                assertDoesNotThrow(() -> ec.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), END_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), CHOICE_ELECTION));
             }
         }
 
@@ -79,14 +80,14 @@ final class ElectionInfoContractTest {
             @Test
             void whenCreateElectionWithWrongDate() {
                 ElectionInfoContract electionInfoContract = new ElectionInfoContract();
-                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context, GOAL, VOTERS, START_DATE, START_DATE, CHOICE_ELECTION));
+                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), CHOICE_ELECTION));
             }
 
             @Test
             void whenCreateElectionWithEmptyOrOnlyBlankChoice() {
                 ElectionInfoContract electionInfoContract = new ElectionInfoContract();
-                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context, GOAL, VOTERS, START_DATE, END_DATE, new ArrayList<Choice>()));
-                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context, GOAL, VOTERS, START_DATE, END_DATE, new ArrayList<>(List.of(
+                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), END_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), new ArrayList<Choice>()));
+                assertThrows(ChaincodeException.class, () -> electionInfoContract.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), END_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), new ArrayList<>(List.of(
                         FixedVotes.INFORMAL_BALLOT.getChoice(), FixedVotes.INFORMAL_BALLOT.getChoice(),
                         FixedVotes.INFORMAL_BALLOT.getChoice()))));
             }

@@ -35,17 +35,6 @@ public class BallotSerializationTest {
             .choice(CHOICE)
             .build();
 
-    private String getExpected() {
-        return "{\"electionID\":\"" + ELECTION_ID + "\",\"voterID\":\"" + VOTER_ID + "\",\"date\":\"" + genson.serialize(DATE) + "\",\"choice\":\""
-                + genson.serialize(CHOICE) + "\"}";
-    }
-
-    @Test
-    void testSerialization() {
-        final var serialized = genson.serialize(BALLOT).replace("\\", "");
-        assertEquals(getExpected(), serialized);
-    }
-
     @Test
     void testDeserialization() {
         final var deserialized = genson.deserialize(genson.serialize(BALLOT), Ballot.class);

@@ -52,6 +52,6 @@ public final class Choice {
 
     @Override
     public String toString() {
-        return "Choice{choice='" + choice + "'}";
+        return "{\"choice\":\"" + choice + "\"}";
     }
 }

@@ -14,18 +14,18 @@ import java.util.Optional;
  */
 public final class ElectionImpl implements Election {
 
-    private final Map<Choice, Long> results;
+    private final Map<String, Long> results;
 
     // Keep all the choices of the ballots (Not to query if the voter has already voted)
     private final List<Choice> ballots;
 
-    private ElectionImpl(final Map<Choice, Long> results, final List<Choice> ballots) {
+    private ElectionImpl(final Map<String, Long> results, final List<Choice> ballots) {
         this.results = results;
         this.ballots = ballots;
     }
 
     @Override
-    public Map<Choice, Long> getResults() {
+    public Map<String, Long> getResults() {
         return Map.copyOf(this.results);
     }
 
@@ -37,8 +37,8 @@ public final class ElectionImpl implements Election {
     @Override
     public boolean castVote(final Ballot ballot) {
         this.ballots.add(ballot.getChoice());
-        long oldValue = this.results.get(ballot.getChoice());
-        return this.results.replace(ballot.getChoice(), oldValue, oldValue + 1);
+        long oldValue = this.results.get(ballot.getChoice().getChoice());
+        return this.results.replace(ballot.getChoice().getChoice(), oldValue, oldValue + 1);
     }
 
     @Override
@@ -69,7 +69,7 @@ public final class ElectionImpl implements Election {
      */
     public static final class Builder implements ElectionBuilder {
 
-        private Optional<Map<Choice, Long>> results = Optional.empty();
+        private Optional<Map<String, Long>> results = Optional.empty();
         private Optional<List<Choice>> ballots = Optional.empty();
 
         private void check(final Object input) {
@@ -77,7 +77,7 @@ public final class ElectionImpl implements Election {
         }
 
         @Override
-        public ElectionBuilder results(final Map<Choice, Long> results) {
+        public ElectionBuilder results(final Map<String, Long> results) {
             this.check(results);
             this.results = Optional.of(results);
             return this;
