@@ -11,8 +11,6 @@ public enum UserCodeData {
 
     /** The user identifier entry key. */
     USER_ID("userId"),
-    /** The election identifier entry key. */
-    ELECTION_ID("electionId"),
     /** The one-time-code entry key. */
     CODE("code");
 
@@ -35,10 +33,10 @@ public enum UserCodeData {
      * @throws ChaincodeException if the given map not contains both {@link UserCodeData#CODE} and
      *         {@link UserCodeData#USER_ID} entries.
      */
-    public static Pair<String, Long> getUserCodePairFrom(final Map<String, byte[]> transientData) {
+    public static Pair<String, String> getUserCodePairFrom(final Map<String, byte[]> transientData) {
         return new Pair<>(
             TransientUtils.getStringFromTransient(transientData, USER_ID.getKey()),
-            TransientUtils.getLongFromTransient(transientData, CODE.getKey())
+            TransientUtils.getStringFromTransient(transientData, CODE.getKey())
         );
     }
 }

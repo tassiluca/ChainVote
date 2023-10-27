@@ -140,7 +140,8 @@ public final class ElectionContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void castVote(final Context ctx, Choice choice, String electionId) {
         System.out.println("[EC] castVote");
-        final Pair<String, Long> userCodePair = UserCodeData.getUserCodePairFrom(ctx.getStub().getTransient());
+
+        final Pair<String, String> userCodePair = UserCodeData.getUserCodePairFrom(ctx.getStub().getTransient());
 
         if (!electionExists(ctx, electionId)) {
             String errorMessage = String.format("Election %s does not exist", electionId);

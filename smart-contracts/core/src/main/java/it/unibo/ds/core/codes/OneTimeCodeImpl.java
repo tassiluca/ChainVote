@@ -7,26 +7,26 @@ import java.util.Objects;
  */
 public final class OneTimeCodeImpl implements OneTimeCode {
 
-    private final Long code;
+    private final String code;
     private boolean consumed;
 
     /**
      * Creates a new one time code.
-     * @param code the generated random number associated to this code.
+     * @param code the generated random code.
      */
-    public OneTimeCodeImpl(final Long code) {
+    public OneTimeCodeImpl(final String code) {
         this.code = code;
     }
 
     @Override
-    public Long getCode() {
+    public String getCode() {
         return this.code;
     }
 
     @Override
-    public void consume() throws AlreadyConsumedCodeException {
+    public void consume() throws InvalidCodeException {
         if (this.consumed) {
-            throw new AlreadyConsumedCodeException("The code has already been consumed");
+            throw new InvalidCodeException("The code has already been consumed");
         }
         this.consumed = true;
     }

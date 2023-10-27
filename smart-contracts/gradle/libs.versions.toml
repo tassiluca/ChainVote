@@ -7,6 +7,7 @@ fabric-chaincode-shim = "org.hyperledger.fabric-chaincode-java:fabric-chaincode-
 genson = "com.owlike:genson:1.6"
 json = "org.json:json:20230618"
 commons-lang = "org.apache.commons:commons-lang3:3.13.0"
+guava = "com.google.guava:guava:32.1.3-jre"
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 assertj-core = "org.assertj:assertj-core:3.24.2"
