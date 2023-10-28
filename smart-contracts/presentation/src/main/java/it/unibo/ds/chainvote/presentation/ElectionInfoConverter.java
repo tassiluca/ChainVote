@@ -1,14 +1,17 @@
 package it.unibo.ds.chainvote.presentation;
 
-import com.owlike.genson.*;
+import com.owlike.genson.Context;
+import com.owlike.genson.Converter;
+import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.assets.ElectionInfo;
 import it.unibo.ds.core.assets.ElectionInfoImpl;
 import it.unibo.ds.core.utils.Choice;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -19,20 +22,29 @@ public class ElectionInfoConverter implements Converter<ElectionInfo> {
 
     @Override
     public void serialize(final ElectionInfo object, final ObjectWriter writer, final Context ctx) {
-        Genson genson = GensonUtils.create();
         writer.beginObject();
         writer.writeString("goal", object.getGoal());
-        writer.writeString("voters", String.valueOf(object.getVotersNumber()));
-        writer.writeString("startingDate", genson.serialize(object.getStartingDate()));
-        writer.writeString("endingDate", genson.serialize(object.getEndingDate()));
-        writer.writeString("choices", genson.serialize(object.getChoices()));
+        writer.writeName("voters");
+        writer.writeValue(object.getVotersNumber());
+        writer.writeName("startDate");
+        writer.writeValue(object.getStartingDate().format(DateTimeFormatter.ISO_DATE_TIME));
+        writer.writeName("endDate");
+        writer.writeValue(object.getEndingDate().format(DateTimeFormatter.ISO_DATE_TIME));
+        writer.writeName("choices");
+        writer.beginArray();
+        for (Choice vote : object.getChoices()) {
+            writer.beginObject();
+            writer.writeName("choice");
+            writer.writeValue(vote.getChoice());
+            writer.endObject();
+        }
+        writer.endArray();
         writer.endObject();
     }
 
     @Override
     public ElectionInfo deserialize(final ObjectReader reader, final Context ctx) {
         reader.beginObject();
-        Genson genson = GensonUtils.create();
         ElectionInfo election = null;
         String goal = null;
         long voters = 0;
@@ -40,18 +52,29 @@ public class ElectionInfoConverter implements Converter<ElectionInfo> {
         LocalDateTime end = null;
         List<Choice> choices = null;
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
         while (reader.hasNext()) {
             reader.next();
             if ("goal".equals(reader.name())) {
                 goal = reader.valueAsString();
             } else if ("voters".equals(reader.name())) {
                 voters = reader.valueAsLong();
-            } else if ("startingDate".equals(reader.name())) {
-                start = genson.deserialize(reader.valueAsString(), LocalDateTime.class);
-            } else if ("endingDate".equals(reader.name())) {
-                end = genson.deserialize(reader.valueAsString(), LocalDateTime.class);
+            } else if ("startDate".equals(reader.name())) {
+                start = LocalDateTime.parse(reader.valueAsString(), formatter);
+            } else if ("endDate".equals(reader.name())) {
+                end = LocalDateTime.parse(reader.valueAsString(), formatter);
             } else if ("choices".equals(reader.name())) {
-                choices = genson.deserialize(reader.valueAsString(), new GenericType<>() {});
+                choices = new ArrayList<>();
+                reader.beginArray();
+                while (reader.hasNext()) {
+                    reader.next();
+                    reader.beginObject();
+                    reader.next();
+                    choices.add(new Choice(reader.valueAsString()));
+                    reader.endObject();
+                }
+                reader.endArray();
             } else {
                 throw new JsonBindingException("Malformed json");
             }

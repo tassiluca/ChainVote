@@ -10,6 +10,7 @@ import it.unibo.ds.core.assets.BallotImpl;
 import it.unibo.ds.core.utils.Choice;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
 
 /**
@@ -22,9 +23,12 @@ public class BallotConverter implements Converter<Ballot> {
         writer.beginObject();
         writer.writeString("electionID", object.getElectionId());
         writer.writeString("voterID", object.getVoterId());
-        String date = GensonUtils.create().serialize(object.getDate());
-        writer.writeString("date", date);
+        writer.writeName("date");
+        writer.writeValue(object.getDate().format(DateTimeFormatter.ISO_DATE_TIME));
+        writer.writeName("choice");
+        writer.beginObject();
         writer.writeString("choice", object.getChoice().getChoice());
+        writer.endObject();
         writer.endObject();
     }
 
@@ -34,7 +38,7 @@ public class BallotConverter implements Converter<Ballot> {
         String electionID = null;
         String voterID = null;
         LocalDateTime date = null;
-        String choice = null;
+        Choice choice = null;
 
         while (reader.hasNext()) {
             reader.next();
@@ -43,13 +47,18 @@ public class BallotConverter implements Converter<Ballot> {
             } else if ("voterID".equals(reader.name())) {
                 voterID = reader.valueAsString();
             } else if ("date".equals(reader.name())) {
-                date = GensonUtils.create().deserialize(reader.valueAsString(), LocalDateTime.class);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                date = LocalDateTime.parse(reader.valueAsString(), formatter);
             } else if ("choice".equals(reader.name())) {
-                choice = reader.valueAsString();
+                reader.beginObject();
+                reader.next();
+                choice = new Choice(reader.valueAsString());
+                reader.endObject();
             } else {
                 throw new JsonBindingException("Malformed json");
             }
         }
+        reader.endObject();
         if (electionID == null || voterID == null || date == null || choice == null) {
             throw new JsonBindingException("Malformed json: missing value");
         }
@@ -59,12 +68,11 @@ public class BallotConverter implements Converter<Ballot> {
             ballot = new BallotImpl.Builder().electionID(electionID)
                     .voterID(voterID)
                     .date(date)
-                    .choice(new Choice(choice))
+                    .choice(choice)
                     .build();
         } catch (IllegalArgumentException | NoSuchElementException e) {
             throw new JsonBindingException("Malformed json");
         }
-        reader.endObject();
         return ballot;
     }
 }

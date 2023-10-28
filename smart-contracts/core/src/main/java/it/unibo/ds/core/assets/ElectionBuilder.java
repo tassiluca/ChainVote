@@ -15,7 +15,7 @@ public interface ElectionBuilder {
      * @param results the list of results to set.
      * @return the {@link ElectionBuilder}.
      */
-    ElectionBuilder results(Map<Choice, Long> results);
+    ElectionBuilder results(Map<String, Long> results);
 
     /**
      * Return the {@link ElectionBuilder} with the list of ballots set if the input is correct.

@@ -18,8 +18,6 @@ public final class TransientUtils {
         WRONG_INPUT
     }
 
-    private static final Genson GENSON = GensonUtils.create();
-
     private TransientUtils() { }
 
     private static <X> X getFromTransient(

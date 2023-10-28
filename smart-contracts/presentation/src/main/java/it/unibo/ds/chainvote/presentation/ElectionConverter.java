@@ -1,16 +1,16 @@
 package it.unibo.ds.chainvote.presentation;
 
-import com.owlike.genson.*;
+import com.owlike.genson.Context;
+import com.owlike.genson.Converter;
+import com.owlike.genson.Genson;
+import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.core.assets.Ballot;
 import it.unibo.ds.core.assets.Election;
 import it.unibo.ds.core.assets.ElectionImpl;
 import it.unibo.ds.core.utils.Choice;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * A {@link Election} converter from class object to json string and vice-versa.
@@ -21,25 +21,56 @@ public class ElectionConverter implements Converter<Election> {
     public void serialize(final Election object, final ObjectWriter writer, final Context ctx) {
         Genson genson = GensonUtils.create();
         writer.beginObject();
-        writer.writeString("results", genson.serialize(object.getResults()));
-        writer.writeString("ballots", genson.serialize(object.getBallots()));
+        writer.writeName("results");
+        writer.beginObject();
+        for (Map.Entry<String, Long> entry : object.getResults().entrySet()) {
+            writer.writeName(entry.getKey());
+            writer.writeValue(entry.getValue());
+        }
+        writer.endObject();
+        writer.writeName("ballots");
+        writer.beginArray();
+        for (Choice vote : object.getBallots()) {
+            writer.beginObject();
+            writer.writeName("choice");
+            writer.writeValue(vote.getChoice());
+            writer.endObject();
+        }
+        writer.endArray();
         writer.endObject();
     }
 
     @Override
     public Election deserialize(final ObjectReader reader, final Context ctx) {
-        reader.beginObject();
         Genson genson = GensonUtils.create();
+        reader.beginObject();
         Election election = null;
-        Map<Choice, Long> results = null;
+        Map<String, Long> results = null;
         List<Choice> ballots = null;
 
         while (reader.hasNext()) {
             reader.next();
             if ("results".equals(reader.name())) {
-                results = genson.deserialize(reader.valueAsString(), new GenericType<>(){});
+                results = new HashMap<>();
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    reader.next();
+                    String choice = reader.name();
+                    long votes = reader.valueAsLong();
+                    results.put(choice, votes);
+                }
+                reader.endObject();
             } else if ("ballots".equals(reader.name())) {
-                ballots = genson.deserialize(reader.valueAsString(), new GenericType<>(){});
+                ballots = new ArrayList<>();
+                reader.beginArray();
+                while (reader.hasNext()) {
+                    reader.next();
+                    reader.beginObject();
+                    reader.next();
+                    ballots.add(new Choice(reader.valueAsString()));
+                    reader.endObject();
+                }
+                reader.endArray();
             } else {
                 throw new JsonBindingException("Malformed json");
             }

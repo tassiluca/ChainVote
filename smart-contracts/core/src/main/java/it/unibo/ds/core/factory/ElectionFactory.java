@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A factory for an {@link Election}.
@@ -27,6 +28,7 @@ public class ElectionFactory {
      * @param endingDate the ending {@link LocalDateTime} of the {@link ElectionInfo} to build.
      * @param choices the {@link List} of {@link Choice}s  of the {@link ElectionInfo} to build.
      * @return the new {@link ElectionInfo}.
+     * @throws IllegalArgumentException in case checks on parameters fail.
      */
     public static ElectionInfo buildElectionInfo(
         final String goal,
@@ -50,18 +52,24 @@ public class ElectionFactory {
      * Build an {@link Election} given the {@link ElectionInfo}.
      * @param electionInfo the {@link ElectionInfo} used to build the {@link Election}.
      * @return the new {@link Election}.
+     * @throws IllegalArgumentException in case of an already closed {@link Election}.
      */
     public static Election buildElection(final ElectionInfo electionInfo) {
         return buildElection(electionInfo, new HashMap<>());
     }
 
     /**
-     * Build an {@link Election} given the {@link ElectionInfo} and a starting result.
+     * Build an {@link Election} given the {@link ElectionInfo} and a starting results.
+     * This method build the starting results from the given one by filling it with all
+     * the missing {@link Choice}, it only checks that the given one doesn't contain invalid
+     * choices or the sum of votes expressed in the results is lower than the voters number.
+     * In case of an already closed {@link Election}, results must not be empty.
      * @param electionInfo the {@link ElectionInfo} used to build the {@link Election}.
      * @param results the {@link Map} representing the starting result used to build the {@link Election}.
      * @return the new {@link Election}.
+     * @throws IllegalArgumentException in case checks on parameters fail.
      */
-    public static Election buildElection(final ElectionInfo electionInfo, final Map<Choice, Long> results) {
+    public static Election buildElection(final ElectionInfo electionInfo, final Map<String, Long> results) {
         checkDataAndResults(electionInfo.getEndingDate(), results);
         return new ElectionImpl.Builder()
             .results(initializeResults(results, electionInfo.getChoices(), electionInfo.getVotersNumber()))
@@ -85,19 +93,19 @@ public class ElectionFactory {
         return retList;
     }
 
-    private static Map<Choice, Long> initializeResults(
-        final Map<Choice, Long> results,
+    private static Map<String, Long> initializeResults(
+        final Map<String, Long> results,
         final List<Choice> choices,
         final long votersNumber
     ) {
         checkResults(results, votersNumber, choices);
-        final Map<Choice, Long> retResults = new HashMap<>();
+        final Map<String, Long> retResults = new HashMap<>();
         results.keySet().forEach(choice -> retResults.put(choice, results.get(choice)));
         choices.stream()
-            .filter(choice -> !results.containsKey(choice))
-            .forEach(choice -> retResults.put(choice, (long) 0));
-        if (!retResults.containsKey(FixedVotes.INFORMAL_BALLOT.getChoice())) {
-            retResults.put(FixedVotes.INFORMAL_BALLOT.getChoice(), (long) 0);
+            .filter(choice -> !results.containsKey(choice.getChoice()))
+            .forEach(choice -> retResults.put(choice.getChoice(), 0L));
+        if (!retResults.containsKey(FixedVotes.INFORMAL_BALLOT.getChoice().getChoice())) {
+            retResults.put(FixedVotes.INFORMAL_BALLOT.getChoice().getChoice(), 0L);
         }
         return retResults;
     }
@@ -112,7 +120,7 @@ public class ElectionFactory {
         }
     }
 
-    private static void checkDataAndResults(final LocalDateTime end, final Map<Choice, Long> results) {
+    private static void checkDataAndResults(final LocalDateTime end, final Map<String, Long> results) {
         boolean alreadyClosedElection = LocalDateTime.now().isAfter(end);
         boolean resultsAreEmpty = results.equals(new HashMap<>())
                 || results.values().stream().reduce(Long::sum).orElseThrow() == 0;
@@ -121,10 +129,10 @@ public class ElectionFactory {
         }
     }
 
-    private static void checkResults(final Map<Choice, Long> results, final long votersNumber, final List<Choice> choices) {
+    private static void checkResults(final Map<String, Long> results, final long votersNumber, final List<Choice> choices) {
         if (results.values().stream().reduce(Long::sum).orElse((long) 0) > votersNumber
                 || results.values().stream().anyMatch(l -> l < 0)
-                || !new HashSet<>(choices).containsAll(results.keySet())
+                || !new HashSet<>(choices).containsAll(results.keySet().stream().map(Choice::new).collect(Collectors.toSet()))
                 || results.keySet().size() != results.keySet().stream().distinct().count()) {
             illegal("Invalid results " + results);
         }
@@ -133,7 +141,8 @@ public class ElectionFactory {
     private static void checkChoices(final List<Choice> choices) {
         if (choices.stream().distinct()
                 .filter(choice -> !choice.equals(FixedVotes.INFORMAL_BALLOT.getChoice()))
-                .count() < 2 || choices.size() != choices.stream().distinct().count()) {
+                .count() < 2
+                || choices.size() != choices.stream().distinct().count()) {
             illegal("Invalid choices " + choices);
         }
     }

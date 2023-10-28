@@ -18,6 +18,7 @@ import org.hyperledger.fabric.shim.ledger.KeyValue;
 import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,23 +47,25 @@ public final class ElectionInfoContract implements ContractInterface {
 
     /**
      * Create a {@link ElectionInfo}.
-     * @param ctx The {@link Context}.
-     * @param goal The goal of the {@link ElectionInfo} to build.
-     * @param votersNumber The number of voters that could cast a vote in the {@link ElectionInfo} to build.
-     * @param startingDate The {@link LocalDateTime} representing the start of the possibility to cast a vote in the {@link ElectionInfo} to build.
-     * @param endingDate The {@link LocalDateTime} representing the end of the possibility to cast a vote in the {@link ElectionInfo} to build.
-     * @param choices The {@link List} of {@link Choice} that the {@link ElectionInfo} to build has.
-     * @return The {@link String} representing the electionId of the {@link ElectionInfo} built.
+     * @param ctx the {@link Context}.
+     * @param goal the goal of the {@link ElectionInfo} to build.
+     * @param votersNumber the number of voters that could cast a vote in the {@link ElectionInfo} to build.
+     * @param sDate the {@link String} representing the encoded (ISO format) starting date.
+     * @param eDate the {@link String} representing the encoded (ISO format) ending date.
+     * @param choices the {@link List} of {@link Choice} that the {@link ElectionInfo} to build has.
+     * @return the {@link String} representing the electionId of the {@link ElectionInfo} built.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public String createElectionInfo(
         final Context ctx,
         final String goal,
         final Long votersNumber,
-        final LocalDateTime startingDate,
-        final LocalDateTime endingDate,
+        final String sDate,
+        final String eDate,
         final List<Choice> choices
     ) {
+        LocalDateTime startingDate = LocalDateTime.parse(sDate, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime endingDate = LocalDateTime.parse(eDate, DateTimeFormatter.ISO_DATE_TIME);
         final ChaincodeStub stub = ctx.getStub();
         final String electionId = Utils.calculateID(goal, startingDate, endingDate, choices);
         if (electionInfoExists(ctx, electionId)) {
@@ -108,7 +111,7 @@ public final class ElectionInfoContract implements ContractInterface {
      * @param electionId The electionId of the {@link ElectionInfo} to delete.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void deleteAsset(final Context ctx, final String electionId) {
+    public void deleteElectionInfo(final Context ctx, final String electionId) {
         System.out.println("[EIC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
         if (!electionInfoExists(ctx, electionId)) {
@@ -123,7 +126,7 @@ public final class ElectionInfoContract implements ContractInterface {
      * Check if an {@link ElectionInfo} exists.
      * @param ctx The {@link Context}.
      * @param electionId The electionId of the {@link ElectionInfo} to check.
-     * @return A boolean representing the {@link ElectionInfo} existance.
+     * @return A boolean representing the {@link ElectionInfo} existence.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     private boolean electionInfoExists(final Context ctx, final String electionId) {
@@ -139,7 +142,8 @@ public final class ElectionInfoContract implements ContractInterface {
      * @return All the {@link ElectionInfo}s retrieved from the ledger as {@link String}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String getAllAssets(final Context ctx) {
+    public List<ElectionInfo> getAllElectionInfo(final Context ctx) {
+        System.out.println("[EIC] getAllElectionInfo");
         ChaincodeStub stub = ctx.getStub();
         List<ElectionInfo> queryResults = new ArrayList<>();
         // To retrieve all assets from the ledger use getStateByRange with empty startKey & endKey.
@@ -151,6 +155,7 @@ public final class ElectionInfoContract implements ContractInterface {
             ElectionInfo election = genson.deserialize(result.getStringValue(), ElectionInfo.class);
             queryResults.add(election);
         }
-        return genson.serialize(queryResults);
+        System.out.println("[GAEI] results: " + queryResults);
+        return queryResults;
     }
 }

@@ -98,13 +98,6 @@ public final class BallotImpl implements Ballot {
             }
         }
 
-        private void checkChoice(final Choice choice, final List<Choice> choices) {
-            if (!choices.contains(choice)) {
-                throw new IllegalArgumentException("Choice expressed " + choice
-                    + " is not in possible choices: " + choices);
-            }
-        }
-
         @Override
         public BallotBuilder electionID(final String electionID) {
             checkString(electionID, "electionID");
