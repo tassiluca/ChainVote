@@ -11,8 +11,13 @@ const contractName = "chaincode-org1";
 const utf8Decoder = new TextDecoder();
 const utf8Encoder = new TextEncoder();
 
+type ChoiceRecord = {
+    choice: string,
+}
+
 /**
- * Get all the election data
+ * Return all the generated data of election info.
+ *
  * @param req request object
  * @param res response object
  * @param next next function
@@ -23,68 +28,54 @@ export async function getAllAssets(req: Request, res: Response, next: NextFuncti
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
         const allAssets: Uint8Array = await contract.evaluate('ElectionInfoContract:getAllAssets');
-        const resultJson = utf8Decoder.decode(allAssets);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+        const invocationResults = JSON.parse(utf8Decoder.decode(allAssets));
+        return res.status(StatusCodes.OK).send(JSON.parse(invocationResults.value));
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
 }
 
 /**
- * Create the election data
+ * Convert an array of string representing the choices of an ElectionInfo to a ChoiceList object.
+ * @param choices
+ */
+function convertToChoiceList(choices: string[] | undefined): ChoiceRecord[] {
+    if (choices === undefined) {
+        return [];
+    }
+    return choices.map((choice) => {
+        return {
+            choice: choice
+        }
+    });
+}
+
+/**
+ * Create an election information.
+ *
  * @param req request object
  * @param res response object
  * @param next next function
  */
 export async function createElectionInfo(req: Request, res: Response, next: NextFunction){
-
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
-        const startDate = {
-            year: 2023,
-            month: 8,
-            day: 22,
-            hour: 10,
-            minute: 0,
-            second: 0
-        };
+        const goal: string = req.body.goal;
+        const voters: string = req.body.voters;
+        const startDate: string = req.body.startDate;
+        const endDate: string = req.body.endDate;
+        const choices: string= JSON.stringify(convertToChoiceList(req.body.choices));
 
-        const endDate = {
-            year: 2023,
-            month: 8,
-            day: 23,
-            hour: 10,
-            minute: 0,
-            second: 0
-        }
-
-        const choices =  {
-            value: [
-                {choice: "prova1"},
-                {choice: "prova2"},
-                {choice: "prova3"},
-                {choice: "prova4"}
-            ]
-        }
-
-        const data = [
-            "goal:prova2",
-            "voters:100",
-            `startDate:${JSON.stringify(startDate)}`,
-            `endDate: ${JSON.stringify(endDate)}`,
-            `choices:${JSON.stringify(choices)}`
-        ];
-
+        const data = [goal, voters, startDate, endDate, choices];
         const submission: Uint8Array = await contract.submit('ElectionInfoContract:createElectionInfo', {
             arguments: data
         });
 
-        const resultJson = utf8Decoder.decode(submission);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
-
+        const resultJson = JSON.parse(utf8Decoder.decode(submission));
+        return res.status(StatusCodes.OK).send(resultJson);
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
