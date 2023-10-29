@@ -103,19 +103,20 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
 }
 
 /**
- * Delete the election data with a specific id
+ * Delete an election info with a specific id
+ *
  * @param req
  * @param res
  * @param next
  */
-export async function deleteAsset(req: Request, res: Response, next: NextFunction) {
+export async function deleteElectionInfo(req: Request, res: Response, next: NextFunction) {
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
         const electionId: string = req.params.electionId;
-        await contract.submitTransaction('ElectionInfoContract:deleteAsset', electionId);
+        await contract.submitTransaction('ElectionInfoContract:deleteElectionInfo', electionId);
         return res.status(StatusCodes.OK).send({message: "Asset deleted successfully"});
     } catch (error) {
         return next(transformHyperledgerError(error));

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
     createElectionInfo,
-    deleteAsset,
+    deleteElectionInfo,
     getAllElectionInfo,
     readElectionInfo
 } from "../controllers/election.info";
@@ -27,7 +27,7 @@ electionInfoRouter.post("/", createElectionInfo);
 /**
  * Delete a specific election data
  */
-electionInfoRouter.delete("/:electionId", deleteAsset);
+electionInfoRouter.delete("/:electionId", deleteElectionInfo);
 
 /**
  * Check if a specific election data exists

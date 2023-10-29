@@ -78,7 +78,7 @@ public final class ElectionInfoContract implements ContractInterface {
                 .buildElectionInfo(goal, votersNumber, startingDate, endingDate, choices);
             String sortedJson = genson.serialize(electionInfo);
             stub.putStringState(electionId, sortedJson);
-            return electionId;
+            return genson.serialize(electionId);
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
             throw new ChaincodeException(e.getMessage(), ElectionInfoTransferErrors.ELECTION_INFO_INVALID_ARGUMENT.toString());
