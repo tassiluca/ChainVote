@@ -1,9 +1,9 @@
 import { Router } from "express";
-import {castVote, createElection, deleteAsset, getAllAssets, readElection} from "../controllers/election";
+import {castVote, createElection, deleteAsset, getAllElection, readElection} from "../controllers/election";
 
 const electionRouter = Router();
 
-electionRouter.get("/", getAllAssets);
+electionRouter.get("/all", getAllElection);
 
 electionRouter.get("/:electionId", readElection);
 

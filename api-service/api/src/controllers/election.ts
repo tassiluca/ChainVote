@@ -10,7 +10,8 @@ const contractName = "chaincode-org2";
 const utf8Decoder = new TextDecoder();
 
 /**
- * Create a new election
+ * Create a new election from an election info passing an electionId.
+ *
  * @param req
  * @param res
  * @param next
@@ -21,9 +22,9 @@ export async function createElection(req: Request, res: Response, next: NextFunc
         const network: Network = gatewayOrg2.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
-        const electionId: string = req.body.electionId
+        const electionId: string = req.body.electionId;
         const submission: Uint8Array = await contract.submit('ElectionContract:createElection', {
-            arguments: [`electionId:${electionId}`]
+            arguments: [electionId, '{}']
         });
 
         const resultJson = utf8Decoder.decode(submission);
@@ -118,22 +119,23 @@ export async function deleteAsset(req: Request, res: Response, next: NextFunctio
 
 /**
  * Return all the existing elections in the ledger
+ *
  * @param req
  * @param res
  * @param next
  */
-export async function getAllAssets(req: Request, res: Response, next: NextFunction) {
+export async function getAllElection(req: Request, res: Response, next: NextFunction) {
     try {
         const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
         const network: Network = gatewayOrg2.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
-        const submission: Uint8Array = await contract.evaluate('ElectionContract:getAllAssets', {
+        const submission: Uint8Array = await contract.evaluate('ElectionContract:getAllElection', {
             arguments: []
         });
 
-        const resultJson = utf8Decoder.decode(submission);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+        const result = JSON.parse(utf8Decoder.decode(submission));
+        return res.status(StatusCodes.OK).send(JSON.parse(result));
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
