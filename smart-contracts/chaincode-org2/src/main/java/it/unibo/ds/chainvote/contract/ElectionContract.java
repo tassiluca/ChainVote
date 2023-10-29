@@ -66,7 +66,7 @@ public final class ElectionContract implements ContractInterface {
      * @param results The initial results of the {@link Election} to create.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void createElection(final Context ctx, final String electionId, final Map<String, Long> results) {
+    public String createElection(final Context ctx, final String electionId, final Map<String, Long> results) {
         System.out.println("[EC] createElection");
         ChaincodeStub stub = ctx.getStub();
         if (electionExists(ctx, electionId)) {
@@ -85,6 +85,7 @@ public final class ElectionContract implements ContractInterface {
                 .buildElection(electionInfo, results);
             String sortedJson = genson.serialize(election);
             stub.putStringState(electionId, sortedJson);
+            return genson.serialize("Election created");
             // TODO check if it's the right exception
         } catch (NullPointerException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
