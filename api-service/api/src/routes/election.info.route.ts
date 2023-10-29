@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
     createElectionInfo,
     deleteAsset,
-    getAllAssets,
+    getAllElectionInfo,
     readElectionInfo
 } from "../controllers/election.info";
 
@@ -12,7 +12,7 @@ const electionInfoRouter = Router();
 /**
  * Get all the election data
  */
-electionInfoRouter.get("/all", getAllAssets);
+electionInfoRouter.get("/all", getAllElectionInfo);
 
 /**
  * Return a specific election data

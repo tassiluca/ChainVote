@@ -9,7 +9,6 @@ import transformHyperledgerError from "../blockchain/errors/error.handling";
 const channelName = "ch1";
 const contractName = "chaincode-org1";
 const utf8Decoder = new TextDecoder();
-const utf8Encoder = new TextEncoder();
 
 type ChoiceRecord = {
     choice: string,
@@ -22,14 +21,14 @@ type ChoiceRecord = {
  * @param res response object
  * @param next next function
  */
-export async function getAllAssets(req: Request, res: Response, next: NextFunction) {
+export async function getAllElectionInfo(req: Request, res: Response, next: NextFunction) {
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-        const allAssets: Uint8Array = await contract.evaluate('ElectionInfoContract:getAllAssets');
+        const allAssets: Uint8Array = await contract.evaluate('ElectionInfoContract:getAllElectionInfo');
         const invocationResults = JSON.parse(utf8Decoder.decode(allAssets));
-        return res.status(StatusCodes.OK).send(JSON.parse(invocationResults.value));
+        return res.status(StatusCodes.OK).send(invocationResults);
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -82,7 +81,7 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
 }
 
 /**
- * Read the election data with a specific id
+ * Read an election data info with a specific id
  * @param req
  * @param res
  * @param next
@@ -93,8 +92,8 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
-        const electionId: Uint8Array = utf8Encoder.encode(req.params.electionId);
-        const submission: Uint8Array = await contract.evaluateTransaction('ElectionInfoContract:readElectionInfoSerialized', electionId);
+        const electionId: string = req.params.electionId
+        const submission: Uint8Array = await contract.evaluateTransaction('ElectionInfoContract:readElectionInfo', electionId);
         const resultJson = utf8Decoder.decode(submission);
         return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
 
@@ -115,10 +114,9 @@ export async function deleteAsset(req: Request, res: Response, next: NextFunctio
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
-        const assetId: Uint8Array = utf8Encoder.encode(req.params.electionId);
-        await contract.submitTransaction('ElectionInfoContract:deleteAsset', assetId);
+        const electionId: string = req.params.electionId;
+        await contract.submitTransaction('ElectionInfoContract:deleteAsset', electionId);
         return res.status(StatusCodes.OK).send({message: "Asset deleted successfully"});
-
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
