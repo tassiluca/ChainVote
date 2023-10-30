@@ -11,7 +11,8 @@ const contractName = "chaincode-org2";
 const utf8Decoder = new TextDecoder();
 
 /**
- * Generate a code that can be used by an user for voting
+ * Generate a code that can be used by a user for voting
+ *
  * @param req
  * @param res
  * @param next
