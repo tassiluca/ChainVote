@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {castVote, createElection, deleteAsset, getAllElection, readElection} from "../controllers/election";
+import {castVote, createElection, deleteElection, getAllElection, readElection} from "../controllers/election";
 
 const electionRouter = Router();
 
@@ -11,6 +11,6 @@ electionRouter.post("/", createElection);
 
 electionRouter.post("/:electionId/vote", castVote);
 
-electionRouter.delete("/:electionId",  deleteAsset);
+electionRouter.delete("/",  deleteElection);
 
 export default electionRouter;

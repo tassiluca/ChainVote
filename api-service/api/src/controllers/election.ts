@@ -95,19 +95,20 @@ export async function castVote(req: Request, res: Response, next: NextFunction) 
 
 /**
  * Delete an election
+ *
  * @param req
  * @param res
  * @param next
  */
-export async function deleteAsset(req: Request, res: Response, next: NextFunction) {
+export async function deleteElection(req: Request, res: Response, next: NextFunction) {
     try {
         const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
         const network: Network = gatewayOrg2.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
-        const electionId: string = req.params.electionId;
-        const submission: Uint8Array = await contract.submit('ElectionContract:deleteAsset', {
-            arguments: [`electionId:${electionId}`]
+        const electionId: string = req.body.electionId;
+        const submission: Uint8Array = await contract.submit('ElectionContract:deleteElection', {
+            arguments: [electionId]
         });
 
         const resultJson = utf8Decoder.decode(submission);

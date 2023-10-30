@@ -224,7 +224,7 @@ public final class ElectionContract implements ContractInterface {
      * @param electionId the id of the {@link Election} to delete.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void deleteElection(final Context ctx, final String electionId) {
+    public String deleteElection(final Context ctx, final String electionId) {
         System.out.println("[EC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
         if (!electionExists(ctx, electionId)) {
@@ -233,6 +233,7 @@ public final class ElectionContract implements ContractInterface {
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
         }
         stub.delState(electionId);
+        return genson.serialize("Election deleted");
     }
 
     /**
