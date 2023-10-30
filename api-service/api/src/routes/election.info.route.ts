@@ -27,7 +27,7 @@ electionInfoRouter.post("/", createElectionInfo);
 /**
  * Delete a specific election data
  */
-electionInfoRouter.delete("/:electionId", deleteElectionInfo);
+electionInfoRouter.delete("/", deleteElectionInfo);
 
 /**
  * Check if a specific election data exists

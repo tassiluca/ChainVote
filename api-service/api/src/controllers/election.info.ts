@@ -115,7 +115,7 @@ export async function deleteElectionInfo(req: Request, res: Response, next: Next
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
-        const electionId: string = req.params.electionId;
+        const electionId: string = req.body.electionId;
         await contract.submitTransaction('ElectionInfoContract:deleteElectionInfo', electionId);
         return res.status(StatusCodes.OK).send({message: "Asset deleted successfully"});
     } catch (error) {
