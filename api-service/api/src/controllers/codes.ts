@@ -2,6 +2,8 @@ import {NextFunction, Request, Response} from "express";
 import {Contract, Gateway, Network} from "@hyperledger/fabric-gateway";
 import GrpcClientPool from "../blockchain/grpc.client.pool";
 
+import seedrandom from 'seedrandom';
+
 import {Org2Peer} from "../blockchain/peer.enum";
 import {StatusCodes} from "http-status-codes";
 import transformHyperledgerError from "../blockchain/errors/error.handling";
@@ -17,19 +19,21 @@ const utf8Decoder = new TextDecoder();
  * @param res
  * @param next
  */
-export async function generateFor(req: Request, res: Response, next: NextFunction) {
+export async function generateCodeFor(req: Request, res: Response, next: NextFunction) {
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
 
+        const electionId = req.body.electionId
+
+        const randomNumber = Math.floor(Math.random() * 1000000000);
+        const seed: string = seedrandom(randomNumber+ Date.now()).int32().toString();
         const userId = req.body.userId;
-        const electionId = req.params.electionId
-        const codeRequest: Uint8Array = await contract.submit('CodesManagerContract:generateFor', {
-            arguments: [electionId],
-            transientData: {
-                "userId": userId,
-            }
+
+        const codeRequest: Uint8Array = await contract.submit('CodesManagerContract:generateCodeFor', {
+            arguments: [electionId, seed],
+            transientData: { "userId": userId }
         });
 
         const resultJson = utf8Decoder.decode(codeRequest);
@@ -54,8 +58,10 @@ export async function isValid(req: Request, res: Response, next: NextFunction) {
 
         const code = req.body.code;
         const userId = req.body.userId;
+        const electionId = req.body.electionId;
 
         const codeRequest: Uint8Array = await contract.evaluate('CodesManagerContract:isValid', {
+            arguments: [electionId],
             transientData: {
                 "code": code,
                 "userId": userId
@@ -83,8 +89,10 @@ export async function invalidate(req: Request, res: Response, next: NextFunction
 
         const code = req.body.code;
         const userId = req.body.userId;
+        const electionId = req.body.electionId;
 
         const codeRequest: Uint8Array = await contract.submit('CodesManagerContract:invalidate', {
+            arguments: [electionId],
             transientData: {
                 "code": code,
                 "userId": userId
@@ -112,8 +120,10 @@ export async function verifyCodeOwner(req: Request, res: Response, next: NextFun
 
         const code = req.body.code;
         const userId = req.body.userId;
+        const electionId = req.body.electionId;
 
         const codeRequest: Uint8Array = await contract.evaluate('CodesManagerContract:verifyCodeOwner', {
+            arguments: [electionId],
             transientData: {
                 "code": code,
                 "userId": userId

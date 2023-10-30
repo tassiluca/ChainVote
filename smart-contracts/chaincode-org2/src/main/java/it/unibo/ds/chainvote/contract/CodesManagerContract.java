@@ -33,7 +33,8 @@ public final class CodesManagerContract implements ContractInterface {
 
     static final String CODES_COLLECTION = "CodesCollection";
     private final CodeManager<Context> codeManager = new CodeManagerImpl<>(new LedgerRepository(), new HashGenerator());
-
+    private final Genson genson = GensonUtils.create();
+    
     private enum Error {
         INCORRECT_INPUT,
         ALREADY_GENERATED_CODE,
@@ -58,7 +59,9 @@ public final class CodesManagerContract implements ContractInterface {
             throw new ChaincodeException("The given election doesn't exists", Error.INCORRECT_INPUT.toString());
         }
         try {
-            return codeManager.generateCodeFor(context, electionId, userId, seed).getCode();
+            final var code = codeManager.generateCodeFor(context, electionId, userId, seed).getCode();
+            return genson.serialize(code);
+        
         } catch (AlreadyGeneratedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
         }

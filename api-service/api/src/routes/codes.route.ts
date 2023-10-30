@@ -1,17 +1,17 @@
 import { Router } from "express";
-import {generateFor, invalidate, isValid, verifyCodeOwner} from "../controllers/codes";
+import {generateCodeFor, invalidate, isValid, verifyCodeOwner} from "../controllers/codes";
 
 const codesRoute =  Router();
 
-codesRoute.post("/generate/:electionId", generateFor);
+codesRoute.post("/generate", generateCodeFor);
 
 
-codesRoute.post("/isValid", isValid);
+codesRoute.post("/is-valid", isValid);
 
 
-codesRoute.put("/invalidate", invalidate);
+codesRoute.patch("/invalidate", invalidate);
 
 
-codesRoute.post("/verifyOwner", verifyCodeOwner);
+codesRoute.post("/verify-owner", verifyCodeOwner);
 
 export default codesRoute;
