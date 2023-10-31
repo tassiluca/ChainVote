@@ -9,7 +9,7 @@ import java.util.Objects;
  * with standardized format across all the project.
  * @param <T> the result type.
  */
-public final class Result<T> {
+public final class Response<T> {
 
     private final boolean success;
     private final T result;
@@ -18,31 +18,31 @@ public final class Result<T> {
     /**
      * Creates a new successful result.
      * @param result the result to be wrapped.
-     * @return a new instance of {@link Result}.
+     * @return a new instance of {@link Response}.
      * @param <T> the result type.
      */
-    public static <T> Result<T> success(final T result) {
-        return new Result<>(true, result, null);
+    public static <T> Response<T> success(final T result) {
+        return new Response<>(true, result, null);
     }
 
     /**
      * Creates a new error result.
      * @param cause the cause of the error, i.e. its message.
-     * @return a new instance of {@link Result}.
+     * @return a new instance of {@link Response}.
      * @param <T> the result type.
      */
-    public static <T> Result<T> error(final String cause) {
-        return new Result<>(false, null, cause);
+    public static <T> Response<T> error(final String cause) {
+        return new Response<>(false, null, cause);
     }
 
-    Result(
+    Response(
         @JsonProperty("success") final boolean success,
         @JsonProperty("result") final T result,
-        @JsonProperty("error") final String errorMessage
+        @JsonProperty("error") final String error
     ) {
         this.success = success;
         this.result = result;
-        this.error = errorMessage;
+        this.error = error;
     }
 
     /**
@@ -78,7 +78,7 @@ public final class Result<T> {
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Result<?> result1 = (Result<?>) o;
+        final Response<?> result1 = (Response<?>) o;
         return success == result1.success
             && Objects.equals(result, result1.result) && Objects.equals(error, result1.error);
     }

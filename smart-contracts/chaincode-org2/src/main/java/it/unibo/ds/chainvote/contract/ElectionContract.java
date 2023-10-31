@@ -3,6 +3,7 @@ package it.unibo.ds.chainvote.contract;
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
+import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.SerializerCustomUtils;
 import it.unibo.ds.chainvote.GensonUtils;
 import it.unibo.ds.chainvote.utils.UserCodeData;
@@ -184,7 +185,8 @@ public final class ElectionContract implements ContractInterface {
 
         CodesManagerContract cmc = new CodesManagerContract();
 
-        if (!cmc.isValid(ctx, electionId)) {
+        final Response<Boolean> codeValidity = cmc.isValid(ctx, electionId);
+        if (!codeValidity.isSuccess() || !codeValidity.getResult()) {
             String errorMessage = "The given one-time-code is not valid.";
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CREDENTIALS_TO_CAST_VOTE.toString());

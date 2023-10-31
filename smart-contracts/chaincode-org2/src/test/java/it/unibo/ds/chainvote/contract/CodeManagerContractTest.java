@@ -2,7 +2,7 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.unibo.ds.chainvote.Result;
+import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.GensonUtils;
 import it.unibo.ds.chainvote.codes.OneTimeCode;
@@ -80,7 +80,7 @@ final class CodeManagerContractTest {
         @Test
         void whenNotAlreadyRequested() {
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final Result<OneTimeCode> generatedCode = contract.generateCodeFor(context, ELECTION_ID, SEED);
+            final Response<OneTimeCode> generatedCode = contract.generateCodeFor(context, ELECTION_ID, SEED);
             assertTrue(generatedCode.isSuccess());
             assertNotNull(generatedCode.getResult());
             verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(
@@ -179,7 +179,7 @@ final class CodeManagerContractTest {
                     new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE))
                 ).getBytes(UTF_8)
             );
-            assertTrue(contract.isValid(context, ELECTION_ID));
+            assertTrue(contract.isValid(context, ELECTION_ID).getResult());
         }
 
         @Test
@@ -188,7 +188,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
-            assertFalse(contract.isValid(context, ELECTION_ID));
+            assertFalse(contract.isValid(context, ELECTION_ID).getResult());
         }
 
         @Test
@@ -199,14 +199,14 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(invalidCode);
-            assertFalse(contract.isValid(context, ELECTION_ID));
+            assertFalse(contract.isValid(context, ELECTION_ID).getResult());
         }
 
         @Test
         void whenInvalidate() {
             final var code = new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE));
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(genson.serialize(code).getBytes(UTF_8));
-            contract.invalidate(context, ELECTION_ID);
+            assertTrue(contract.invalidate(context, ELECTION_ID).getResult());
             final var consumedCode = code.getCode();
             assertDoesNotThrow(consumedCode::consume);
             final var consumedAsset = new OneTimeCodeAsset(ELECTION_ID, USER_ID, consumedCode);

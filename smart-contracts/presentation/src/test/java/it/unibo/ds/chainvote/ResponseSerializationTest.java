@@ -12,46 +12,46 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-final class ResultSerializationTest {
+final class ResponseSerializationTest {
 
     private final Genson genson = GensonUtils.create();
 
     @Test
     void testSimpleResult() {
-        final Pair<Result<String>, String> expectedResult = getSimpleResult();
+        final Pair<Response<String>, String> expectedResult = getSimpleResult();
         final var serialized = genson.serialize(expectedResult.first());
         assertEquals(expectedResult.second(), serialized);
-        final var deserialized = genson.deserialize(serialized, Result.class);
+        final var deserialized = genson.deserialize(serialized, Response.class);
         assertEquals(expectedResult.first(), deserialized);
     }
 
     @Test
     void testComplexResult() {
-        final Pair<Result<Ballot>, String> expectedResult = getComplexResult();
+        final Pair<Response<Ballot>, String> expectedResult = getComplexResult();
         final var serialized = genson.serialize(expectedResult.first());
         assertEquals(expectedResult.second(), serialized);
-        final Result<Ballot> deserialized = genson.deserialize(serialized, new GenericType<>() { });
+        final Response<Ballot> deserialized = genson.deserialize(serialized, new GenericType<>() { });
         assertEquals(expectedResult.first(), deserialized);
     }
 
     @Test
     void testErrorResult() {
-        final Pair<Result<Object>, String> expectedResult = getErrorResult();
+        final Pair<Response<Object>, String> expectedResult = getErrorResult();
         final var serialized = genson.serialize(expectedResult.first());
         assertEquals(expectedResult.second(), serialized);
-        final Result<Object> deserialized = genson.deserialize(serialized, new GenericType<>() { });
+        final Response<Object> deserialized = genson.deserialize(serialized, new GenericType<>() { });
         assertEquals(expectedResult.first(), deserialized);
     }
 
-    private Pair<Result<String>, String> getSimpleResult() {
-        final Result<String> result = Result.success("simple-result");
+    private Pair<Response<String>, String> getSimpleResult() {
+        final Response<String> result = Response.success("simple-result");
         return new Pair<>(
             result,
             "{\"error\":null,\"result\":\"simple-result\",\"success\":true}"
         );
     }
 
-    private Pair<Result<Ballot>, String> getComplexResult() {
+    private Pair<Response<Ballot>, String> getComplexResult() {
         final Ballot ballot = new BallotImpl.Builder()
             .electionID("test-election-id")
             .voterID("test-voter-id")
@@ -59,15 +59,15 @@ final class ResultSerializationTest {
             .choice(new Choice("yes"))
             .choice(new Choice("no"))
             .build();
-        final Result<Ballot> result = Result.success(ballot);
+        final Response<Ballot> result = Response.success(ballot);
         return new Pair<>(
             result,
             "{\"error\":null,\"result\":" + genson.serialize(ballot) + ",\"success\":true}"
         );
     }
 
-    private Pair<Result<Object>, String> getErrorResult() {
-        final Result<Object> result = Result.error("Error message test");
+    private Pair<Response<Object>, String> getErrorResult() {
+        final Response<Object> result = Response.error("Error message test");
         return new Pair<>(
             result,
             "{\"error\":\"Error message test\",\"result\":null,\"success\":false}"

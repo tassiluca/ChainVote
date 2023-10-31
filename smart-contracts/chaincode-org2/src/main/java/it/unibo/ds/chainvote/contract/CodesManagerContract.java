@@ -1,7 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.Result;
+import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.codes.*;
 import it.unibo.ds.chainvote.utils.TransientUtils;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
@@ -48,12 +48,12 @@ public final class CodesManagerContract implements ContractInterface {
      * @param context the transaction context. A transient map is expected with the {@code userId} key-value entry.
      * @param electionId the election identifier
      * @param seed a random (non-deterministic) seed for the code generation
-     * @return the code asset.
+     * @return a {@link Response} json-object with the one time code.
      * @throws ChaincodeException with {@link Error#INCORRECT_INPUT} payload if the given election doesn't exist
      * or the seed is blank and {@link Error#ALREADY_GENERATED_CODE} payload if the given code is not valid.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Result<OneTimeCode> generateCodeFor(final Context context, final String electionId, final String seed) {
+    public Response<OneTimeCode> generateCodeFor(final Context context, final String electionId, final String seed) {
         final var userId = TransientUtils.getStringFromTransient(context.getStub().getTransient(), USER_ID.getKey());
         if (seed.isBlank()) {
             throw new ChaincodeException("Seed cannot be blank", Error.INCORRECT_INPUT.toString());
@@ -61,7 +61,7 @@ public final class CodesManagerContract implements ContractInterface {
             throw new ChaincodeException("The given election doesn't exists", Error.INCORRECT_INPUT.toString());
         }
         try {
-            return Result.success(codeManager.generateCodeFor(context, electionId, userId, seed));
+            return Response.success(codeManager.generateCodeFor(context, electionId, userId, seed + userId));
         } catch (AlreadyGeneratedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
         }
@@ -72,12 +72,14 @@ public final class CodesManagerContract implements ContractInterface {
      * @param context the transaction context. A transient map is expected with the following
      *                key-value entries: {@code userId} and {@code code}.
      * @param electionId the election identifier
-     * @return true if the given code is still valid, false otherwise.
+     * @return a {@link Response} json object whose result is true if the given code is still valid, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean isValid(final Context context, final String electionId) {
+    public Response<Boolean> isValid(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
-        return codeManager.isValid(context, electionId, codeUserPair.first(), codeUserPair.second());
+        return Response.success(
+            codeManager.isValid(context, electionId, codeUserPair.first(), codeUserPair.second())
+        );
     }
 
     /**
@@ -90,10 +92,11 @@ public final class CodesManagerContract implements ContractInterface {
      * been invalidated and with {@link Error#INCORRECT_INPUT} if the given code is not valid.
      */
     @Transaction
-    public void invalidate(final Context context, final String electionId) {
+    public Response<Boolean> invalidate(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
         try {
             codeManager.invalidate(context, electionId, codeUserPair.first(), codeUserPair.second());
+            return Response.success(true);
         } catch (InvalidCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_INVALIDATED_CODE.toString());
         } catch (IncorrectCodeException exception) {
@@ -109,9 +112,9 @@ public final class CodesManagerContract implements ContractInterface {
      * @return a json object whose {@code result} field is true if the given code is correct, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public Result<Boolean> verifyCodeOwner(final Context context, final String electionId) {
+    public Response<Boolean> verifyCodeOwner(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
-        return Result.success(
+        return Response.success(
             codeManager.verifyCodeOwner(context, electionId, codeUserPair.first(), codeUserPair.second())
         );
     }
