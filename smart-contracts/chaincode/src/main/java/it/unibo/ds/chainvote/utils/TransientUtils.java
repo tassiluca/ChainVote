@@ -1,7 +1,5 @@
 package it.unibo.ds.chainvote.utils;
 
-import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.presentation.GensonUtils;
 import org.hyperledger.fabric.shim.ChaincodeException;
 
 import java.nio.charset.StandardCharsets;

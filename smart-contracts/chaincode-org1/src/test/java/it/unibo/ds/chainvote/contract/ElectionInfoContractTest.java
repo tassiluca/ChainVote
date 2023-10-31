@@ -1,7 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
-import it.unibo.ds.core.utils.Choice;
-import it.unibo.ds.core.utils.FixedVotes;
+import it.unibo.ds.chainvote.utils.Choice;
+import it.unibo.ds.chainvote.utils.FixedVotes;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;

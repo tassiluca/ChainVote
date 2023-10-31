@@ -2,10 +2,10 @@ package it.unibo.ds.chainvote.transaction;
 
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.core.assets.Election;
-import it.unibo.ds.core.assets.ElectionInfo;
-import it.unibo.ds.core.utils.Choice;
+import it.unibo.ds.chainvote.GensonUtils;
+import it.unibo.ds.chainvote.assets.Election;
+import it.unibo.ds.chainvote.assets.ElectionInfo;
+import it.unibo.ds.chainvote.utils.Choice;
 import org.hyperledger.fabric.contract.annotation.Serializer;
 import org.hyperledger.fabric.contract.execution.SerializerInterface;
 import org.hyperledger.fabric.contract.metadata.TypeSchema;
