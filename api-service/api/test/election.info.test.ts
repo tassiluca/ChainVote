@@ -54,6 +54,19 @@ describe("GET /elections/info", () => {
             .expect(StatusCodes.OK);
         expect(response.body.goal).toEqual("Test goal " + DateTime.now().toISODate());
     });
+});
 
-    
+
+
+describe("DELETE /elections/info", () => {
+    test("Can delete a specific election info", async () => {
+        const electionId = await createElectionInfo();
+        await request(app).delete("/election/info/")
+            .send({
+                electionId: electionId
+            })
+            .set("Accept", "application/json")
+            .expect("Content-Type", "application/json; charset=utf-8")
+            .expect(StatusCodes.OK);
+    }, 20000);
 });
