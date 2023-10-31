@@ -52,39 +52,36 @@ class CodeManagerTest {
     @Test
     void testCodeValidity() {
         final OneTimeCode code = assertDoesNotThrow(() -> localManager.generateCodeFor(ELECTION_ID, USER_ID));
-        assertTrue(localManager.isValid(ELECTION_ID, USER_ID, code));
+        assertTrue(localManager.isValid(ELECTION_ID, USER_ID, code.getCode()));
     }
 
     @Test
     void testUnknownCodeValidity() {
-        assertFalse(localManager.isValid(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0")));
+        assertFalse(localManager.isValid(ELECTION_ID, USER_ID, "0"));
     }
 
     @Test
     void testCodeInvalidation() {
         final OneTimeCode code = assertDoesNotThrow(() -> localManager.generateCodeFor(ELECTION_ID, USER_ID));
-        assertDoesNotThrow(() -> localManager.invalidate(ELECTION_ID, USER_ID, code));
-        assertFalse(localManager.isValid(ELECTION_ID, USER_ID, code));
+        assertDoesNotThrow(() -> localManager.invalidate(ELECTION_ID, USER_ID, code.getCode()));
+        assertFalse(localManager.isValid(ELECTION_ID, USER_ID, code.getCode()));
     }
 
     @Test
     void testCodeInvalidationMultipleTimes() {
         final OneTimeCode code = assertDoesNotThrow(() -> localManager.generateCodeFor(ELECTION_ID, USER_ID));
-        assertDoesNotThrow(() -> localManager.invalidate(ELECTION_ID, USER_ID, code));
-        assertThrows(InvalidCodeException.class, () -> localManager.invalidate(ELECTION_ID, USER_ID, code));
+        assertDoesNotThrow(() -> localManager.invalidate(ELECTION_ID, USER_ID, code.getCode()));
+        assertThrows(InvalidCodeException.class, () -> localManager.invalidate(ELECTION_ID, USER_ID, code.getCode()));
     }
 
     @Test
     void testAttemptInvalidationOnUnknownCode() {
-        assertThrows(
-            IncorrectCodeException.class,
-            () -> localManager.invalidate(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
-        );
+        assertThrows(IncorrectCodeException.class, () -> localManager.invalidate(ELECTION_ID, USER_ID, "0"));
     }
 
     @Test
     void testVerifyCodeOwner() throws AlreadyGeneratedCodeException {
         final OneTimeCode code = localManager.generateCodeFor(ELECTION_ID, USER_ID);
-        assertTrue(localManager.verifyCodeOwner(ELECTION_ID, USER_ID, code));
+        assertTrue(localManager.verifyCodeOwner(ELECTION_ID, USER_ID, code.getCode()));
     }
 }

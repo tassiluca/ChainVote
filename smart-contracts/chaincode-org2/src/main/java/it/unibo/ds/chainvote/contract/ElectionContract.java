@@ -240,8 +240,7 @@ public final class ElectionContract implements ContractInterface {
      * @param electionId the {@link Election}'s id.
      * @return a boolean representing if the {@link Election} exists.
      */
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
-    private boolean electionExists(final Context ctx, final String electionId) {
+    boolean electionExists(final Context ctx, final String electionId) {
         System.out.println("[EC] electionExists");
         ChaincodeStub stub = ctx.getStub();
         String electionSerialized = stub.getStringState(electionId);

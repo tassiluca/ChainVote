@@ -60,7 +60,7 @@ public interface CodeManager<C> {
      * @param code the code to be validated
      * @return true if the given code is still valid, false otherwise.
      */
-    boolean isValid(C context, String electionId, String userId, OneTimeCode code);
+    boolean isValid(C context, String electionId, String userId, String code);
 
     /**
      * Check if the given code is still valid, i.e. has not been consumed yet for the given election.
@@ -69,7 +69,7 @@ public interface CodeManager<C> {
      * @param code the code to be validated
      * @return true if the given code is still valid, false otherwise.
      */
-    default boolean isValid(final String electionId, final String userId, final OneTimeCode code) {
+    default boolean isValid(final String electionId, final String userId, final String code) {
         return isValid(null, electionId, userId, code);
     }
 
@@ -83,7 +83,7 @@ public interface CodeManager<C> {
      * @throws IncorrectCodeException if the given code is not correct for the given election and user.
      * @throws InvalidCodeException if the given code has already been invalidated.
      */
-    void invalidate(C context, String electionId, String userId, OneTimeCode code)
+    void invalidate(C context, String electionId, String userId, String code)
         throws IncorrectCodeException, InvalidCodeException;
 
     /**
@@ -98,7 +98,7 @@ public interface CodeManager<C> {
     default void invalidate(
         final String electionId,
         final String userId,
-        final OneTimeCode code
+        final String code
     ) throws IncorrectCodeException, InvalidCodeException {
         invalidate(null, electionId, userId, code);
     }
@@ -111,7 +111,7 @@ public interface CodeManager<C> {
      * @param code the code to be validated
      * @return true if the given code is correct, false otherwise.
      */
-    boolean verifyCodeOwner(C context, String electionId, String userId, OneTimeCode code);
+    boolean verifyCodeOwner(C context, String electionId, String userId, String code);
 
     /**
      * Verifies if the given code has been generated for the given user and election.
@@ -120,7 +120,7 @@ public interface CodeManager<C> {
      * @param code the code to be validated
      * @return true if the given code is correct, false otherwise.
      */
-    default boolean verifyCodeOwner(final String electionId, final String userId, final OneTimeCode code) {
+    default boolean verifyCodeOwner(final String electionId, final String userId, final String code) {
         return verifyCodeOwner(null, electionId, userId, code);
     }
 }

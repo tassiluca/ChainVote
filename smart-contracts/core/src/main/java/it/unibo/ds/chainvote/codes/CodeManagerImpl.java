@@ -2,6 +2,8 @@ package it.unibo.ds.chainvote.codes;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import java.util.Optional;
+
 /**
  * A base implementation of {@link CodeManager} which implements main core logic, independent of any technology.
  * @param <C> the type of the context.
@@ -14,7 +16,7 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
     /**
      * Creates a new manager.
      * @param repo the {@link CodeRepository} to use to retrieve/store data.
-     * @param generator TODO
+     * @param generator the {@link CodeGeneratorStrategy} to generate the codes.
      */
     @SuppressFBWarnings("EI2")
     public CodeManagerImpl(final CodeRepository<C> repo, final CodeGeneratorStrategy generator) {
@@ -58,9 +60,9 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
 
 
     @Override
-    public boolean isValid(final C context, final String electionId, final String userId, final OneTimeCode code) {
-        final var searchedCode = codeRepository.get(context, electionId, userId);
-        if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
+    public boolean isValid(final C context, final String electionId, final String userId, final String code) {
+        final Optional<OneTimeCode> searchedCode = codeRepository.get(context, electionId, userId);
+        if (searchedCode.isEmpty() || !searchedCode.get().getCode().equals(code)) {
             return false;
         }
         return !searchedCode.get().consumed();
@@ -71,10 +73,10 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
         final C context,
         final String electionId,
         final String userId,
-        final OneTimeCode code
+        final String code
     ) throws IncorrectCodeException, InvalidCodeException {
         final var searchedCode = codeRepository.get(context, electionId, userId);
-        if (searchedCode.isEmpty() || !searchedCode.get().equals(code)) {
+        if (searchedCode.isEmpty() || !searchedCode.get().getCode().equals(code)) {
             throw new IncorrectCodeException("The given code is not associated to the given user for the given voting");
         }
         searchedCode.get().consume();
@@ -82,13 +84,8 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
     }
 
     @Override
-    public boolean verifyCodeOwner(
-        final C context,
-        final String electionId,
-        final String userId,
-        final OneTimeCode code
-    ) {
+    public boolean verifyCodeOwner(final C context, final String electionId, final String userId, final String code) {
         final var searchedCode = codeRepository.get(context, electionId, userId);
-        return searchedCode.isPresent() && searchedCode.get().equals(code);
+        return searchedCode.isPresent() && searchedCode.get().getCode().equals(code);
     }
 }
