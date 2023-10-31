@@ -40,7 +40,6 @@ import java.util.Map;
     ),
     transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
 )
-
 @Default
 public final class ElectionContract implements ContractInterface {
 

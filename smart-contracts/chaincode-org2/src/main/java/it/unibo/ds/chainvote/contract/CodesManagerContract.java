@@ -28,7 +28,8 @@ import static it.unibo.ds.chainvote.utils.UserCodeData.USER_ID;
     info = @Info(
         title = "Code Manager Contract",
         description = "Contract used to manage one-time-codes"
-    )
+    ),
+    transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
 )
 public final class CodesManagerContract implements ContractInterface {
 
