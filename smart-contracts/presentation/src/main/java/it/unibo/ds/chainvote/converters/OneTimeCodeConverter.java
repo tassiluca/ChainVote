@@ -40,7 +40,9 @@ public final class OneTimeCodeConverter implements Converter<OneTimeCode> {
         if (code == null || consumed == null) {
             throw new JsonBindingException("Malformed json: missing value");
         } else if (consumed) {
-            try { code.consume(); } catch (InvalidCodeException ignored) { }
+            try {
+                code.consume();
+            } catch (InvalidCodeException ignored) { }
         }
         return code;
     }

@@ -10,9 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ListOfChoiceSerializationTest {
+final class ListOfChoiceSerializationTest {
     private final Genson genson = GensonUtils.create();
     private static final Choice CHOICE1 = new Choice("prova1");
     private static final Choice CHOICE2 = new Choice("prova2");

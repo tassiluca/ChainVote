@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 /**
  * A {@link Ballot} converter from class object to json string and vice-versa.
  */
-public class BallotConverter implements Converter<Ballot> {
+public final class BallotConverter implements Converter<Ballot> {
 
     @Override
     public void serialize(final Ballot object, final ObjectWriter writer, final Context ctx) {
@@ -39,7 +39,6 @@ public class BallotConverter implements Converter<Ballot> {
         String voterID = null;
         LocalDateTime date = null;
         Choice choice = null;
-
         while (reader.hasNext()) {
             reader.next();
             if ("electionID".equals(reader.name())) {
@@ -62,14 +61,13 @@ public class BallotConverter implements Converter<Ballot> {
         if (electionID == null || voterID == null || date == null || choice == null) {
             throw new JsonBindingException("Malformed json: missing value");
         }
-
         Ballot ballot;
         try {
             ballot = new BallotImpl.Builder().electionID(electionID)
-                    .voterID(voterID)
-                    .date(date)
-                    .choice(choice)
-                    .build();
+                .voterID(voterID)
+                .date(date)
+                .choice(choice)
+                .build();
         } catch (IllegalArgumentException | NoSuchElementException e) {
             throw new JsonBindingException("Malformed json");
         }

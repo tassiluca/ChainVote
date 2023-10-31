@@ -10,7 +10,7 @@ import it.unibo.ds.chainvote.utils.Choice;
 /**
  * A {@link Choice} converter from class object to json string and vice-versa.
  */
-public class ChoiceConverter  implements Converter<Choice> {
+public final class ChoiceConverter implements Converter<Choice> {
 
     @Override
     public void serialize(final Choice object, final ObjectWriter writer, final Context ctx) {
@@ -23,7 +23,6 @@ public class ChoiceConverter  implements Converter<Choice> {
     public Choice deserialize(final ObjectReader reader, final Context ctx) {
         reader.beginObject();
         String choice = null;
-
         while (reader.hasNext()) {
             reader.next();
             if ("choice".equals(reader.name())) {
@@ -35,7 +34,6 @@ public class ChoiceConverter  implements Converter<Choice> {
         if (choice == null) {
             throw new JsonBindingException("Malformed json: missing value");
         }
-
         reader.endObject();
         return new Choice(choice);
     }

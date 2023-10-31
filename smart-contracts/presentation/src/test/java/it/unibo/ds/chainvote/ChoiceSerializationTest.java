@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ChoiceSerializationTest {
+final class ChoiceSerializationTest {
 
     private final Genson genson = GensonUtils.create();
     private static final String CHOICE_TO_CAST = "123prova";

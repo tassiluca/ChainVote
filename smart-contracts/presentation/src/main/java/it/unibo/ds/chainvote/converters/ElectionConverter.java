@@ -2,25 +2,26 @@ package it.unibo.ds.chainvote.converters;
 
 import com.owlike.genson.Context;
 import com.owlike.genson.Converter;
-import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.chainvote.GensonUtils;
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionImpl;
 import it.unibo.ds.chainvote.utils.Choice;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * A {@link Election} converter from class object to json string and vice-versa.
  */
-public class ElectionConverter implements Converter<Election> {
+public final class ElectionConverter implements Converter<Election> {
 
     @Override
     public void serialize(final Election object, final ObjectWriter writer, final Context ctx) {
-        Genson genson = GensonUtils.create();
         writer.beginObject();
         writer.writeName("results");
         writer.beginObject();
@@ -43,12 +44,10 @@ public class ElectionConverter implements Converter<Election> {
 
     @Override
     public Election deserialize(final ObjectReader reader, final Context ctx) {
-        Genson genson = GensonUtils.create();
         reader.beginObject();
         Election election = null;
         Map<String, Long> results = null;
         List<Choice> ballots = null;
-
         while (reader.hasNext()) {
             reader.next();
             if ("results".equals(reader.name())) {
@@ -79,12 +78,11 @@ public class ElectionConverter implements Converter<Election> {
         if (results == null || ballots == null) {
             throw new JsonBindingException("Malformed json: missing value");
         }
-
         try {
             election = new ElectionImpl.Builder()
-                    .results(results)
-                    .ballots(ballots)
-                    .build();
+                .results(results)
+                .ballots(ballots)
+                .build();
         } catch (IllegalArgumentException | NoSuchElementException e) {
             throw new JsonBindingException("Malformed json");
         }

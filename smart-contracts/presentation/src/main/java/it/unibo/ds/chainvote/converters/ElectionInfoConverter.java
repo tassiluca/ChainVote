@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 /**
  * A {@link ElectionInfo} converter from class object to json string and vice-versa.
  */
-public class ElectionInfoConverter implements Converter<ElectionInfo> {
+public final class ElectionInfoConverter implements Converter<ElectionInfo> {
 
     @Override
     public void serialize(final ElectionInfo object, final ObjectWriter writer, final Context ctx) {
@@ -51,9 +51,7 @@ public class ElectionInfoConverter implements Converter<ElectionInfo> {
         LocalDateTime start = null;
         LocalDateTime end = null;
         List<Choice> choices = null;
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
         while (reader.hasNext()) {
             reader.next();
             if ("goal".equals(reader.name())) {
@@ -82,7 +80,6 @@ public class ElectionInfoConverter implements Converter<ElectionInfo> {
         if (goal == null || voters == 0 || start == null || end == null || choices == null) {
             throw new JsonBindingException("Malformed json: missing value");
         }
-
         try {
             election = new ElectionInfoImpl.Builder()
                     .goal(goal)

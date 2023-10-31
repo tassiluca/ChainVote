@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class OneTimeCodeSerializationTest {
+final class OneTimeCodeSerializationTest {
 
     private final Genson genson = GensonUtils.create();
     private static final String CODE = "123";
@@ -58,7 +58,9 @@ class OneTimeCodeSerializationTest {
 
     private OneTimeCode getConsumedOTC() {
         final var code = new OneTimeCodeImpl(CODE);
-        try { code.consume(); } catch (InvalidCodeException ignored) { }
+        try {
+            code.consume();
+        } catch (InvalidCodeException ignored) { }
         return code;
     }
 

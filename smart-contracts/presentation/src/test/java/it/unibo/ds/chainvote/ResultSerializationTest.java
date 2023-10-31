@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ResultSerializationTest {
+final class ResultSerializationTest {
 
     private final Genson genson = GensonUtils.create();
 
@@ -30,7 +30,7 @@ public class ResultSerializationTest {
         final Pair<Result<Ballot>, String> expectedResult = getComplexResult();
         final var serialized = genson.serialize(expectedResult.first());
         assertEquals(expectedResult.second(), serialized);
-        final Result<Ballot> deserialized = genson.deserialize(serialized, new GenericType<>() {});
+        final Result<Ballot> deserialized = genson.deserialize(serialized, new GenericType<>() { });
         assertEquals(expectedResult.first(), deserialized);
     }
 
@@ -39,7 +39,7 @@ public class ResultSerializationTest {
         final Pair<Result<Object>, String> expectedResult = getErrorResult();
         final var serialized = genson.serialize(expectedResult.first());
         assertEquals(expectedResult.second(), serialized);
-        final Result<Object> deserialized = genson.deserialize(serialized, new GenericType<>() {});
+        final Result<Object> deserialized = genson.deserialize(serialized, new GenericType<>() { });
         assertEquals(expectedResult.first(), deserialized);
     }
 
@@ -55,7 +55,7 @@ public class ResultSerializationTest {
         final Ballot ballot = new BallotImpl.Builder()
             .electionID("test-election-id")
             .voterID("test-voter-id")
-            .date(LocalDateTime.of(2023, 10, 31, 10, 0))
+            .date(LocalDateTime.parse("2023-08-20T10:00:00"))
             .choice(new Choice("yes"))
             .choice(new Choice("no"))
             .build();
