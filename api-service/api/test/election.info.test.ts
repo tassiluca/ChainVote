@@ -9,7 +9,6 @@ beforeAll(async () => {
     app = ExpressConfig();
 });
 
-
 async function createElectionInfo() {
     const startDate = DateTime.now()
         .set({millisecond: 0})
@@ -56,15 +55,15 @@ describe("GET /elections/info", () => {
     });
 });
 
-
+describe("POST /elections/info", () => {
+   test("Can create a new election info", async () => createElectionInfo(), 20000);
+});
 
 describe("DELETE /elections/info", () => {
     test("Can delete a specific election info", async () => {
         const electionId = await createElectionInfo();
         await request(app).delete("/election/info/")
-            .send({
-                electionId: electionId
-            })
+            .send({electionId: electionId})
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
