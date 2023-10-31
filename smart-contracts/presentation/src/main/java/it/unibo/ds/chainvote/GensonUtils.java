@@ -4,7 +4,6 @@ import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
 import it.unibo.ds.chainvote.assets.*;
 import it.unibo.ds.chainvote.converters.*;
-import it.unibo.ds.chainvote.presentation.converters.*;
 import it.unibo.ds.chainvote.codes.OneTimeCode;
 import it.unibo.ds.chainvote.codes.OneTimeCodeImpl;
 import it.unibo.ds.chainvote.utils.Choice;
