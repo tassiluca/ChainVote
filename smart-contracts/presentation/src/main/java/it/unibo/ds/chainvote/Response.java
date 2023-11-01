@@ -5,8 +5,41 @@ import com.owlike.genson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
- * A wrapper of a result which can be easily (de)serialized into a json string
- * with standardized format across all the project.
+ * <p>A wrapper of a result which can be easily (de)serialized into a json string
+ * with standardized format across all the project.</p>
+ *
+ * <p>The resulting JSON object has the following structure:</p>
+ * <pre>
+ * {
+ *     "success": {
+ *         "type": "boolean",
+ *         "description": "Indicates whether or not the operation was successful",
+ *         "required": true,
+ *         "example": true
+ *     },
+ *     "error": {
+ *         "type": "string | null",
+ *         "description": "Contains the error message if the operation failed, or null if the operation was successful",
+ *         "required": true,
+ *         "example": "Seed cannot be blank"
+ *     },
+ *     "result": {
+ *         "type": "primitive | object | null",
+ *         "description": "Contains the operation's result if was successful, or null if the operation failed.",
+ *         "required": true,
+ *         "example": {
+ *             "electionID": "-1720367461",
+ *             "voterID": "test-user",
+ *             "date": "2023-08-20T10:00:00",
+ *             "choice":{
+ *                 "choice": "no",
+ *                 "choice": "yes"
+ *             }
+ *         }
+ *     }
+ * }
+ * </pre>
+ *
  * @param <T> the result type.
  */
 public final class Response<T> {

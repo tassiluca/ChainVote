@@ -88,6 +88,7 @@ public final class CodesManagerContract implements ContractInterface {
      * @param context the transaction context. A transient map is expected with the following
      *                key-value pairs: {@code userId} and {@code code}.
      * @param electionId the election identifier
+     * @return a {@link Response} object with the result outcome.
      * @throws ChaincodeException with {@link Error#ALREADY_INVALIDATED_CODE} payload if the given code was already
      * been invalidated and with {@link Error#INCORRECT_INPUT} if the given code is not valid.
      */
