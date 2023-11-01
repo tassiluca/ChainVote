@@ -2,6 +2,7 @@ import request from "supertest";
 import ExpressConfig from "../src/configs/express.config";
 import {StatusCodes} from "http-status-codes";
 import {DateTime} from "luxon";
+import {createElectionInfo} from "./common/utils";
 
 let app;
 
@@ -9,35 +10,7 @@ beforeAll(async () => {
     app = ExpressConfig();
 });
 
-async function createElectionInfo() {
-    const startDate = DateTime.now()
-        .set({millisecond: 0})
-        .toISO({includeOffset: false, suppressMilliseconds: true});
-    const endDate = DateTime.now()
-        .set({millisecond: 0})
-        .plus({days: 1})
-        .toISO({includeOffset: false, suppressMilliseconds: true});
-
-    const goal = "Test goal " + DateTime.now().toISODate();
-    const voters: string = "100";
-    const choices = ["Choice 1", "Choice 2", "Choice 3"];
-
-    const createResponse = await request(app).post("/election/info")
-        .send({
-            goal: goal,
-            voters: voters,
-            startDate: startDate,
-            endDate: endDate,
-            choices: choices
-        })
-        .set("Accept", "application/json")
-        .expect("Content-Type", "text/html; charset=utf-8")
-        .expect(StatusCodes.OK);
-
-    return createResponse.text;
-}
-
-describe("GET /elections/info", () => {
+describe("GET /election/info", () => {
     test("Can get all the election infos", async () => {
         await request(app).get("/election/info/all")
             .set("Accept", "application/json")
@@ -46,7 +19,7 @@ describe("GET /elections/info", () => {
     });
 
     test("Can get a specific election info", async () => {
-        const electionId = await createElectionInfo();
+        const electionId = await createElectionInfo(app);
         const response = await request(app).get("/election/info/" + electionId)
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
@@ -55,13 +28,13 @@ describe("GET /elections/info", () => {
     });
 });
 
-describe("POST /elections/info", () => {
-   test("Can create a new election info", async () => createElectionInfo(), 20000);
+describe("POST /election/info", () => {
+   test("Can create a new election info", async () => createElectionInfo(app), 20000);
 });
 
-describe("DELETE /elections/info", () => {
+describe("DELETE /election/info", () => {
     test("Can delete a specific election info", async () => {
-        const electionId = await createElectionInfo();
+        const electionId = await createElectionInfo(app);
         await request(app).delete("/election/info/")
             .send({electionId: electionId})
             .set("Accept", "application/json")

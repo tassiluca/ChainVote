@@ -1,7 +1,6 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import fs from 'fs';
 
-
 const options = {
     definition: {
         openapi: '3.0.0',
