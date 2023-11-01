@@ -40,6 +40,17 @@ export async function createElection(app: Application) {
         .expect(StatusCodes.OK);
 
     expect(electionId).toBeDefined();
-
     return electionId;
+}
+
+export async function createCodeForElection(app: Application, userId, electionId) {
+    const response = await request(app).post("/code/generate")
+        .send({ userId: userId, electionId: electionId })
+        .set("Accept", "application/json")
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .expect(StatusCodes.OK);
+
+    expect(response.body.result).toBeDefined();
+    expect(response.body.success).toBe(true);
+    return response.body.result;
 }
