@@ -1,7 +1,7 @@
 package it.unibo.ds.chainvote.assets;
 
 import com.owlike.genson.annotation.JsonProperty;
-import it.unibo.ds.core.codes.OneTimeCode;
+import it.unibo.ds.chainvote.codes.OneTimeCode;
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 

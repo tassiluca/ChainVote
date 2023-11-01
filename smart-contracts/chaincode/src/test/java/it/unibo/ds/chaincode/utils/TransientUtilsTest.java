@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 final class TransientUtilsTest {
 
     @Nested
-    class TestCorrectlyGettingFromTransient {
+    static class TestCorrectlyGettingFromTransient {
 
         @Test
         void whenGetStringFromTransient() {
@@ -41,13 +41,25 @@ final class TransientUtilsTest {
     }
 
     @Nested
-    class TestFailGettingFromTransient {
+    static class TestFailGettingFromTransient {
 
         @Test
         @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenTransientInputNotExists() {
             final Map<String, byte[]> transientData = Map.of();
             final String key = "non-existing-key";
+            final Throwable thrown = catchThrowable(() -> getStringFromTransient(transientData, key));
+            assertThat(thrown)
+                .isInstanceOf(ChaincodeException.class)
+                .hasMessage("An entry with key `" + key + "` was expected in the transient map.");
+            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INCOMPLETE_INPUT".getBytes(UTF_8));
+        }
+
+        @Test
+        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
+        void whenTransientInputIsEmpty() {
+            final Map<String, byte[]> transientData = Map.of("key", "".getBytes(UTF_8));
+            final String key = "key";
             final Throwable thrown = catchThrowable(() -> getStringFromTransient(transientData, key));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)

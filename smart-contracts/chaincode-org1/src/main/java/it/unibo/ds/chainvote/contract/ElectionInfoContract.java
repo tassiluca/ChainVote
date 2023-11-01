@@ -1,11 +1,11 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.core.assets.ElectionInfo;
-import it.unibo.ds.core.factory.ElectionFactory;
-import it.unibo.ds.core.utils.Choice;
-import it.unibo.ds.core.utils.Utils;
+import it.unibo.ds.chainvote.GensonUtils;
+import it.unibo.ds.chainvote.assets.ElectionInfo;
+import it.unibo.ds.chainvote.factory.ElectionFactory;
+import it.unibo.ds.chainvote.utils.Choice;
+import it.unibo.ds.chainvote.utils.Utils;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
