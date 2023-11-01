@@ -68,7 +68,7 @@ public final class Response<T> {
 
     @Override
     public String toString() {
-        return "Result{success=" + success + ", result=" + result + ", errorMessage='" + error + '\'' + '}';
+        return "Response{success=" + success + ", result=" + result + ", errorMessage='" + error + '\'' + '}';
     }
 
     @Override
