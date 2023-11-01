@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"it.unibo.ds.chainvote.presentation"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"it.unibo.ds.chainvote"},{"l":"it.unibo.ds.chainvote.converters"}];updateSearchResults();

@@ -111,27 +111,27 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createElectionInfo(org.hyperledger.fabric.contract.Context,java.lang.String,java.lang.Long,java.time.LocalDateTime,java.time.LocalDateTime,java.util.List)" class="member-name-link">createElectionInfo</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;ctx,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createElectionInfo(org.hyperledger.fabric.contract.Context,java.lang.String,java.lang.Long,java.lang.String,java.lang.String,java.util.List)" class="member-name-link">createElectionInfo</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;ctx,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;goal,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;votersNumber,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link">LocalDateTime</a>&nbsp;startingDate,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link">LocalDateTime</a>&nbsp;endingDate,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;it.unibo.ds.core.utils.Choice&gt;&nbsp;choices)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sDate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eDate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;it.unibo.ds.chainvote.utils.Choice&gt;&nbsp;choices)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Create a <code>ElectionInfo</code>.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteAsset(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">deleteAsset</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;ctx,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteElectionInfo(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">deleteElectionInfo</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;ctx,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Delete an <code>ElectionInfo</code> from the ledger.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAllAssets(org.hyperledger.fabric.contract.Context)" class="member-name-link">getAllAssets</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;ctx)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;it.unibo.ds.chainvote.assets.ElectionInfo&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAllElectionInfo(org.hyperledger.fabric.contract.Context)" class="member-name-link">getAllElectionInfo</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;ctx)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Return all the existing <code>ElectionInfo</code>s.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>it.unibo.ds.core.assets.ElectionInfo</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>it.unibo.ds.chainvote.assets.ElectionInfo</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#readElectionInfo(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">readElectionInfo</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;ctx,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -172,32 +172,32 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="createElectionInfo(org.hyperledger.fabric.contract.Context,java.lang.String,java.lang.Long,java.time.LocalDateTime,java.time.LocalDateTime,java.util.List)">
+<section class="detail" id="createElectionInfo(org.hyperledger.fabric.contract.Context,java.lang.String,java.lang.Long,java.lang.String,java.lang.String,java.util.List)">
 <h3>createElectionInfo</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">createElectionInfo</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;ctx,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;goal,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;votersNumber,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link">LocalDateTime</a>&nbsp;startingDate,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link">LocalDateTime</a>&nbsp;endingDate,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;it.unibo.ds.core.utils.Choice&gt;&nbsp;choices)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sDate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eDate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;it.unibo.ds.chainvote.utils.Choice&gt;&nbsp;choices)</span></div>
 <div class="block">Create a <code>ElectionInfo</code>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>ctx</code> - The <code>Context</code>.</dd>
-<dd><code>goal</code> - The goal of the <code>ElectionInfo</code> to build.</dd>
-<dd><code>votersNumber</code> - The number of voters that could cast a vote in the <code>ElectionInfo</code> to build.</dd>
-<dd><code>startingDate</code> - The <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link"><code>LocalDateTime</code></a> representing the start of the possibility to cast a vote in the <code>ElectionInfo</code> to build.</dd>
-<dd><code>endingDate</code> - The <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link"><code>LocalDateTime</code></a> representing the end of the possibility to cast a vote in the <code>ElectionInfo</code> to build.</dd>
-<dd><code>choices</code> - The <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link"><code>List</code></a> of <code>Choice</code> that the <code>ElectionInfo</code> to build has.</dd>
+<dd><code>ctx</code> - the <code>Context</code>.</dd>
+<dd><code>goal</code> - the goal of the <code>ElectionInfo</code> to build.</dd>
+<dd><code>votersNumber</code> - the number of voters that could cast a vote in the <code>ElectionInfo</code> to build.</dd>
+<dd><code>sDate</code> - the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a> representing the encoded (ISO format) starting date.</dd>
+<dd><code>eDate</code> - the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a> representing the encoded (ISO format) ending date.</dd>
+<dd><code>choices</code> - the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link"><code>List</code></a> of <code>Choice</code> that the <code>ElectionInfo</code> to build has.</dd>
 <dt>Returns:</dt>
-<dd>The <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a> representing the electionId of the <code>ElectionInfo</code> built.</dd>
+<dd>the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a> representing the electionId of the <code>ElectionInfo</code> built.</dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="readElectionInfo(org.hyperledger.fabric.contract.Context,java.lang.String)">
 <h3>readElectionInfo</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">it.unibo.ds.core.assets.ElectionInfo</span>&nbsp;<span class="element-name">readElectionInfo</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;ctx,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">it.unibo.ds.chainvote.assets.ElectionInfo</span>&nbsp;<span class="element-name">readElectionInfo</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;ctx,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</span></div>
 <div class="block">Return the <code>ElectionInfo</code>.</div>
 <dl class="notes">
@@ -210,9 +210,9 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="deleteAsset(org.hyperledger.fabric.contract.Context,java.lang.String)">
-<h3>deleteAsset</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteAsset</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;ctx,
+<section class="detail" id="deleteElectionInfo(org.hyperledger.fabric.contract.Context,java.lang.String)">
+<h3>deleteElectionInfo</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteElectionInfo</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;ctx,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</span></div>
 <div class="block">Delete an <code>ElectionInfo</code> from the ledger.</div>
 <dl class="notes">
@@ -223,9 +223,9 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="getAllAssets(org.hyperledger.fabric.contract.Context)">
-<h3>getAllAssets</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getAllAssets</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;ctx)</span></div>
+<section class="detail" id="getAllElectionInfo(org.hyperledger.fabric.contract.Context)">
+<h3>getAllElectionInfo</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;it.unibo.ds.chainvote.assets.ElectionInfo&gt;</span>&nbsp;<span class="element-name">getAllElectionInfo</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;ctx)</span></div>
 <div class="block">Return all the existing <code>ElectionInfo</code>s.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

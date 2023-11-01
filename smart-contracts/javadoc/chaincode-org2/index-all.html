@@ -52,7 +52,7 @@ loadScripts(document, 'script');</script>
 <a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a>
 <h2 class="title" id="I:C">C</h2>
 <dl class="index">
-<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#castVote(org.hyperledger.fabric.contract.Context,it.unibo.ds.core.utils.Choice,java.lang.String)" class="member-name-link">castVote(Context, Choice, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#castVote(org.hyperledger.fabric.contract.Context,it.unibo.ds.chainvote.utils.Choice,java.lang.String)" class="member-name-link">castVote(Context, Choice, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
 <dd>
 <div class="block">Cast a vote in an existing <code>Election</code>.</div>
 </dd>
@@ -66,14 +66,14 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="it/unibo/ds/chainvote/contract/CodesManagerContract.html#%3Cinit%3E()" class="member-name-link">CodesManagerContract()</a> - Constructor for class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/CodesManagerContract.html" title="class in it.unibo.ds.chainvote.contract">CodesManagerContract</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#createElection(org.hyperledger.fabric.contract.Context,java.lang.String,java.util.Map)" class="member-name-link">createElection(Context, String, Map&lt;Choice, Long&gt;)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#createElection(org.hyperledger.fabric.contract.Context,java.lang.String,java.util.Map)" class="member-name-link">createElection(Context, String, Map&lt;String, Long&gt;)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
 <dd>
 <div class="block">Create an <code>Election</code>.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:D">D</h2>
 <dl class="index">
-<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#deleteAsset(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">deleteAsset(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#deleteElection(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">deleteElection(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
 <dd>
 <div class="block">Delete an <code>Election</code>.</div>
 </dd>
@@ -93,7 +93,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Generate a new one-time-code for the given election and user.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#getAllAssets(org.hyperledger.fabric.contract.Context)" class="member-name-link">getAllAssets(Context)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#getAllElection(org.hyperledger.fabric.contract.Context)" class="member-name-link">getAllElection(Context)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
 <dd>
 <div class="block">Return all the existing <code>Election</code>s.</div>
 </dd>
@@ -131,20 +131,20 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Hyperledger Fabric <code>OneTimeCode</code> asset.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html#%3Cinit%3E(java.lang.String,java.lang.String,it.unibo.ds.core.codes.OneTimeCode)" class="member-name-link">OneTimeCodeAsset(String, String, OneTimeCode)</a> - Constructor for class it.unibo.ds.chainvote.assets.<a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html" title="class in it.unibo.ds.chainvote.assets">OneTimeCodeAsset</a></dt>
+<dt><a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html#%3Cinit%3E(java.lang.String,java.lang.String,it.unibo.ds.chainvote.codes.OneTimeCode)" class="member-name-link">OneTimeCodeAsset(String, String, OneTimeCode)</a> - Constructor for class it.unibo.ds.chainvote.assets.<a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html" title="class in it.unibo.ds.chainvote.assets">OneTimeCodeAsset</a></dt>
 <dd>
 <div class="block">Creates a new asset.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:R">R</h2>
 <dl class="index">
-<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#readElection(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">readElection(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#readClosedElection(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">readClosedElection(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
 <dd>
-<div class="block">Return the <code>Election</code>.</div>
+<div class="block">Return the <code>Election</code> if it's already closed.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#readElectionInfo(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">readElectionInfo(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#readOpenElection(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">readOpenElection(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
 <dd>
-<div class="block">Return the <code>ElectionInfo</code>.</div>
+<div class="block">Return the <code>Election</code> information of electionId and affluence.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:T">T</h2>

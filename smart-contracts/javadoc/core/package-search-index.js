@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"it.unibo.ds.core.assets"},{"l":"it.unibo.ds.core.codes"},{"l":"it.unibo.ds.core.factory"},{"l":"it.unibo.ds.core.manager"},{"l":"it.unibo.ds.core.utils"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"it.unibo.ds.chainvote.assets"},{"l":"it.unibo.ds.chainvote.codes"},{"l":"it.unibo.ds.chainvote.factory"},{"l":"it.unibo.ds.chainvote.manager"},{"l":"it.unibo.ds.chainvote.utils"}];updateSearchResults();
