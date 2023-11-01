@@ -23,7 +23,7 @@ public final class TransientUtils {
         final String key,
         final Function<byte[], X> converter
     ) {
-        if (!transientData.containsKey(key)) {
+        if (!transientData.containsKey(key) || transientData.get(key).length == 0) {
             final String errorMsg = "An entry with key `" + key + "` was expected in the transient map.";
             throw new ChaincodeException(errorMsg, Error.INCOMPLETE_INPUT.toString());
         }

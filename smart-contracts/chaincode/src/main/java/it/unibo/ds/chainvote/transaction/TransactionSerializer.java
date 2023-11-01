@@ -56,7 +56,7 @@ public final class TransactionSerializer implements SerializerInterface {
         if (ts.getRef() == null) {
             key = ts.getType();
         } else {
-            key = ts.getRef().split("/")[type.split("/").length-1];
+            key = ts.getRef().split("/")[type.split("/").length - 1];
         }
         System.out.println("[TS fb] key type: " + key);
         System.out.print("Value deserialized: ");
