@@ -53,7 +53,7 @@ public final class CodesManagerContract implements ContractInterface {
      * or the seed is blank and {@link Error#ALREADY_GENERATED_CODE} payload if the given code is not valid.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Response<OneTimeCode> generateCodeFor(final Context context, final String electionId, final String seed) {
+    public Response<String> generateCodeFor(final Context context, final String electionId, final String seed) {
         final var userId = TransientUtils.getStringFromTransient(context.getStub().getTransient(), USER_ID.getKey());
         if (seed.isBlank()) {
             throw new ChaincodeException("Seed cannot be blank", Error.INCORRECT_INPUT.toString());
@@ -61,7 +61,7 @@ public final class CodesManagerContract implements ContractInterface {
             throw new ChaincodeException("The given election doesn't exists", Error.INCORRECT_INPUT.toString());
         }
         try {
-            return Response.success(codeManager.generateCodeFor(context, electionId, userId, seed + userId));
+            return Response.success(codeManager.generateCodeFor(context, electionId, userId, seed + userId).getCode());
         } catch (AlreadyGeneratedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
         }
