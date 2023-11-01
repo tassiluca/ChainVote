@@ -1,9 +1,5 @@
 import java.net.URI
 
-plugins {
-    application
-}
-
 repositories {
     maven { url = URI("https://jitpack.io") }
 }
