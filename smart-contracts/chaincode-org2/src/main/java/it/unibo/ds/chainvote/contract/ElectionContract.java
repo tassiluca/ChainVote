@@ -47,6 +47,7 @@ public final class ElectionContract implements ContractInterface {
     private static final String CHANNEL_INFO_NAME_CH1 = "ch1";
     private static final String CHAINCODE_INFO_NAME_CH1 = "chaincode-org1";
     private final Genson genson = GensonUtils.create();
+    private static final CodesManagerContract CODES_MANAGER_CONTRACT = new CodesManagerContract();
 
     private enum ElectionContractErrors {
         ELECTION_NOT_FOUND,
@@ -123,7 +124,7 @@ public final class ElectionContract implements ContractInterface {
         System.out.println("[EC] readOpenElection");
         Election election = readElection(ctx, electionId);
         ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
-        return SerializerCustomUtils.serializeForAffluence(election, electionInfo);
+        return SerializerCustomUtils.serializeElectionInfoWithResults(electionInfo, election);
     }
 
     /**
@@ -183,9 +184,7 @@ public final class ElectionContract implements ContractInterface {
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
         }
 
-        CodesManagerContract cmc = new CodesManagerContract();
-
-        if (!cmc.isValid(ctx, electionId)) {
+        if (!CODES_MANAGER_CONTRACT.isValid(ctx, electionId)) {
             String errorMessage = "The given one-time-code is not valid.";
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CREDENTIALS_TO_CAST_VOTE.toString());
@@ -212,7 +211,7 @@ public final class ElectionContract implements ContractInterface {
             System.out.println(e.getMessage());
             throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INVALID_BALLOT_CAST_ARGUMENTS.toString());
         }
-        cmc.invalidate(ctx, electionId);
+        CODES_MANAGER_CONTRACT.invalidate(ctx, electionId);
         String electionSerialized = genson.serialize(election);
         ctx.getStub().putStringState(electionId, electionSerialized);
     }
@@ -271,7 +270,7 @@ public final class ElectionContract implements ContractInterface {
         for (ElectionInfo electionInfo : electionInfos) {
             String electionId = electionInfo.getElectionId();
             Election election = this.readElection(ctx, electionId);
-            electionsSerialized.add(SerializerCustomUtils.serializeForAffluence(election, electionInfo));
+            electionsSerialized.add(SerializerCustomUtils.serializeElectionInfoWithResults(electionInfo, election));
         }
 
         System.out.println("[EC] getAllElection results serialized: " + genson.serialize(electionsSerialized));

@@ -43,7 +43,7 @@ public final class TransactionSerializer implements SerializerInterface {
     /**
      * Deserialize the object previously serialized in bytes.
      * @param buffer the byte buffer from the wire.
-     * @param ts     the TypeSchema representing the type.
+     * @param ts the TypeSchema representing the type.
      * @return the {@link Object} deserialized.
      */
     @Override
