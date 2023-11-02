@@ -1,7 +1,7 @@
 package it.unibo.ds.chainvote.utils;
 
 /**
- * An enum containing all the inputs key of the parameters
+ * An enum containing all the inputs key of the parameters.
  * TODO document better (now for just generate)
  */
 public enum ArgsData {

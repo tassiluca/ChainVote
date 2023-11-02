@@ -3,17 +3,18 @@ package it.unibo.ds.chainvote.contract;
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
-import it.unibo.ds.chainvote.presentation.SerializerCustomUtils;
-import it.unibo.ds.chainvote.presentation.GensonUtils;
-import it.unibo.ds.chainvote.utils.Pair;
+import it.unibo.ds.chainvote.Response;
+import it.unibo.ds.chainvote.SerializerCustomUtils;
+import it.unibo.ds.chainvote.GensonUtils;
 import it.unibo.ds.chainvote.utils.UserCodeData;
-import it.unibo.ds.core.assets.Ballot;
-import it.unibo.ds.core.assets.BallotImpl;
-import it.unibo.ds.core.assets.Election;
-import it.unibo.ds.core.assets.ElectionInfo;
-import it.unibo.ds.core.factory.ElectionFactory;
-import it.unibo.ds.core.manager.ElectionManagerImpl;
-import it.unibo.ds.core.utils.Choice;
+import it.unibo.ds.chainvote.assets.Ballot;
+import it.unibo.ds.chainvote.assets.BallotImpl;
+import it.unibo.ds.chainvote.assets.Election;
+import it.unibo.ds.chainvote.assets.ElectionInfo;
+import it.unibo.ds.chainvote.factory.ElectionFactory;
+import it.unibo.ds.chainvote.manager.ElectionManagerImpl;
+import it.unibo.ds.chainvote.utils.Choice;
+import it.unibo.ds.chainvote.utils.Pair;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
@@ -40,7 +41,6 @@ import java.util.Map;
     ),
     transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
 )
-
 @Default
 public final class ElectionContract implements ContractInterface {
 
@@ -124,7 +124,8 @@ public final class ElectionContract implements ContractInterface {
         System.out.println("[EC] readOpenElection");
         Election election = readElection(ctx, electionId);
         ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
-        return SerializerCustomUtils.serializeElectionInfoWithResults(electionInfo, election);
+        return "";
+        // return SerializerCustomUtils.serializeElectionInfoWithResults(electionInfo, election);
     }
 
     /**
@@ -184,7 +185,9 @@ public final class ElectionContract implements ContractInterface {
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
         }
 
-        if (!CODES_MANAGER_CONTRACT.isValid(ctx, electionId)) {
+        final Response<Boolean> codeValidity = CODES_MANAGER_CONTRACT.isValid(ctx, electionId);
+
+        if (!codeValidity.isSuccess() || !codeValidity.getResult()) {
             String errorMessage = "The given one-time-code is not valid.";
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CREDENTIALS_TO_CAST_VOTE.toString());
@@ -239,8 +242,7 @@ public final class ElectionContract implements ContractInterface {
      * @param electionId the {@link Election}'s id.
      * @return a boolean representing if the {@link Election} exists.
      */
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
-    private boolean electionExists(final Context ctx, final String electionId) {
+    boolean electionExists(final Context ctx, final String electionId) {
         System.out.println("[EC] electionExists");
         ChaincodeStub stub = ctx.getStub();
         String electionSerialized = stub.getStringState(electionId);
@@ -270,7 +272,7 @@ public final class ElectionContract implements ContractInterface {
         for (ElectionInfo electionInfo : electionInfos) {
             String electionId = electionInfo.getElectionId();
             Election election = this.readElection(ctx, electionId);
-            electionsSerialized.add(SerializerCustomUtils.serializeElectionInfoWithResults(electionInfo, election));
+            //electionsSerialized.add(SerializerCustomUtils.serializeElectionInfoWithResults(electionInfo, election));
         }
 
         System.out.println("[EC] getAllElection results serialized: " + genson.serialize(electionsSerialized));
