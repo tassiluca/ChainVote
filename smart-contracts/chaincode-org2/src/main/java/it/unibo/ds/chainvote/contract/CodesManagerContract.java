@@ -62,7 +62,7 @@ public final class CodesManagerContract implements ContractInterface {
             throw new ChaincodeException("The given election doesn't exists", Error.INCORRECT_INPUT.toString());
         }
         try {
-            return Response.success(codeManager.generateCodeFor(context, electionId, userId, seed + userId).getCode());
+            return new Response<>(codeManager.generateCodeFor(context, electionId, userId, seed + userId).getCode());
         } catch (AlreadyGeneratedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
         }
@@ -79,7 +79,7 @@ public final class CodesManagerContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public Response<Boolean> isValid(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
-        return Response.success(
+        return new Response<>(
             codeManager.isValid(context, electionId, codeUserPair.first(), codeUserPair.second())
         );
     }
@@ -100,7 +100,7 @@ public final class CodesManagerContract implements ContractInterface {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
         try {
             codeManager.invalidate(context, electionId, codeUserPair.first(), codeUserPair.second());
-            return Response.success(true);
+            return new Response<>(true);
         } catch (InvalidCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_INVALIDATED_CODE.toString());
         } catch (IncorrectCodeException exception) {
@@ -119,7 +119,7 @@ public final class CodesManagerContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public Response<Boolean> verifyCodeOwner(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
-        return Response.success(
+        return new Response<>(
             codeManager.verifyCodeOwner(context, electionId, codeUserPair.first(), codeUserPair.second())
         );
     }

@@ -81,7 +81,6 @@ final class CodeManagerContractTest {
         void whenNotAlreadyRequested() {
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
             final Response<String> generatedCode = contract.generateCodeFor(context, ELECTION_ID, SEED);
-            assertTrue(generatedCode.isSuccess());
             assertNotNull(generatedCode.getResult());
             verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(generatedCode.getResult()))
