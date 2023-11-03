@@ -34,6 +34,10 @@ public final class Response<T> {
 
     private final T result;
 
+    /**
+     * Creates a new response object with the given result.
+     * @param result a generic object representing the result.
+     */
     public Response(@JsonProperty("result") final T result) {
         this.result = result;
     }
