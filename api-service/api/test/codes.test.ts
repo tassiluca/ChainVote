@@ -14,7 +14,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
     user = await new User({
-        email: "fake.email2334@email.it",
+        email: "fake.email@email.it",
         password: "Password1!",
         firstName: "Test",
         secondName: "User"
