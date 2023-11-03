@@ -8,13 +8,13 @@ import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionImpl;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
 import it.unibo.ds.chainvote.assets.ElectionInfoImpl;
+import it.unibo.ds.chainvote.assets.presentation.ElectionToRead;
+import it.unibo.ds.chainvote.assets.presentation.ElectionToReadImpl;
+import it.unibo.ds.chainvote.assets.presentation.ElectionWithResultsToRead;
+import it.unibo.ds.chainvote.assets.presentation.ElectionWithResultsToReadImpl;
 import it.unibo.ds.chainvote.codes.OneTimeCode;
 import it.unibo.ds.chainvote.codes.OneTimeCodeImpl;
-import it.unibo.ds.chainvote.converters.BallotConverter;
-import it.unibo.ds.chainvote.converters.ChoiceConverter;
-import it.unibo.ds.chainvote.converters.ElectionConverter;
-import it.unibo.ds.chainvote.converters.ElectionInfoConverter;
-import it.unibo.ds.chainvote.converters.OneTimeCodeConverter;
+import it.unibo.ds.chainvote.converters.*;
 import it.unibo.ds.chainvote.utils.Choice;
 
 /**
@@ -30,7 +30,6 @@ public final class GensonUtils {
     public static Genson create() {
         return new GensonBuilder()
             .useRuntimeType(false)
-            .useConstructorWithArguments(true)
             .withConverter(new OneTimeCodeConverter(), OneTimeCodeImpl.class)
             .withConverter(new OneTimeCodeConverter(), OneTimeCode.class)
             .withConverter(new BallotConverter(), Ballot.class)
@@ -40,6 +39,10 @@ public final class GensonUtils {
             .withConverter(new ElectionInfoConverter(), ElectionInfo.class)
             .withConverter(new ElectionInfoConverter(), ElectionInfoImpl.class)
             .withConverter(new ChoiceConverter(), Choice.class)
+            .withSerializer(new ElectionToReadConverter(), ElectionToRead.class)
+            .withSerializer(new ElectionToReadConverter(), ElectionToReadImpl.class)
+            .withSerializer(new ElectionWithResultsToReadConverter(), ElectionWithResultsToRead.class)
+            .withSerializer(new ElectionWithResultsToReadConverter(), ElectionWithResultsToReadImpl.class)
             .create();
     }
 }

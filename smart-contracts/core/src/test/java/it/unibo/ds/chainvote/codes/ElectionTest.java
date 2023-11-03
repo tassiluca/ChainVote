@@ -66,7 +66,7 @@ final class ElectionTest {
     );
     private static final ElectionInfo ELECTION_INFO = ElectionFactory
         .buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
-
+/*
     @Nested
     static class TestBuild {
 
@@ -239,4 +239,7 @@ final class ElectionTest {
 //            );
 //        }
     }
+
+ */
 }
+

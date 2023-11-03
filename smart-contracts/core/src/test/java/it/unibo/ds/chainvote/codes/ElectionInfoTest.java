@@ -70,8 +70,8 @@ final class ElectionInfoTest {
         void testCorrectBuild() {
             assertEquals(Utils.calculateID(GOAL, START_DATE, END_DATE, CHOICES), ELECTION_INFO.getElectionId());
             assertEquals(GOAL, ELECTION_INFO.getGoal());
-            assertEquals(START_DATE, ELECTION_INFO.getStartingDate());
-            assertEquals(END_DATE, ELECTION_INFO.getEndingDate());
+            assertEquals(START_DATE, ELECTION_INFO.getStartDate());
+            assertEquals(END_DATE, ELECTION_INFO.getEndDate());
             final List<Choice> choiceToUse = new ArrayList<>(CHOICES);
             if (!choiceToUse.contains(FixedVotes.INFORMAL_BALLOT.getChoice())) {
                 choiceToUse.add(FixedVotes.INFORMAL_BALLOT.getChoice());
