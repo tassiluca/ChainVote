@@ -80,10 +80,10 @@ final class CodeManagerContractTest {
         @Test
         void whenNotAlreadyRequested() {
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final Response<String> generatedCode = contract.generateCodeFor(context, ELECTION_ID, SEED);
-            assertNotNull(generatedCode.getResult());
+            final String generatedCode = contract.generateCodeFor(context, ELECTION_ID, SEED);
+            assertNotNull(generatedCode);
             verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(
-                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(generatedCode.getResult()))
+                new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(generatedCode))
             ));
         }
 
@@ -144,7 +144,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
-            assertTrue(contract.verifyCodeOwner(context, ELECTION_ID).getResult());
+            assertTrue(contract.verifyCodeOwner(context, ELECTION_ID));
         }
 
         @Test
@@ -153,7 +153,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
-            assertFalse(contract.verifyCodeOwner(context, ELECTION_ID).getResult());
+            assertFalse(contract.verifyCodeOwner(context, ELECTION_ID));
         }
     }
 
@@ -178,7 +178,7 @@ final class CodeManagerContractTest {
                     new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE))
                 ).getBytes(UTF_8)
             );
-            assertTrue(contract.isValid(context, ELECTION_ID).getResult());
+            assertTrue(contract.isValid(context, ELECTION_ID));
         }
 
         @Test
@@ -187,7 +187,7 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(wrongCode);
-            assertFalse(contract.isValid(context, ELECTION_ID).getResult());
+            assertFalse(contract.isValid(context, ELECTION_ID));
         }
 
         @Test
@@ -198,14 +198,14 @@ final class CodeManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, code)
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(invalidCode);
-            assertFalse(contract.isValid(context, ELECTION_ID).getResult());
+            assertFalse(contract.isValid(context, ELECTION_ID));
         }
 
         @Test
         void whenInvalidate() {
             final var code = new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(CODE));
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(genson.serialize(code).getBytes(UTF_8));
-            assertTrue(contract.invalidate(context, ELECTION_ID).getResult());
+            assertTrue(contract.invalidate(context, ELECTION_ID));
             final var consumedCode = code.getCode();
             assertDoesNotThrow(consumedCode::consume);
             final var consumedAsset = new OneTimeCodeAsset(ELECTION_ID, USER_ID, consumedCode);

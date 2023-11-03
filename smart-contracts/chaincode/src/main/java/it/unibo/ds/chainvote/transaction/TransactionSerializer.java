@@ -3,6 +3,7 @@ package it.unibo.ds.chainvote.transaction;
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.GensonUtils;
+import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
 import it.unibo.ds.chainvote.utils.Choice;
@@ -33,11 +34,7 @@ public final class TransactionSerializer implements SerializerInterface {
      */
     @Override
     public byte[] toBuffer(final Object value, final TypeSchema ts) {
-        if (value.getClass().equals(String.class)) {
-            return ((String) value).getBytes(StandardCharsets.UTF_8);
-        } else {
-            return genson.serialize(value).getBytes(StandardCharsets.UTF_8);
-        }
+        return genson.serialize(new Response<>(value)).getBytes(StandardCharsets.UTF_8);
     }
 
     /**
