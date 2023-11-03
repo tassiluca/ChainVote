@@ -4,6 +4,7 @@ import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
 import it.unibo.ds.chainvote.GensonUtils;
+import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.assets.presentation.ElectionFacade;
 import it.unibo.ds.chainvote.assets.presentation.ElectionFacadeImpl;
 import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacade;
@@ -247,7 +248,7 @@ public final class ElectionContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public List<ElectionFacade> getAllElection(final Context ctx) {
         System.out.println("[EC] getAllElection");
-        List<ElectionToRead> allElections = new ArrayList<>();
+        List<ElectionFacade> allElections = new ArrayList<>();
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
                 CHAINCODE_INFO_NAME_CH1,
                 List.of("ElectionInfoContract:getAllElectionInfo"),
