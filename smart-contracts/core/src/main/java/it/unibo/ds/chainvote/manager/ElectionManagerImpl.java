@@ -40,7 +40,7 @@ public final class ElectionManagerImpl implements ElectionManager {
 
     private void checkBallot(final ElectionInfo electionInfo, final Election election, final Ballot ballot) {
         if (!electionInfo.isOpen()
-                || !isDateBetween(ballot.getDate(), electionInfo.getStartingDate(), electionInfo.getEndingDate())
+                || !isDateBetween(ballot.getDate(), electionInfo.getStartDate(), electionInfo.getEndDate())
                 || !electionInfo.getChoices().contains(ballot.getChoice())
                 || election.getResults().values().stream().reduce(Long::sum).orElseThrow() >= electionInfo.getVotersNumber()) {
             illegal("Invalid ballot " + ballot);

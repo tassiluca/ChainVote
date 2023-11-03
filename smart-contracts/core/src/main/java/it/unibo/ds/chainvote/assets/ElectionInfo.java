@@ -32,13 +32,13 @@ public interface ElectionInfo {
      * Return the {@link Election}'s starting {@link LocalDateTime}.
      * @return the {@link Election}'s starting {@link LocalDateTime}.
      */
-    LocalDateTime getStartingDate();
+    LocalDateTime getStartDate();
 
     /**
      * Return the {@link Election}'s ending {@link LocalDateTime}.
      * @return the {@link Election}'s ending {@link LocalDateTime}.
      */
-    LocalDateTime getEndingDate();
+    LocalDateTime getEndDate();
 
     /**
      * Return the {@link Election}'s list of {@link Choice}.

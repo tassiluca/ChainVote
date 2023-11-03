@@ -27,9 +27,9 @@ public final class ElectionInfoConverter implements Converter<ElectionInfo> {
         writer.writeName("voters");
         writer.writeValue(object.getVotersNumber());
         writer.writeName("startDate");
-        writer.writeValue(object.getStartingDate().format(DateTimeFormatter.ISO_DATE_TIME));
+        writer.writeValue(object.getStartDate().format(DateTimeFormatter.ISO_DATE_TIME));
         writer.writeName("endDate");
-        writer.writeValue(object.getEndingDate().format(DateTimeFormatter.ISO_DATE_TIME));
+        writer.writeValue(object.getEndDate().format(DateTimeFormatter.ISO_DATE_TIME));
         writer.writeName("choices");
         writer.beginArray();
         for (Choice vote : object.getChoices()) {
