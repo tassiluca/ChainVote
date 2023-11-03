@@ -37,6 +37,10 @@ export {
     apiLimiter
 } from "./middleware/limiter.middleware";
 
+export {
+    defaultResponseHandler
+} from "./middleware/response.middleware";
+
 
 /**
  * Exporting intefaces

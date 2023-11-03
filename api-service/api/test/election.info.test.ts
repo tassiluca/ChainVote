@@ -10,7 +10,7 @@ beforeAll(async () => {
 });
 
 describe("GET /election/info", () => {
-    
+
     test("Can get all the election infos", async () => {
         for (let i = 0; i < 3; i++) {
             await createElectionInfo(app);
