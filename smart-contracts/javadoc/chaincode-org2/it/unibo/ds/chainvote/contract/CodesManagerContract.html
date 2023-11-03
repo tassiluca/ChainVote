@@ -110,26 +110,26 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>it.unibo.ds.chainvote.Response&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#generateCodeFor(org.hyperledger.fabric.contract.Context,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;seed)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Generate a new one-time-code for the given election and user.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>it.unibo.ds.chainvote.Response&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidate(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">invalidate</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Invalidate the given code for the given election passed in a transient map.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>it.unibo.ds.chainvote.Response&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isValid(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">isValid</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Check if the given code is still valid, i.e.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>it.unibo.ds.chainvote.Response&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#verifyCodeOwner(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">verifyCodeOwner</a><wbr>(org.hyperledger.fabric.contract.Context&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -172,7 +172,7 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <li>
 <section class="detail" id="generateCodeFor(org.hyperledger.fabric.contract.Context,java.lang.String,java.lang.String)">
 <h3>generateCodeFor</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">it.unibo.ds.chainvote.Response&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">generateCodeFor</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">generateCodeFor</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;seed)</span></div>
 <div class="block">Generate a new one-time-code for the given election and user.</div>
@@ -198,7 +198,7 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <li>
 <section class="detail" id="isValid(org.hyperledger.fabric.contract.Context,java.lang.String)">
 <h3>isValid</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">it.unibo.ds.chainvote.Response&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">isValid</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isValid</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</span></div>
 <div class="block">Check if the given code is still valid, i.e. has not been consumed yet for the given election.</div>
 <dl class="notes">
@@ -220,7 +220,7 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <li>
 <section class="detail" id="invalidate(org.hyperledger.fabric.contract.Context,java.lang.String)">
 <h3>invalidate</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">it.unibo.ds.chainvote.Response&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">invalidate</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">invalidate</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</span></div>
 <div class="block">Invalidate the given code for the given election passed in a transient map.
  After calling this method the code can no longer be used.</div>
@@ -246,7 +246,7 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <li>
 <section class="detail" id="verifyCodeOwner(org.hyperledger.fabric.contract.Context,java.lang.String)">
 <h3>verifyCodeOwner</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">it.unibo.ds.chainvote.Response&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">verifyCodeOwner</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">verifyCodeOwner</span><wbr><span class="parameters">(org.hyperledger.fabric.contract.Context&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;electionId)</span></div>
 <div class="block">Verifies if the given code has been generated for the given user and election passed in a transient map.</div>
 <dl class="notes">
