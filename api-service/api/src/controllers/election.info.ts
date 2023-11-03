@@ -61,13 +61,11 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-
         const goal: string = req.body.goal;
         const voters: string = req.body.voters;
         const startDate: string = req.body.startDate;
         const endDate: string = req.body.endDate;
         const choices: string= JSON.stringify(convertToChoiceList(req.body.choices));
-
         const data = [goal, voters, startDate, endDate, choices];
         const submission: Uint8Array = await contract.submit('ElectionInfoContract:createElectionInfo', {
             arguments: data
@@ -91,7 +89,6 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-
         const electionId: string = req.params.electionId
         const submission: Uint8Array = await contract.evaluateTransaction('ElectionInfoContract:readElectionInfo', electionId);
         const resultJson = utf8Decoder.decode(submission);
@@ -114,7 +111,6 @@ export async function deleteElectionInfo(req: Request, res: Response, next: Next
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-
         const electionId: string = req.body.electionId;
         await contract.submitTransaction('ElectionInfoContract:deleteElectionInfo', electionId);
         return res.status(StatusCodes.OK).send({message: "Asset deleted successfully"});
