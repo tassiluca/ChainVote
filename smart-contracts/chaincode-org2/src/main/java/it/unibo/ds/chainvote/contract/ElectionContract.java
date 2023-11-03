@@ -146,8 +146,8 @@ public final class ElectionContract implements ContractInterface {
                 List.of("ElectionInfoContract:readElectionInfo", electionId),
                 CHANNEL_INFO_NAME_CH1
         );
-        String electionDeserialized = response.getStringPayload();
-        return genson.deserialize(electionDeserialized, ElectionInfo.class);
+        final Response<ElectionInfo> responsePayload = genson.deserialize(response.getStringPayload(), new GenericType<>() {});
+        return responsePayload.getResult();
     }
 
     /**
@@ -247,26 +247,21 @@ public final class ElectionContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public List<ElectionFacade> getAllElection(final Context ctx) {
         System.out.println("[EC] getAllElection");
-
-        List<ElectionFacade> allElections = new ArrayList<>();
-
+        List<ElectionToRead> allElections = new ArrayList<>();
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
                 CHAINCODE_INFO_NAME_CH1,
                 List.of("ElectionInfoContract:getAllElectionInfo"),
                 CHANNEL_INFO_NAME_CH1
         );
-        String electionInfosSerialized = response.getStringPayload();
-        System.out.println("[EC] getAllElection response from GAEI: " + electionInfosSerialized);
-        List<ElectionInfo> electionInfos = GensonUtils.create().deserialize(electionInfosSerialized, new GenericType<>() { });
-
+        final Response<List<ElectionInfo>> responsePayload = genson.deserialize(response.getStringPayload(), new GenericType<>() {});
+        final List<ElectionInfo> electionInfos = responsePayload.getResult();
+        System.out.println("[EC] getAllElection response from GAEI: " + electionInfos);
         for (ElectionInfo electionInfo : electionInfos) {
             String electionId = electionInfo.getElectionId();
             Election election = this.readStandardElection(ctx, electionId);
             allElections.add(new ElectionFacadeImpl(election, electionInfo));
         }
-
         System.out.println("[EC] getAllElection results serialized: " + genson.serialize(allElections));
-
         return allElections;
     }
 }
