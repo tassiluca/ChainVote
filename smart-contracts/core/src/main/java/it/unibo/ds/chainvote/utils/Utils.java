@@ -49,7 +49,7 @@ public final class Utils {
      * @return the hashcode without need to build it.
      */
     public static String calculateID(final ElectionInfo electionInfo) {
-        return calculateID(electionInfo.getGoal(), electionInfo.getStartingDate(),
-                electionInfo.getEndingDate(), electionInfo.getChoices());
+        return calculateID(electionInfo.getGoal(), electionInfo.getStartDate(),
+                electionInfo.getEndDate(), electionInfo.getChoices());
     }
 }

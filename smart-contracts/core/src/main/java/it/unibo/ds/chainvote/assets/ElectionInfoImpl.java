@@ -51,12 +51,12 @@ public final class ElectionInfoImpl implements ElectionInfo {
     }
 
     @Override
-    public LocalDateTime getStartingDate() {
+    public LocalDateTime getStartDate() {
         return this.startingDate;
     }
 
     @Override
-    public LocalDateTime getEndingDate() {
+    public LocalDateTime getEndDate() {
         return this.endingDate;
     }
 
@@ -83,13 +83,13 @@ public final class ElectionInfoImpl implements ElectionInfo {
             && getGoal().equals(other.getGoal())
             && getVotersNumber() == other.getVotersNumber()
             && Objects.deepEquals(
-            new LocalDateTime[] {getStartingDate(), getEndingDate()},
-            new LocalDateTime[] {other.getStartingDate(), other.getEndingDate()});
+            new LocalDateTime[] {getStartDate(), getEndDate()},
+            new LocalDateTime[] {other.getStartDate(), other.getEndDate()});
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getGoal(), getStartingDate(), getEndingDate(), getChoices());
+        return Objects.hash(getGoal(), getStartDate(), getEndDate(), getChoices());
     }
 
     @Override

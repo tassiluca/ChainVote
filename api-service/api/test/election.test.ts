@@ -18,7 +18,7 @@ describe("DELETE /election", () => {
         await request(app).delete("/election")
             .send({electionId: electionId})
             .set("Accept", "application/json")
-            .expect("Content-Type", "text/html; charset=utf-8")
+            .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
    }, MAX_TIMEOUT);
 });

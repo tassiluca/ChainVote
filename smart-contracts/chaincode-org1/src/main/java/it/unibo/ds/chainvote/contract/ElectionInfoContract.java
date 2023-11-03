@@ -53,10 +53,10 @@ public final class ElectionInfoContract implements ContractInterface {
      * @param sDate the {@link String} representing the encoded (ISO format) starting date.
      * @param eDate the {@link String} representing the encoded (ISO format) ending date.
      * @param choices the {@link List} of {@link Choice} that the {@link ElectionInfo} to build has.
-     * @return the {@link String} representing the electionId of the {@link ElectionInfo} built.
+     * @return the {@link ElectionInfo} built.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public String createElectionInfo(
+    public ElectionInfo createElectionInfo(
         final Context ctx,
         final String goal,
         final Long votersNumber,
@@ -78,7 +78,7 @@ public final class ElectionInfoContract implements ContractInterface {
                 .buildElectionInfo(goal, votersNumber, startingDate, endingDate, choices);
             String sortedJson = genson.serialize(electionInfo);
             stub.putStringState(electionId, sortedJson);
-            return genson.serialize(electionId);
+            return electionInfo;
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
             throw new ChaincodeException(e.getMessage(), ElectionInfoTransferErrors.ELECTION_INFO_INVALID_ARGUMENT.toString());
@@ -109,9 +109,10 @@ public final class ElectionInfoContract implements ContractInterface {
      * Delete an {@link ElectionInfo} from the ledger.
      * @param ctx The {@link Context}.
      * @param electionId The electionId of the {@link ElectionInfo} to delete.
+     * @return the {@link ElectionInfo} deleted.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void deleteElectionInfo(final Context ctx, final String electionId) {
+    public ElectionInfo deleteElectionInfo(final Context ctx, final String electionId) {
         System.out.println("[EIC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
         if (!electionInfoExists(ctx, electionId)) {
@@ -119,7 +120,12 @@ public final class ElectionInfoContract implements ContractInterface {
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
         }
+
+        ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
+
         stub.delState(electionId);
+
+        return electionInfo;
     }
 
     /**
@@ -144,18 +150,17 @@ public final class ElectionInfoContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public List<ElectionInfo> getAllElectionInfo(final Context ctx) {
         System.out.println("[EIC] getAllElectionInfo");
+
         ChaincodeStub stub = ctx.getStub();
         List<ElectionInfo> queryResults = new ArrayList<>();
-        // To retrieve all assets from the ledger use getStateByRange with empty startKey & endKey.
-        // Giving empty startKey & endKey is interpreted as all the keys from beginning to end.
-        // As another example, if you use startKey = 'asset0', endKey = 'asset9' ,
-        // then getStateByRange will retrieve asset with keys between asset0 (inclusive) and asset9 (exclusive) in lexical order.
+
         QueryResultsIterator<KeyValue> results = stub.getStateByRange("", "");
         for (KeyValue result: results) {
             ElectionInfo election = genson.deserialize(result.getStringValue(), ElectionInfo.class);
             queryResults.add(election);
         }
         System.out.println("[GAEI] results: " + queryResults);
+
         return queryResults;
     }
 }

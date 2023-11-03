@@ -1,7 +1,6 @@
 import request from "supertest";
 import ExpressConfig from "../src/configs/express.config";
 import {StatusCodes} from "http-status-codes";
-import {DateTime} from "luxon";
 import {createElectionInfo} from "./common/utils";
 
 let app;
@@ -11,12 +10,29 @@ beforeAll(async () => {
 });
 
 describe("GET /election/info", () => {
+    
     test("Can get all the election infos", async () => {
-        await request(app).get("/election/info/all")
+        for (let i = 0; i < 3; i++) {
+            await createElectionInfo(app);
+        }
+        const response = await request(app).get("/election/info/all")
             .set("Accept", "application/json")
-            .expect("Content-Type", /json/)
+            .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
-    });
+
+        expect(response.body.result).toBeDefined();
+        expect(response.body.result.length).toBeGreaterThanOrEqual(3);
+
+        const oneResult = response.body.result[0];
+
+        expect(oneResult.electionId).toBeDefined();
+        expect(oneResult.voters).toBeDefined();
+        expect(oneResult.goal).toBeDefined();
+        expect(oneResult.startDate).toBeDefined();
+        expect(oneResult.endDate).toBeDefined();
+        expect(oneResult.choices).toBeDefined();
+
+    }, 20000);
 
     test("Can get a specific election info", async () => {
         const electionId = await createElectionInfo(app);
@@ -24,7 +40,8 @@ describe("GET /election/info", () => {
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
             .expect(StatusCodes.OK);
-        expect(response.body.goal).toEqual("Test goal " + DateTime.now().toISODate());
+
+        expect(response.body.result.electionId).toEqual(electionId);
     });
 });
 

@@ -8,13 +8,13 @@ import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionImpl;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
 import it.unibo.ds.chainvote.assets.ElectionInfoImpl;
+import it.unibo.ds.chainvote.assets.presentation.ElectionFacade;
+import it.unibo.ds.chainvote.assets.presentation.ElectionFacadeImpl;
+import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacade;
+import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacadeImpl;
 import it.unibo.ds.chainvote.codes.OneTimeCode;
 import it.unibo.ds.chainvote.codes.OneTimeCodeImpl;
-import it.unibo.ds.chainvote.converters.BallotConverter;
-import it.unibo.ds.chainvote.converters.ChoiceConverter;
-import it.unibo.ds.chainvote.converters.ElectionConverter;
-import it.unibo.ds.chainvote.converters.ElectionInfoConverter;
-import it.unibo.ds.chainvote.converters.OneTimeCodeConverter;
+import it.unibo.ds.chainvote.converters.*;
 import it.unibo.ds.chainvote.utils.Choice;
 
 /**
@@ -30,7 +30,6 @@ public final class GensonUtils {
     public static Genson create() {
         return new GensonBuilder()
             .useRuntimeType(false)
-            .useConstructorWithArguments(true)
             .withConverter(new OneTimeCodeConverter(), OneTimeCodeImpl.class)
             .withConverter(new OneTimeCodeConverter(), OneTimeCode.class)
             .withConverter(new BallotConverter(), Ballot.class)
@@ -40,6 +39,10 @@ public final class GensonUtils {
             .withConverter(new ElectionInfoConverter(), ElectionInfo.class)
             .withConverter(new ElectionInfoConverter(), ElectionInfoImpl.class)
             .withConverter(new ChoiceConverter(), Choice.class)
+            .withSerializer(new ElectionToReadConverter(), ElectionFacade.class)
+            .withSerializer(new ElectionToReadConverter(), ElectionFacadeImpl.class)
+            .withSerializer(new ElectionWithResultsToReadConverter(), ElectionCompleteFacade.class)
+            .withSerializer(new ElectionWithResultsToReadConverter(), ElectionCompleteFacadeImpl.class)
             .create();
     }
 }

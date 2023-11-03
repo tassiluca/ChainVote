@@ -70,7 +70,7 @@ public class ElectionFactory {
      * @throws IllegalArgumentException in case checks on parameters fail.
      */
     public static Election buildElection(final ElectionInfo electionInfo, final Map<String, Long> results) {
-        checkDataAndResults(electionInfo.getEndingDate(), results);
+        checkDataAndResults(electionInfo.getEndDate(), results);
         return new ElectionImpl.Builder()
             .results(initializeResults(results, electionInfo.getChoices(), electionInfo.getVotersNumber()))
             .ballots(new ArrayList<>())

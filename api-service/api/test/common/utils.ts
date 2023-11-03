@@ -25,10 +25,10 @@ export async function createElectionInfo(app: Application) {
             choices: choices
         })
         .set("Accept", "application/json")
-        .expect("Content-Type", "text/html; charset=utf-8")
+        .expect("Content-Type", "application/json; charset=utf-8")
         .expect(StatusCodes.OK);
 
-    return createResponse.text;
+    return createResponse.body.result.electionId;
 }
 
 
@@ -51,6 +51,5 @@ export async function createCodeForElection(app: Application, userId, electionId
         .expect(StatusCodes.OK);
 
     expect(response.body.result).toBeDefined();
-    expect(response.body.success).toBe(true);
     return response.body.result;
 }
