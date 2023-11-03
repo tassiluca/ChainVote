@@ -23,6 +23,7 @@ public final class ElectionInfoConverter implements Converter<ElectionInfo> {
     @Override
     public void serialize(final ElectionInfo object, final ObjectWriter writer, final Context ctx) {
         writer.beginObject();
+        writer.writeString("electionId", object.getElectionId());
         writer.writeString("goal", object.getGoal());
         writer.writeName("voters");
         writer.writeValue(object.getVotersNumber());
@@ -51,10 +52,13 @@ public final class ElectionInfoConverter implements Converter<ElectionInfo> {
         LocalDateTime start = null;
         LocalDateTime end = null;
         List<Choice> choices = null;
+        String electionId = null;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         while (reader.hasNext()) {
             reader.next();
-            if ("goal".equals(reader.name())) {
+            if ("electionId".equals(reader.name())) {
+                electionId = reader.valueAsString();
+            } else if ("goal".equals(reader.name())) {
                 goal = reader.valueAsString();
             } else if ("voters".equals(reader.name())) {
                 voters = reader.valueAsLong();
