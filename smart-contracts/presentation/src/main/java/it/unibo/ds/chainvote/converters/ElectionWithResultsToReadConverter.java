@@ -3,17 +3,17 @@ package it.unibo.ds.chainvote.converters;
 import com.owlike.genson.Context;
 import com.owlike.genson.Serializer;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.chainvote.assets.presentation.ElectionToRead;
-import it.unibo.ds.chainvote.assets.presentation.ElectionWithResultsToRead;
+import it.unibo.ds.chainvote.assets.presentation.ElectionFacade;
+import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacade;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-public class ElectionWithResultsToReadConverter implements Serializer<ElectionWithResultsToRead> {
+public class ElectionWithResultsToReadConverter implements Serializer<ElectionCompleteFacade> {
 
     @Override
-    public void serialize(final ElectionWithResultsToRead object, final ObjectWriter writer, final Context ctx) {
-        ElectionToRead etr = object.getElectionToRead();
+    public void serialize(final ElectionCompleteFacade object, final ObjectWriter writer, final Context ctx) {
+        ElectionFacade etr = object.getElectionFacade();
         writer.beginObject();
         writer.writeString("status", etr.getStatus().getKey());
         writer.writeString("id", etr.getId());

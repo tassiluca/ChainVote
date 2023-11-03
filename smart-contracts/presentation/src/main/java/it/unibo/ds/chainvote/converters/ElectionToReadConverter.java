@@ -1,18 +1,16 @@
 package it.unibo.ds.chainvote.converters;
 
 import com.owlike.genson.Context;
-import com.owlike.genson.Converter;
 import com.owlike.genson.Serializer;
-import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.chainvote.assets.presentation.ElectionToRead;
+import it.unibo.ds.chainvote.assets.presentation.ElectionFacade;
 
 import java.time.format.DateTimeFormatter;
 
-public class ElectionToReadConverter implements Serializer<ElectionToRead> {
+public class ElectionToReadConverter implements Serializer<ElectionFacade> {
 
     @Override
-    public void serialize(final ElectionToRead object, final ObjectWriter writer, final Context ctx) {
+    public void serialize(final ElectionFacade object, final ObjectWriter writer, final Context ctx) {
         writer.beginObject();
         writer.writeString("status", object.getStatus().getKey());
         writer.writeString("id", object.getId());

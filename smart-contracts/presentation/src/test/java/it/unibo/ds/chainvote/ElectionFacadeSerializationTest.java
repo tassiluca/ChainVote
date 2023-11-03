@@ -3,10 +3,8 @@ package it.unibo.ds.chainvote;
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
-import it.unibo.ds.chainvote.assets.presentation.ElectionToRead;
-import it.unibo.ds.chainvote.assets.presentation.ElectionToReadImpl;
-import it.unibo.ds.chainvote.assets.presentation.ElectionWithResultsToRead;
-import it.unibo.ds.chainvote.assets.presentation.ElectionWithResultsToReadImpl;
+import it.unibo.ds.chainvote.assets.presentation.ElectionFacade;
+import it.unibo.ds.chainvote.assets.presentation.ElectionFacadeImpl;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-public class ElectionWithResultsToReadSerializationTest {
+public class ElectionFacadeSerializationTest {
     private final Genson genson = GensonUtils.create();
     private static final String GOAL = "prova";
     private static final long VOTERS = 400_000_000L;
@@ -59,7 +57,7 @@ public class ElectionWithResultsToReadSerializationTest {
 
     @Test
     void testSerialization() {
-        ElectionWithResultsToRead etr = new ElectionWithResultsToReadImpl(ELECTION, ELECTION_INFO);
+        ElectionFacade etr = new ElectionFacadeImpl(ELECTION, ELECTION_INFO);
         System.out.println(genson.serialize(etr));
     }
 }

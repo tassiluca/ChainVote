@@ -3,12 +3,11 @@ package it.unibo.ds.chainvote.contract;
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
-import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.GensonUtils;
-import it.unibo.ds.chainvote.assets.presentation.ElectionToRead;
-import it.unibo.ds.chainvote.assets.presentation.ElectionToReadImpl;
-import it.unibo.ds.chainvote.assets.presentation.ElectionWithResultsToRead;
-import it.unibo.ds.chainvote.assets.presentation.ElectionWithResultsToReadImpl;
+import it.unibo.ds.chainvote.assets.presentation.ElectionFacade;
+import it.unibo.ds.chainvote.assets.presentation.ElectionFacadeImpl;
+import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacade;
+import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacadeImpl;
 import it.unibo.ds.chainvote.utils.UserCodeData;
 import it.unibo.ds.chainvote.assets.Ballot;
 import it.unibo.ds.chainvote.assets.BallotImpl;
@@ -119,18 +118,18 @@ public final class ElectionContract implements ContractInterface {
     }
 
     /**
-     * Return the {@link ElectionWithResultsToRead} related to {@link Election} and {@link ElectionInfo} labeled with
+     * Return the {@link ElectionCompleteFacade} related to {@link Election} and {@link ElectionInfo} labeled with
      * the given electionId.
      * @param ctx the {@link Context}.
      * @param electionId the id of the {@link Election} to retrieve open information (electionId and affluence).
-     * @return the {@link ElectionWithResultsToRead}.
+     * @return the {@link ElectionCompleteFacade}.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public ElectionWithResultsToRead readElection(final Context ctx, String electionId) {
+    public ElectionCompleteFacade readElection(final Context ctx, String electionId) {
         System.out.println("[EC] readOpenElection");
         Election election = readStandardElection(ctx, electionId);
         ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
-        return new ElectionWithResultsToReadImpl(election, electionInfo);
+        return new ElectionCompleteFacadeImpl(election, electionInfo);
     }
 
     /**
@@ -157,9 +156,10 @@ public final class ElectionContract implements ContractInterface {
      *        key-value pairs: {@link UserCodeData#USER_ID} and {@link UserCodeData#CODE}..
      * @param choice the {@link Choice} of the vote.
      * @param electionId the id of the {@link Election} where the vote is cast.
+     * @return the {@link Boolean} representing the successfulness of the operation.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void castVote(final Context ctx, Choice choice, String electionId) {
+    public boolean castVote(final Context ctx, Choice choice, String electionId) {
         System.out.println("[EC] castVote");
 
         final Pair<String, String> userCodePair = UserCodeData.getUserCodePairFrom(ctx.getStub().getTransient());
@@ -200,6 +200,7 @@ public final class ElectionContract implements ContractInterface {
         CODES_MANAGER_CONTRACT.invalidate(ctx, electionId);
         String electionSerialized = genson.serialize(election);
         ctx.getStub().putStringState(electionId, electionSerialized);
+        return true;
     }
 
     /**
@@ -244,10 +245,10 @@ public final class ElectionContract implements ContractInterface {
      * @return the {@link Election}s serialized.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public List<ElectionToRead> getAllElection(final Context ctx) {
+    public List<ElectionFacade> getAllElection(final Context ctx) {
         System.out.println("[EC] getAllElection");
 
-        List<ElectionToRead> allElections = new ArrayList<>();
+        List<ElectionFacade> allElections = new ArrayList<>();
 
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
                 CHAINCODE_INFO_NAME_CH1,
@@ -261,7 +262,7 @@ public final class ElectionContract implements ContractInterface {
         for (ElectionInfo electionInfo : electionInfos) {
             String electionId = electionInfo.getElectionId();
             Election election = this.readStandardElection(ctx, electionId);
-            allElections.add(new ElectionToReadImpl(election, electionInfo));
+            allElections.add(new ElectionFacadeImpl(election, electionInfo));
         }
 
         System.out.println("[EC] getAllElection results serialized: " + genson.serialize(allElections));

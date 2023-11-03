@@ -2,8 +2,8 @@ package it.unibo.ds.chainvote.assets.presentation;
 
 import java.util.Map;
 
-public interface ElectionWithResultsToRead {
+public interface ElectionCompleteFacade {
 
-    ElectionToRead getElectionToRead();
+    ElectionFacade getElectionFacade();
     Map<String, Long> getResults();
 }

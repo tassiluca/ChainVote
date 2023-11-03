@@ -7,7 +7,7 @@ import it.unibo.ds.chainvote.utils.Utils;
 import java.time.LocalDateTime;
 
 // TODO documentation
-public class ElectionToReadImpl implements ElectionToRead {
+public class ElectionFacadeImpl implements ElectionFacade {
 
     private final ElectionStatus status;
     private final String id;
@@ -16,7 +16,7 @@ public class ElectionToReadImpl implements ElectionToRead {
     private final LocalDateTime endDate;
     private final double affluence;
 
-    public ElectionToReadImpl(Election election, ElectionInfo info) {
+    public ElectionFacadeImpl(Election election, ElectionInfo info) {
         this.status = info.isOpen() ? ElectionStatus.OPEN : ElectionStatus.CLOSED;
         this.id = Utils.calculateID(info);
         this.goal = info.getGoal();

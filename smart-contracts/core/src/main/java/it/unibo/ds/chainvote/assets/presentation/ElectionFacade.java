@@ -3,7 +3,7 @@ package it.unibo.ds.chainvote.assets.presentation;
 import java.time.LocalDateTime;
 
 // TODO documentation
-public interface ElectionToRead {
+public interface ElectionFacade {
 
     ElectionStatus getStatus();
     String getId();
