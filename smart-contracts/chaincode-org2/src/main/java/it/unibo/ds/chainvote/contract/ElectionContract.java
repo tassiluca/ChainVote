@@ -185,9 +185,7 @@ public final class ElectionContract implements ContractInterface {
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
         }
 
-        final Response<Boolean> codeValidity = CODES_MANAGER_CONTRACT.isValid(ctx, electionId);
-
-        if (!codeValidity.isSuccess() || !codeValidity.getResult()) {
+        if (!CODES_MANAGER_CONTRACT.isValid(ctx, electionId)) {
             String errorMessage = "The given one-time-code is not valid.";
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_INVALID_CREDENTIALS_TO_CAST_VOTE.toString());

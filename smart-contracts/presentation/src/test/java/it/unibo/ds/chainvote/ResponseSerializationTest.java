@@ -34,20 +34,11 @@ final class ResponseSerializationTest {
         assertEquals(expectedResult.first(), deserialized);
     }
 
-    @Test
-    void testErrorResult() {
-        final Pair<Response<Object>, String> expectedResult = getErrorResult();
-        final var serialized = genson.serialize(expectedResult.first());
-        assertEquals(expectedResult.second(), serialized);
-        final Response<Object> deserialized = genson.deserialize(serialized, new GenericType<>() { });
-        assertEquals(expectedResult.first(), deserialized);
-    }
-
     private Pair<Response<String>, String> getSimpleResult() {
-        final Response<String> result = Response.success("simple-result");
+        final Response<String> result = new Response<>("simple-result");
         return new Pair<>(
             result,
-            "{\"error\":null,\"result\":\"simple-result\",\"success\":true}"
+            "{\"result\":\"simple-result\"}"
         );
     }
 
@@ -59,18 +50,10 @@ final class ResponseSerializationTest {
             .choice(new Choice("yes"))
             .choice(new Choice("no"))
             .build();
-        final Response<Ballot> result = Response.success(ballot);
+        final Response<Ballot> result = new Response<>(ballot);
         return new Pair<>(
             result,
-            "{\"error\":null,\"result\":" + genson.serialize(ballot) + ",\"success\":true}"
-        );
-    }
-
-    private Pair<Response<Object>, String> getErrorResult() {
-        final Response<Object> result = Response.error("Error message test");
-        return new Pair<>(
-            result,
-            "{\"error\":\"Error message test\",\"result\":null,\"success\":false}"
+            "{\"result\":" + genson.serialize(ballot) + "}"
         );
     }
 }

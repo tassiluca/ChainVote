@@ -54,7 +54,7 @@ public final class CodesManagerContract implements ContractInterface {
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Response<String> generateCodeFor(final Context context, final String electionId, final String seed) {
+    public String generateCodeFor(final Context context, final String electionId, final String seed) {
         final var userId = TransientUtils.getStringFromTransient(context.getStub().getTransient(), USER_ID.getKey());
         if (seed.isBlank()) {
             throw new ChaincodeException("Seed cannot be blank", Error.INCORRECT_INPUT.toString());
@@ -62,7 +62,7 @@ public final class CodesManagerContract implements ContractInterface {
             throw new ChaincodeException("The given election doesn't exists", Error.INCORRECT_INPUT.toString());
         }
         try {
-            return Response.success(codeManager.generateCodeFor(context, electionId, userId, seed + userId).getCode());
+            return codeManager.generateCodeFor(context, electionId, userId, seed + userId).getCode();
         } catch (AlreadyGeneratedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
         }
@@ -77,11 +77,9 @@ public final class CodesManagerContract implements ContractInterface {
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public Response<Boolean> isValid(final Context context, final String electionId) {
+    public boolean isValid(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
-        return Response.success(
-            codeManager.isValid(context, electionId, codeUserPair.first(), codeUserPair.second())
-        );
+        return codeManager.isValid(context, electionId, codeUserPair.first(), codeUserPair.second());
     }
 
     /**
@@ -96,11 +94,11 @@ public final class CodesManagerContract implements ContractInterface {
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction
-    public Response<Boolean> invalidate(final Context context, final String electionId) {
+    public boolean invalidate(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
         try {
             codeManager.invalidate(context, electionId, codeUserPair.first(), codeUserPair.second());
-            return Response.success(true);
+            return true;
         } catch (InvalidCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_INVALIDATED_CODE.toString());
         } catch (IncorrectCodeException exception) {
@@ -117,11 +115,9 @@ public final class CodesManagerContract implements ContractInterface {
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public Response<Boolean> verifyCodeOwner(final Context context, final String electionId) {
+    public boolean verifyCodeOwner(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
-        return Response.success(
-            codeManager.verifyCodeOwner(context, electionId, codeUserPair.first(), codeUserPair.second())
-        );
+        return codeManager.verifyCodeOwner(context, electionId, codeUserPair.first(), codeUserPair.second());
     }
 
     private static class LedgerRepository implements CodeRepository<Context> {
