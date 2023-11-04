@@ -36,16 +36,13 @@ describe("POST /code/", () => {
         const electionId = await createElection(app);
         const code = await createCodeForElection(app, user.id, electionId);
         const response = await request(app).post("/code/is-valid")
-            .send({
-                code: code,
-                userId: user.id,
-                electionId: electionId
-            })
+            .send({code: code, userId: user.id, electionId: electionId })
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
-        expect(response.body.result).toBeDefined();
-        expect(response.body.result).toBe(true);
+
+        expect(response.body.success).toBe(true);
+        expect(response.body.data).toBe(true);
     }, 20000);
 
 
@@ -58,7 +55,7 @@ describe("POST /code/", () => {
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
 
-        expect(response.body.result).toBe(true);
+        expect(response.body.data).toBe(true);
     }, 20000);
 });
 
@@ -72,7 +69,7 @@ describe("PATCH /code/", () => {
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
-        expect(response.body.result).toBeDefined();
+        expect(response.body.data).toBeDefined();
         expect(response.body.success).toBe(true);
     }, 20000);
 });

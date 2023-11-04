@@ -61,6 +61,8 @@ export async function createCodeForElection(app: Application, userId, electionId
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect(StatusCodes.OK);
 
-    expect(response.body.result).toBeDefined();
-    return response.body.result;
+    expect(response.body.success).toBe(true);
+    expect(response.body.data).toBeDefined();
+
+    return response.body.data;
 }

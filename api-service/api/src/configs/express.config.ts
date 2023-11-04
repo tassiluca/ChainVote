@@ -17,8 +17,6 @@ const ExpressConfig = (): Application => {
   app.use(express.json());
   app.use(bodyParser.json());
 
-
-
   // Routes initialization
   app.use("/users", userRouter);
   app.use("/election", electionRouter);

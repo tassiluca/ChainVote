@@ -27,7 +27,7 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
 
         const electionId = req.body.electionId
 
-        const randomNumber = Math.floor(Math.random() * 1000000000);
+        const randomNumber = Math.floor(Math.random() * 1_000_000_000);
         const seed: string = seedrandom(randomNumber+ Date.now()).int32().toString();
         const userId = req.body.userId;
 
@@ -36,12 +36,13 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
             transientData: { "userId": userId }
         });
 
-        const resultJson = utf8Decoder.decode(codeRequest);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+        const result = utf8Decoder.decode(codeRequest);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = JSON.parse(result).result;
     } catch (error) {
-        console.log(error);
         return next(transformHyperledgerError(error));
     }
+    return next();
 }
 
 /**
@@ -68,11 +69,15 @@ export async function isValid(req: Request, res: Response, next: NextFunction) {
             }
         });
 
-        const resultJson = utf8Decoder.decode(codeRequest);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+        const result = utf8Decoder.decode(codeRequest);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = JSON.parse(result).result;
+
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+
+    return next();
 }
 
 /**
@@ -99,11 +104,13 @@ export async function invalidate(req: Request, res: Response, next: NextFunction
             }
         });
 
-        const resultJson = utf8Decoder.decode(codeRequest);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+        const result = utf8Decoder.decode(codeRequest);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = JSON.parse(result).result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }
 
 /**
@@ -129,10 +136,12 @@ export async function verifyCodeOwner(req: Request, res: Response, next: NextFun
                 "userId": userId
             }
         });
+        const result = utf8Decoder.decode(codeRequest);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = JSON.parse(result).result;
 
-        const resultJson = utf8Decoder.decode(codeRequest);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }
