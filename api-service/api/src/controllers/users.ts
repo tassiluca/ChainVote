@@ -33,17 +33,17 @@ export async function createUser(req: Request, res: Response, next: NextFunction
     });
     try {
         await user.save();
-        res.status(StatusCodes.CREATED).send({
-            message: "User created successfully",
-            data: {
-                email: user.email,
-                firstName: user.firstName,
-                secondName: user.secondName
-            }
-        });
+        res.locals.code = StatusCodes.CREATED;
+        res.locals.data = {
+            email: user.email,
+            firstName: user.firstName,
+            secondName: user.secondName
+        };
     } catch(error) {
         return next(error);
     }
+
+    return next();
 }
 
 export async function getProfile(req: Request, res: Response, next: NextFunction) {
@@ -51,14 +51,16 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
     const isAllowed = ac.can(res.locals.user.role).readAny('users').granted;
     try {
         user = await setWorkData(req, res, next, isAllowed);
-        return res.status(StatusCodes.OK).send({
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = {
             email: user.email,
-            firstName: user.firstName,
-            secondName: user.secondName
-        });
+                firstName: user.firstName,
+                secondName: user.secondName
+        };
     } catch (error) {
         return next(error);
     }
+    return next();
 }
 
 export async function editProfile(req: Request, res: Response, next: NextFunction) {
@@ -77,10 +79,12 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
 
     try {
         await User.updateOne({ email: user.email }, data);
-        return res.status(StatusCodes.OK).send({ message: "User updated successfully" });
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = true;
     } catch(error) {
         return next(error);
     }
+    return next();
 }
 
 export async function deleteProfile(req: Request, res: Response, next: NextFunction) {
@@ -89,10 +93,10 @@ export async function deleteProfile(req: Request, res: Response, next: NextFunct
     try {
         user = await setWorkData(req, res, next, isAllowed);
         await User.deleteOne({ email: user.email });
-        return res.status(StatusCodes.OK).send({ 
-            message: "User deleted successfully" 
-        });
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = true;
     } catch (error) {
         return next(error);
     }
+    return next();
 }

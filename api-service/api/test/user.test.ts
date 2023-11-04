@@ -58,14 +58,13 @@ describe("GET /users/", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.OK);
 
-        expect(response.body).toHaveProperty("email");
-        expect(response.body).toHaveProperty("firstName");
-        expect(response.body).toHaveProperty("secondName");
-
-        expect(response.body.email).toBe(user.email);
-        expect(response.body.firstName).toBe(user.firstName);
-        expect(response.body.secondName).toBe(user.secondName);
-
+        expect(response.body.success).toBe(true);
+        expect(response.body.data).toHaveProperty("email");
+        expect(response.body.data).toHaveProperty("firstName");
+        expect(response.body.data).toHaveProperty("secondName");
+        expect(response.body.data.email).toBe(user.email);
+        expect(response.body.data.firstName).toBe(user.firstName);
+        expect(response.body.data.secondName).toBe(user.secondName);
     });
 
     test("Can't get the informations of an user with an invalid token", async () => {
@@ -76,12 +75,11 @@ describe("GET /users/", () => {
             .expect(StatusCodes.NOT_FOUND);
 
         expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("message");
-        expect(response.body).toHaveProperty("name");
+        expect(response.body).toHaveProperty("error");
 
         expect(response.body.code).toBe(StatusCodes.NOT_FOUND);
-        expect(response.body.message).toBe("The submitted jwt token doesn't exists");
-        expect(response.body.name).toBe("Not Found");
+        expect(response.body.error.message).toBe("The submitted jwt token doesn't exists");
+        expect(response.body.error.name).toBe("Not Found");
     });
 
 
@@ -195,8 +193,9 @@ describe("PUT /users/", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.OK);
 
-            expect(response.body).toHaveProperty("message");
-            expect(response.body.message).toBe("User updated successfully");
+            expect(response.body).toHaveProperty("data");
+            expect(response.body.data).toBe(true);
+            expect(response.body.code).toBe(StatusCodes.OK);
     });
 
 });
@@ -231,8 +230,9 @@ describe("DELETE /users/", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.OK);
 
-        expect(response.body).toHaveProperty("message");
-        expect(response.body.message).toBe("User deleted successfully");
+        expect(response.body).toHaveProperty("data");
+        expect(response.body.data).toBe(true);
+        expect(response.body.code).toBe(StatusCodes.OK);
     });
 
     test("Can't delete another user", async () => {
@@ -243,12 +243,11 @@ describe("DELETE /users/", () => {
             .expect(StatusCodes.UNAUTHORIZED);
 
         expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("message");
-        expect(response.body).toHaveProperty("name");
+        expect(response.body).toHaveProperty("error");
 
         expect(response.body.code).toBe(StatusCodes.UNAUTHORIZED);
-        expect(response.body.message).toBe("Can't access to the resource");
-        expect(response.body.name).toBe("Unauthorized");
+        expect(response.body.error.message).toBe("Can't access to the resource");
+        expect(response.body.error.name).toBe("Unauthorized");
     });
 
     test("Delete another user with an admin account", async () => {
@@ -258,7 +257,9 @@ describe("DELETE /users/", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.OK);
 
-        expect(response.body).toHaveProperty("message");
-        expect(response.body.message).toBe("User deleted successfully");
+        expect(response.body).toHaveProperty("code");
+        expect(response.body).toHaveProperty("data");
+        expect(response.body.code).toBe(StatusCodes.OK);
+        expect(response.body.data).toBe(true);
     });
 });
