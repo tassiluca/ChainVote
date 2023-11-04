@@ -72,12 +72,13 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         const submission: Uint8Array = await contract.submit('ElectionInfoContract:createElectionInfo', {
             arguments: data
         });
-
         const resultJson = JSON.parse(utf8Decoder.decode(submission));
-        return res.status(StatusCodes.OK).send(resultJson);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = resultJson.result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }
 
 /**
@@ -93,9 +94,9 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
         const contract: Contract = network.getContract(contractName);
         const electionId: string = req.params.electionId
         const submission: Uint8Array = await contract.evaluateTransaction('ElectionInfoContract:readElectionInfo', electionId);
-        const resultJson = utf8Decoder.decode(submission);
+        const results = utf8Decoder.decode(submission);
         res.locals.code = StatusCodes.OK;
-        res.locals.data = resultJson;
+        res.locals.data = JSON.parse(results).result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -116,8 +117,10 @@ export async function deleteElectionInfo(req: Request, res: Response, next: Next
         const contract: Contract = network.getContract(contractName);
         const electionId: string = req.body.electionId;
         await contract.submitTransaction('ElectionInfoContract:deleteElectionInfo', electionId);
-        return res.status(StatusCodes.OK).send({message: "Asset deleted successfully"});
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = {message: "Asset deleted successfully"};
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }

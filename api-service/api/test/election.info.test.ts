@@ -38,12 +38,12 @@ describe("GET /election/info", () => {
 
     test("Can get a specific election info", async () => {
         const electionId = await createElectionInfo(app);
-        const response = await request(app).get("/election/info/detail" + electionId)
+        const response = await request(app).get("/election/info/detail/" + electionId)
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
 
-        expect(response.body.result.electionId).toEqual(electionId);
+        expect(response.body.data.electionId).toEqual(electionId);
     }, MAX_TIMEOUT);
 });
 

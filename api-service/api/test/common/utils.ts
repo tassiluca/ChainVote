@@ -28,7 +28,17 @@ export async function createElectionInfo(app: Application) {
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect(StatusCodes.OK);
 
-    return createResponse.body.result.electionId;
+    expect(createResponse.body.success).toBe(true);
+    expect(createResponse.body.data).toBeDefined();
+
+    const dataReturned = createResponse.body.data;
+
+    expect(dataReturned.goal).toBe(goal);
+    expect(dataReturned.voters).toBe(parseInt(voters));
+    expect(dataReturned.startDate).toBe(startDate);
+    expect(dataReturned.endDate).toBe(endDate);
+
+    return createResponse.body.data.electionId;
 }
 
 
