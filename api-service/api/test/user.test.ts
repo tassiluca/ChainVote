@@ -100,7 +100,6 @@ describe("GET /users/", () => {
     });
 
     test("Get the informations of another user with an admin account", async () => {
-
         const response = await request(app).get(`/users/${otherUser.email}`)
             .set("Authorization", `Bearer ${jwtAdmin.accessToken}`)
             .set("Accept", "application/json")
