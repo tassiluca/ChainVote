@@ -1,6 +1,6 @@
 import express, { Application } from "express"
 import bodyParser from "body-parser"
-import {defaultErrorHandler} from "core-components";
+import {defaultErrorHandler, defaultResponseHandler} from "core-components";
 import MongooseConfig from "./mongoose.config";
 
 import userRouter from "../routes/user.route";
@@ -16,15 +16,21 @@ const ExpressConfig = (): Application => {
   // Express configurations 
   app.use(express.json());
   app.use(bodyParser.json());
-  
+
+
+
   // Routes initialization
   app.use("/users", userRouter);
   app.use("/election", electionRouter);
   app.use("/election/info", electionInfoRouter);
   app.use("/code", codesRoute);
-  
+
+  // Use custom response handler.
+  app.use(defaultResponseHandler);
+
   // Use custom error handler.
   app.use(defaultErrorHandler);
+
   return app
 }
 

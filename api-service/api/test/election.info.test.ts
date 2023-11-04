@@ -3,6 +3,8 @@ import ExpressConfig from "../src/configs/express.config";
 import {StatusCodes} from "http-status-codes";
 import {createElectionInfo} from "./common/utils";
 
+
+const MAX_TIMEOUT = 20_000;
 let app;
 
 beforeAll(async () => {
@@ -10,9 +12,9 @@ beforeAll(async () => {
 });
 
 describe("GET /election/info", () => {
-
     test("Can get all the election infos", async () => {
-        for (let i = 0; i < 3; i++) {
+        const numElections = 3;
+        for (let i = 0; i < numElections; i++) {
             await createElectionInfo(app);
         }
         const response = await request(app).get("/election/info/all")
@@ -20,10 +22,10 @@ describe("GET /election/info", () => {
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
 
-        expect(response.body.result).toBeDefined();
-        expect(response.body.result.length).toBeGreaterThanOrEqual(3);
+        expect(response.body.success).toBe(true);
+        expect(response.body.data.length).toBeGreaterThanOrEqual(numElections);
 
-        const oneResult = response.body.result[0];
+        const oneResult = response.body.data[0];
 
         expect(oneResult.electionId).toBeDefined();
         expect(oneResult.voters).toBeDefined();
@@ -32,21 +34,21 @@ describe("GET /election/info", () => {
         expect(oneResult.endDate).toBeDefined();
         expect(oneResult.choices).toBeDefined();
 
-    }, 20000);
+    }, MAX_TIMEOUT);
 
     test("Can get a specific election info", async () => {
         const electionId = await createElectionInfo(app);
-        const response = await request(app).get("/election/info/" + electionId)
+        const response = await request(app).get("/election/info/detail" + electionId)
             .set("Accept", "application/json")
-            .expect("Content-Type", /json/)
+            .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
 
         expect(response.body.result.electionId).toEqual(electionId);
-    });
+    }, MAX_TIMEOUT);
 });
 
 describe("POST /election/info", () => {
-   test("Can create a new election info", async () => createElectionInfo(app), 20000);
+   test("Can create a new election info", async () => createElectionInfo(app), MAX_TIMEOUT);
 });
 
 describe("DELETE /election/info", () => {
@@ -57,5 +59,5 @@ describe("DELETE /election/info", () => {
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
-    }, 20000);
+    }, MAX_TIMEOUT);
 });

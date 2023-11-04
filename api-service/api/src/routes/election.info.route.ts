@@ -17,7 +17,7 @@ electionInfoRouter.get("/all", getAllElectionInfo);
 /**
  * Return a specific election data
  */
-electionInfoRouter.get("/:electionId", readElectionInfo);
+electionInfoRouter.get("/detail/:electionId", readElectionInfo);
 
 /**
  * Create a new election data

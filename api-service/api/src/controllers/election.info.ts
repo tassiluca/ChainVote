@@ -28,10 +28,12 @@ export async function getAllElectionInfo(req: Request, res: Response, next: Next
         const contract: Contract = network.getContract(contractName);
         const allAssets: Uint8Array = await contract.evaluate('ElectionInfoContract:getAllElectionInfo');
         const invocationResults = JSON.parse(utf8Decoder.decode(allAssets));
-        return res.status(StatusCodes.OK).send(invocationResults);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = invocationResults.result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }
 
 /**
@@ -92,11 +94,12 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
         const electionId: string = req.params.electionId
         const submission: Uint8Array = await contract.evaluateTransaction('ElectionInfoContract:readElectionInfo', electionId);
         const resultJson = utf8Decoder.decode(submission);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
-
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = resultJson;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }
 
 /**
