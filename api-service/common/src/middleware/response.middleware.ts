@@ -11,7 +11,7 @@ export async function defaultResponseHandler(
     const data = res.locals.data;
     const code = res.locals.code;
     if(data == undefined || code == undefined) {
-        next(new InternalServerError("Need to define the response data and code"));
+        return next(new InternalServerError("Need to define the response data and code"));
     }
     const response: RespObj = {
         success: true,
