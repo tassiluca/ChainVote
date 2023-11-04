@@ -44,12 +44,13 @@ export async function createElectionInfo(app: Application) {
 
 export async function createElection(app: Application) {
     const electionId = await createElectionInfo(app);
-    await request(app).post("/election")
+    const createResponse = await request(app).post("/election")
         .send({ electionId: electionId })
         .set("Accept", "application/json; charset=utf-8")
         .expect(StatusCodes.OK);
 
-    expect(electionId).toBeDefined();
+    expect(createResponse.body.success).toBe(true);
+    expect(createResponse.body.data).toBeDefined();
     return electionId;
 }
 

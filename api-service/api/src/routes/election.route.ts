@@ -5,11 +5,11 @@ const electionRouter = Router();
 
 electionRouter.get("/all", getAllElection);
 
-electionRouter.get("/:electionId", readElection);
+electionRouter.get("/detail/:electionId", readElection);
 
 electionRouter.post("/", createElection);
 
-electionRouter.post("/:electionId/vote", castVote);
+electionRouter.put("/:electionId/vote", castVote);
 
 electionRouter.delete("/",  deleteElection);
 

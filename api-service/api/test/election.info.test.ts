@@ -3,7 +3,6 @@ import ExpressConfig from "../src/configs/express.config";
 import {StatusCodes} from "http-status-codes";
 import {createElectionInfo} from "./common/utils";
 
-
 const MAX_TIMEOUT = 20_000;
 let app;
 

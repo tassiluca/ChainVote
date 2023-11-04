@@ -4,6 +4,7 @@ import { Contract, Gateway, Network } from "@hyperledger/fabric-gateway";
 import GrpcClientPool from "../blockchain/grpc.client.pool";
 import { Org2Peer } from "../blockchain/peer.enum";
 import transformHyperledgerError from "../blockchain/errors/error.handling";
+import {toChoice} from "../blockchain/utils/utils";
 
 const channelName = "ch2";
 const contractName = "chaincode-org2";
@@ -26,12 +27,13 @@ export async function createElection(req: Request, res: Response, next: NextFunc
         const submission: Uint8Array = await contract.submit('ElectionContract:createElection', {
             arguments: [electionId, '{}']
         });
-
-        const resultJson = utf8Decoder.decode(submission);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+        const result = utf8Decoder.decode(submission);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = JSON.parse(result).result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }
 
 /**
@@ -45,17 +47,17 @@ export async function readElection(req: Request, res: Response, next: NextFuncti
         const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
         const network: Network = gatewayOrg2.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-
         const electionId: string = req.params.electionId;
         const submission: Uint8Array = await contract.evaluate('ElectionContract:readElection', {
-            arguments: [`electionId:${electionId}`]
+            arguments: [electionId]
         });
-
-        const resultJson = utf8Decoder.decode(submission);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+        const result = utf8Decoder.decode(submission);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = JSON.parse(result).result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }
 
 /**
@@ -76,21 +78,16 @@ export async function castVote(req: Request, res: Response, next: NextFunction) 
         const code: string = req.body.code;
 
         const submission: Uint8Array = await contract.submit('ElectionContract:castVote', {
-            arguments: [
-                `electionId:${electionId}`,
-                `choice:${choice}`
-            ],
-            transientData: {
-                userId: userId,
-                code: code
-            }
+            arguments: [JSON.stringify(toChoice(choice)), electionId],
+            transientData: {userId: userId, code: code}
         });
-
-        const resultJson = utf8Decoder.decode(submission);
-        return res.status(StatusCodes.OK).send(JSON.parse(resultJson));
+        const result = utf8Decoder.decode(submission);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = JSON.parse(result).result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }
 
 /**
@@ -136,8 +133,10 @@ export async function getAllElection(req: Request, res: Response, next: NextFunc
         });
 
         const result = JSON.parse(utf8Decoder.decode(submission));
-        return res.status(StatusCodes.OK).send(JSON.parse(result));
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = JSON.parse(result).result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+    return next();
 }

@@ -5,14 +5,11 @@ import {StatusCodes} from "http-status-codes";
 import GrpcClientPool from "../blockchain/grpc.client.pool";
 import {Org1Peer} from "../blockchain/peer.enum";
 import transformHyperledgerError from "../blockchain/errors/error.handling";
+import {convertToChoiceList} from "../blockchain/utils/utils";
 
 const channelName = "ch1";
 const contractName = "chaincode-org1";
 const utf8Decoder = new TextDecoder();
-
-type ChoiceRecord = {
-    choice: string,
-}
 
 /**
  * Return all the generated data of election info.
@@ -36,20 +33,7 @@ export async function getAllElectionInfo(req: Request, res: Response, next: Next
     return next();
 }
 
-/**
- * Convert an array of string representing the choices of an ElectionInfo to a ChoiceList object.
- * @param choices
- */
-function convertToChoiceList(choices: string[] | undefined): ChoiceRecord[] {
-    if (choices === undefined) {
-        return [];
-    }
-    return choices.map((choice) => {
-        return {
-            choice: choice
-        }
-    });
-}
+
 
 /**
  * Create an election information.
