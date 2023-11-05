@@ -117,7 +117,7 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
         });
 
         const result = utf8Decoder.decode(codeRequest);
-        res.locals.code = StatusCodes.OK;
+        res.locals.code = StatusCodes.CREATED;
         res.locals.data = JSON.parse(result).result;
     } catch (error) {
         return next(transformHyperledgerError(error));
