@@ -26,7 +26,7 @@ export async function authenticationHandler (req: Request, res: Response, next: 
     } catch(error) {
         return next(error);
     }
-
+    
     next();
 }
 

@@ -41,7 +41,7 @@ beforeAll(async () => {
     }).save();
 
     jwtUser = await Jwt.createTokenPair(user, {accessToken: "10m", refreshToken: "20m"});
-    jwtAdmin = await Jwt.createTokenPair(admin);
+    jwtAdmin = await Jwt.createTokenPair(admin, );
 
 });
 

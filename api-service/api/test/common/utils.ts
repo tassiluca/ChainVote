@@ -3,7 +3,7 @@ import {StatusCodes} from "http-status-codes";
 import request from "supertest";
 import {Application} from "express";
 
-export async function createElectionInfo(app: Application) {
+export async function createElectionInfo(app: Application, accessToken: string) {
     const startDate = DateTime.now()
         .set({millisecond: 0})
         .toISO({includeOffset: false, suppressMilliseconds: true});
@@ -24,6 +24,7 @@ export async function createElectionInfo(app: Application) {
             endDate: endDate,
             choices: choices
         })
+        .set("Authorization", `Bearer ${accessToken}`)
         .set("Accept", "application/json")
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect(StatusCodes.OK);
@@ -42,8 +43,8 @@ export async function createElectionInfo(app: Application) {
 }
 
 
-export async function createElection(app: Application) {
-    const electionId = await createElectionInfo(app);
+export async function createElection(app: Application, accessToken: string ) {
+    const electionId = await createElectionInfo(app, accessToken);
     const createResponse = await request(app).post("/election")
         .send({ electionId: electionId })
         .set("Accept", "application/json; charset=utf-8")

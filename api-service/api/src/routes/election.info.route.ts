@@ -7,6 +7,7 @@ import {
 } from "../controllers/election.info";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
+import {authenticationHandler} from "../middleware/authentication.middleware";
 
 const electionInfoRouter = Router();
 
@@ -46,17 +47,17 @@ electionInfoRouter.get("/all", getAllElectionInfo);
 /**
  * Return a specific election data
  */
-electionInfoRouter.get("/detail/:electionId", readElectionInfo);
+electionInfoRouter.get("/detail/:electionId",   authenticationHandler, readElectionInfo);
 
 /**
  * Create a new election data
  */
-electionInfoRouter.post("/", createElectionInfo);
+electionInfoRouter.post("/", authenticationHandler, createElectionInfo);
 
 /**
  * Delete a specific election data
  */
-electionInfoRouter.delete("/", deleteElectionInfo);
+electionInfoRouter.delete("/", authenticationHandler, deleteElectionInfo);
 
 /**
  * Check if a specific election data exists

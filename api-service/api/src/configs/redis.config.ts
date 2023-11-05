@@ -21,14 +21,11 @@ export default class RedisLimiterStorage implements ApiLimiterStorage {
 
     async exists(clientId: string): Promise<boolean> {
         const exists = await redisClient.exists(clientId);
-        console.log(exists);
         return exists === 1;
     }
 
     async increaseEntry(clientId: string): Promise<number> {
-        const incr = await redisClient.incr(clientId);
-        console.log(incr);
-        return incr;
+        return await redisClient.incr(clientId);
     }
 
     async setExpiration(clientId: string, seconds: number): Promise<boolean> {
