@@ -63,7 +63,7 @@ electionInfoRouter.get("/all", authenticationHandler, getAllElectionInfo);
  * paths:
  *   /election/info/detail/{electionId}:
  *      get:
- *          summary: Return all the election info created
+ *          summary: Return a specific election info created
  *          parameters:
  *              - name: electionId
  *                in: path
