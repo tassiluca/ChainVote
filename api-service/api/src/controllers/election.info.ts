@@ -90,7 +90,7 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
             arguments: data
         });
         const resultJson = JSON.parse(utf8Decoder.decode(submission));
-        res.locals.code = StatusCodes.OK;
+        res.locals.code = StatusCodes.CREATED;
         res.locals.data = resultJson.result;
     } catch (error) {
         return next(transformHyperledgerError(error));

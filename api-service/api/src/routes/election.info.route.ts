@@ -40,28 +40,114 @@ const API_LIMITER_RULES: ApiLimiterEntry = {
 electionInfoRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
 
 /**
- * Get all the election data
+ * @openapi
+ *
+ * paths:
+ *   /election/info/all:
+ *      get:
+ *          summary: Return all the election info created
+ *          responses:
+ *              '200':
+ *                  description: Request accepted successfully.
+ *              '429':
+ *                  description: Limit of requests reached for this endpoint.
+ *              '500':
+ *                  description: Generic server error
+ *
  */
 electionInfoRouter.get("/all", authenticationHandler, getAllElectionInfo);
 
 /**
- * Return a specific election data
+ * @openapi
+ *
+ * paths:
+ *   /election/info/detail/{electionId}:
+ *      get:
+ *          summary: Return all the election info created
+ *          parameters:
+ *              - name: electionId
+ *                in: path
+ *                description: The id of the election to get the info from.
+ *                required: true
+ *                schema:
+ *                  type: string
+ *          responses:
+ *              '200':
+ *                  description: Request accepted successfully.
+ *              '429':
+ *                  description: Limit of requests reached for this endpoint.
+ *              '500':
+ *                  description: Generic server error
+ *
  */
 electionInfoRouter.get("/detail/:electionId",   authenticationHandler, readElectionInfo);
 
 /**
- * Create a new election data
+ * @openapi
+ *
+ * paths:
+ *   /election/info/:
+ *      post:
+ *          summary: Create a new election info
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              goal:
+ *                                  type: string
+ *                                  description: The goal to reach with this election.
+ *                              voters:
+ *                                  type: string
+ *                                  description: The number of participants to the election.
+ *                              startDate:
+ *                                  type: string
+ *                                  description: The start date of the election in ISO format.
+ *                              endDate:
+ *                                  type: string
+ *                                  description: The end date of the election in ISO format.
+ *                              choices:
+ *                                  type: array
+ *                                  description: An array of string representing the mutually exclusive choices of the election.
+ *          responses:
+ *              '201':
+ *                  description: The resource was created successfully.
+ *              '429':
+ *                  description: Limit of requests reached for this endpoint.
+ *              '500':
+ *                  description: Generic server error
+ *
  */
 electionInfoRouter.post("/", authenticationHandler, createElectionInfo);
 
 /**
- * Delete a specific election data
+ * @openapi
+ *
+ * paths:
+ *   /election/info/:
+ *      delete:
+ *          summary: Delete an election info
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              electionId:
+ *                                  type: string
+ *                                  description: The election id to delete
+ *          responses:
+ *              '200':
+ *                  description: The resource was deleted successfully.
+ *              '429':
+ *                  description: Limit of requests reached for this endpoint.
+ *              '500':
+ *                  description: Generic server error
+ *
  */
 electionInfoRouter.delete("/", authenticationHandler, deleteElectionInfo);
-
-/**
- * Check if a specific election data exists
- */
-// electionRouter.get("/data/:electionId/exists", electionInfoExists);
 
 export default electionInfoRouter;
