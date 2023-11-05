@@ -28,7 +28,7 @@ export async function createElectionInfo(app: Application, accessToken: string) 
         .set("Authorization", `Bearer ${accessToken}`)
         .set("Accept", "application/json")
         .expect("Content-Type", "application/json; charset=utf-8")
-        .expect(StatusCodes.OK);
+        .expect(StatusCodes.CREATED);
 
     expect(createResponse.body.success).toBe(true);
     expect(createResponse.body.data).toBeDefined();
@@ -63,7 +63,7 @@ export async function createCodeForElection(app: Application, userId, electionId
         .set("Authorization", `Bearer ${accessToken}`)
         .set("Accept", "application/json")
         .expect("Content-Type", "application/json; charset=utf-8")
-        .expect(StatusCodes.OK);
+        .expect(StatusCodes.CREATED);
 
     expect(response.body.success).toBe(true);
     expect(response.body.data).toBeDefined();

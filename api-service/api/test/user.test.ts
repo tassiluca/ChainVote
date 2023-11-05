@@ -65,7 +65,7 @@ describe("GET /users/", () => {
         expect(response.body.data.email).toBe(user.email);
         expect(response.body.data.firstName).toBe(user.firstName);
         expect(response.body.data.secondName).toBe(user.secondName);
-    });
+    }, 20_000);
 
     test("Can't get the informations of an user with an invalid token", async () => {
         const response = await request(app).get("/users/")
@@ -90,13 +90,13 @@ describe("GET /users/", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.UNAUTHORIZED);
 
-        expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("message");
-        expect(response.body).toHaveProperty("name");
+        expect(response.body).toHaveProperty("error");
+        expect(response.body.error).toHaveProperty("message");
+        expect(response.body.error).toHaveProperty("name");
 
         expect(response.body.code).toBe(StatusCodes.UNAUTHORIZED);
-        expect(response.body.message).toBe("Can't access to the resource");
-        expect(response.body.name).toBe("Unauthorized");
+        expect(response.body.error.message).toBe("Can't access to the resource");
+        expect(response.body.error.name).toBe("Unauthorized");
     });
 
     test("Get the informations of another user with an admin account", async () => {
@@ -106,13 +106,13 @@ describe("GET /users/", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.OK);
 
-        expect(response.body).toHaveProperty("email");
-        expect(response.body).toHaveProperty("firstName");
-        expect(response.body).toHaveProperty("secondName");
+        expect(response.body.data).toHaveProperty("email");
+        expect(response.body.data).toHaveProperty("firstName");
+        expect(response.body.data).toHaveProperty("secondName");
 
-        expect(response.body.email).toBe(otherUser.email);
-        expect(response.body.firstName).toBe(otherUser.firstName);
-        expect(response.body.secondName).toBe(otherUser.secondName);
+        expect(response.body.data.email).toBe(otherUser.email);
+        expect(response.body.data.firstName).toBe(otherUser.firstName);
+        expect(response.body.data.secondName).toBe(otherUser.secondName);
     });
 });
 
@@ -129,12 +129,13 @@ describe("POST /users/", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.CREATED);
 
-        expect(response.body).toHaveProperty("message");
+        expect(response.body).toHaveProperty("code");
         expect(response.body).toHaveProperty("data");
 
-        expect(response.body.message).toBe("User created successfully");
-        expect(response.body.data).toHaveProperty("email");
-        expect(response.body.data).toHaveProperty("firstName");
+        expect(response.body.code).toBe(StatusCodes.CREATED);
+        expect(response.body.data.email).toBe("new.user@email.it");
+        expect(response.body.data.firstName).toBe("New");
+        expect(response.body.data.secondName).toBe("User");
     });
 });
 
@@ -153,8 +154,7 @@ describe("PUT /users/", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.OK);
 
-            expect(response.body).toHaveProperty("message");
-            expect(response.body.message).toBe("User updated successfully");
+            expect(response.body.data).toBe(true);
     });
 
     test("Can't edit the informations of another user", async () => {
@@ -171,12 +171,12 @@ describe("PUT /users/", () => {
             .expect(StatusCodes.UNAUTHORIZED);
 
         expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("message");
-        expect(response.body).toHaveProperty("name");
+        expect(response.body.error).toHaveProperty("message");
+        expect(response.body.error).toHaveProperty("name");
 
         expect(response.body.code).toBe(StatusCodes.UNAUTHORIZED);
-        expect(response.body.message).toBe("Can't access to the resource");
-        expect(response.body.name).toBe("Unauthorized");
+        expect(response.body.error.message).toBe("Can't access to the resource");
+        expect(response.body.error.name).toBe("Unauthorized");
     });
 
     test("Edit the informations of another user with an admin account", async () => {

@@ -72,7 +72,7 @@ describe("GET /election/", () => {
 describe("PUT /election/", () => {
     test("Can cast a vote for a specific election", async () => {
         const electionId = await createElection(app, adminJwtToken.accessToken);
-        const code = await createCodeForElection(app, user.id, electionId);
+        const code = await createCodeForElection(app, user.id, electionId, userJwtToken.accessToken);
 
         const response = await request(app).put(`/election/vote/${electionId}`)
             .send({choice: "Choice 1", code: code, userId: user.id})

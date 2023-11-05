@@ -412,6 +412,127 @@
           }
         }
       }
+    },
+    "/users/{userEmail}": {
+      "get": {
+        "summary": "Return a specific user",
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "The email of the user to get the info from.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request accepted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a specific user",
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "The email of the user to update.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request accepted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a specific user",
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "The email of the user to delete.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request accepted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "summary": "Create a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The email of the user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password of the user, this will be encrypted."
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "description": "The first name of the user."
+                  },
+                  "secondName": {
+                    "type": "string",
+                    "description": "The second name of the user."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The new user is created."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
     }
   },
   "components": {},

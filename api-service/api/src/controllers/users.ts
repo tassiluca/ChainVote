@@ -53,7 +53,7 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
         user = await setWorkData(req, res, next, isAllowed);
         res.locals.code = StatusCodes.OK;
         res.locals.data = {
-            email: user.email,
+                email: user.email,
                 firstName: user.firstName,
                 secondName: user.secondName
         };
