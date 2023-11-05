@@ -2,6 +2,7 @@ import { Router } from "express";
 import {generateCodeFor, invalidate, isValid, verifyCodeOwner} from "../controllers/codes";
 import RedisLimiterStorage from "../configs/redis.config";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
+import {authenticationHandler} from "../middleware/authentication.middleware";
 
 const codesRoute =  Router();
 
@@ -38,15 +39,15 @@ const API_LIMITER_RULES: ApiLimiterEntry = {
 codesRoute.use(apiLimiter(API_LIMITER_RULES, limitStorage));
 
 
-codesRoute.post("/generate", generateCodeFor);
+codesRoute.post("/generate", authenticationHandler, generateCodeFor);
 
 
-codesRoute.post("/is-valid", isValid);
+codesRoute.post("/is-valid", authenticationHandler, isValid);
 
 
-codesRoute.patch("/invalidate", invalidate);
+codesRoute.patch("/invalidate", authenticationHandler, invalidate);
 
 
-codesRoute.post("/verify-owner", verifyCodeOwner);
+codesRoute.post("/verify-owner", authenticationHandler, verifyCodeOwner);
 
 export default codesRoute;
