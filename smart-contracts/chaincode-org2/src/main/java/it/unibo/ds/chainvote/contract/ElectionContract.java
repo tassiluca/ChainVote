@@ -261,8 +261,10 @@ public final class ElectionContract implements ContractInterface {
 
         for (ElectionInfo electionInfo : electionInfos) {
             String electionId = electionInfo.getElectionId();
-            Election election = this.readStandardElection(ctx, electionId);
-            allElections.add(new ElectionFacadeImpl(election, electionInfo));
+            if (electionExists(ctx, electionId)) {
+                Election election = this.readStandardElection(ctx, electionId);
+                allElections.add(new ElectionFacadeImpl(election, electionInfo));
+            }
         }
 
         System.out.println("[EC] getAllElection results serialized: " + genson.serialize(allElections));
