@@ -60,7 +60,8 @@ public final class ElectionContract implements ContractInterface {
         ELECTION_INVALID_CREDENTIALS_TO_CAST_VOTE,
         ELECTION_INVALID_BUILD_ARGUMENT,
         ELECTION_INVALID_BALLOT_ARGUMENTS,
-        ELECTION_INVALID_BALLOT_CAST_ARGUMENTS
+        ELECTION_INVALID_BALLOT_CAST_ARGUMENTS,
+        CROSS_INVOCATION_FAILED
     }
 
     /**
@@ -147,8 +148,13 @@ public final class ElectionContract implements ContractInterface {
                 List.of("ElectionInfoContract:readElectionInfo", electionId),
                 CHANNEL_INFO_NAME_CH1
         );
-        final Response<ElectionInfo> responsePayload = genson.deserialize(response.getStringPayload(), new GenericType<>() {});
-        return responsePayload.getResult();
+        if (response.getStatus().equals(Chaincode.Response.Status.SUCCESS)) {
+            final Response<ElectionInfo> responsePayload = genson.deserialize(response.getStringPayload(), new GenericType<>() {});
+            return responsePayload.getResult();
+        } else {
+            final String errorMessage = "Something went wrong with cross invocation call.";
+            throw new ChaincodeException(errorMessage, ElectionContractErrors.CROSS_INVOCATION_FAILED.toString());
+        }
     }
 
     /**
@@ -216,7 +222,7 @@ public final class ElectionContract implements ContractInterface {
         System.out.println("[EC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
         if (!electionExists(ctx, electionId)) {
-            String errorMessage = String.format("Election %s does not exist", electionId);
+            final String errorMessage = String.format("Election %s does not exist", electionId);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
         }
@@ -236,7 +242,7 @@ public final class ElectionContract implements ContractInterface {
     public boolean electionExists(final Context ctx, final String electionId) {
         System.out.println("[EC] electionExists");
         ChaincodeStub stub = ctx.getStub();
-        String electionSerialized = stub.getStringState(electionId);
+        final String electionSerialized = stub.getStringState(electionId);
         return (electionSerialized != null && !electionSerialized.isEmpty());
     }
 
@@ -254,15 +260,23 @@ public final class ElectionContract implements ContractInterface {
                 List.of("ElectionInfoContract:getAllElectionInfo"),
                 CHANNEL_INFO_NAME_CH1
         );
-        final Response<List<ElectionInfo>> responsePayload = genson.deserialize(response.getStringPayload(), new GenericType<>() {});
-        final List<ElectionInfo> electionInfos = responsePayload.getResult();
-        System.out.println("[EC] getAllElection response from GAEI: " + electionInfos);
-        for (ElectionInfo electionInfo : electionInfos) {
-            String electionId = electionInfo.getElectionId();
-            Election election = this.readStandardElection(ctx, electionId);
-            allElections.add(new ElectionFacadeImpl(election, electionInfo));
+        if (response.getStatus().equals(Chaincode.Response.Status.SUCCESS)) {
+            final Response<List<ElectionInfo>> responsePayload = genson.deserialize(response.getStringPayload(), new GenericType<>() {
+            });
+            final List<ElectionInfo> electionInfos = responsePayload.getResult();
+            System.out.println("[EC] getAllElection response from GAEI: " + electionInfos);
+            for (ElectionInfo electionInfo : electionInfos) {
+                String electionId = electionInfo.getElectionId();
+                if (electionExists(ctx, electionId)) {
+                    Election election = this.readStandardElection(ctx, electionId);
+                    allElections.add(new ElectionFacadeImpl(election, electionInfo));
+                }
+            }
+            System.out.println("[EC] getAllElection results serialized: " + genson.serialize(allElections));
+            return allElections;
+        } else {
+            final String errorMessage = "Something went wrong with cross invocation call.";
+            throw new ChaincodeException(errorMessage, ElectionContractErrors.CROSS_INVOCATION_FAILED.toString());
         }
-        System.out.println("[EC] getAllElection results serialized: " + genson.serialize(allElections));
-        return allElections;
     }
 }
