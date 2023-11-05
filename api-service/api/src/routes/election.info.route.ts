@@ -14,16 +14,26 @@ const limitStorage = new RedisLimiterStorage();
 const API_LIMITER_RULES: ApiLimiterEntry = {
     "/all": {
         "GET": {
-            time: 20,
-            limit: 200
+            time: 10,
+            limit: 10
         }
     },
     "/detail": {
         "GET": {
             time: 20,
-            limit: 200
+            limit: 40
         }
     },
+    "/": {
+        "POST": {
+            time: 20,
+            limit: 5
+        },
+        "DELETE": {
+            time: 20,
+            limit: 5
+        }
+    }
 }
 
 electionInfoRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
