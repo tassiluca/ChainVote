@@ -13,9 +13,22 @@ export interface ApiLimiterEntry {
     [endpoint: string]: ApiLimiterRule;
 }
 
+/**
+ * Return the base endpoint of an endpoint with params.
+ * @param endpoint
+ */
+function getBaseEndpoint(endpoint: string): string {
+    return endpoint.replace(/\/\d+/g, '');
+}
+
+/**
+ * Return a middleware that limit the number of request of some endpoints.
+ * @param rules
+ * @param storage
+ */
 export function apiLimiter(rules: ApiLimiterEntry, storage: ApiLimiterStorage) {
     return async function(req: Request, res: Response, next: NextFunction) {
-        const endpoint = req.path;
+        const endpoint = getBaseEndpoint(req.path);
         const method = req.method;
         const clientId = `${method}/${endpoint}/${req.ip}`;
 
