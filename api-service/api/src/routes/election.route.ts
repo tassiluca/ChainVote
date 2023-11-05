@@ -2,6 +2,7 @@ import { Router } from "express";
 import {castVote, createElection, deleteElection, getAllElection, readElection} from "../controllers/election";
 import RedisLimiterStorage from "../configs/redis.config";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
+import {authenticationHandler} from "../middleware/authentication.middleware";
 
 const electionRouter = Router();
 
@@ -39,14 +40,14 @@ const API_LIMITER_RULES: ApiLimiterEntry = {
 
 electionRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
 
-electionRouter.get("/all", getAllElection);
+electionRouter.get("/all", authenticationHandler, getAllElection);
 
-electionRouter.get("/detail/:electionId", readElection);
+electionRouter.get("/detail/:electionId", authenticationHandler, readElection);
 
-electionRouter.post("/", createElection);
+electionRouter.post("/", authenticationHandler, createElection);
 
-electionRouter.put("/vote/:electionId", castVote);
+electionRouter.put("/vote/:electionId", authenticationHandler, castVote);
 
-electionRouter.delete("/",  deleteElection);
+electionRouter.delete("/", authenticationHandler, deleteElection);
 
 export default electionRouter;

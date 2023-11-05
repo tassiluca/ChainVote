@@ -22,6 +22,10 @@ const utf8Decoder = new TextDecoder();
  * @param next next function
  */
 export async function getAllElectionInfo(req: Request, res: Response, next: NextFunction) {
+    if(!ac.can(res.locals.user.role).readAny('electionInfo').granted) {
+        next(new UnauthorizedError("Can't access to the resource"));
+    }
+
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);

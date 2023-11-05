@@ -6,6 +6,7 @@ import {Application} from "express";
 export async function createElectionInfo(app: Application, accessToken: string) {
     const startDate = DateTime.now()
         .set({millisecond: 0})
+        .minus({hour: 1})
         .toISO({includeOffset: false, suppressMilliseconds: true});
     const endDate = DateTime.now()
         .set({millisecond: 0})
@@ -46,6 +47,7 @@ export async function createElectionInfo(app: Application, accessToken: string) 
 export async function createElection(app: Application, accessToken: string ) {
     const electionId = await createElectionInfo(app, accessToken);
     const createResponse = await request(app).post("/election")
+        .set("Authorization", `Bearer ${accessToken}`)
         .send({ electionId: electionId })
         .set("Accept", "application/json; charset=utf-8")
         .expect(StatusCodes.OK);

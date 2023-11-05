@@ -42,7 +42,7 @@ electionInfoRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
 /**
  * Get all the election data
  */
-electionInfoRouter.get("/all", getAllElectionInfo);
+electionInfoRouter.get("/all", authenticationHandler, getAllElectionInfo);
 
 /**
  * Return a specific election data

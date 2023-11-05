@@ -12,6 +12,11 @@ let grantsObject = {
             'read:any': ['*'],
             'update:any': ['*', '!role'],
             'delete:any': ['*']
+        },
+        election: {
+            'read:any': ['*'],
+            'create:any': ['*'],
+            'delete:any': ['*'],
         }
     },
     user: {
@@ -19,6 +24,10 @@ let grantsObject = {
             'read:own': ['*'],
             'update:own': ['*', '!role'],
             'delete:own': ['*']
+        },
+        election: {
+            'read:any': ['*'],
+            'update:any': ['*']
         }
     }
 };
