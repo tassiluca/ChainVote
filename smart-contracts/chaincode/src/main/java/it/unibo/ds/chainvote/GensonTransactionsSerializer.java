@@ -16,13 +16,17 @@ import java.util.Map;
 
 /**
  * A hyperledger custom serializer for calling the smart contract transactions
- * with custom data types.
+ * with custom data types. It leverages on {@link Genson} library to (de)serialize.
  */
 public abstract class GensonTransactionsSerializer implements SerializerInterface {
 
     private final Genson genson;
 
-    public GensonTransactionsSerializer(final Genson genson) {
+    /**
+     * Creates a {@link Genson} specific transaction serializer.
+     * @param genson the instance of genson to use to (de)serialize.
+     */
+    protected GensonTransactionsSerializer(final Genson genson) {
         this.genson = genson;
     }
 

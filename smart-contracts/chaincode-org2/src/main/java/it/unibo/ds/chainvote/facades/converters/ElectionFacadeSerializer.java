@@ -7,7 +7,10 @@ import it.unibo.ds.chainvote.facades.ElectionFacade;
 
 import java.time.format.DateTimeFormatter;
 
-public class ElectionToReadConverter implements Serializer<ElectionFacade> {
+/**
+ * A custom serializer for {@link ElectionFacade} class.
+ */
+public class ElectionFacadeSerializer implements Serializer<ElectionFacade> {
 
     @Override
     public void serialize(final ElectionFacade object, final ObjectWriter writer, final Context ctx) {
