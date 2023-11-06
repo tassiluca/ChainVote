@@ -1,4 +1,4 @@
-package it.unibo.ds.chainvote.assets.presentation;
+package it.unibo.ds.chainvote.facades;
 
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;

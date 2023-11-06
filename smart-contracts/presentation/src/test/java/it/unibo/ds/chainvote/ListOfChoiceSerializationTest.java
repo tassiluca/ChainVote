@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ListOfChoiceSerializationTest {
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = GensonUtils.defaultBuilder().create();
     private static final Choice CHOICE1 = new Choice("prova1");
     private static final Choice CHOICE2 = new Choice("prova2");
     private static final Choice CHOICE3 = new Choice("prova3");

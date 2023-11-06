@@ -1,20 +1,23 @@
-package it.unibo.ds.chainvote;
+package it.unibo.ds.chainvote.facades.converters;
 
 import com.owlike.genson.Genson;
+import it.unibo.ds.chainvote.GensonUtils;
+import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
-import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacade;
-import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacadeImpl;
+import it.unibo.ds.chainvote.facades.ElectionFacade;
+import it.unibo.ds.chainvote.facades.ElectionFacadeImpl;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
 import org.junit.jupiter.api.Test;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-public class ElectionCompleteFacadeSerializationTest {
-    private final Genson genson = GensonUtils.create();
+public class ElectionFacadeSerializationTest {
+    private final Genson genson = SerializersUtils.gensonInstance();
     private static final String GOAL = "prova";
     private static final long VOTERS = 400_000_000L;
     private static final Map<String, Integer> START_TIME_MAP = Map.of(
@@ -57,7 +60,7 @@ public class ElectionCompleteFacadeSerializationTest {
 
     @Test
     void testSerialization() {
-        ElectionCompleteFacade etr = new ElectionCompleteFacadeImpl(ELECTION, ELECTION_INFO);
+        ElectionFacade etr = new ElectionFacadeImpl(ELECTION, ELECTION_INFO);
         System.out.println(genson.serialize(etr));
     }
 }

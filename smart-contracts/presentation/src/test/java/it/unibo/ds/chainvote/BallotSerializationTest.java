@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class BallotSerializationTest {
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = GensonUtils.defaultBuilder().create();
     private static final String ELECTION_ID = "123prova";
     private static final String VOTER_ID = "prova123";
     private static final Map<String, Integer> TIME_MAP = Map.of(

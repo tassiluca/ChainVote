@@ -21,10 +21,13 @@ import java.util.Map;
  * A hyperledger custom serializer for calling the smart contract transactions
  * with custom data types.
  */
-@Serializer()
-public final class TransactionSerializer implements SerializerInterface {
+public abstract class AbstractTransactionSerializer implements SerializerInterface {
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson;
+
+    public AbstractTransactionSerializer(final Genson genson) {
+        this.genson = genson;
+    }
 
     /**
      * Serialize the value into bytes.

@@ -1,4 +1,4 @@
-package it.unibo.ds.chainvote.assets.presentation;
+package it.unibo.ds.chainvote.facades;
 
 // TODO documentation
 public enum ElectionStatus {

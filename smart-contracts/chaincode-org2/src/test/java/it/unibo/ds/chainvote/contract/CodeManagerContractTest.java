@@ -2,14 +2,12 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.unibo.ds.chainvote.Response;
+import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
-import it.unibo.ds.chainvote.GensonUtils;
-import it.unibo.ds.chainvote.codes.OneTimeCode;
-import it.unibo.ds.chainvote.utils.UserCodeData;
 import it.unibo.ds.chainvote.codes.OneTimeCodeImpl;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
+import it.unibo.ds.chainvote.utils.UserCodeData;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
@@ -44,7 +42,7 @@ final class CodeManagerContractTest {
     private static final String SEED = Integer.toString(new Random().nextInt());
     private static final String KEY = new CompositeKey(ELECTION_ID, USER_ID).toString();
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = SerializersUtils.gensonInstance();
     private final CodesManagerContract contract = new CodesManagerContract();
     private Context context;
     private ChaincodeStub stub;

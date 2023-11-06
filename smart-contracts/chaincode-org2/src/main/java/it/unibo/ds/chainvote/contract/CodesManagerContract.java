@@ -2,6 +2,7 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.Response;
+import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.codes.*;
 import it.unibo.ds.chainvote.utils.TransientUtils;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
@@ -29,7 +30,7 @@ import static it.unibo.ds.chainvote.utils.UserCodeData.USER_ID;
         title = "Code Manager Contract",
         description = "Contract used to manage one-time-codes"
     ),
-    transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
+    transactionSerializer = "it.unibo.ds.chainvote.TransactionSerializer"
 )
 public final class CodesManagerContract implements ContractInterface {
 
@@ -122,7 +123,7 @@ public final class CodesManagerContract implements ContractInterface {
 
     private static class LedgerRepository implements CodeRepository<Context> {
 
-        private final Genson genson = GensonUtils.create();
+        private final Genson genson = SerializersUtils.gensonInstance();
 
         @Override
         public Optional<OneTimeCode> get(final Context context, final String electionId, final String userId) {
