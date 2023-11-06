@@ -1,7 +1,6 @@
 package it.unibo.ds.chainvote.facades.converters;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.GensonUtils;
 import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
@@ -11,7 +10,6 @@ import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
 import org.junit.jupiter.api.Test;
 
-import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;

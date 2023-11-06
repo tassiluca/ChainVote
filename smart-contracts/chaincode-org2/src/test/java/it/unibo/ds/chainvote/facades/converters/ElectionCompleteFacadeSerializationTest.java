@@ -1,7 +1,6 @@
 package it.unibo.ds.chainvote.facades.converters;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.GensonUtils;
 import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
