@@ -23,9 +23,12 @@ launch_container() {
 
 copy_keys() {
   target_folder=$1
-  echo "Copying test keys in $target_folder"
+  if [ ! -d "$target_folder/secrets" ]; then
+    mkdir -p "$target_folder/secrets"
+    echo "Directory "$target_folder/secrets" created."
+  fi
+  echo "Copying test keys in $target_folder/secrets"
   cp -rf ./.test_secrets/* $target_folder/secrets
-
 }
 
 
@@ -33,20 +36,25 @@ copy_keys() {
 # MAIN
 # +++++++++++++++
 
+docker-compose down
+
 # Launch the containers
 echo "STEP 1: Copying test keys in the projects"
 copy_keys api
 copy_keys auth
 copy_keys common
 
-echo "STEP 1: DONE"
 
 echo "STEP 2: Launching common registry and publish dependencies"
 launch_container verdaccio
+sleep 5
+npm login --registry http://localhost:4873/
 
 # shellcheck disable=SC2164
 cd common
-tsc
+npm unpublish --force
+npm install
+npm run build
 npm publish --registry http://localhost:4873
 
 cd ..
