@@ -1,8 +1,8 @@
 import express, { Application } from "express"
 import bodyParser from "body-parser"
-import authRouter from "../routes/authRoute";
+import authRouter from "../routes/auth.route";
 
-import {defaultErrorHandler, JwtHandler} from "core-components";
+import {defaultErrorHandler, defaultResponseHandler, JwtHandler} from "core-components";
 import {resolve} from "path";
 import MongooseConfig from "./mongoose.config";
 
@@ -21,9 +21,11 @@ const ExpressConfig = (): Application => {
     app.use(express.json());
     app.use(bodyParser.json());
 
-
     // Routes setup
     app.use('/auth', authRouter);
+
+    // Use custom response handler.
+    app.use(defaultResponseHandler);
 
     // Error handler
     app.use(defaultErrorHandler);

@@ -1,7 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { User, UnauthorizedError, BadRequestError, NotFoundError } from "core-components"
 import { Jwt } from "core-components";
+import {StatusCodes} from "http-status-codes";
 
+/**
+ * Login a user and return a token pair
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function login(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
@@ -16,27 +24,36 @@ export async function login(req: Request, res: Response, next: NextFunction) {
         if (user === null || user === undefined) {
             return next(responseError); 
         }
-        
+
         user.comparePassword(password, async function(error, isMatch) {
             if (error || !isMatch) {
                 return next(responseError);
             }
 
             const tokens = await Jwt.createTokenPair(user);
-            return res.status(200).send({
-                message: "Login successfull",
-                email: email,
+            res.locals.code = StatusCodes.OK;
+            res.locals.data = {
                 accessToken: tokens.accessToken,
                 refreshToken: tokens.refreshToken
-            });
+            };
+            return next();
         });
-       
+
     } catch(error) {
-        next(error);      
+        return next(error);
     }
 }
 
+/**
+ * Refresh the access token.
+ * If the refresh token is valid, then a new token pair is generated and returned.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function refreshToken(req: Request, res: Response, next: NextFunction) {
+
     const email = req.body.email;
     const refreshToken = req.body.refreshToken;
 
@@ -57,12 +74,12 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
                 return next(new UnauthorizedError("The submitted token doesn't belong to the specified user"));
             }
             const newTokens = await Jwt.createTokenPair(user);
-            return res.status(200).send({
-                message: "Tokens refreshed, the new ones are attached to this response",
-                email: email,
+
+            res.locals.code = StatusCodes.OK;
+            res.locals.data = {
                 accessToken: newTokens.accessToken,
                 refreshToken: newTokens.refreshToken
-            });
+            };
 
         } catch (error) {
             return next(error);
@@ -70,4 +87,6 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
     } else {
         return next(new NotFoundError("Can't find the requested token"));
     }
+
+    return next();
 }

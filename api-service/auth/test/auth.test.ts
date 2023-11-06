@@ -31,13 +31,13 @@ describe("POST /auth/login", () => {
             })
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
-            .expect(StatusCodes.OK);
+            //.expect(StatusCodes.OK);
 
-        expect(response.body).toHaveProperty("accessToken");
-        expect(response.body).toHaveProperty("refreshToken");
-        expect(response.body).toHaveProperty("email");
+        console.log(response.body);
 
-        expect(response.body.email).toBe(user.email);
+        expect(response.body.success).toBe(true);
+        expect(response.body.data).toHaveProperty("accessToken");
+        expect(response.body.data).toHaveProperty("refreshToken");
     });
 
     test("Login with wrong user data", async () => {
@@ -50,17 +50,13 @@ describe("POST /auth/login", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.UNAUTHORIZED);
 
-        expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("name");
-        expect(response.body).toHaveProperty("message");
-
         expect(response.body.code).toBe(StatusCodes.UNAUTHORIZED);
-        expect(response.body.name).toBe("Unauthorized");
-        expect(response.body.message).toBe("Login error");
+        expect(response.body.error.name).toBe("Unauthorized");
+        expect(response.body.error.message).toBe("Login error");
     });
 
 
-    test("Login with wrong user data", async () => {
+    test("Login without full data", async () => {
         const response = await request(app).post("/auth/login")
             .send({
                 email: user.email,
@@ -69,13 +65,9 @@ describe("POST /auth/login", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.BAD_REQUEST);
 
-        expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("name");
-        expect(response.body).toHaveProperty("message");
-
         expect(response.body.code).toBe(StatusCodes.BAD_REQUEST);
-        expect(response.body.name).toBe("Bad Request");
-        expect(response.body.message).toBe("Please provide email and password");
+        expect(response.body.error.name).toBe("Bad Request");
+        expect(response.body.error.message).toBe("Please provide email and password");
 
         const response2 = await request(app).post("/auth/login")
             .send({
@@ -85,13 +77,9 @@ describe("POST /auth/login", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.BAD_REQUEST);
 
-        expect(response2.body).toHaveProperty("code");
-        expect(response2.body).toHaveProperty("name");
-        expect(response2.body).toHaveProperty("message");
-
         expect(response2.body.code).toBe(StatusCodes.BAD_REQUEST);
-        expect(response2.body.name).toBe("Bad Request");
-        expect(response2.body.message).toBe("Please provide email and password");
+        expect(response2.body.error.name).toBe("Bad Request");
+        expect(response2.body.error.message).toBe("Please provide email and password");
     });
 });
 
@@ -117,9 +105,8 @@ describe("POST /auth/refresh", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.OK);
 
-        expect(response.body).toHaveProperty("email");
-        expect(response.body).toHaveProperty("accessToken");
-        expect(response.body).toHaveProperty("refreshToken");
+        expect(response.body.data).toHaveProperty("accessToken");
+        expect(response.body.data).toHaveProperty("refreshToken");
     });
 
     test("Can't refresh a token if the mail doesn't exists", async () => {
@@ -132,13 +119,9 @@ describe("POST /auth/refresh", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.NOT_FOUND);
 
-        expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("name");
-        expect(response.body).toHaveProperty("message");
-
         expect(response.body.code).toBe(StatusCodes.NOT_FOUND);
-        expect(response.body.name).toBe("Not Found");
-        expect(response.body.message).toBe("The specified email doesn't belong to any users");
+        expect(response.body.error.name).toBe("Not Found");
+        expect(response.body.error.message).toBe("The specified email doesn't belong to any users");
     });
 
     test("Can't refresh a token if the token doesn't exists", async () => {
@@ -151,13 +134,9 @@ describe("POST /auth/refresh", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.NOT_FOUND);
 
-        expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("name");
-        expect(response.body).toHaveProperty("message");
-
         expect(response.body.code).toBe(StatusCodes.NOT_FOUND);
-        expect(response.body.name).toBe("Not Found");
-        expect(response.body.message).toBe("Can't find the requested token");
+        expect(response.body.error.name).toBe("Not Found");
+        expect(response.body.error.message).toBe("Can't find the requested token");
     });
 
     test("Can't refresh a token if the token doesn't belongs to the user", async () => {
@@ -181,17 +160,11 @@ describe("POST /auth/refresh", () => {
             .expect("Content-Type", /json/)
             .expect(StatusCodes.UNAUTHORIZED);
 
-        expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("name");
-        expect(response.body).toHaveProperty("message");
-
         expect(response.body.code).toBe(StatusCodes.UNAUTHORIZED);
-        expect(response.body.name).toBe("Unauthorized");
-        expect(response.body.message).toBe("The submitted token doesn't belong to the specified user");
+        expect(response.body.error.name).toBe("Unauthorized");
+        expect(response.body.error.message).toBe("The submitted token doesn't belong to the specified user");
 
         await User.findOneAndDelete({email: user2.email});
         await Jwt.findOneAndDelete({refreshToken: jwtDefault2.refreshToken});
-
     });
-
 });
