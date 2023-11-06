@@ -52,9 +52,9 @@ public class ElectionCompleteFacadeSerializationTest {
         END_TIME_MAP.get("s")
     );
     private static final List<Choice> CHOICES =
-            List.of(new Choice("prova1"), new Choice("prova2"), new Choice("prova3"));
+        List.of(new Choice("prova1"), new Choice("prova2"), new Choice("prova3"));
     private static final ElectionInfo ELECTION_INFO =
-            ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
+        ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICES);
     private static final Election ELECTION = ElectionFactory.buildElection(ELECTION_INFO);
 
     @Test
