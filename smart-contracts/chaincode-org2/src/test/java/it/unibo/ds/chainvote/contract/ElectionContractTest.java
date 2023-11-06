@@ -1,18 +1,16 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.GensonUtils;
+import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.Chaincode;
-import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -23,7 +21,6 @@ import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -80,7 +77,7 @@ public class ElectionContractTest {
     private static final Map<Choice, Long> RESULTS_FULL = CHOICE_ELECTION.stream()
         .collect(Collectors.toMap(Function.identity(), choice -> (long) CHOICE_ELECTION.indexOf(choice)));
     private static final Map<Choice, Long> RESULTS_EMPTY = new HashMap<>();
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = SerializersUtils.gensonInstance();
     private Context context;
     private ChaincodeStub stub;
     private ElectionContract ec;

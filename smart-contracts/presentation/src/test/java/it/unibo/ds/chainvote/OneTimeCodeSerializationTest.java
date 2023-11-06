@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class OneTimeCodeSerializationTest {
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = GensonUtils.defaultBuilder().create();
     private static final String CODE = "123";
 
     @Test

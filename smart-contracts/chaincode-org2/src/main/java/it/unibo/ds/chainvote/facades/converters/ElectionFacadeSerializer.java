@@ -1,13 +1,16 @@
-package it.unibo.ds.chainvote.converters;
+package it.unibo.ds.chainvote.facades.converters;
 
 import com.owlike.genson.Context;
 import com.owlike.genson.Serializer;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.chainvote.assets.presentation.ElectionFacade;
+import it.unibo.ds.chainvote.facades.ElectionFacade;
 
 import java.time.format.DateTimeFormatter;
 
-public class ElectionToReadConverter implements Serializer<ElectionFacade> {
+/**
+ * A custom serializer for {@link ElectionFacade} class.
+ */
+public class ElectionFacadeSerializer implements Serializer<ElectionFacade> {
 
     @Override
     public void serialize(final ElectionFacade object, final ObjectWriter writer, final Context ctx) {

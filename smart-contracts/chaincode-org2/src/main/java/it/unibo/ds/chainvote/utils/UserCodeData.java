@@ -1,5 +1,6 @@
 package it.unibo.ds.chainvote.utils;
 
+import it.unibo.ds.chainvote.TransientUtils;
 import org.hyperledger.fabric.shim.ChaincodeException;
 
 import java.util.Map;

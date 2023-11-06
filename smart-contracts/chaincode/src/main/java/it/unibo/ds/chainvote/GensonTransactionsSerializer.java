@@ -1,13 +1,10 @@
-package it.unibo.ds.chainvote.transaction;
+package it.unibo.ds.chainvote;
 
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.GensonUtils;
-import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
 import it.unibo.ds.chainvote.utils.Choice;
-import org.hyperledger.fabric.contract.annotation.Serializer;
 import org.hyperledger.fabric.contract.execution.SerializerInterface;
 import org.hyperledger.fabric.contract.metadata.TypeSchema;
 
@@ -19,12 +16,19 @@ import java.util.Map;
 
 /**
  * A hyperledger custom serializer for calling the smart contract transactions
- * with custom data types.
+ * with custom data types. It leverages on {@link Genson} library to (de)serialize.
  */
-@Serializer()
-public final class TransactionSerializer implements SerializerInterface {
+public abstract class GensonTransactionsSerializer implements SerializerInterface {
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson;
+
+    /**
+     * Creates a {@link Genson} specific transaction serializer.
+     * @param genson the instance of genson to use to (de)serialize.
+     */
+    protected GensonTransactionsSerializer(final Genson genson) {
+        this.genson = genson;
+    }
 
     /**
      * Serialize the value into bytes.

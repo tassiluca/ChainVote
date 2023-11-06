@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class MapOfStringLongSerializationTest {
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = GensonUtils.defaultBuilder().create();
     private static final Choice CHOICE1 = new Choice("prova1");
     private static final Long LONG1 = 1L;
     private static final Choice CHOICE2 = new Choice("prova2");

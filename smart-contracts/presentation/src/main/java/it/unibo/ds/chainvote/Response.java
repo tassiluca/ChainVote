@@ -56,9 +56,12 @@ public final class Response<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Response<?> response = (Response<?>) o;
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Response<?> response = (Response<?>) o;
         return Objects.equals(result, response.result);
     }
 

@@ -1,7 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.GensonUtils;
+import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
@@ -32,12 +32,12 @@ import java.util.List;
         title = "Election Info Contract",
         description = "Contract used to manage election info"
     ),
-    transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
+    transactionSerializer = "it.unibo.ds.chainvote.TransactionSerializer"
 )
 @Default
 public final class ElectionInfoContract implements ContractInterface {
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = SerializersUtils.gensonInstance();
 
     private enum ElectionInfoTransferErrors {
         ELECTION_INFO_NOT_FOUND,

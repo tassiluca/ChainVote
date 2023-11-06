@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ResponseSerializationTest {
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = GensonUtils.defaultBuilder().create();
 
     @Test
     void testSimpleResult() {

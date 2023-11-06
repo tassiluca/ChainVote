@@ -5,10 +5,11 @@ import com.owlike.genson.Genson;
 import com.owlike.genson.JsonBindingException;
 import it.unibo.ds.chainvote.GensonUtils;
 import it.unibo.ds.chainvote.Response;
-import it.unibo.ds.chainvote.assets.presentation.ElectionFacade;
-import it.unibo.ds.chainvote.assets.presentation.ElectionFacadeImpl;
-import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacade;
-import it.unibo.ds.chainvote.assets.presentation.ElectionCompleteFacadeImpl;
+import it.unibo.ds.chainvote.SerializersUtils;
+import it.unibo.ds.chainvote.facades.ElectionFacade;
+import it.unibo.ds.chainvote.facades.ElectionFacadeImpl;
+import it.unibo.ds.chainvote.facades.ElectionCompleteFacade;
+import it.unibo.ds.chainvote.facades.ElectionCompleteFacadeImpl;
 import it.unibo.ds.chainvote.utils.UserCodeData;
 import it.unibo.ds.chainvote.assets.Ballot;
 import it.unibo.ds.chainvote.assets.BallotImpl;
@@ -42,14 +43,14 @@ import java.util.Map;
         title = "Election Contract",
         description = "Contract used to manage election"
     ),
-    transactionSerializer = "it.unibo.ds.chainvote.transaction.TransactionSerializer"
+    transactionSerializer = "it.unibo.ds.chainvote.TransactionSerializer"
 )
 @Default
 public final class ElectionContract implements ContractInterface {
 
     private static final String CHANNEL_INFO_NAME_CH1 = "ch1";
     private static final String CHAINCODE_INFO_NAME_CH1 = "chaincode-org1";
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = SerializersUtils.gensonInstance();
     private static final CodesManagerContract CODES_MANAGER_CONTRACT = new CodesManagerContract();
 
     private enum ElectionContractErrors {

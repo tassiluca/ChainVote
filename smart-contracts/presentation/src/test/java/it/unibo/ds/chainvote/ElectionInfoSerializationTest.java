@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ElectionInfoSerializationTest {
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = GensonUtils.defaultBuilder().create();
     private static final String GOAL = "prova";
     private static final long VOTERS = 400_000_000L;
     private static final Map<String, Integer> START_TIME_MAP = Map.of(

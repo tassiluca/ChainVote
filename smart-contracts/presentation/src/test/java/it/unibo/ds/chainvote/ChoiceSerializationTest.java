@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ChoiceSerializationTest {
 
-    private final Genson genson = GensonUtils.create();
+    private final Genson genson = GensonUtils.defaultBuilder().create();
     private static final String CHOICE_TO_CAST = "123prova";
     private static final Choice CHOICE = new Choice(CHOICE_TO_CAST);
 
