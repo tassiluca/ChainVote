@@ -35,10 +35,5 @@ public final class GensonUtils {
             .withConverter(new ElectionInfoConverter(), ElectionInfo.class)
             .withConverter(new ElectionInfoConverter(), ElectionInfoImpl.class)
             .withConverter(new ChoiceConverter(), Choice.class);
-            // .withSerializer(new ElectionToReadConverter(), ElectionFacade.class)
-            // .withSerializer(new ElectionToReadConverter(), ElectionFacadeImpl.class)
-            // .withSerializer(new ElectionWithResultsToReadConverter(), ElectionCompleteFacade.class)
-            // .withSerializer(new ElectionWithResultsToReadConverter(), ElectionCompleteFacadeImpl.class)
-            // .create();
     }
 }

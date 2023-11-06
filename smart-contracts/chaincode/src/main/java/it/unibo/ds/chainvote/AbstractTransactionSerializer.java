@@ -1,4 +1,4 @@
-package it.unibo.ds.chainvote.transaction;
+package it.unibo.ds.chainvote;
 
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;

@@ -1,4 +1,4 @@
-package it.unibo.ds.chainvote.utils;
+package it.unibo.ds.chainvote;
 
 import org.hyperledger.fabric.shim.ChaincodeException;
 
