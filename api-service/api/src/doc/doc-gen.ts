@@ -6,8 +6,15 @@ const options = {
         openapi: '3.0.0',
         info: {
             title: 'Chainvote API documentation',
+            description: 'This is the API documentation for the Chainvote API',
             version: '1.0.0',
         },
+        servers: [
+            {
+                url: 'http://localhost:8080',
+                description: 'Local server',
+            },
+        ],
     },
     apis: ['./src/routes/*.ts'],
 };

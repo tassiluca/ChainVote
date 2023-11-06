@@ -11,28 +11,28 @@ const API_LIMITER_RULES: ApiLimiterEntry = {
     "/generate": {
         "POST": {
             time: 20,
-            limit: 5
+            limit: 100
         }
     },
 
     "/is-valid": {
         "POST": {
             time: 20,
-            limit: 20,
+            limit: 100,
         }
     },
 
     "/invalidate": {
         "PATCH": {
             time: 20,
-            limit: 5
+            limit: 100
         }
     },
 
     "/verify-owner": {
         "POST": {
             time: 20,
-            limit: 20
+            limit: 100
         }
     }
 }

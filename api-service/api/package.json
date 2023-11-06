@@ -2,13 +2,13 @@
   "name": "api-server",
   "version": "1.0.0",
   "description": "API Server for ChainVote system",
-  "main": "dist/app.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts",
-    "test": "jest --silent --forceExit",
-    "start": "node dist/app.js",
+    "test": "jest --silent --forceExit --runInBand",
+    "start": "node dist/index.js",
     "generate-docs": "tsc && node ./dist/doc/doc-gen.js"
   },
   "author": "Giovanni Antonioni, Luca Tassinari, Luca Rubboli",

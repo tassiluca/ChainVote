@@ -43,7 +43,6 @@ export async function createElectionInfo(app: Application, accessToken: string) 
     return createResponse.body.data.electionId;
 }
 
-
 export async function createElection(app: Application, accessToken: string ) {
     const electionId = await createElectionInfo(app, accessToken);
     const createResponse = await request(app).post("/election")

@@ -82,7 +82,7 @@ describe("POST /code/", () => {
             .expect(StatusCodes.OK);
 
         expect(response.body.data).toBe(true);
-    }, 20000);
+    }, MAX_TIMEOUT);
 });
 
 
@@ -99,5 +99,5 @@ describe("PATCH /code/", () => {
 
         expect(response.body.data).toBeDefined();
         expect(response.body.success).toBe(true);
-    }, 20000);
+    }, MAX_TIMEOUT);
 });

@@ -16,23 +16,23 @@ const API_LIMITER_RULES: ApiLimiterEntry = {
     "/all": {
         "GET": {
             time: 10,
-            limit: 10
+            limit: 100
         }
     },
     "/detail": {
         "GET": {
             time: 20,
-            limit: 40
+            limit: 100
         }
     },
     "/": {
         "POST": {
             time: 20,
-            limit: 5
+            limit: 100
         },
         "DELETE": {
             time: 20,
-            limit: 5
+            limit: 100
         }
     }
 }
