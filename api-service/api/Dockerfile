@@ -19,4 +19,4 @@ COPY --from=0 /usr/src/app .
 RUN npm install pm2 -g --registry http://host.docker.internal:4873/
 EXPOSE 8080
 
-CMD ["pm2-runtime","dist/index.js"]
+CMD ["pm2-runtime","dist/app.js"]

@@ -1,14 +1,21 @@
 import express, { Application } from "express"
 import bodyParser from "body-parser"
-import {defaultErrorHandler, defaultResponseHandler} from "core-components";
+import {defaultErrorHandler, defaultResponseHandler, JwtHandler} from "core-components";
 import MongooseConfig from "./mongoose.config";
 
 import userRouter from "../routes/user.route";
 import electionInfoRouter from "../routes/election.info.route";
 import electionRouter from "../routes/election.route";
 import codesRoute from "../routes/codes.route";
+import {resolve} from "path";
 
 const ExpressConfig = (): Application => {
+
+  JwtHandler.config({
+    ATPublicKeyPath: resolve("./secrets/at_public.pem"),
+    RTPublicKeyPath: resolve("./secrets/rt_public.pem")
+  });
+
   MongooseConfig();
 
   const app = express();

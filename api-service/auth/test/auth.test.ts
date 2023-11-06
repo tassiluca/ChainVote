@@ -31,9 +31,7 @@ describe("POST /auth/login", () => {
             })
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
-            //.expect(StatusCodes.OK);
-
-        console.log(response.body);
+            .expect(StatusCodes.OK);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data).toHaveProperty("accessToken");
