@@ -4,8 +4,6 @@
 
 - Docker
   - on Mac OS make sure the file sharing implementation for the container is set to `osfx (Legacy)` (Settings -> General)
-- `jq` command
-  - :warning: TODO!
 
 ## Installation
 
