@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>    
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="../scripts/load-template.js"></script>
+        <link rel="stylesheet" href="../styles/personal-area.css">
+    </head>
+    <body>
+        <main>
+            <div class="row justify-content-center">
+                <h1 id="electionName">Election id / name</h1>
+            </div>
+            <div class="row" id="content">
+                <div class="col-md-5 center mx-auto">
+                    <h2 id="question">Who do you want to be the next rector of UniBo?</h2>
+                    <form action="" method="post">
+                        <button type="button" class="btn btn-outline-primary btn-block">Request my one time code</button>
+                    </form>
+                    <p>To adjust here depending on API :)</p>
+                    <form action="" method="post">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">One time code</span>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" />
+                            <label class="form-check-label" for="exampleRadios1">Option 1</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2" />
+                            <label class="form-check-label" for="exampleRadios2">Option 2</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" />
+                            <label class="form-check-label" for="exampleRadios3">Option 3</label>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-block">Send your vote</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
