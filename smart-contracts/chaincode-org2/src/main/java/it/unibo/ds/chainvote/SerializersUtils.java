@@ -13,6 +13,8 @@ import it.unibo.ds.chainvote.facades.converters.ElectionCompleteFacadeSerializer
  */
 public final class SerializersUtils {
 
+    private SerializersUtils() { }
+
     /**
      * @return a ready to use genson serializer instance.
      */

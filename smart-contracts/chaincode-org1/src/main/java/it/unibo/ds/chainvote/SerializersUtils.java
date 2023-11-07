@@ -7,6 +7,8 @@ import com.owlike.genson.Genson;
  */
 public final class SerializersUtils {
 
+    private SerializersUtils() { }
+
     /**
      * @return a ready to use genson serializer instance.
      */

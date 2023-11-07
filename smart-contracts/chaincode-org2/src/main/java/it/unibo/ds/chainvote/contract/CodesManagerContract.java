@@ -21,7 +21,13 @@ import java.util.Optional;
 import static it.unibo.ds.chainvote.utils.UserCodeData.USER_ID;
 
 /**
- * A Hyperledger Fabric contract to manage one-time-codes.
+ * <p>A Hyperledger Fabric contract to manage one-time-codes.</p>
+ * <p>
+ *   The API Gateway client will receive the transaction returned values wrapped inside a
+ *   <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">
+ *       Response json object
+ *   </a>.
+ * </p>
  */
 @Contract(
     name = "CodesManagerContract",
@@ -47,10 +53,12 @@ public final class CodesManagerContract implements ContractInterface {
      * @param context the transaction context. A transient map is expected with the {@code userId} key-value entry.
      * @param electionId the election identifier
      * @param seed a random (non-deterministic) seed for the code generation
-     * @return a {@link Response} json-object with the one time code.
-     * @throws ChaincodeException with {@link Error#INCORRECT_INPUT} payload if the given election doesn't exist
-     * or the seed is blank and {@link Error#ALREADY_GENERATED_CODE} payload if the given code is not valid.
-     * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
+     * @return a string representation of the generated one-time-code.
+     * @throws ChaincodeException with:
+     * <ul>
+     *     <li>{@code INCORRECT_INPUT} payload if the given election doesn't exist or the seed is blank</li>
+     *     <li>{@code ALREADY_GENERATED_CODE} payload if a code for the given election and user has already been generated</li>
+     * </ul>
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public String generateCodeFor(final Context context, final String electionId, final String seed) {
@@ -72,8 +80,7 @@ public final class CodesManagerContract implements ContractInterface {
      * @param context the transaction context. A transient map is expected with the following
      *                key-value entries: {@code userId} and {@code code}.
      * @param electionId the election identifier
-     * @return a {@link Response} json object whose result is true if the given code is still valid, false otherwise.
-     * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
+     * @return true if the given code is still valid, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean isValid(final Context context, final String electionId) {
@@ -87,10 +94,12 @@ public final class CodesManagerContract implements ContractInterface {
      * @param context the transaction context. A transient map is expected with the following
      *                key-value pairs: {@code userId} and {@code code}.
      * @param electionId the election identifier
-     * @return a {@link Response} object with the result outcome.
-     * @throws ChaincodeException with {@link Error#ALREADY_INVALIDATED_CODE} payload if the given code was already
-     * been invalidated and with {@link Error#INCORRECT_INPUT} if the given code is not valid.
-     * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
+     * @return the result outcome.
+     * @throws ChaincodeException with
+     * <ul>
+     *   <li>{@code ALREADY_INVALIDATED_CODE} payload if the given code has already been invalidated</li>
+     *   <li>{@code INCORRECT_INPUT} payload if the given code is not valid anymore</li>
+     * </ul>
      */
     @Transaction
     public boolean invalidate(final Context context, final String electionId) {
@@ -110,8 +119,7 @@ public final class CodesManagerContract implements ContractInterface {
      * @param context the transaction context. A transient map is expected with the following
      *                key-value pairs: {@code userId} and {@code code}.
      * @param electionId the election identifier
-     * @return a json object whose {@code result} field is true if the given code is correct, false otherwise.
-     * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
+     * @return true if the given code is correct, false otherwise.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean verifyCodeOwner(final Context context, final String electionId) {

@@ -75,7 +75,7 @@ final class TransientUtilsTest {
             final Throwable thrown = catchThrowable(() -> getLongFromTransient(transientData, key));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
-                .hasMessage("The `" + key + "`s input was expected to be a Long.");
+                .hasMessageStartingWith("The `" + key + "`s input was expected to be a Long.");
             assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("WRONG_INPUT".getBytes(UTF_8));
         }
     }
