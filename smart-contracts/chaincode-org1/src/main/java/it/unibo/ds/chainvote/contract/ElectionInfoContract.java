@@ -1,6 +1,7 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
+import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
@@ -23,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Contracts managing {@link ElectionInfo}.
- * TODO improve documentation
+ * A Hyperledger Fabric contract to manage {@link ElectionInfo}.
  */
 @Contract(
     name = "ElectionInfoContract",
@@ -42,18 +42,34 @@ public final class ElectionInfoContract implements ContractInterface {
     private enum ElectionInfoTransferErrors {
         ELECTION_INFO_NOT_FOUND,
         ELECTION_INFO_ALREADY_EXISTS,
-        ELECTION_INFO_INVALID_ARGUMENT
+        INVALID_ARGUMENT
     }
 
     /**
      * Create a {@link ElectionInfo}.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionInfoContract:createElectionInfo",
+     *      "Args": [
+     *          "your_election_id",
+     *          n,
+     *          "yyyy-MM-ddThh:mm:ss",
+     *          "yyyy-MM-ddThh:mm:ss",
+     *          [{"choice":"your_choice1"},{"choice":"your_choice2"}*[,{\"choice\":\"your_choiceN\"}]]
+ *          ]
+     * }
+     * Constraints: n > 1, String must be non-empty.
      * @param ctx the {@link Context}.
      * @param goal the goal of the {@link ElectionInfo} to build.
      * @param votersNumber the number of voters that could cast a vote in the {@link ElectionInfo} to build.
-     * @param sDate the {@link String} representing the encoded (ISO format) starting date.
-     * @param eDate the {@link String} representing the encoded (ISO format) ending date.
+     * @param sDate the {@link String} representing the encoded (ISO format) start date.
+     * @param eDate the {@link String} representing the encoded (ISO format) end date.
      * @param choices the {@link List} of {@link Choice} that the {@link ElectionInfo} to build has.
      * @return the {@link ElectionInfo} built.
+     * @throws ChaincodeException with {@link ElectionInfoTransferErrors#ELECTION_INFO_ALREADY_EXISTS} as payload if it has
+     * already been created an {@link ElectionInfo} with the same arguments and
+     * {@link ElectionInfoTransferErrors#INVALID_ARGUMENT} as payload if at least one of the given arguments is not valid.
+     * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public ElectionInfo createElectionInfo(
@@ -70,7 +86,6 @@ public final class ElectionInfoContract implements ContractInterface {
         final String electionId = Utils.calculateID(goal, startingDate, endingDate, choices);
         if (electionInfoExists(ctx, electionId)) {
             String errorMessage = String.format("Election info %s already exists", electionId);
-            System.err.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_ALREADY_EXISTS.toString());
         }
         try {
@@ -80,44 +95,65 @@ public final class ElectionInfoContract implements ContractInterface {
             stub.putStringState(electionId, sortedJson);
             return electionInfo;
         } catch (IllegalArgumentException e) {
-            System.err.println(e.getMessage());
-            throw new ChaincodeException(e.getMessage(), ElectionInfoTransferErrors.ELECTION_INFO_INVALID_ARGUMENT.toString());
+            throw new ChaincodeException(e.getMessage(), ElectionInfoTransferErrors.INVALID_ARGUMENT.toString());
         }
     }
 
     /**
      * Return the {@link ElectionInfo}.
-     * @param ctx The {@link Context}.
-     * @param electionId The electionId of the {@link ElectionInfo} to retrieve.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionInfoContract:readElectionInfo",
+     *      "Args": [
+     *          "your_election_id"
+ *          ]
+     * }
+     * Constraints: String must be non-empty.
+     * @param ctx the {@link Context}.
+     * @param electionId the electionId of the {@link ElectionInfo} to retrieve.
      * @return the {@link ElectionInfo}.
+     * @throws ChaincodeException with {@link ElectionInfoTransferErrors#ELECTION_INFO_NOT_FOUND} as payload if no
+     * {@link ElectionInfo} is labeled by the given electionId.
+     * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public ElectionInfo readElectionInfo(final Context ctx, final String electionId) {
-        System.out.println("[EIC] readElectionInfo");
         if (electionInfoExists(ctx, electionId)) {
             ChaincodeStub stub = ctx.getStub();
             String electionJSON = stub.getStringState(electionId);
             return genson.deserialize(electionJSON, ElectionInfo.class);
         } else {
             String errorMessage = String.format("Election info %s does not exist", electionId);
-            System.err.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
         }
     }
 
     /**
      * Delete an {@link ElectionInfo} from the ledger.
-     * @param ctx The {@link Context}.
-     * @param electionId The electionId of the {@link ElectionInfo} to delete.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionInfoContract:deleteElectionInfo",
+     *      "Args": [
+     *          "your_election_id",
+ *          ]
+     * }
+     * Constraints: String must be non-empty.
+     * @param ctx the {@link Context}.
+     * @param electionId the electionId of the {@link ElectionInfo} to delete.
+     *            JSON input in the following format:
+     * {
+     *    "your_election_id"
+     * }
      * @return the {@link ElectionInfo} deleted.
+     * @throws ChaincodeException with {@link ElectionInfoTransferErrors#ELECTION_INFO_NOT_FOUND} as payload if there
+     * isn't an {@link ElectionInfo} labeled by the given electionId.
+     * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public ElectionInfo deleteElectionInfo(final Context ctx, final String electionId) {
-        System.out.println("[EIC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
         if (!electionInfoExists(ctx, electionId)) {
             String errorMessage = String.format("Election info %s does not exist", electionId);
-            System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_NOT_FOUND.toString());
         }
 
@@ -130,13 +166,13 @@ public final class ElectionInfoContract implements ContractInterface {
 
     /**
      * Check if an {@link ElectionInfo} exists.
-     * @param ctx The {@link Context}.
-     * @param electionId The electionId of the {@link ElectionInfo} to check.
-     * @return A boolean representing the {@link ElectionInfo} existence.
+     * @param ctx the {@link Context}.
+     * @param electionId the electionId of the {@link ElectionInfo} to check.
+     * @return a boolean representing the {@link ElectionInfo}'s existence.
+     * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     private boolean electionInfoExists(final Context ctx, final String electionId) {
-        System.out.println("[EIC] electionInfoExists");
         ChaincodeStub stub = ctx.getStub();
         String electionInfoSerialized = stub.getStringState(electionId);
         return (electionInfoSerialized != null && !electionInfoSerialized.isEmpty());
@@ -144,13 +180,12 @@ public final class ElectionInfoContract implements ContractInterface {
 
     /**
      * Return all the existing {@link ElectionInfo}s.
-     * @param ctx The {@link Context}.
-     * @return All the {@link ElectionInfo}s retrieved from the ledger as {@link String}.
+     * @param ctx the {@link Context}.
+     * @return all the {@link ElectionInfo}s retrieved from the ledger as {@link List}.
+     * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public List<ElectionInfo> getAllElectionInfo(final Context ctx) {
-        System.out.println("[EIC] getAllElectionInfo");
-
         ChaincodeStub stub = ctx.getStub();
         List<ElectionInfo> queryResults = new ArrayList<>();
 
@@ -159,7 +194,6 @@ public final class ElectionInfoContract implements ContractInterface {
             ElectionInfo election = genson.deserialize(result.getStringValue(), ElectionInfo.class);
             queryResults.add(election);
         }
-        System.out.println("[GAEI] results: " + queryResults);
 
         return queryResults;
     }

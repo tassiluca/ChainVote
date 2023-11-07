@@ -6,7 +6,9 @@ import it.unibo.ds.chainvote.assets.ElectionInfo;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO documentation
+/**
+ * An {@link ElectionCompleteFacade} implementation.
+ */
 public class ElectionCompleteFacadeImpl implements ElectionCompleteFacade {
 
     private final ElectionFacade ef;

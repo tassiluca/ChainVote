@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * An interface modeling the informative aspect of an {@link Election}
+ * An interface modeling the informative aspect of an {@link Election}.
  */
 public interface ElectionInfo {
 

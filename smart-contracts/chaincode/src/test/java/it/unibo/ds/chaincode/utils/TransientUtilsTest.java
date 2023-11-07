@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 final class TransientUtilsTest {
 
     @Nested
-    static class TestCorrectlyGettingFromTransient {
+    class TestCorrectlyGettingFromTransient {
 
         @Test
         void whenGetStringFromTransient() {
@@ -41,7 +41,7 @@ final class TransientUtilsTest {
     }
 
     @Nested
-    static class TestFailGettingFromTransient {
+    class TestFailGettingFromTransient {
 
         @Test
         @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")

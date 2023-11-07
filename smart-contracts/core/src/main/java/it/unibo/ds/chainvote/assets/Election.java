@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An interface modeling a voting.
+ * An interface modeling a real election.
  */
 public interface Election {
 
