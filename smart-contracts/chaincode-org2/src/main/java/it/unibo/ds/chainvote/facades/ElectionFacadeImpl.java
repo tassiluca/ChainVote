@@ -6,7 +6,9 @@ import it.unibo.ds.chainvote.utils.Utils;
 
 import java.time.LocalDateTime;
 
-// TODO documentation
+/**
+ * An {@link ElectionFacade} implementation.
+ */
 public class ElectionFacadeImpl implements ElectionFacade {
 
     private final ElectionStatus status;
