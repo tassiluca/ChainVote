@@ -2,7 +2,7 @@
 
 # ++++++++++++++++
 # UTIL FUNCTIONS
-# +++++++++++++++
+# ++++++++++++++++
 
 # Check if the container is running
 is_container_running() {
@@ -48,10 +48,14 @@ copy_keys common
 echo "STEP 2: Launching common registry and publish dependencies"
 launch_container verdaccio
 sleep 5
-npm login --registry http://localhost:4873/
 
 # shellcheck disable=SC2164
 cd common
+# Check if an user is already logged in verdaccio, if not, proceed to login
+if [ ! -f ~/.npmrc ]; then
+    echo "No user logged in verdaccio, logging in..."
+    npm adduser --registry http://localhost:4873
+fi
 npm unpublish --force
 npm install
 npm run build
@@ -65,7 +69,6 @@ if [ ! -d "dbdata" ]; then
     echo "Directory 'dbdata' created."
 fi
 launch_container mongodb
-
 
 if [ ! -d "cache" ]; then
     mkdir -p "cache"

@@ -30,6 +30,7 @@ export async function createUser(req: Request, res: Response, next: NextFunction
         password: req.body.password,
         firstName: req.body.firstName,
         secondName: req.body.secondName,
+        role: req.body.role
     });
     try {
         await user.save();

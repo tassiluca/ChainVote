@@ -9,11 +9,10 @@ const port = parseInt(process.env.REDIS_PORT as string) || 6379;
 (async () => {
     redisClient = createClient({
         socket: {
-            host: host,
+            host:host,
             port:port
         }
     });
-
     await redisClient.connect();
 })();
 
