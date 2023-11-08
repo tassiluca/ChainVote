@@ -1,4 +1,4 @@
-package it.unibo.ds.chainvote.facades;
+package it.unibo.ds.chainvote.facade;
 
 /**
  * An enum representing the possible {@link it.unibo.ds.chainvote.assets.Election} status when it's serialized

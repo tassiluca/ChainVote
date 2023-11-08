@@ -1,6 +1,7 @@
-package it.unibo.ds.chainvote.facades;
+package it.unibo.ds.chainvote.facade;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * An interface modeling the {@link it.unibo.ds.chainvote.assets.Election} serialization.
@@ -42,4 +43,10 @@ public interface ElectionFacade {
      * @return the {@link ElectionFacade} affluence.
      */
     double getAffluence();
+
+    /**
+     * Allows access to {@link Map} representing results of the {@link it.unibo.ds.chainvote.assets.Election}.
+     * @return the {@link Map} representing the results.
+     */
+    Map<String, Long> getResults();
 }

@@ -1,10 +1,13 @@
-package it.unibo.ds.chainvote.facades;
+package it.unibo.ds.chainvote.facade;
 
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
 import it.unibo.ds.chainvote.utils.Utils;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * An {@link ElectionFacade} implementation.
@@ -17,6 +20,7 @@ public class ElectionFacadeImpl implements ElectionFacade {
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
     private final double affluence;
+    private final Map<String, Long> results;
 
     public ElectionFacadeImpl(Election election, ElectionInfo info) {
         this.status = info.isOpen() ? ElectionStatus.OPEN : ElectionStatus.CLOSED;
@@ -25,6 +29,7 @@ public class ElectionFacadeImpl implements ElectionFacade {
         this.startDate = info.getStartDate();
         this.endDate = info.getEndDate();
         this.affluence = ((double) election.getBallots().size()) / info.getVotersNumber();
+        this.results = info.isOpen() ? new HashMap<>() : election.getResults();
     }
 
     @Override
@@ -55,5 +60,23 @@ public class ElectionFacadeImpl implements ElectionFacade {
     @Override
     public double getAffluence() {
         return this.affluence;
+    }
+
+    @Override
+    public Map<String, Long> getResults() {
+        return this.results;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ElectionFacadeImpl that = (ElectionFacadeImpl) o;
+        return Double.compare(that.affluence, affluence) == 0 && status == that.status && Objects.equals(id, that.id) && Objects.equals(goal, that.goal) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(results, that.results);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(status, id, goal, startDate, endDate, affluence, results);
     }
 }

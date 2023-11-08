@@ -8,10 +8,8 @@ import it.unibo.ds.chainvote.assets.Ballot;
 import it.unibo.ds.chainvote.assets.BallotImpl;
 import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
-import it.unibo.ds.chainvote.facades.ElectionCompleteFacade;
-import it.unibo.ds.chainvote.facades.ElectionCompleteFacadeImpl;
-import it.unibo.ds.chainvote.facades.ElectionFacade;
-import it.unibo.ds.chainvote.facades.ElectionFacadeImpl;
+import it.unibo.ds.chainvote.facade.ElectionFacade;
+import it.unibo.ds.chainvote.facade.ElectionFacadeImpl;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.manager.ElectionManagerImpl;
 import it.unibo.ds.chainvote.utils.Choice;
@@ -65,17 +63,18 @@ public final class ElectionContract implements ContractInterface {
 
     /**
      * Create an {@link Election}.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionContract:createElection",
+     *      "Args": [
+     *          "your_election_id",
+     *          {["{"choice":"your_choiceN"}":n]*[,"{"choice":"your_choiceM"}":m]}
+     *      ]
+     * }
+     * Constraints: n >= 0, m >= 0, String must be non-empty.
      * @param ctx the {@link Context}.
      * @param electionId the id of the {@link ElectionInfo} and the {@link Election}.
-     *            JSON input in the following format:
-     * {
-     *    "electionId":"your_election_id"
-     * }
      * @param results the initial results of the {@link Election} to create.
-     *            JSON input in the following format:
-     * {
-     *    "{[\"your_choice\":n]}" {n > 0}
-     * }
      * @return the {@link Election} built.
      * @throws ChaincodeException with {@link ElectionContractErrors#ELECTION_ALREADY_EXISTS} as payload if it has
      * already been created an {@link Election} with the same electionId
@@ -117,7 +116,6 @@ public final class ElectionContract implements ContractInterface {
      * {@link Election} labeled by electionId hasn't been created.
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
     private Election readStandardElection(final Context ctx, String electionId) {
         if (electionExists(ctx, electionId)) {
             ChaincodeStub stub = ctx.getStub();
@@ -130,18 +128,26 @@ public final class ElectionContract implements ContractInterface {
     }
 
     /**
-     * Return the {@link ElectionCompleteFacade} related to {@link Election} and {@link ElectionInfo} labeled with
-     * the given electionId.
+     * Return the {@link ElectionFacade} related to {@link Election} and {@link ElectionInfo} labeled with
+     * the given electionId. If the {@link Election} is still open, {@link Map} representing its results will be empty.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionContract:readElection",
+     *      "Args": [
+     *          "your_election_id"
+     *      ]
+     * }
+     * Constraints: String must be non-empty.
      * @param ctx the {@link Context}.
      * @param electionId the id of the {@link Election} to retrieve open information (electionId and affluence).
-     * @return the {@link ElectionCompleteFacade}.
+     * @return the {@link ElectionFacade}.
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public ElectionCompleteFacade readElection(final Context ctx, String electionId) {
+    public ElectionFacade readElection(final Context ctx, String electionId) {
         Election election = readStandardElection(ctx, electionId);
         ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
-        return new ElectionCompleteFacadeImpl(election, electionInfo);
+        return new ElectionFacadeImpl(election, electionInfo);
     }
 
     /**
@@ -153,7 +159,6 @@ public final class ElectionContract implements ContractInterface {
      * went wrong during cross channel invocation.
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
     private ElectionInfo readElectionInfo(final Context ctx, final String electionId) {
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
                 CHAINCODE_INFO_NAME_CH1,
@@ -171,6 +176,21 @@ public final class ElectionContract implements ContractInterface {
 
     /**
      * Cast a vote in an existing {@link Election}.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionContract:castVote",
+     *      "Args": [
+     *          "{"choice":"your_choice"}",
+     *          "your_election_id"
+     *      ]
+     * }
+     * Expected transient map:
+     * {
+     *      "userId":"your_user_id",
+     *      "code":"your_code"
+     * }
+     * Constraints: String must be non-empty.
+     * Transient String values must be converted in base64 bytes.
      * @param ctx the {@link Context}.  A transient map is expected with the following
      *        key-value pairs: {@link UserCodeData#USER_ID} and {@link UserCodeData#CODE}.
      * @param choice the {@link Choice} of the vote.
@@ -222,6 +242,14 @@ public final class ElectionContract implements ContractInterface {
 
     /**
      * Delete an {@link Election}.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionContract:deleteElection",
+     *      "Args": [
+     *          "your_election_id"
+     *      ]
+     * }
+     * Constraints: String must be non-empty.
      * @param ctx the {@link Context}.
      * @param electionId the id of the {@link Election} to delete.
      * @return the {@link Election} deleted.
@@ -230,13 +258,10 @@ public final class ElectionContract implements ContractInterface {
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-
     public Election deleteElection(final Context ctx, final String electionId) {
-        System.out.println("[EC] deleteAsset");
         ChaincodeStub stub = ctx.getStub();
         if (!electionExists(ctx, electionId)) {
             final String errorMessage = String.format("Election %s does not exist", electionId);
-            System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_NOT_FOUND.toString());
         }
 
@@ -248,12 +273,19 @@ public final class ElectionContract implements ContractInterface {
 
     /**
      * Check if an {@link Election} exists.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionContract:electionExists",
+     *      "Args": [
+     *          "your_election_id"
+     *      ]
+     * }
      * @param ctx the {@link Context}.
      * @param electionId the {@link Election}'s id.
      * @return a boolean representing if the {@link Election} exists.
      */
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean electionExists(final Context ctx, final String electionId) {
-        System.out.println("[EC] electionExists");
         ChaincodeStub stub = ctx.getStub();
         final String electionSerialized = stub.getStringState(electionId);
         return (electionSerialized != null && !electionSerialized.isEmpty());
@@ -261,6 +293,11 @@ public final class ElectionContract implements ContractInterface {
 
     /**
      * Return all the existing {@link Election}s.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionContract:getAllElection",
+     *      "Args": []
+     * }
      * @param ctx the {@link Context}.
      * @return the {@link Election}s serialized.
      * @throws ChaincodeException with  {@link ElectionContractErrors#CROSS_INVOCATION_FAILED} as payload if something
@@ -269,7 +306,6 @@ public final class ElectionContract implements ContractInterface {
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public List<ElectionFacade> getAllElection(final Context ctx) {
-        System.out.println("[EC] getAllElection");
         List<ElectionFacade> allElections = new ArrayList<>();
         Chaincode.Response response = ctx.getStub().invokeChaincodeWithStringArgs(
                 CHAINCODE_INFO_NAME_CH1,
