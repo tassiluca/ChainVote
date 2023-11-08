@@ -51,12 +51,12 @@ public final class ElectionInfoContract implements ContractInterface {
      * {
      *      "function": "ElectionInfoContract:createElectionInfo",
      *      "Args": [
-     *          "your_election_id",
+     *          "your_goal",
      *          n,
      *          "yyyy-MM-ddThh:mm:ss",
      *          "yyyy-MM-ddThh:mm:ss",
-     *          [{"choice":"your_choice1"},{"choice":"your_choice2"}*[,{\"choice\":\"your_choiceN\"}]]
- *          ]
+     *          [{"choice":"your_choice1"},{"choice":"your_choice2"}*[,{"choice":"your_choiceN"}]]
+     *      ]
      * }
      * Constraints: n > 1, String must be non-empty.
      * @param ctx the {@link Context}.
@@ -64,7 +64,10 @@ public final class ElectionInfoContract implements ContractInterface {
      * @param votersNumber the number of voters that could cast a vote in the {@link ElectionInfo} to build.
      * @param sDate the {@link String} representing the encoded (ISO format) start date.
      * @param eDate the {@link String} representing the encoded (ISO format) end date.
-     * @param choices the {@link List} of {@link Choice} that the {@link ElectionInfo} to build has.
+     * @param choices the {@link List} of {@link Choice} that the {@link ElectionInfo} to build has. The {@link List}
+     *                must contains at least two different {@link Choice}s different from the
+     *                {@link it.unibo.ds.chainvote.utils.FixedVotes#INFORMAL_BALLOT}. If {@link it.unibo.ds.chainvote.utils.FixedVotes#INFORMAL_BALLOT}
+     *                is not present, it will be added by the system.
      * @return the {@link ElectionInfo} built.
      * @throws ChaincodeException with {@link ElectionInfoTransferErrors#ELECTION_INFO_ALREADY_EXISTS} as payload if it has
      * already been created an {@link ElectionInfo} with the same arguments and
@@ -106,7 +109,7 @@ public final class ElectionInfoContract implements ContractInterface {
      *      "function": "ElectionInfoContract:readElectionInfo",
      *      "Args": [
      *          "your_election_id"
- *          ]
+     *      ]
      * }
      * Constraints: String must be non-empty.
      * @param ctx the {@link Context}.
@@ -135,15 +138,11 @@ public final class ElectionInfoContract implements ContractInterface {
      *      "function": "ElectionInfoContract:deleteElectionInfo",
      *      "Args": [
      *          "your_election_id",
- *          ]
+     *      ]
      * }
      * Constraints: String must be non-empty.
      * @param ctx the {@link Context}.
      * @param electionId the electionId of the {@link ElectionInfo} to delete.
-     *            JSON input in the following format:
-     * {
-     *    "your_election_id"
-     * }
      * @return the {@link ElectionInfo} deleted.
      * @throws ChaincodeException with {@link ElectionInfoTransferErrors#ELECTION_INFO_NOT_FOUND} as payload if there
      * isn't an {@link ElectionInfo} labeled by the given electionId.
@@ -171,7 +170,6 @@ public final class ElectionInfoContract implements ContractInterface {
      * @return a boolean representing the {@link ElectionInfo}'s existence.
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
     private boolean electionInfoExists(final Context ctx, final String electionId) {
         ChaincodeStub stub = ctx.getStub();
         String electionInfoSerialized = stub.getStringState(electionId);
@@ -180,6 +178,11 @@ public final class ElectionInfoContract implements ContractInterface {
 
     /**
      * Return all the existing {@link ElectionInfo}s.
+     * Expected JSON input in the following format:
+     * {
+     *      "function": "ElectionInfoContract:getAllElectionInfo",
+     *      "Args": []
+     * }
      * @param ctx the {@link Context}.
      * @return all the {@link ElectionInfo}s retrieved from the ledger as {@link List}.
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>

@@ -1,5 +1,9 @@
 package it.unibo.ds.chainvote.contract;
 
+import com.owlike.genson.Genson;
+import it.unibo.ds.chainvote.SerializersUtils;
+import it.unibo.ds.chainvote.assets.ElectionInfo;
+import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
 import it.unibo.ds.chainvote.utils.FixedVotes;
 import it.unibo.ds.chainvote.utils.Utils;
@@ -9,7 +13,6 @@ import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,10 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.ThrowableAssert.catchThrowable;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 final class ElectionInfoContractTest {
 
@@ -48,10 +52,10 @@ final class ElectionInfoContractTest {
         END_TIME_MAP.get("h"), END_TIME_MAP.get("m"), END_TIME_MAP.get("s"));
     private static final List<Choice> CHOICE_ELECTION = List.of(new Choice("test-choice-1"), new Choice("test-choice-2"),
         new Choice("test-choice-3"), new Choice("test-choice-4"), new Choice("test-choice-5"));
-    @Spy
-    private ElectionInfoContract ELECTION_INFO_CONTRACT = new ElectionInfoContract();
+    private final ElectionInfoContract ELECTION_INFO_CONTRACT = spy(new ElectionInfoContract());
     private Context context;
     private ChaincodeStub stub;
+    private final Genson genson = SerializersUtils.gensonInstance();
 
     @BeforeEach
     void setup() {
@@ -81,26 +85,115 @@ final class ElectionInfoContractTest {
         class TestFailToCreateElection {
 
             @Test
+            void whenCreateElectionWithEmptyGoal() {
+                final Throwable thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.createElectionInfo(context, "", VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), CHOICE_ELECTION));
+                assertThat(thrown)
+                        .isInstanceOf(ChaincodeException.class);
+                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INVALID_ARGUMENT".getBytes(UTF_8));
+            }
+
+            @Test
             void whenCreateElectionWithWrongDate() {
-                assertThrows(ChaincodeException.class, () -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), CHOICE_ELECTION));
+                final Throwable thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), CHOICE_ELECTION));
+                assertThat(thrown)
+                        .isInstanceOf(ChaincodeException.class);
+                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INVALID_ARGUMENT".getBytes(UTF_8));
             }
 
             @Test
             void whenCreateElectionWithInvalidChoices() {
+                Throwable thrown;
+
                 // Empty choices
-                assertThrows(ChaincodeException.class, () -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), END_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), new ArrayList<Choice>()));
+                thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), END_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), new ArrayList<>()));
+                assertThat(thrown)
+                        .isInstanceOf(ChaincodeException.class);
+                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INVALID_ARGUMENT".getBytes(UTF_8));
                 // Only blank choices
-                assertThrows(ChaincodeException.class, () -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), END_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), new ArrayList<>(List.of(
+                thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), END_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), new ArrayList<>(List.of(
                         FixedVotes.INFORMAL_BALLOT.getChoice(), FixedVotes.INFORMAL_BALLOT.getChoice(),
                         FixedVotes.INFORMAL_BALLOT.getChoice()))
-                        )
-                );
+                ));
+                assertThat(thrown)
+                        .isInstanceOf(ChaincodeException.class);
+                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INVALID_ARGUMENT".getBytes(UTF_8));
                 // Duplicate choices
-                assertThrows(ChaincodeException.class, () -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), END_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), new ArrayList<>(List.of(
-                        new Choice("test-choice-1"), new Choice("test-choice-1"),
-                        FixedVotes.INFORMAL_BALLOT.getChoice()))
+                thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), END_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), new ArrayList<>(List.of(
+                                new Choice("test-choice-1"), new Choice("test-choice-1"),
+                                FixedVotes.INFORMAL_BALLOT.getChoice()))
                         )
                 );
+                assertThat(thrown)
+                        .isInstanceOf(ChaincodeException.class);
+                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INVALID_ARGUMENT".getBytes(UTF_8));
+            }
+        }
+    }
+
+    @Nested
+    class TestReadElectionInfo {
+
+        private final ElectionInfo ei = ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICE_ELECTION);
+
+        @BeforeEach
+        void setup() {
+            // Put ElectionInfo inside state
+            when(stub.getStringState(Utils.calculateID(GOAL, START_DATE, END_DATE, CHOICE_ELECTION))).thenReturn(genson.serialize(ei));
+        }
+
+        @Nested
+        class TestCorrectlyReadElectionInfo {
+            @Test
+            void whenReadElectionInfoCorrectly() {
+                assertDoesNotThrow(() -> ELECTION_INFO_CONTRACT.readElectionInfo(context, Utils.calculateID(ei)));
+                assertEquals(ei, ELECTION_INFO_CONTRACT.readElectionInfo(context, Utils.calculateID(ei)));
+            }
+        }
+
+        @Nested
+        class TestFailToReadElectionInfo {
+            @Test
+            void whenReadElectionInfoWithWrongId() {
+                String wrongId = Utils.calculateID(ei) + "fail";
+                assertThrows(ChaincodeException.class, () -> ELECTION_INFO_CONTRACT.readElectionInfo(context, wrongId));
+                final Throwable thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.readElectionInfo(context, wrongId));
+                assertThat(thrown)
+                        .isInstanceOf(ChaincodeException.class);
+                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ELECTION_INFO_NOT_FOUND".getBytes(UTF_8));
+            }
+        }
+    }
+
+    @Nested
+    class TestDeleteElectionInfo {
+
+        private final ElectionInfo ei = ElectionFactory.buildElectionInfo(GOAL, VOTERS, START_DATE, END_DATE, CHOICE_ELECTION);
+
+        @BeforeEach
+        void setup() {
+            // Put ElectionInfo inside state
+            when(stub.getStringState(Utils.calculateID(GOAL, START_DATE, END_DATE, CHOICE_ELECTION))).thenReturn(genson.serialize(ei));
+        }
+
+        @Nested
+        class TestCorrectlyDeleteElectionInfo {
+            @Test
+            void whenDeleteElectionInfoCorrectly() {
+                assertDoesNotThrow(() -> ELECTION_INFO_CONTRACT.deleteElectionInfo(context, Utils.calculateID(ei)));
+                assertEquals(ei, ELECTION_INFO_CONTRACT.deleteElectionInfo(context, Utils.calculateID(ei)));
+            }
+        }
+
+        @Nested
+        class TestFailToDeleteElectionInfo {
+            @Test
+            void whenDeleteElectionInfoWithWrongId() {
+                String wrongId = Utils.calculateID(ei) + "fail";
+                assertThrows(ChaincodeException.class, () -> ELECTION_INFO_CONTRACT.deleteElectionInfo(context, wrongId));
+                final Throwable thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.deleteElectionInfo(context, wrongId));
+                assertThat(thrown)
+                        .isInstanceOf(ChaincodeException.class);
+                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ELECTION_INFO_NOT_FOUND".getBytes(UTF_8));
             }
         }
     }
