@@ -6,7 +6,7 @@
 set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
 
 if [[ -d ./bin ]]; then 
-    echo "A bin folder already exists. Exiting."
+    echo "Binaries already into $PWD/bin. Exiting."
     exit
 fi;
 

@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import kotlin.io.path.Path
@@ -63,18 +64,21 @@ val peersOrg2 = setOf(
 val allPeers = peersOrg1.plus(peersOrg2)
 val blockchainGroup = "blockchain"
 val blockchainDirectory = File("${projectDir.parent}/blockchain")
+// val configurationFile = File("${projectDir.parent}/config.env")
+// val blockchainArtifactsPath = "${System.getProperty("user.home")}/${configurations["blockchainDataDirectory"]}"
+val blockchainArtifactsPath = Path(projectDir.parent, ".chainvote", "blockchain").toString()
 
-fun commonEnvironmentsFor(organization: String) = mapOf(
+fun commonEnvironments() = mapOf(
     "CORE_PEER_TLS_ENABLED" to "true",
-    "FABRIC_CFG_PATH" to "$blockchainDirectory/channels_config/$organization",
+    "FABRIC_CFG_PATH" to "$blockchainDirectory/channels_config/generated",
 )
 
-fun environmentsFor(organization: String, peer: Peer) = mapOf(
+fun environmentsFor(peer: Peer) = mapOf(
     "CORE_PEER_LOCALMSPID" to "${peer.organization}MSP",
-    "CORE_PEER_MSPCONFIGPATH" to "/tmp/hyperledger/${peer.organization}/admin/msp",
-    "CORE_PEER_TLS_ROOTCERT_FILE" to "/tmp/hyperledger/${peer.organization}/${peer.name}/assets/tls-ca/tls-ca-cert.pem",
+    "CORE_PEER_MSPCONFIGPATH" to "$blockchainArtifactsPath/${peer.organization}/admin/msp",
+    "CORE_PEER_TLS_ROOTCERT_FILE" to "$blockchainArtifactsPath/${peer.organization}/${peer.name}/assets/tls-ca/tls-ca-cert.pem",
     "CORE_PEER_ADDRESS" to peer.address,
-).plus(commonEnvironmentsFor(organization))
+).plus(commonEnvironments())
 
 fun executeCommand(
     command: String,
@@ -106,13 +110,13 @@ fun Chaincode.`package`() = executeCommand(
         "--path ${projectDir.absolutePath}/$name/build/install/$name " +
         "--lang java " +
         "--label ${name}_1.0",
-    environments = commonEnvironmentsFor(organization),
+    environments = commonEnvironments(),
 )
 
 tasks.register("packageChaincodes") {
     group = blockchainGroup
     description = "Build and generate chaincode packages"
-    dependsOn(":${chaincodeOrg1.name}:installDist", ":${chaincodeOrg2.name}:installDist")
+    dependsOn(":${chaincodeOrg1.name}:installDist", ":${chaincodeOrg2.name}:installDist", "upNetwork")
     doLast {
         chaincodeOrg1.`package`()
         chaincodeOrg2.`package`()
@@ -126,18 +130,21 @@ tasks.register<Delete>("cleanAllPackages") {
 }
 
 infix fun Chaincode.installOn(peers: Set<Peer>) = peers.forEach {
-    println(">> Installing on $it")
+    println(">> Installing $name on $it")
+    val outputStream = ByteArrayOutputStream()
     executeCommand(
         "./bin/peer lifecycle chaincode install $name.tar.gz",
-        environments = environmentsFor(organization, it),
+        environments = environmentsFor(it),
+        stdout = outputStream,
     )
 }
 
 fun Chaincode.packageId(): String? {
     val outputStream = ByteArrayOutputStream()
+    val representativePeer = allPeers.find { it.organization == organization } ?: error("No peer found for $organization")
     executeCommand(
         "./bin/peer lifecycle chaincode queryinstalled",
-        environments = commonEnvironmentsFor(organization),
+        environments = environmentsFor(representativePeer),
         stdout = outputStream,
     )
     return Regex("$name[^,]+").find(outputStream.toString())?.value
@@ -159,10 +166,10 @@ fun Chaincode.approveFor(peers: Set<Peer>, collectionsConfig: File? = null) {
                     "--version 1.0 " +
                     "--package-id $packageId " +
                     "--sequence 1 " +
-                    "--cafile /tmp/hyperledger/$org/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem " +
+                    "--cafile $blockchainArtifactsPath/$org/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem " +
                     (collectionsConfig?.let { "--collections-config ${it.absolutePath} " } ?: "") +
                     "--tls",
-                environments = environmentsFor(org, approvalPeer),
+                environments = environmentsFor(approvalPeer),
             )
         }
     }
@@ -174,7 +181,7 @@ fun Chaincode.commit(peers: Set<Peer>, collectionsConfig: File? = null) {
     val channel = "ch${organization.last()}"
     val peerAddresses = peers.filter { it.organization == organization }.joinToString(separator = " ") {
         "--peerAddresses ${it.address} " +
-        "--tlsRootCertFiles /tmp/hyperledger/${it.organization}/${it.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
+            "--tlsRootCertFiles $blockchainArtifactsPath/${it.organization}/${it.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem"
     }
     executeCommand(
         "./bin/peer lifecycle chaincode commit " +
@@ -184,11 +191,11 @@ fun Chaincode.commit(peers: Set<Peer>, collectionsConfig: File? = null) {
             "--name $name " +
             "--version 1.0 " +
             "--sequence 1 " +
-            "--cafile /tmp/hyperledger/$organization/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem " +
+            "--cafile $blockchainArtifactsPath/$organization/${approvalPeer.name}/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem " +
             "$peerAddresses " +
             (collectionsConfig?.let { "--collections-config ${it.absolutePath} " } ?: "") +
             "--tls",
-        environments = environmentsFor(organization, approvalPeer),
+        environments = environmentsFor(approvalPeer),
     )
 }
 
