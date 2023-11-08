@@ -12,14 +12,8 @@ services:
       - /tmp/hyperledger:/tmp/hyperledger
     networks:
       - blockchain_fabric-ca
-    depends_on:
-      - mongodb
-      - auth-server
-      - verdaccio
     links:
       - mongodb
-      - auth-server
-      - verdaccio
       - redis
 
   # Authentication service
@@ -33,12 +27,8 @@ services:
       - REDIS_PORT=6379
     networks:
       - blockchain_fabric-ca
-    depends_on:
-      - mongodb
-      - verdaccio
     links:
       - mongodb
-      - verdaccio
       - redis
 
   # Mongodb service

@@ -83,7 +83,7 @@ export class JwtHandler {
     public signAccessToken(user, expiration: string | undefined = undefined): string {
         const privateKey: string = this.getKey("PR", "AT");
         if(!expiration) {
-            expiration = "1m";
+            expiration = "15m";
         }
         return this.signJwt({sub: user}, privateKey, {expiresIn: expiration});
     }
@@ -91,7 +91,7 @@ export class JwtHandler {
     public signRefreshToken(user, expiration: string | undefined = undefined): string {
         const privateKey = this.getKey("PR", "RT");
         if(!expiration) {
-            expiration = "10m";
+            expiration = "30m";
         }
         return this.signJwt({sub: user}, privateKey, {expiresIn: expiration});
     }
