@@ -9,8 +9,8 @@ set -e  # Exit immediately if some command (simple or compound) returns a non-ze
 #####################################################################################################################
 echo "Working on TLS-CA"
 
-export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/tls-ca/crypto/tls-cert.pem
-export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/tls-ca/admin
+export FABRIC_CA_CLIENT_TLS_CERTFILES=$ARTIFACTS_DIR/tls-ca/crypto/tls-cert.pem
+export FABRIC_CA_CLIENT_HOME=$ARTIFACTS_DIR/tls-ca/admin
 
 fabric-ca-client enroll -d -u https://tls-ca-admin:tls-ca-adminpw@0.0.0.0:7052
 sleep 5
@@ -35,8 +35,8 @@ fabric-ca-client register -d --id.name client-org2 --id.secret clientPW --id.typ
 #####################################################################################################################
 echo "Working on RCA-ORG0"
 
-export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org0/ca/crypto/ca-cert.pem
-export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/org0/ca/admin
+export FABRIC_CA_CLIENT_TLS_CERTFILES=$ARTIFACTS_DIR/org0/ca/crypto/ca-cert.pem
+export FABRIC_CA_CLIENT_HOME=$ARTIFACTS_DIR/org0/ca/admin
 
 fabric-ca-client enroll -d -u https://rca-org0-admin:rca-org0-adminpw@0.0.0.0:7053
 sleep 5
@@ -51,8 +51,8 @@ fabric-ca-client register -d --id.name admin-org0 --id.secret org0adminpw --id.t
 #####################################################################################################################
 echo "Working on RCA-ORG1"
 
-export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org1/ca/crypto/ca-cert.pem
-export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/org1/ca/admin
+export FABRIC_CA_CLIENT_TLS_CERTFILES=$ARTIFACTS_DIR/org1/ca/crypto/ca-cert.pem
+export FABRIC_CA_CLIENT_HOME=$ARTIFACTS_DIR/org1/ca/admin
 
 fabric-ca-client enroll -d -u https://rca-org1-admin:rca-org1-adminpw@0.0.0.0:7054
 sleep 5
@@ -67,8 +67,8 @@ fabric-ca-client register -d --id.name client-org1 --id.secret clientPW --id.typ
 #####################################################################################################################
 echo "Working on RCA-ORG2"
 
-export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org2/ca/crypto/ca-cert.pem
-export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/org2/ca/admin
+export FABRIC_CA_CLIENT_TLS_CERTFILES=$ARTIFACTS_DIR/org2/ca/crypto/ca-cert.pem
+export FABRIC_CA_CLIENT_HOME=$ARTIFACTS_DIR/org2/ca/admin
 
 fabric-ca-client enroll -d -u https://rca-org2-admin:rca-org2-adminpw@0.0.0.0:7055
 sleep 5

@@ -2,3 +2,4 @@
 # Single .gitignore are present in the specific folders
 .DS_Store
 .idea
+.chainvote
