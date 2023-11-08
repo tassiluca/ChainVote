@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * A factory for an {@link Election}.
+ * A factory for {@link Election}s.
  */
 public class ElectionFactory {
 
@@ -65,7 +65,7 @@ public class ElectionFactory {
      * choices or the sum of votes expressed in the results is lower than the voters number.
      * In case of an already closed {@link Election}, results must not be empty.
      * @param electionInfo the {@link ElectionInfo} used to build the {@link Election}.
-     * @param results the {@link Map} representing the starting result used to build the {@link Election}.
+     * @param results the {@link Map} representing the starting results used to build the {@link Election}.
      * @return the new {@link Election}.
      * @throws IllegalArgumentException in case checks on parameters fail.
      */

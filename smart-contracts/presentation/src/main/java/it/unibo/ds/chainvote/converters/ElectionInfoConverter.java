@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * A {@link ElectionInfo} converter from class object to json string and vice-versa.
+ * An {@link ElectionInfo} converter from class object to json string and vice-versa.
  */
 public final class ElectionInfoConverter implements Converter<ElectionInfo> {
 

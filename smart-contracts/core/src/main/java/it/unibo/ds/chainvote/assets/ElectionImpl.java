@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * The {@link Election} implementation.
+ * An {@link Election} implementation.
  */
 public final class ElectionImpl implements Election {
 
