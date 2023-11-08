@@ -45,5 +45,5 @@ function getPeerPort(peer: Org1Peer | Org2Peer): string {
  * @param isLocalhost a boolean flag to indicate if the peer is running on localhost
  */
 export function getPeerHost(peer: Org1Peer | Org2Peer): string {
-    return `${getPeerHostAlias}:${getPeerPort(peer)}`;
+    return `${getPeerHostAlias(peer)}:${getPeerPort(peer)}`;
 }
