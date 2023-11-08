@@ -5,7 +5,11 @@
 set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
 
 # Directory where store blockchain artifacts
-ARTIFACTS_DIR=$HOME/$(jq -r '.blockchainDataDirectory' ../config.json)
+# ARTIFACTS_DIR=$HOME/$(jq -r '.blockchainDataDirectory' ../config.json)
+export $(cat ../config.env | xargs)
+export ARTIFACTS_DIR=$(pwd)/../$ARTIFACTS_DIR
+echo 
+echo "Artifacts dir $ARTIFACTS_DIR"
 
 if [[ "$#" != 1 || ($1 != "up" && $1 != "down") ]]; then
     echo "Usage: ./network [up|down]"

@@ -1,6 +1,7 @@
 import groovy.json.JsonSlurper
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
+import kotlin.io.path.Path
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -56,9 +57,9 @@ val peersOrg2 = setOf(
 val allPeers = peersOrg1.plus(peersOrg2)
 val blockchainGroup = "blockchain"
 val blockchainDirectory = File("${projectDir.parent}/blockchain")
-val configurationFile = File("${projectDir.parent}/config.json")
-val configurations = JsonSlurper().parseText(configurationFile.readText()) as Map<*, *>
-val blockchainArtifactsPath = "${System.getProperty("user.home")}/${configurations["blockchainDataDirectory"]}"
+// val configurationFile = File("${projectDir.parent}/config.env")
+// val blockchainArtifactsPath = "${System.getProperty("user.home")}/${configurations["blockchainDataDirectory"]}"
+val blockchainArtifactsPath = Path(projectDir.parent, ".chainvote", "blockchain").toString()
 
 fun commonEnvironments() = mapOf(
     "CORE_PEER_TLS_ENABLED" to "true",
