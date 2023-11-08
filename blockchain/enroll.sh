@@ -159,15 +159,15 @@ cp $ARTIFACTS_DIR/org1/peer2/tls-msp/keystore/*_sk $ARTIFACTS_DIR/org1/peer2/tls
 echo "Enroll Client"
 
 # preparation
-mkdir -p /tmp/hyperledger/org1/client/assets/ca 
-cp /tmp/hyperledger/org1/ca/admin/msp/cacerts/0-0-0-0-7054.pem /tmp/hyperledger/org1/client/assets/ca/org1-ca-cert.pem
+mkdir -p $ARTIFACTS_DIR/org1/client/assets/ca 
+cp $ARTIFACTS_DIR/org1/ca/admin/msp/cacerts/0-0-0-0-7054.pem $ARTIFACTS_DIR/org1/client/assets/ca/org1-ca-cert.pem
 
-mkdir -p /tmp/hyperledger/org1/client/assets/tls-ca 
-cp /tmp/hyperledger/tls-ca/admin/msp/cacerts/0-0-0-0-7052.pem /tmp/hyperledger/org1/client/assets/tls-ca/tls-ca-cert.pem
+mkdir -p $ARTIFACTS_DIR/org1/client/assets/tls-ca 
+cp $ARTIFACTS_DIR/tls-ca/admin/msp/cacerts/0-0-0-0-7052.pem $ARTIFACTS_DIR/org1/client/assets/tls-ca/tls-ca-cert.pem
 
 # for identity
-export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/org1/client
-export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org1/client/assets/ca/org1-ca-cert.pem
+export FABRIC_CA_CLIENT_HOME=$ARTIFACTS_DIR/org1/client
+export FABRIC_CA_CLIENT_TLS_CERTFILES=$ARTIFACTS_DIR/org1/client/assets/ca/org1-ca-cert.pem
 export FABRIC_CA_CLIENT_MSPDIR=msp
 
 fabric-ca-client enroll -d -u https://client-org1:clientPW@0.0.0.0:7054
@@ -175,12 +175,12 @@ sleep 5
 
 # for TLS
 export FABRIC_CA_CLIENT_MSPDIR=tls-msp
-export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org1/client/assets/tls-ca/tls-ca-cert.pem
+export FABRIC_CA_CLIENT_TLS_CERTFILES=$ARTIFACTS_DIR/org1/client/assets/tls-ca/tls-ca-cert.pem
 
 fabric-ca-client enroll -d -u https://client-org1:clientPW@0.0.0.0:7052 --enrollment.profile tls --csr.hosts client-org1 --csr.hosts localhost
 sleep 5
 
-cp /tmp/hyperledger/org1/client/tls-msp/keystore/*_sk /tmp/hyperledger/org1/client/tls-msp/keystore/key.pem
+cp $ARTIFACTS_DIR/org1/client/tls-msp/keystore/*_sk $ARTIFACTS_DIR/org1/client/tls-msp/keystore/key.pem
 
 echo "Enroll Admin"
 
@@ -267,15 +267,15 @@ cp $ARTIFACTS_DIR/org2/peer2/tls-msp/keystore/*_sk $ARTIFACTS_DIR/org2/peer2/tls
 echo "Enroll Client"
 
 # preparation
-mkdir -p /tmp/hyperledger/org2/client/assets/ca 
-cp /tmp/hyperledger/org2/ca/admin/msp/cacerts/0-0-0-0-7055.pem /tmp/hyperledger/org2/client/assets/ca/org2-ca-cert.pem
+mkdir -p $ARTIFACTS_DIR/org2/client/assets/ca 
+cp $ARTIFACTS_DIR/org2/ca/admin/msp/cacerts/0-0-0-0-7055.pem $ARTIFACTS_DIR/org2/client/assets/ca/org2-ca-cert.pem
 
-mkdir -p /tmp/hyperledger/org2/client/assets/tls-ca 
-cp /tmp/hyperledger/tls-ca/admin/msp/cacerts/0-0-0-0-7052.pem /tmp/hyperledger/org2/client/assets/tls-ca/tls-ca-cert.pem
+mkdir -p $ARTIFACTS_DIR/org2/client/assets/tls-ca 
+cp $ARTIFACTS_DIR/tls-ca/admin/msp/cacerts/0-0-0-0-7052.pem $ARTIFACTS_DIR/org2/client/assets/tls-ca/tls-ca-cert.pem
 
 # for identity
-export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/org2/client
-export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org2/client/assets/ca/org2-ca-cert.pem
+export FABRIC_CA_CLIENT_HOME=$ARTIFACTS_DIR/org2/client
+export FABRIC_CA_CLIENT_TLS_CERTFILES=$ARTIFACTS_DIR/org2/client/assets/ca/org2-ca-cert.pem
 export FABRIC_CA_CLIENT_MSPDIR=msp
 
 fabric-ca-client enroll -d -u https://client-org2:clientPW@0.0.0.0:7055
@@ -283,12 +283,12 @@ sleep 5
 
 # for TLS
 export FABRIC_CA_CLIENT_MSPDIR=tls-msp
-export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/org2/client/assets/tls-ca/tls-ca-cert.pem
+export FABRIC_CA_CLIENT_TLS_CERTFILES=$ARTIFACTS_DIR/org2/client/assets/tls-ca/tls-ca-cert.pem
 
 fabric-ca-client enroll -d -u https://client-org2:clientPW@0.0.0.0:7052 --enrollment.profile tls --csr.hosts client-org1 --csr.hosts localhost
 sleep 5
 
-cp /tmp/hyperledger/org1/client/tls-msp/keystore/*_sk /tmp/hyperledger/org1/client/tls-msp/keystore/key.pem
+cp $ARTIFACTS_DIR/org1/client/tls-msp/keystore/*_sk $ARTIFACTS_DIR/org1/client/tls-msp/keystore/key.pem
 
 echo "Enroll Admin"
 
