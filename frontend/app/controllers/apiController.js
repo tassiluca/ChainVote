@@ -1,13 +1,18 @@
 const axiosRequest = require('./utils');
 
-const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjU0YjcwY2JiMDgwODAxMjExNTZkNGMzIiwiZW1haWwiOiJlbWFpbC5wcm92YUB0ZXN0Lml0IiwicGFzc3dvcmQiOiIkMmIkMTAkd2U1ak5QYWQ1S0RRYlQzZXc5MlJvdWtMeThYNmxKbi5NTS5EcTV5SWg0WUp5YmlrRkxpbi4iLCJmaXJzdE5hbWUiOiJHaW9wYWluIiwic2Vjb25kTmFtZSI6Ik5vR2FpbiIsInJvbGUiOiJ1c2VyIiwiX192IjowfSwiaWF0IjoxNjk5NTQyMjQ3LCJleHAiOjE2OTk1NDMxNDcsImF1ZCI6Imh0dHBzOi8vd3d3LmNoYWludm90ZS5jb20iLCJpc3MiOiJDaGFpblZvdGUifQ.nPLWPqgu8eWJPuNb_XKopANn-Gyq0NkdDLkCRjDmNqy4o5se3-otKd9uQDLr5ifQxnFWL7ANEGye3PdmdAMSgppltmK2nzAaueJfU7lFWCsV6DpwuArASk1I1JCac2YQ229C9nMoRpOiiFBe3y2xDcwd9tmwyHOOpnXrkuoGYQLnNXpL6pqaTNfO4-PpsN9DNg2s5N_Q7vURHITdiy4D4zrBkX7nMak7BoURapubEkc3nv8vghbWiHhNiMI8HFcB7qrHFDH7qSBFCAQRvr2YCUG03pFfA-yHW6zK_05vjf8ni0Dcsa3XI5pJELBkIHlyTA5iCEVj5jbtA-GX1ZAmIgKjdqz2SplFHW0iyrekpJz2DrqT2SZM5runZDToClLFLrMlpoJpUc7wqjVn_cGZN4-430Z0PrV88BkaaB9K-ZP0E7PgtQdDqiIGUok-2wDJQNBLpvQesdFAT_sfUBq2ksPC_CPZjJTpTY1ySChmw76bWFmX7ZlQekOxbtqAXhzxAVm-WFkyrvDUeKx9fx2HIH1mbEX8Rosumj3HzbFH6pFgf0m81eu1pNFlHM7iIdqm0r9w7CCY-nRkO-Ii3jsoR0PZqAa4SK2HCAyXrTUBI1MWW7heYsnPai61CZqhEuui2BqcNBiyJZnAkzBLb7VCuoa-M_gtobJBKmjZ6N-gZHs";
+// TODO: just for testing
+const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjU0Y2JhOTIyOTA2NjlkMzFhOTlmMDBiIiwiZW1haWwiOiJhZG1pbkB0ZXN0Lml0IiwicGFzc3dvcmQiOiIkMmIkMTAkQzJwaVU2ZmZIdHFsY3ZkSmVnN25JT1FIdldBcUhiUE1uV0lJRU5oa28zVjZzMUtnc0NkL3UiLCJmaXJzdE5hbWUiOiJhZG1pbmlzdHJhdG9yIiwic2Vjb25kTmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiX192IjowfSwiaWF0IjoxNjk5NTU5NjU4LCJleHAiOjE2OTk1NjA1NTgsImF1ZCI6Imh0dHBzOi8vd3d3LmNoYWludm90ZS5jb20iLCJpc3MiOiJDaGFpblZvdGUifQ.LRsgSbvs2WuZ_IW8g3i-cWYo01qiZjroDeJ6HYOIopW399JWrFBbVqd05NxYPYUuiLwbG6Rvxlp2sq-eMbecWUNZbQdkTDIL3EKbig3aAxyN1IHPbjhtYaY6nQ8jeHG9NOKGB3oRX6TlVhOxx4m-oUMGrWTNXXkFve75WDyO7ZOyvPL-hqmAHkXCh5FUInVtXQdUQ1BqXrH2_mOu3Xb39hf0NEqW16mpdnaSzui_zWSO65SCke8XvuKWQpt9brsPkdTLvE_tEgbggR9w1MqZyvaQjBqjlyR-h2dSGI--ZlJacdnCiNUNx8Y_tZ47spFL7Wp8-MIJBRm6ec2BoMY37ev_y4F7tQnjNK0pa10XvNyqZSe78zlukkHeZ1ixveYSfkR09QY0Lqy9Nl-yH-QCW2rZKuXJLomOeAlszGVPGm69KkfL66-h19NgfFFvepjkWpiC1s-DRC6Azy5OJlnqdf5I4PuLHYjeTSTmLE5d186B9Sa-vs7a_bu5-WVhy9LOclzji7Dt3dt7Dk_WBsU3X14B-0fxnfjUTsNEgRNpQvcGT9u8af3s428TVELBOtCSLk8cibdjBVnnoWAH4Qsup_n6RVRbBIkwe-30S-W37nzpH88AT9204gulKokzNoTPzPadTCfEGLCBmJgz-_oDFd9H8s0mVRfimRZFrNkPkS4";
 
 const getAllElections = async (req, res) => {
     try {
         const allElectionsUrl = `http://localhost:8080/election/info/all`;
-        // const electionDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, token);
-        // console.log(electionDetailsResponse);
-        res.render('dashboard');
+        const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, token);
+        const electionsData = electionsDetailsResponse.data;
+        for (let i = 0; i < electionsData.length; i++) {
+            const entry = reformatDates(electionsData[i]);
+            entry.open = new Date(entry.endDate) > Date.now();
+        }
+        res.render('dashboard', { electionsData });
     } catch (error) {
         res.render('not-found');
     }
@@ -17,15 +22,34 @@ const getElection = async (req, res) => {
     try {
         const electionId = req.params.electionId;
         const electionDetailsUrl = `http://localhost:8080/election/detail/${electionId}`;
-        // const electionInfoDetailsUrl = `http://localhost:8080/election/info/detail/${electionId}`;
+        const electionInfoDetailsUrl = `http://localhost:8080/election/info/detail/${electionId}`;
         const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, token);
-        const electionData = electionDetailsResponse.data;
-        console.log(electionData);
+        const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, token);
+        const electionData = reformatDates(electionDetailsResponse.data);
+        electionData.choices = electionInfoResponse.data.choices;
         res.render('election-info', { electionData });
     } catch (error) {
         res.render('not-found');
     }
 };
+
+function reformatDates(electionData) {
+    electionData.formattedStartDate = formatDate(electionData.startDate);
+    electionData.formattedEndDate = formatDate(electionData.endDate);
+    return electionData;
+}
+
+function formatDate(date) {
+    return new Date(date).toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: 'numeric', 
+        minute: 'numeric', 
+        second: 'numeric', 
+        timeZoneName: 'short' 
+    });
+}
 
 module.exports = {
     getAllElections,

@@ -12,13 +12,13 @@
             </div>
             <div class="row" id="content">
                 <div class="col-md-5 center mx-auto">
-                    <p><strong>Start date: </strong><%= electionData.startDate %></p>
-                    <p><strong>End date: </strong><%= electionData.endDate %></p>
+                    <p><strong>Start date: </strong><%= electionData.formattedStartDate %></p>
+                    <p><strong>End date: </strong><%= electionData.formattedEndDate %></p>
                     <p><strong>Choices: </strong></p>
                     <ul>
-                        <li>Option 1</li>
-                        <li>Option 2</li>
-                        <li>Option 3</li>
+                        <% electionData.choices.forEach(function(entry) { %>
+                            <li><%= entry.choice %></li>
+                        <% }) %>
                     </ul>
                     <p><strong>Affluence: </strong> <%= electionData.affluence %></p>
                     <% if (Object.keys(electionData.results).length === 0) { %>
