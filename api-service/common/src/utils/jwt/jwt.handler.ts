@@ -5,9 +5,7 @@ import * as fs from "fs";
 
 export type ConfigurationObject = {
     ATPrivateKeyPath?: string;
-    ATPublicKeyPath?: string;
     RTPrivateKeyPath?: string;
-    RTPublicKeyPath?: string;
 };
 
 export interface IJwtHandler {
@@ -65,13 +63,13 @@ export class JwtHandler {
     }
 
     public verifyAccessToken<T>(token: string): T | undefined {
-        const publicKey: string = this.getKey("PU", "AT");
-        return this.verifyJwt(token, publicKey) as T
+        const privateKey: string = this.getKey("PR", "AT");
+        return this.verifyJwt(token, privateKey) as T
     }
 
     public verifyRefreshToken<T>(token: string): T | undefined {
-        const publicKey: string = this.getKey("PU", "RT");
-        const verifiedResponse = this.verifyJwt(token, publicKey) as T
+        const privateKey = this.getKey("PR", "RT");
+        const verifiedResponse = this.verifyJwt(token, privateKey) as T
         // @ts-ignore
         const subscriber = verifiedResponse.sub;
         if(!subscriber) {
@@ -100,17 +98,9 @@ export class JwtHandler {
         let keyPath: string | undefined;
 
         if(tokenType === "AT") {
-            if(keyType === "PR") {
-                keyPath = this.internalConfiguration.ATPrivateKeyPath || process.env.AT_PRIVATE_KEY_PATH;
-            } else {
-                keyPath = this.internalConfiguration.ATPublicKeyPath || process.env.AT_PUBLIC_KEY_PATH;
-            }
+            keyPath = this.internalConfiguration.ATPrivateKeyPath || process.env.AT_PRIVATE_KEY_PATH;
         } else {
-            if(keyType === "PR") {
-                keyPath = this.internalConfiguration.RTPrivateKeyPath || process.env.RT_PRIVATE_KEY_PATH;
-            } else {
-                keyPath = this.internalConfiguration.RTPublicKeyPath || process.env.RT_PUBLIC_KEY_PATH;
-            }
+            keyPath = this.internalConfiguration.RTPrivateKeyPath || process.env.RT_PRIVATE_KEY_PATH;
         }
 
         if(keyPath === undefined) {
