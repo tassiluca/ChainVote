@@ -8,8 +8,6 @@ set -e  # Exit immediately if some command (simple or compound) returns a non-ze
 # ARTIFACTS_DIR=$HOME/$(jq -r '.blockchainDataDirectory' ../config.json)
 export $(cat ../config.env | xargs)
 export ARTIFACTS_DIR=$(pwd)/../$ARTIFACTS_DIR
-echo 
-echo "Artifacts dir $ARTIFACTS_DIR"
 
 if [[ "$#" != 1 || ($1 != "up" && $1 != "down") ]]; then
     echo "Usage: ./network [up|down]"
@@ -23,7 +21,7 @@ if [[ "$#" != 1 || ($1 != "up" && $1 != "down") ]]; then
 fi;
 
 function upNetwork() {
-    echo "Artifacts: $ARTIFACTS_DIR"
+    echo "Artifacts directory: $ARTIFACTS_DIR"
     if [[ ! -d $ARTIFACTS_DIR ]]; then 
         mkdir -p $ARTIFACTS_DIR 
     fi;

@@ -14,7 +14,7 @@ is_container_running() {
 launch_container() {
   container_name=$1
   echo "Launching $container_name"
-  docker-compose up -d $container_name
+  docker-compose up -d --build $container_name
   echo "Check for $container_name to be ready..."
   while ! is_container_running $container_name; do
     sleep 1
@@ -35,6 +35,8 @@ copy_keys() {
 # ++++++++++++++++
 # MAIN
 # +++++++++++++++
+export $(cat ../config.env | xargs)
+export ARTIFACTS_DIR=$(pwd)/../$ARTIFACTS_DIR
 
 docker-compose down
 

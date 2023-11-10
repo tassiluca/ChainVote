@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>    
     <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-        <script src="../scripts/load-template.js"></script>
         <link rel="stylesheet" href="../styles/index.css">
+        <%- include('commons/head') %>
     </head>
     <body>
+        <%- include('commons/navbar') %>
         <main>
             <header>
                 <div class="jumbotron text-center">
@@ -23,5 +23,6 @@
                 </div>
             </div>
         </main>
+        <%- include('commons/footer') %>
     </body>
 </html>

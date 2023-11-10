@@ -63,7 +63,7 @@ jwtSchema.method('validateRefreshToken', async function validateRefreshToken(){
     if(!this.enabled) {
         throw new UnauthorizedError("The token is disabled, please login again");
     }
-    return JwtHandler.getInstance().verifyRefreshToken(this.refreshToken);;
+    return JwtHandler.getInstance().verifyRefreshToken(this.refreshToken);
 });
 
 
@@ -71,7 +71,7 @@ jwtSchema.method('validateAccessToken', async function validateAccessToken(){
     if(!this.enabled) {
         throw new UnauthorizedError("The token is disabled, please login again");
     }
-    return JwtHandler.getInstance().verifyAccessToken(this.accessToken);;
+    return JwtHandler.getInstance().verifyAccessToken(this.accessToken);
 });
 
 const JwtModel = model<IJsonWebToken, IJsonWebTokenModel>('Jwt', jwtSchema);

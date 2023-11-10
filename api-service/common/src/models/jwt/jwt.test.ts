@@ -8,9 +8,7 @@ import {UnauthorizedError} from "../../errors/errors";
 
 const configuration: ConfigurationObject = {
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
-    RTPrivateKeyPath: resolve("./secrets/rt_private.pem"),
-    ATPublicKeyPath: resolve("./secrets/at_public.pem"),
-    RTPublicKeyPath: resolve("./secrets/rt_public.pem"),
+    RTPrivateKeyPath: resolve("./secrets/rt_private.pem")
 }
 
 beforeAll(async () => {

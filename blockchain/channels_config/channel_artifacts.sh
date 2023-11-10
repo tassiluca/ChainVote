@@ -10,8 +10,7 @@ if [[ ! -d generated ]]; then
 fi;
 cp -f ./core.yaml ./generated/core.yaml
 cp -f ./orderer.yaml ./generated/orderer.yaml
-cp -f ./configtx.yaml ./generated/configtx.yaml
-sed -i '' 's#$(ARTIFACTS_DIR)#'$ARTIFACTS_DIR'#g' ./generated/configtx.yaml
+sed 's#$(ARTIFACTS_DIR)#'$ARTIFACTS_DIR'#g' ./configtx.yaml > ./generated/configtx.yaml
 
 export FABRIC_CFG_PATH=$PWD/generated
 
