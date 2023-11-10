@@ -10,8 +10,7 @@ import MongooseConfig from "./mongoose.config";
 const ExpressConfig = (): Application => {
     JwtHandler.config({
         ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
-        RTPrivateKeyPath: resolve("./secrets/rt_private.pem"),
-        RTPublicKeyPath: resolve("./secrets/rt_public.pem")
+        RTPrivateKeyPath: resolve("./secrets/rt_private.pem")
     });
 
     MongooseConfig();
