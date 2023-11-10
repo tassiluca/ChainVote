@@ -21,7 +21,7 @@ export function getPeerBasename(peer: Org1Peer | Org2Peer): string {
  * @param peer The peer name
  */
 export function getPeerHostAlias(peer: Org1Peer | Org2Peer): string {
-    return peer.split(':')[0];
+    return process.env.PRODUCTION ? peer.split(':')[0] : "localhost";
 }
 
 /**
@@ -42,9 +42,7 @@ function getPeerPort(peer: Org1Peer | Org2Peer): string {
  * Return the host address of the peer
  *
  * @param peer the peer name
- * @param isLocalhost a boolean flag to indicate if the peer is running on localhost
  */
 export function getPeerHost(peer: Org1Peer | Org2Peer): string {
-    //return `${getPeerHostAlias(peer)}:${getPeerPort(peer)}`;
-    return `localhost:${getPeerPort(peer)}`;
+    return `${getPeerHostAlias(peer)}:${getPeerPort(peer)}`;
 }

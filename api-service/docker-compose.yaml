@@ -9,6 +9,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - CERTS_DIR=/tmp/hyperledger
+      - PRODUCTION=true
     volumes:
       - ${ARTIFACTS_DIR}:/tmp/hyperledger
     networks:
@@ -26,6 +27,7 @@ services:
       - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - PRODUCTION=true
     networks:
       - blockchain_fabric-ca
     links:
