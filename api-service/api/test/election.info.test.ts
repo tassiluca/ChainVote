@@ -6,19 +6,16 @@ import {Jwt, JwtHandler, User} from "core-components";
 import {resolve} from "path";
 
 const MAX_TIMEOUT = 20_000;
-let app;
+let app= ExpressConfig();
 
 let admin, adminJwtToken;
 
 JwtHandler.config({
-    ATPublicKeyPath: resolve("./secrets/at_public.pem"),
-    RTPublicKeyPath: resolve("./secrets/rt_public.pem"),
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
-    RTPrivateKeyPath: resolve("./secrets/rt_private.pem"),
+    RTPrivateKeyPath: resolve("./secrets/rt_private.pem")
 });
 
 beforeAll(async () => {
-    app = ExpressConfig();
     admin = await new User({
         email: "admin.email1@email.it",
         password: "Password1!",

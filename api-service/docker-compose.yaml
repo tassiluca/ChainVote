@@ -8,6 +8,7 @@ services:
       - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - CERTS_DIR=/tmp/hyperledger
     volumes:
       - ${ARTIFACTS_DIR}:/tmp/hyperledger
     networks:
