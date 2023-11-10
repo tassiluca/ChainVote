@@ -94,7 +94,13 @@ final class ElectionInfoContractTest {
 
             @Test
             void whenCreateElectionWithWrongDate() {
-                final Throwable thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), CHOICE_ELECTION));
+                Throwable thrown;
+                thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), CHOICE_ELECTION));
+                assertThat(thrown)
+                        .isInstanceOf(ChaincodeException.class);
+                assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INVALID_ARGUMENT".getBytes(UTF_8));
+
+                thrown = catchThrowable(() -> ELECTION_INFO_CONTRACT.createElectionInfo(context, GOAL, VOTERS, null, START_DATE.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), CHOICE_ELECTION));
                 assertThat(thrown)
                         .isInstanceOf(ChaincodeException.class);
                 assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("INVALID_ARGUMENT".getBytes(UTF_8));

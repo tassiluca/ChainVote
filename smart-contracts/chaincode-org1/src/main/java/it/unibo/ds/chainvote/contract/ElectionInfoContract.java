@@ -20,6 +20,7 @@ import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,23 +84,30 @@ public final class ElectionInfoContract implements ContractInterface {
         final String eDate,
         final List<Choice> choices
     ) {
-        LocalDateTime startingDate = LocalDateTime.parse(sDate, DateTimeFormatter.ISO_DATE_TIME);
-        LocalDateTime endingDate = LocalDateTime.parse(eDate, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime startingDate;
+        LocalDateTime endingDate;
+        try {
+            startingDate = LocalDateTime.parse(sDate, DateTimeFormatter.ISO_DATE_TIME);
+            endingDate = LocalDateTime.parse(eDate, DateTimeFormatter.ISO_DATE_TIME);
+        } catch (NullPointerException | DateTimeParseException e) {
+            throw new ChaincodeException(e.getMessage(), ElectionInfoTransferErrors.INVALID_ARGUMENT.toString());
+        }
         final ChaincodeStub stub = ctx.getStub();
         final String electionId = Utils.calculateID(goal, startingDate, endingDate, choices);
         if (electionInfoExists(ctx, electionId)) {
             String errorMessage = String.format("Election info %s already exists", electionId);
             throw new ChaincodeException(errorMessage, ElectionInfoTransferErrors.ELECTION_INFO_ALREADY_EXISTS.toString());
         }
+        ElectionInfo electionInfo;
         try {
-            ElectionInfo electionInfo = ElectionFactory
-                .buildElectionInfo(goal, votersNumber, startingDate, endingDate, choices);
-            String sortedJson = genson.serialize(electionInfo);
-            stub.putStringState(electionId, sortedJson);
-            return electionInfo;
-        } catch (IllegalArgumentException e) {
+            electionInfo = ElectionFactory
+                    .buildElectionInfo(goal, votersNumber, startingDate, endingDate, choices);
+        } catch (IllegalArgumentException | NullPointerException e) {
             throw new ChaincodeException(e.getMessage(), ElectionInfoTransferErrors.INVALID_ARGUMENT.toString());
         }
+        String sortedJson = genson.serialize(electionInfo);
+        stub.putStringState(electionId, sortedJson);
+        return electionInfo;
     }
 
     /**

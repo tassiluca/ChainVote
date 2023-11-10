@@ -4,9 +4,7 @@ import it.unibo.ds.chainvote.assets.Election;
 import it.unibo.ds.chainvote.assets.ElectionInfo;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Implementation of some utils.
@@ -51,5 +49,20 @@ public final class Utils {
     public static String calculateID(final ElectionInfo electionInfo) {
         return calculateID(electionInfo.getGoal(), electionInfo.getStartDate(),
                 electionInfo.getEndDate(), electionInfo.getChoices());
+    }
+
+    /**
+     * Return the given {@link Map} representing the results of an {@link Election} adding
+     * the {@link FixedVotes#INFORMAL_BALLOT} if not present.
+     * @param results the {@link Map} representing the results.
+     * @return the {@link Map} containing the {@link FixedVotes#INFORMAL_BALLOT}.
+     */
+    public static Map<String, Long> getResultsWithBlankChoice(final Map<String, Long> results) {
+        final Map<String, Long> retResults = new HashMap<>();
+        results.keySet().forEach(choice -> retResults.put(choice, results.get(choice)));
+        if (!retResults.containsKey(FixedVotes.INFORMAL_BALLOT.getChoice().getChoice())) {
+            retResults.put(FixedVotes.INFORMAL_BALLOT.getChoice().getChoice(), 0L);
+        }
+        return retResults;
     }
 }

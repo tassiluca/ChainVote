@@ -34,10 +34,24 @@ public final class ElectionManagerImpl implements ElectionManager {
         }
     }
 
+    /**
+     * Throws an {@link IllegalArgumentException} with the given message.
+     * @param message the message used to build the {@link IllegalArgumentException}.
+     */
     private void illegal(final String message) {
         throw new IllegalArgumentException(message);
     }
 
+    /**
+     * Check if the {@link Ballot} can be cast in a given {@link Election}, in particular:
+     * If the {@link ElectionInfo} is open.
+     * If the {@link java.time.LocalDateTime} of the {@link Ballot} is between {@link Election} start and end {@link java.time.LocalDateTime}
+     * If the voters limit has already been reached.
+     * @param electionInfo the {@link ElectionInfo} in order to check dates and {@link it.unibo.ds.chainvote.utils.Choice}s.
+     * @param election the {@link Election} in which the {@link Ballot} is cast, used to check if the voters limit has already been reached.
+     * @param ballot the {@link Ballot} to cast.
+     * @throws IllegalArgumentException in above rules are not fit.
+     */
     private void checkBallot(final ElectionInfo electionInfo, final Election election, final Ballot ballot) {
         if (!electionInfo.isOpen()
                 || !isDateBetween(ballot.getDate(), electionInfo.getStartDate(), electionInfo.getEndDate())

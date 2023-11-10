@@ -2,6 +2,7 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
+import com.owlike.genson.JsonBindingException;
 import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.assets.Ballot;
@@ -91,11 +92,9 @@ public final class ElectionContract implements ContractInterface {
             throw new ChaincodeException(errorMessage, ElectionContractErrors.ELECTION_ALREADY_EXISTS.toString());
         }
         ElectionInfo electionInfo;
-        try {
-            electionInfo = readElectionInfo(ctx, electionId);
-        } catch (ChaincodeException e) {
-            throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INFO_NOT_FOUND.toString());
-        }
+
+        electionInfo = readElectionInfo(ctx, electionId);
+
         try {
             Election election = ElectionFactory
                 .buildElection(electionInfo, results);
@@ -116,7 +115,7 @@ public final class ElectionContract implements ContractInterface {
      * {@link Election} labeled by electionId hasn't been created.
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
-    private Election readStandardElection(final Context ctx, String electionId) {
+    Election readStandardElection(final Context ctx, String electionId) {
         if (electionExists(ctx, electionId)) {
             ChaincodeStub stub = ctx.getStub();
             String electionSerialized = stub.getStringState(electionId);
@@ -155,8 +154,9 @@ public final class ElectionContract implements ContractInterface {
      * @param ctx the {@link Context}.
      * @param electionId the id of the {@link ElectionInfo} to retrieve.
      * @return the {@link ElectionInfo}.
-     * @throws ChaincodeException with  {@link ElectionContractErrors#CROSS_INVOCATION_FAILED} as payload if something
-     * went wrong during cross channel invocation.
+     * @throws ChaincodeException with {@link ElectionContractErrors#CROSS_INVOCATION_FAILED} as payload if something
+     * went wrong during cross channel invocation, with {@link ElectionContractErrors#ELECTION_INFO_NOT_FOUND} as
+     * payload if {@link Chaincode.Response} received doesn't contain a {@link ElectionInfo}.
      * @see <a href="https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/presentation/it/unibo/ds/chainvote/Response.html">Response json object</a>
      */
     private ElectionInfo readElectionInfo(final Context ctx, final String electionId) {
@@ -166,8 +166,12 @@ public final class ElectionContract implements ContractInterface {
                 CHANNEL_INFO_NAME_CH1
         );
         if (response.getStatus().equals(Chaincode.Response.Status.SUCCESS)) {
-            final Response<ElectionInfo> responsePayload = genson.deserialize(response.getStringPayload(), new GenericType<>() {});
-            return responsePayload.getResult();
+            try {
+                final Response<ElectionInfo> responsePayload = genson.deserialize(response.getStringPayload(), new GenericType<>() { });
+                return responsePayload.getResult();
+            } catch (JsonBindingException | NullPointerException e) {
+                throw new ChaincodeException(e.getMessage(), ElectionContractErrors.ELECTION_INFO_NOT_FOUND.toString());
+            }
         } else {
             final String errorMessage = "Something went wrong with cross invocation call.";
             throw new ChaincodeException(errorMessage, ElectionContractErrors.CROSS_INVOCATION_FAILED.toString());
@@ -224,11 +228,13 @@ public final class ElectionContract implements ContractInterface {
                 .date(LocalDateTime.now())
                 .choice(choice)
                 .build();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             throw new ChaincodeException(e.getMessage(), ElectionContractErrors.INVALID_BALLOT_BUILD_ARGUMENTS.toString());
         }
+
         ElectionInfo electionInfo = readElectionInfo(ctx, electionId);
         Election election = readStandardElection(ctx, electionId);
+
         try {
             ElectionManagerImpl.getInstance().castVote(election, electionInfo, ballot);
         } catch (IllegalStateException | IllegalArgumentException e) {
