@@ -17,10 +17,10 @@
                         <button type="button" class="btn btn-outline-primary btn-block">Request my one time code</button>
                     </form>
                     <p>To adjust here depending on API :)</p>
-                    <form action="" method="post">
+                    <form id="voteForm" action="" method="post">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                              <span class="input-group-text" id="inputGroup-sizing-default">One time code</span>
+                                <span class="input-group-text" id="inputGroup-sizing-default">One time code</span>
                             </div>
                             <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                         </div>
@@ -36,11 +36,40 @@
                             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" />
                             <label class="form-check-label" for="exampleRadios3">Option 3</label>
                         </div>
-                        <button type="button" class="btn btn-outline-primary btn-block">Send your vote</button>
+                        <button type="button" class="btn btn-outline-primary btn-block" onclick="sendVote()">Send your vote</button>
                     </form>
                 </div>
             </div>
         </main>
         <%- include('commons/footer') %>
+        <script>
+            function sendVote() {
+                const oneTimeCode = document.querySelector('#voteForm input[type="text"]').value;
+                const selectedOption = document.querySelector('#voteForm input[name="exampleRadios"]:checked');
+
+                if (!oneTimeCode || !selectedOption) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+
+                const data = {
+                    oneTimeCode: oneTimeCode,
+                    selectedOption: selectedOption.value,
+                };
+
+                // Replace 'http://localhost:3000/cast-vote' with your actual endpoint
+                axios.post('http://localhost:3000/cast-vote', data)
+                    .then(response => {
+                        // Handle success, e.g., show a success message
+                        console.log(response.data);
+                        alert('Vote submitted successfully!');
+                    })
+                    .catch(error => {
+                        // Handle error, e.g., show an error message
+                        console.error('Error submitting vote:', error);
+                        alert('Error submitting vote. Please try again.');
+                    });
+            }
+        </script>
     </body>
 </html>
