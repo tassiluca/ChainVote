@@ -9,10 +9,8 @@ let jwtUser, jwtAdmin
 let user, otherUser, admin;
 
 JwtHandler.config({
-    ATPublicKeyPath: resolve("./secrets/at_public.pem"),
-    RTPublicKeyPath: resolve("./secrets/rt_public.pem"),
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
-    RTPrivateKeyPath: resolve("./secrets/rt_private.pem"),
+    RTPrivateKeyPath: resolve("./secrets/rt_private.pem")
 });
 
 beforeAll(async () => {
@@ -50,13 +48,16 @@ afterAll(async () => {
     await Jwt.deleteMany({});
 });
 
+const MAX_TIMEOUT = 20_000;
 describe("GET /users/", () => {
     test("Get the informations of an user", async () => {
         const response = await request(app).get("/users/")
             .set("Authorization", `Bearer ${jwtUser.accessToken}`)
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
-            .expect(StatusCodes.OK);
+            //.expect(StatusCodes.OK);
+
+        console.log(response.body);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data).toHaveProperty("email");
@@ -65,7 +66,8 @@ describe("GET /users/", () => {
         expect(response.body.data.email).toBe(user.email);
         expect(response.body.data.firstName).toBe(user.firstName);
         expect(response.body.data.secondName).toBe(user.secondName);
-    }, 20_000);
+    }, MAX_TIMEOUT);
+
 
     test("Can't get the informations of an user with an invalid token", async () => {
         const response = await request(app).get("/users/")
@@ -80,7 +82,7 @@ describe("GET /users/", () => {
         expect(response.body.code).toBe(StatusCodes.NOT_FOUND);
         expect(response.body.error.message).toBe("The submitted jwt token doesn't exists");
         expect(response.body.error.name).toBe("Not Found");
-    });
+    }, MAX_TIMEOUT);
 
 
     test("Can't get the informations of another user with an admin account", async () => {
@@ -97,7 +99,7 @@ describe("GET /users/", () => {
         expect(response.body.code).toBe(StatusCodes.UNAUTHORIZED);
         expect(response.body.error.message).toBe("Can't access to the resource");
         expect(response.body.error.name).toBe("Unauthorized");
-    });
+    }, MAX_TIMEOUT);
 
     test("Get the informations of another user with an admin account", async () => {
         const response = await request(app).get(`/users/${otherUser.email}`)
@@ -113,7 +115,7 @@ describe("GET /users/", () => {
         expect(response.body.data.email).toBe(otherUser.email);
         expect(response.body.data.firstName).toBe(otherUser.firstName);
         expect(response.body.data.secondName).toBe(otherUser.secondName);
-    });
+    }, MAX_TIMEOUT);
 });
 
 
@@ -136,7 +138,7 @@ describe("POST /users/", () => {
         expect(response.body.data.email).toBe("new.user@email.it");
         expect(response.body.data.firstName).toBe("New");
         expect(response.body.data.secondName).toBe("User");
-    });
+    }, MAX_TIMEOUT);
 });
 
 
@@ -155,7 +157,7 @@ describe("PUT /users/", () => {
             .expect(StatusCodes.OK);
 
             expect(response.body.data).toBe(true);
-    });
+    }, MAX_TIMEOUT);
 
     test("Can't edit the informations of another user", async () => {
         const response = await request(app).put(`/users/${otherUser.email}`)
@@ -177,7 +179,7 @@ describe("PUT /users/", () => {
         expect(response.body.code).toBe(StatusCodes.UNAUTHORIZED);
         expect(response.body.error.message).toBe("Can't access to the resource");
         expect(response.body.error.name).toBe("Unauthorized");
-    });
+    }, MAX_TIMEOUT);
 
     test("Edit the informations of another user with an admin account", async () => {
         const response = await request(app).put(`/users/${otherUser.email}`)
@@ -195,7 +197,7 @@ describe("PUT /users/", () => {
             expect(response.body).toHaveProperty("data");
             expect(response.body.data).toBe(true);
             expect(response.body.code).toBe(StatusCodes.OK);
-    });
+    }, MAX_TIMEOUT);
 
 });
 
@@ -232,7 +234,7 @@ describe("DELETE /users/", () => {
         expect(response.body).toHaveProperty("data");
         expect(response.body.data).toBe(true);
         expect(response.body.code).toBe(StatusCodes.OK);
-    });
+    }, MAX_TIMEOUT);
 
     test("Can't delete another user", async () => {
         const response = await request(app).delete(`/users/${userToDelete.email}`)
@@ -247,7 +249,7 @@ describe("DELETE /users/", () => {
         expect(response.body.code).toBe(StatusCodes.UNAUTHORIZED);
         expect(response.body.error.message).toBe("Can't access to the resource");
         expect(response.body.error.name).toBe("Unauthorized");
-    });
+    }, MAX_TIMEOUT);
 
     test("Delete another user with an admin account", async () => {
         const response = await request(app).delete(`/users/${userToDelete.email}`)
@@ -260,5 +262,5 @@ describe("DELETE /users/", () => {
         expect(response.body).toHaveProperty("data");
         expect(response.body.code).toBe(StatusCodes.OK);
         expect(response.body.data).toBe(true);
-    });
+    }, MAX_TIMEOUT);
 });

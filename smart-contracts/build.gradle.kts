@@ -1,6 +1,6 @@
-import groovy.json.JsonSlurper
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
+import java.util.Properties
 import kotlin.io.path.Path
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -63,10 +63,13 @@ val peersOrg2 = setOf(
 )
 val allPeers = peersOrg1.plus(peersOrg2)
 val blockchainGroup = "blockchain"
-val blockchainDirectory = File("${projectDir.parent}/blockchain")
-// val configurationFile = File("${projectDir.parent}/config.env")
-// val blockchainArtifactsPath = "${System.getProperty("user.home")}/${configurations["blockchainDataDirectory"]}"
-val blockchainArtifactsPath = Path(projectDir.parent, ".chainvote", "blockchain").toString()
+val blockchainDirectory: File = Path(projectDir.parent, "blockchain").toFile()
+val configurationFile = File(projectDir.parent, "config.env")
+val artifactsPath: String = Properties()
+    .apply { configurationFile.inputStream().use { load(it) } }
+    .getProperty("ARTIFACTS_DIR")
+val blockchainArtifactsPath = Path(projectDir.parent, artifactsPath)
+println(blockchainArtifactsPath)
 
 fun commonEnvironments() = mapOf(
     "CORE_PEER_TLS_ENABLED" to "true",

@@ -12,10 +12,8 @@ let admin, adminJwtToken;
 const MAX_TIMEOUT = 20_000;
 
 JwtHandler.config({
-    ATPublicKeyPath: resolve("./secrets/at_public.pem"),
-    RTPublicKeyPath: resolve("./secrets/rt_public.pem"),
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
-    RTPrivateKeyPath: resolve("./secrets/rt_private.pem"),
+    RTPrivateKeyPath: resolve("./secrets/rt_private.pem")
 });
 
 beforeAll(async () => {

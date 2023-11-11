@@ -24,6 +24,9 @@ let grantsObject = {
         }
     },
     user: {
+        electionInfo: {
+            'read:any': ['*'],
+        },
         users: {
             'read:own': ['*'],
             'update:own': ['*', '!role'],

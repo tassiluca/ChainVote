@@ -6,19 +6,17 @@ import {Jwt, JwtHandler, User} from "core-components";
 import {resolve} from "path";
 
 const MAX_TIMEOUT = 20_000;
-let app;
+let app= ExpressConfig();
 
 let admin, adminJwtToken;
+let user, userJwtToken;
 
 JwtHandler.config({
-    ATPublicKeyPath: resolve("./secrets/at_public.pem"),
-    RTPublicKeyPath: resolve("./secrets/rt_public.pem"),
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
-    RTPrivateKeyPath: resolve("./secrets/rt_private.pem"),
+    RTPrivateKeyPath: resolve("./secrets/rt_private.pem")
 });
 
 beforeAll(async () => {
-    app = ExpressConfig();
     admin = await new User({
         email: "admin.email1@email.it",
         password: "Password1!",
@@ -27,7 +25,15 @@ beforeAll(async () => {
         role: "admin"
     }).save();
 
+    user = await new User({
+        email: "usr.email@email.it",
+        password: "Password1!",
+        firstName: "Test",
+        secondName: "User",
+    }).save();
+
     adminJwtToken = await Jwt.createTokenPair(admin, {accessToken: "10m", refreshToken: "20m"});
+    userJwtToken = await Jwt.createTokenPair(user, {accessToken: "10m", refreshToken: "20m"});
 });
 
 afterAll(async () => {
@@ -41,16 +47,16 @@ describe("GET /election/info", () => {
         for (let i = 0; i < numElections; i++) {
             await createElectionInfo(app, adminJwtToken.accessToken);
         }
-        const response = await request(app).get("/election/info/all")
+        const responseAdmin = await request(app).get("/election/info/all")
             .set("Authorization", `Bearer ${adminJwtToken.accessToken}`)
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
 
-        expect(response.body.success).toBe(true);
-        expect(response.body.data.length).toBeGreaterThanOrEqual(numElections);
+        expect(responseAdmin.body.success).toBe(true);
+        expect(responseAdmin.body.data.length).toBeGreaterThanOrEqual(numElections);
 
-        const oneResult = response.body.data[0];
+        const oneResult = responseAdmin.body.data[0];
 
         expect(oneResult.electionId).toBeDefined();
         expect(oneResult.voters).toBeDefined();
@@ -59,17 +65,44 @@ describe("GET /election/info", () => {
         expect(oneResult.endDate).toBeDefined();
         expect(oneResult.choices).toBeDefined();
 
-    }, MAX_TIMEOUT);
 
-    test("Can get a specific election info", async () => {
-        const electionId = await createElectionInfo(app, adminJwtToken.accessToken);
-        const response = await request(app).get("/election/info/detail/" + electionId)
-            .set("Authorization", `Bearer ${adminJwtToken.accessToken}`)
+        const responseUser =  await request(app).get("/election/info/all")
+            .set("Authorization", `Bearer ${userJwtToken.accessToken}`)
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
 
-        expect(response.body.data.electionId).toEqual(electionId);
+
+        expect(responseUser.body.success).toBe(true);
+        expect(responseUser.body.data.length).toBeGreaterThanOrEqual(numElections);
+
+        const oneResultUser = responseAdmin.body.data[0];
+
+        expect(oneResultUser.electionId).toBeDefined();
+        expect(oneResultUser.voters).toBeDefined();
+        expect(oneResultUser.goal).toBeDefined();
+        expect(oneResultUser.startDate).toBeDefined();
+        expect(oneResultUser.endDate).toBeDefined();
+        expect(oneResultUser.choices).toBeDefined();
+
+    }, MAX_TIMEOUT);
+
+    test("Can get a specific election info", async () => {
+        const electionId = await createElectionInfo(app, adminJwtToken.accessToken);
+        const responseAdmin = await request(app).get("/election/info/detail/" + electionId)
+            .set("Authorization", `Bearer ${adminJwtToken.accessToken}`)
+            .set("Accept", "application/json")
+            .expect("Content-Type", "application/json; charset=utf-8")
+            .expect(StatusCodes.OK);
+        expect(responseAdmin.body.data.electionId).toEqual(electionId);
+
+        const responseUser = await request(app).get("/election/info/detail/" + electionId)
+            .set("Authorization", `Bearer ${userJwtToken.accessToken}`)
+            .set("Accept", "application/json")
+            .expect("Content-Type", "application/json; charset=utf-8")
+            .expect(StatusCodes.OK);
+
+        expect(responseUser.body.data.electionId).toEqual(electionId);
     }, MAX_TIMEOUT);
 });
 

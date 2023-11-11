@@ -12,10 +12,8 @@ let app;
 const MAX_TIMEOUT = 20_000;
 
 JwtHandler.config({
-    ATPublicKeyPath: resolve("./secrets/at_public.pem"),
-    RTPublicKeyPath: resolve("./secrets/rt_public.pem"),
     ATPrivateKeyPath: resolve("./secrets/at_private.pem"),
-    RTPrivateKeyPath: resolve("./secrets/rt_private.pem"),
+    RTPrivateKeyPath: resolve("./secrets/rt_private.pem")
 });
 
 beforeAll(async () => {
@@ -59,7 +57,7 @@ describe("POST /code/", () => {
     test("Can check if a code is valid", async () => {
         const electionId = await createElection(app, adminJwtToken.accessToken);
         const code = await createCodeForElection(app, user.id, electionId, userJwtToken.accessToken);
-        const response = await request(app).post("/code/is-valid")
+        const response = await request(app).post("/code/check")
             .send({code: code, userId: user.id, electionId: electionId })
             .set("Authorization", `Bearer ${userJwtToken.accessToken}`)
             .set("Accept", "application/json")

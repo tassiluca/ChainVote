@@ -1,11 +1,21 @@
 import {CommunicatorInterface} from "./communicator";
 import {CommunicatorBuilder} from "./communicator.builder";
-import path from "path";
+import * as path from "path";
 
-const ORG1_CRYPTO_PATH = path.resolve('/tmp', 'hyperledger', 'org1');
+const certs = process.env.CERTS_DIR || path.join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    '..',
+    '..',
+    '.chainvote',
+    'blockchain');
+
+const ORG1_CRYPTO_PATH = path.resolve(certs, 'org1');
 const ORG1_MSP_ID = 'org1MSP';
 
-const ORG2_CRYPTO_PATH = path.resolve('/tmp', 'hyperledger', 'org2');
+const ORG2_CRYPTO_PATH = path.resolve(certs, 'org2');
 const ORG2_MSP_ID = 'org2MSP';
 export class CommunicatorFactory {
     static org1WithEndpoint(tlsRootFolder: string, peerEndpoint: string, hostAlias: string): CommunicatorInterface {

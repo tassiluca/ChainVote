@@ -26,6 +26,8 @@ app.get('/', (req, res) => res.render('index'))
         //TODO: render the cast-vote view with the election info
     });
 
+app.use((req, res) => res.render('not-found'))
+
 app.listen(port, () => {
     console.log(`App listening on port ${port}!`);
 });

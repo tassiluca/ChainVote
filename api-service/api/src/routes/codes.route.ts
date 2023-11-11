@@ -15,7 +15,7 @@ const API_LIMITER_RULES: ApiLimiterEntry = {
         }
     },
 
-    "/is-valid": {
+    "/check": {
         "POST": {
             time: 20,
             limit: 100,
@@ -77,7 +77,7 @@ codesRoute.post("/generate", authenticationHandler, generateCodeFor);
  * @openapi
  *
  * paths:
- *   /code/is-valid:
+ *   /code/check:
  *      post:
  *          summary: Check if a given code is valid
  *          requestBody:
@@ -105,7 +105,7 @@ codesRoute.post("/generate", authenticationHandler, generateCodeFor);
  *                  description: Generic server error
  *
  */
-codesRoute.post("/is-valid", authenticationHandler, isValid);
+codesRoute.post("/check", authenticationHandler, isValid);
 
 /**
  * @openapi
