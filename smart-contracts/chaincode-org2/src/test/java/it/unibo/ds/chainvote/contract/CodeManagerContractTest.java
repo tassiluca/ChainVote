@@ -1,7 +1,6 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.codes.OneTimeCodeImpl;
@@ -86,7 +85,6 @@ final class CodeManagerContractTest {
         }
 
         @Test
-        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenAlreadyExists() {
             final byte[] mockedCode = genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
@@ -100,7 +98,6 @@ final class CodeManagerContractTest {
         }
 
         @Test
-        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenElectionDoesNotExists() {
             when(context.getStub().getStringState(ELECTION_ID)).thenReturn("");
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
@@ -211,7 +208,6 @@ final class CodeManagerContractTest {
         }
 
         @Test
-        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenAttemptToInvalidateMultipleTimes() {
             final var code = new OneTimeCodeImpl(CODE);
             assertDoesNotThrow(code::consume);

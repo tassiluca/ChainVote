@@ -21,7 +21,7 @@ import java.util.Map;
 public abstract class GensonTransactionsSerializer implements SerializerInterface {
 
     private final Genson genson;
-    private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
 
     /**
@@ -51,14 +51,9 @@ public abstract class GensonTransactionsSerializer implements SerializerInterfac
      */
     @Override
     public Object fromBuffer(final byte[] buffer, final TypeSchema ts) {
-        String value = new String(buffer, StandardCharsets.UTF_8);
-        String type = ts.get("schema").toString();
-        String key;
-        if (ts.getRef() == null) {
-            key = ts.getType();
-        } else {
-            key = ts.getRef().split("/")[type.split("/").length - 1];
-        }
+        final String value = new String(buffer, StandardCharsets.UTF_8);
+        final String type = ts.get("schema").toString();
+        final String key = ts.getRef() == null ? ts.getType() : ts.getRef().split("/")[type.split("/").length - 1];
         switch (key) {
             case "List":
                 return genson.deserialize(value, new GenericType<List<Choice>>() { });
@@ -71,10 +66,11 @@ public abstract class GensonTransactionsSerializer implements SerializerInterfac
             case "ElectionInfo":
                 return genson.deserialize(value, ElectionInfo.class);
             case "LocalDateTime":
-                return LocalDateTime.parse(value, FORMATTER);
+                return LocalDateTime.parse(value, formatter);
             case "Choice":
                 return genson.deserialize(value, Choice.class);
+            default:
+                return value;
         }
-        return value;
     }
 }

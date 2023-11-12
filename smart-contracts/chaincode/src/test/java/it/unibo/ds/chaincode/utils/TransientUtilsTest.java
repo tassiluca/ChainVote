@@ -1,6 +1,5 @@
 package it.unibo.ds.chaincode.utils;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,6 @@ final class TransientUtilsTest {
     class TestFailGettingFromTransient {
 
         @Test
-        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenTransientInputNotExists() {
             final Map<String, byte[]> transientData = Map.of();
             final String key = "non-existing-key";
@@ -56,7 +54,6 @@ final class TransientUtilsTest {
         }
 
         @Test
-        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenTransientInputIsEmpty() {
             final Map<String, byte[]> transientData = Map.of("key", "".getBytes(UTF_8));
             final String key = "key";
@@ -68,7 +65,6 @@ final class TransientUtilsTest {
         }
 
         @Test
-        @SuppressFBWarnings(value = "BC", justification = "Before casting is checked the exception is of that type")
         void whenTransientInputIsWrong() {
             final Map<String, byte[]> transientData = Map.of("code", "abcd".getBytes(UTF_8));
             final String key = "code";

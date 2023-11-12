@@ -1,11 +1,17 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.SerializersUtils;
-import it.unibo.ds.chainvote.codes.*;
 import it.unibo.ds.chainvote.TransientUtils;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
+import it.unibo.ds.chainvote.codes.AlreadyGeneratedCodeException;
+import it.unibo.ds.chainvote.codes.CodeManager;
+import it.unibo.ds.chainvote.codes.CodeManagerImpl;
+import it.unibo.ds.chainvote.codes.CodeRepository;
+import it.unibo.ds.chainvote.codes.HashGenerator;
+import it.unibo.ds.chainvote.codes.IncorrectCodeException;
+import it.unibo.ds.chainvote.codes.InvalidCodeException;
+import it.unibo.ds.chainvote.codes.OneTimeCode;
 import it.unibo.ds.chainvote.utils.UserCodeData;
 import it.unibo.ds.chainvote.utils.Pair;
 import org.hyperledger.fabric.contract.Context;
@@ -127,7 +133,7 @@ public final class CodesManagerContract implements ContractInterface {
         return codeManager.verifyCodeOwner(context, electionId, codeUserPair.first(), codeUserPair.second());
     }
 
-    private static class LedgerRepository implements CodeRepository<Context> {
+    private static final class LedgerRepository implements CodeRepository<Context> {
 
         private final Genson genson = SerializersUtils.gensonInstance();
 

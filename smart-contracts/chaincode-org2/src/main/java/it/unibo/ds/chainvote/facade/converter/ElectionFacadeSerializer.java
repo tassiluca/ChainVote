@@ -4,7 +4,6 @@ import com.owlike.genson.Context;
 import com.owlike.genson.Serializer;
 import com.owlike.genson.stream.ObjectWriter;
 import it.unibo.ds.chainvote.facade.ElectionFacade;
-import it.unibo.ds.chainvote.facade.ElectionStatus;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -12,7 +11,7 @@ import java.util.Map;
 /**
  * A custom serializer for {@link ElectionFacade} class.
  */
-public class ElectionFacadeSerializer implements Serializer<ElectionFacade> {
+public final class ElectionFacadeSerializer implements Serializer<ElectionFacade> {
 
     @Override
     public void serialize(final ElectionFacade object, final ObjectWriter writer, final Context ctx) {
@@ -24,7 +23,7 @@ public class ElectionFacadeSerializer implements Serializer<ElectionFacade> {
         writer.writeValue(object.getStartDate().format(DateTimeFormatter.ISO_DATE_TIME));
         writer.writeName("endDate");
         writer.writeValue(object.getEndDate().format(DateTimeFormatter.ISO_DATE_TIME));
-        writer.writeString("affluence", object.getAffluence()*100 + "%");
+        writer.writeString("affluence", object.getAffluence() * 100 + "%");
         writer.writeName("results");
         writer.beginObject();
         for (Map.Entry<String, Long> entry : object.getResults().entrySet()) {

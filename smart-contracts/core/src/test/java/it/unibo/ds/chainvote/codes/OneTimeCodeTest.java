@@ -1,6 +1,5 @@
 package it.unibo.ds.chainvote.codes;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,10 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressFBWarnings(
-    value = { "UwF" },
-    justification = "`code` is initialized before every test function inside the setup @BeforeEach method."
-)
 class OneTimeCodeTest {
 
     private static final String GENERATED_CODE = "123";

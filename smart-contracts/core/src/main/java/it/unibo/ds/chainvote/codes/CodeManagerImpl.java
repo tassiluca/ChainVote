@@ -1,7 +1,5 @@
 package it.unibo.ds.chainvote.codes;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import java.util.Optional;
 
 /**
@@ -18,7 +16,6 @@ public final class CodeManagerImpl<C> implements CodeManager<C> {
      * @param repo the {@link CodeRepository} to use to retrieve/store data.
      * @param generator the {@link CodeGeneratorStrategy} to generate the codes.
      */
-    @SuppressFBWarnings("EI2")
     public CodeManagerImpl(final CodeRepository<C> repo, final CodeGeneratorStrategy generator) {
         this.codeRepository = repo;
         this.codeGenerator = generator;

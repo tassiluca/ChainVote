@@ -6,17 +6,16 @@ import kotlin.io.path.Path
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     `java-library`
-    alias(libs.plugins.java.qa)
 }
 
 subprojects {
 
     apply(plugin = "java-library")
-    apply(plugin = rootProject.libs.plugins.java.qa.get().pluginId)
 
     group = "it.unibo.ds.chainvote"
 
     java {
+        // Hyperledger Fabric chaincode libs works only with Java 11!
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
