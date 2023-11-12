@@ -220,10 +220,12 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
          <code>ELECTION_ALREADY_EXISTS</code> as payload if it has already been created an <code>Election</code>
          with the same <code>electionId</code>
      </li>
-     <li><code>ELECTION_INVALID_BUILD_ARGUMENT</code> as payload if at least one of the given arguments is not valid</li>
      <li>
-         <code>ElectionContract.ElectionContractErrors.ELECTION_INFO_NOT_FOUND</code> as payload if the <code>ElectionInfo</code>
-         labeled by electionId hasn't been created.
+         <code>ELECTION_INVALID_BUILD_ARGUMENT</code> as payload if at least one of the given arguments is not valid
+     </li>
+     <li>
+         <code>ELECTION_INFO_NOT_FOUND</code> as payload if the <code>ElectionInfo</code> labeled by
+         <code>electionId</code> hasn't been created.
      </li>
  </ul></dd>
 </dl>
@@ -283,8 +285,8 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
  Transient String values must be converted in base64 bytes.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>ctx</code> - the <code>Context</code>.  A transient map is expected with the following
-        key-value pairs: <a href="../utils/UserCodeData.html#USER_ID"><code>UserCodeData.USER_ID</code></a> and <a href="../utils/UserCodeData.html#CODE"><code>UserCodeData.CODE</code></a>.</dd>
+<dd><code>ctx</code> - the <code>Context</code>. A transient map is expected with the following
+        key-value pairs: <code>userId</code> and <code>code</code>.</dd>
 <dd><code>choice</code> - the <code>Choice</code> of the vote.</dd>
 <dd><code>electionId</code> - the id of the <code>Election</code> where the vote is cast.</dd>
 <dt>Returns:</dt>
@@ -293,19 +295,16 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <dd><code>org.hyperledger.fabric.shim.ChaincodeException</code> - with
  <ul>
      <li>
-         <code>ElectionContract.ElectionContractErrors.ELECTION_NOT_FOUND</code> as payload if the <code>Election</code>
-         in which the vote should be cast doesn't exist
+         <code>ELECTION_NOT_FOUND</code> as payload if the <code>Election</code> in which the vote should be cast doesn't exist
      </li>
      <li>
-         <code>ElectionContract.ElectionContractErrors.INVALID_CREDENTIALS_TO_CAST_VOTE</code> as payload in case
-         <a href="../utils/UserCodeData.html#USER_ID"><code>UserCodeData.USER_ID</code></a> or <a href="../utils/UserCodeData.html#CODE"><code>UserCodeData.CODE</code></a> aren't valid
+         <code>INVALID_CREDENTIALS_TO_CAST_VOTE</code> as payload in case <code>userId</code> or <code>code</code> aren't valid
      </li>
      <li>
-         <code>ElectionContract.ElectionContractErrors.INVALID_BALLOT_BUILD_ARGUMENTS</code> in case the arguments used to build the
-         <code>Ballot</code> are not valid
+         <code>INVALID_BALLOT_BUILD_ARGUMENTS</code> in case the arguments used to build the <code>Ballot</code> are not valid
      </li>
      <li>
-         <code>ElectionContract.ElectionContractErrors.INVALID_BALLOT_CAST_ARGUMENTS</code> in case something went wrong with casting.
+         <code>INVALID_BALLOT_CAST_ARGUMENTS</code> in case something went wrong with casting.
      </li>
  </ul></dd>
 </dl>
@@ -334,8 +333,8 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <dt>Returns:</dt>
 <dd>the <code>Election</code> deleted.</dd>
 <dt>Throws:</dt>
-<dd><code>org.hyperledger.fabric.shim.ChaincodeException</code> - with <code>ElectionContract.ElectionContractErrors.ELECTION_NOT_FOUND</code> as payload if the
- <code>Election</code> labeled by electionId doesn't exist.</dd>
+<dd><code>org.hyperledger.fabric.shim.ChaincodeException</code> - with <code>ELECTION_NOT_FOUND</code> as payload if the <code>Election</code> labeled by
+ <code>electionId</code> doesn't exist.</dd>
 </dl>
 </section>
 </li>
@@ -381,7 +380,7 @@ implements org.hyperledger.fabric.contract.ContractInterface</span></div>
 <dt>Returns:</dt>
 <dd>the <code>Election</code>s serialized.</dd>
 <dt>Throws:</dt>
-<dd><code>org.hyperledger.fabric.shim.ChaincodeException</code> - with  <code>ElectionContract.ElectionContractErrors.CROSS_INVOCATION_FAILED</code> as payload if something
+<dd><code>org.hyperledger.fabric.shim.ChaincodeException</code> - with  <code>CROSS_INVOCATION_FAILED</code> as payload if something
  went wrong during cross channel invocation.</dd>
 </dl>
 </section>
