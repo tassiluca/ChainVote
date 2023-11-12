@@ -50,8 +50,11 @@ loadScripts(document, 'script');</script>
 <h1 class="title">Hierarchy For All Packages</h1>
 <span class="package-hierarchy-label">Package Hierarchies:</span>
 <ul class="horizontal">
+<li><a href="it/unibo/ds/chainvote/package-tree.html">it.unibo.ds.chainvote</a>, </li>
 <li><a href="it/unibo/ds/chainvote/assets/package-tree.html">it.unibo.ds.chainvote.assets</a>, </li>
 <li><a href="it/unibo/ds/chainvote/contract/package-tree.html">it.unibo.ds.chainvote.contract</a>, </li>
+<li><a href="it/unibo/ds/chainvote/facade/package-tree.html">it.unibo.ds.chainvote.facade</a>, </li>
+<li><a href="it/unibo/ds/chainvote/facade/converter/package-tree.html">it.unibo.ds.chainvote.facade.converter</a>, </li>
 <li><a href="it/unibo/ds/chainvote/utils/package-tree.html">it.unibo.ds.chainvote.utils</a></li>
 </ul>
 </div>
@@ -62,9 +65,23 @@ loadScripts(document, 'script');</script>
 <ul>
 <li class="circle">it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/CodesManagerContract.html" class="type-name-link" title="class in it.unibo.ds.chainvote.contract">CodesManagerContract</a> (implements org.hyperledger.fabric.contract.ContractInterface)</li>
 <li class="circle">it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" class="type-name-link" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a> (implements org.hyperledger.fabric.contract.ContractInterface)</li>
-<li class="circle">it.unibo.ds.chainvote.assets.<a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html" class="type-name-link" title="class in it.unibo.ds.chainvote.assets">OneTimeCodeAsset</a></li>
+<li class="circle">it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" class="type-name-link" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a> (implements it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a>)</li>
+<li class="circle">it.unibo.ds.chainvote.facade.converter.<a href="it/unibo/ds/chainvote/facade/converter/ElectionFacadeSerializer.html" class="type-name-link" title="class in it.unibo.ds.chainvote.facade.converter">ElectionFacadeSerializer</a> (implements com.owlike.genson.Serializer&lt;T&gt;)</li>
+<li class="circle">it.unibo.ds.chainvote.GensonTransactionsSerializer (implements org.hyperledger.fabric.contract.execution.SerializerInterface)
+<ul>
+<li class="circle">it.unibo.ds.chainvote.<a href="it/unibo/ds/chainvote/TransactionSerializer.html" class="type-name-link" title="class in it.unibo.ds.chainvote">TransactionSerializer</a></li>
 </ul>
 </li>
+<li class="circle">it.unibo.ds.chainvote.assets.<a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html" class="type-name-link" title="class in it.unibo.ds.chainvote.assets">OneTimeCodeAsset</a></li>
+<li class="circle">it.unibo.ds.chainvote.<a href="it/unibo/ds/chainvote/SerializersUtils.html" class="type-name-link" title="class in it.unibo.ds.chainvote">SerializersUtils</a></li>
+</ul>
+</li>
+</ul>
+</section>
+<section class="hierarchy">
+<h2 title="Interface Hierarchy">Interface Hierarchy</h2>
+<ul>
+<li class="circle">it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" class="type-name-link" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a></li>
 </ul>
 </section>
 <section class="hierarchy">
@@ -74,6 +91,7 @@ loadScripts(document, 'script');</script>
 <ul>
 <li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html" class="type-name-link external-link" title="class or interface in java.lang">Enum</a>&lt;E&gt; (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Comparable.html" title="class or interface in java.lang" class="external-link">Comparable</a>&lt;T&gt;, java.lang.constant.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/constant/Constable.html" title="class or interface in java.lang.constant" class="external-link">Constable</a>, java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)
 <ul>
+<li class="circle">it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionStatus.html" class="type-name-link" title="enum class in it.unibo.ds.chainvote.facade">ElectionStatus</a></li>
 <li class="circle">it.unibo.ds.chainvote.utils.<a href="it/unibo/ds/chainvote/utils/UserCodeData.html" class="type-name-link" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></li>
 </ul>
 </li>

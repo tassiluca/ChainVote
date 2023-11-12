@@ -54,7 +54,7 @@ loadScripts(document, 'script');</script>
 <h1 title="All Classes and Interfaces" class="title">All Classes and Interfaces</h1>
 </div>
 <div id="all-classes-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="all-classes-table-tab0" role="tab" aria-selected="true" aria-controls="all-classes-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table', 2)" class="active-table-tab">All Classes and Interfaces</button><button id="all-classes-table-tab2" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab2', 2)" class="table-tab">Classes</button><button id="all-classes-table-tab3" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab3', 2)" class="table-tab">Enum Classes</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="all-classes-table-tab0" role="tab" aria-selected="true" aria-controls="all-classes-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table', 2)" class="active-table-tab">All Classes and Interfaces</button><button id="all-classes-table-tab1" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab1', 2)" class="table-tab">Interfaces</button><button id="all-classes-table-tab2" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab2', 2)" class="table-tab">Classes</button><button id="all-classes-table-tab3" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab3', 2)" class="table-tab">Enum Classes</button></div>
 <div id="all-classes-table.tabpanel" role="tabpanel">
 <div class="summary-table two-column-summary" aria-labelledby="all-classes-table-tab0">
 <div class="table-header col-first">Class</div>
@@ -65,11 +65,35 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Contracts managing <code>Election</code>.</div>
+<div class="block">A Hyperledger Fabric contract to manage elections.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="block">An interface modeling the <code>Election</code> serialization.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">An <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a> implementation.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/facade/converter/ElectionFacadeSerializer.html" title="class in it.unibo.ds.chainvote.facade.converter">ElectionFacadeSerializer</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">A custom serializer for <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a> class.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="it/unibo/ds/chainvote/facade/ElectionStatus.html" title="enum class in it.unibo.ds.chainvote.facade">ElectionStatus</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
+<div class="block">An enum representing the possible <code>Election</code> status when it's serialized as an <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a>.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html" title="class in it.unibo.ds.chainvote.assets">OneTimeCodeAsset</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Hyperledger Fabric <code>OneTimeCode</code> asset.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/SerializersUtils.html" title="class in it.unibo.ds.chainvote">SerializersUtils</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">A serialization utility class which provides serializer instances.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/TransactionSerializer.html" title="class in it.unibo.ds.chainvote">TransactionSerializer</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">The custom transactions serializer.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="it/unibo/ds/chainvote/utils/UserCodeData.html" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab3">

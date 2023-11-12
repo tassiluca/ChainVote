@@ -49,12 +49,16 @@ loadScripts(document, 'script');</script>
 <div class="header">
 <h1>Index</h1>
 </div>
-<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a>
+<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a>
 <h2 class="title" id="I:C">C</h2>
 <dl class="index">
 <dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#castVote(org.hyperledger.fabric.contract.Context,it.unibo.ds.chainvote.utils.Choice,java.lang.String)" class="member-name-link">castVote(Context, Choice, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
 <dd>
 <div class="block">Cast a vote in an existing <code>Election</code>.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionStatus.html#CLOSED" class="member-name-link">CLOSED</a> - Enum constant in enum class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionStatus.html" title="enum class in it.unibo.ds.chainvote.facade">ElectionStatus</a></dt>
+<dd>
+<div class="block">Represents an <code>Election</code> closed, in which <code>Ballot</code>s can't be cast no more.</div>
 </dd>
 <dt><a href="it/unibo/ds/chainvote/utils/UserCodeData.html#CODE" class="member-name-link">CODE</a> - Enum constant in enum class it.unibo.ds.chainvote.utils.<a href="it/unibo/ds/chainvote/utils/UserCodeData.html" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></dt>
 <dd>
@@ -82,9 +86,37 @@ loadScripts(document, 'script');</script>
 <dl class="index">
 <dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html" class="type-name-link" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a> - Class in <a href="it/unibo/ds/chainvote/contract/package-summary.html">it.unibo.ds.chainvote.contract</a></dt>
 <dd>
-<div class="block">Contracts managing <code>Election</code>.</div>
+<div class="block">A Hyperledger Fabric contract to manage elections.</div>
 </dd>
 <dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#%3Cinit%3E()" class="member-name-link">ElectionContract()</a> - Constructor for class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#electionExists(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">electionExists(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+<dd>
+<div class="block">Check if an <code>Election</code> exists.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" class="type-name-link" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a> - Interface in <a href="it/unibo/ds/chainvote/facade/package-summary.html">it.unibo.ds.chainvote.facade</a></dt>
+<dd>
+<div class="block">An interface modeling the <code>Election</code> serialization.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" class="type-name-link" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a> - Class in <a href="it/unibo/ds/chainvote/facade/package-summary.html">it.unibo.ds.chainvote.facade</a></dt>
+<dd>
+<div class="block">An <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a> implementation.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#%3Cinit%3E(it.unibo.ds.chainvote.assets.Election,it.unibo.ds.chainvote.assets.ElectionInfo)" class="member-name-link">ElectionFacadeImpl(Election, ElectionInfo)</a> - Constructor for class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
+<dd>
+<div class="block">Creates a new <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a> instance.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/converter/ElectionFacadeSerializer.html" class="type-name-link" title="class in it.unibo.ds.chainvote.facade.converter">ElectionFacadeSerializer</a> - Class in <a href="it/unibo/ds/chainvote/facade/converter/package-summary.html">it.unibo.ds.chainvote.facade.converter</a></dt>
+<dd>
+<div class="block">A custom serializer for <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a> class.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/converter/ElectionFacadeSerializer.html#%3Cinit%3E()" class="member-name-link">ElectionFacadeSerializer()</a> - Constructor for class it.unibo.ds.chainvote.facade.converter.<a href="it/unibo/ds/chainvote/facade/converter/ElectionFacadeSerializer.html" title="class in it.unibo.ds.chainvote.facade.converter">ElectionFacadeSerializer</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionStatus.html" class="type-name-link" title="enum class in it.unibo.ds.chainvote.facade">ElectionStatus</a> - Enum Class in <a href="it/unibo/ds/chainvote/facade/package-summary.html">it.unibo.ds.chainvote.facade</a></dt>
+<dd>
+<div class="block">An enum representing the possible <code>Election</code> status when it's serialized as an <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a>.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:G">G</h2>
@@ -93,6 +125,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Generate a new one-time-code for the given election and user.</div>
 </dd>
+<dt><a href="it/unibo/ds/chainvote/SerializersUtils.html#gensonInstance()" class="member-name-link">gensonInstance()</a> - Static method in class it.unibo.ds.chainvote.<a href="it/unibo/ds/chainvote/SerializersUtils.html" title="class in it.unibo.ds.chainvote">SerializersUtils</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacade.html#getAffluence()" class="member-name-link">getAffluence()</a> - Method in interface it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a></dt>
+<dd>
+<div class="block">Return the <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a>'s affluence.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#getAffluence()" class="member-name-link">getAffluence()</a> - Method in class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#getAllElection(org.hyperledger.fabric.contract.Context)" class="member-name-link">getAllElection(Context)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
 <dd>
 <div class="block">Return all the existing <code>Election</code>s.</div>
@@ -101,11 +141,54 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html#getElectionId()" class="member-name-link">getElectionId()</a> - Method in class it.unibo.ds.chainvote.assets.<a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html" title="class in it.unibo.ds.chainvote.assets">OneTimeCodeAsset</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacade.html#getEndDate()" class="member-name-link">getEndDate()</a> - Method in interface it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a></dt>
+<dd>
+<div class="block">Return the <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a>'s end <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link"><code>LocalDateTime</code></a>.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#getEndDate()" class="member-name-link">getEndDate()</a> - Method in class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacade.html#getGoal()" class="member-name-link">getGoal()</a> - Method in interface it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a></dt>
+<dd>
+<div class="block">Return the <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a>'s goal.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#getGoal()" class="member-name-link">getGoal()</a> - Method in class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacade.html#getId()" class="member-name-link">getId()</a> - Method in interface it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a></dt>
+<dd>
+<div class="block">Return the <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a>'s electionId.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#getId()" class="member-name-link">getId()</a> - Method in class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionStatus.html#getKey()" class="member-name-link">getKey()</a> - Method in enum class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionStatus.html" title="enum class in it.unibo.ds.chainvote.facade">ElectionStatus</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/utils/UserCodeData.html#getKey()" class="member-name-link">getKey()</a> - Method in enum class it.unibo.ds.chainvote.utils.<a href="it/unibo/ds/chainvote/utils/UserCodeData.html" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacade.html#getResults()" class="member-name-link">getResults()</a> - Method in interface it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a></dt>
+<dd>
+<div class="block">Allows access to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link"><code>Map</code></a> representing results of the <code>Election</code>.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#getResults()" class="member-name-link">getResults()</a> - Method in class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacade.html#getStartDate()" class="member-name-link">getStartDate()</a> - Method in interface it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a></dt>
+<dd>
+<div class="block">Return the <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a>'s start <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link"><code>LocalDateTime</code></a>.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#getStartDate()" class="member-name-link">getStartDate()</a> - Method in class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacade.html#getStatus()" class="member-name-link">getStatus()</a> - Method in interface it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade">ElectionFacade</a></dt>
+<dd>
+<div class="block">Return the <a href="it/unibo/ds/chainvote/facade/ElectionStatus.html" title="enum class in it.unibo.ds.chainvote.facade"><code>ElectionStatus</code></a> of the <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a>.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#getStatus()" class="member-name-link">getStatus()</a> - Method in class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/utils/UserCodeData.html#getUserCodePairFrom(java.util.Map)" class="member-name-link">getUserCodePairFrom(Map&lt;String, byte[]&gt;)</a> - Static method in enum class it.unibo.ds.chainvote.utils.<a href="it/unibo/ds/chainvote/utils/UserCodeData.html" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html#getUserId()" class="member-name-link">getUserId()</a> - Method in class it.unibo.ds.chainvote.assets.<a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html" title="class in it.unibo.ds.chainvote.assets">OneTimeCodeAsset</a></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 class="title" id="I:H">H</h2>
+<dl class="index">
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionFacadeImpl.html" title="class in it.unibo.ds.chainvote.facade">ElectionFacadeImpl</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:I">I</h2>
@@ -118,9 +201,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Check if the given code is still valid, i.e.</div>
 </dd>
+<dt><a href="it/unibo/ds/chainvote/package-summary.html">it.unibo.ds.chainvote</a> - package it.unibo.ds.chainvote</dt>
+<dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/assets/package-summary.html">it.unibo.ds.chainvote.assets</a> - package it.unibo.ds.chainvote.assets</dt>
 <dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/contract/package-summary.html">it.unibo.ds.chainvote.contract</a> - package it.unibo.ds.chainvote.contract</dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/package-summary.html">it.unibo.ds.chainvote.facade</a> - package it.unibo.ds.chainvote.facade</dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/converter/package-summary.html">it.unibo.ds.chainvote.facade.converter</a> - package it.unibo.ds.chainvote.facade.converter</dt>
 <dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/utils/package-summary.html">it.unibo.ds.chainvote.utils</a> - package it.unibo.ds.chainvote.utils</dt>
 <dd>&nbsp;</dd>
@@ -135,22 +224,40 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Creates a new asset.</div>
 </dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionStatus.html#OPEN" class="member-name-link">OPEN</a> - Enum constant in enum class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionStatus.html" title="enum class in it.unibo.ds.chainvote.facade">ElectionStatus</a></dt>
+<dd>
+<div class="block">Represents an <code>Election</code> still open, in which <code>Ballot</code>s can still be cast.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:R">R</h2>
 <dl class="index">
-<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#readClosedElection(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">readClosedElection(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#readElection(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">readElection(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
 <dd>
-<div class="block">Return the <code>Election</code> if it's already closed.</div>
+<div class="block">Return the <a href="it/unibo/ds/chainvote/facade/ElectionFacade.html" title="interface in it.unibo.ds.chainvote.facade"><code>ElectionFacade</code></a> related to <code>Election</code> and <code>ElectionInfo</code> labeled with
+ the given electionId.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/contract/ElectionContract.html#readOpenElection(org.hyperledger.fabric.contract.Context,java.lang.String)" class="member-name-link">readOpenElection(Context, String)</a> - Method in class it.unibo.ds.chainvote.contract.<a href="it/unibo/ds/chainvote/contract/ElectionContract.html" title="class in it.unibo.ds.chainvote.contract">ElectionContract</a></dt>
+</dl>
+<h2 class="title" id="I:S">S</h2>
+<dl class="index">
+<dt><a href="it/unibo/ds/chainvote/facade/converter/ElectionFacadeSerializer.html#serialize(it.unibo.ds.chainvote.facade.ElectionFacade,com.owlike.genson.stream.ObjectWriter,com.owlike.genson.Context)" class="member-name-link">serialize(ElectionFacade, ObjectWriter, Context)</a> - Method in class it.unibo.ds.chainvote.facade.converter.<a href="it/unibo/ds/chainvote/facade/converter/ElectionFacadeSerializer.html" title="class in it.unibo.ds.chainvote.facade.converter">ElectionFacadeSerializer</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/SerializersUtils.html" class="type-name-link" title="class in it.unibo.ds.chainvote">SerializersUtils</a> - Class in <a href="it/unibo/ds/chainvote/package-summary.html">it.unibo.ds.chainvote</a></dt>
 <dd>
-<div class="block">Return the <code>Election</code> information of electionId and affluence.</div>
+<div class="block">A serialization utility class which provides serializer instances.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:T">T</h2>
 <dl class="index">
 <dt><a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html#toString()" class="member-name-link">toString()</a> - Method in class it.unibo.ds.chainvote.assets.<a href="it/unibo/ds/chainvote/assets/OneTimeCodeAsset.html" title="class in it.unibo.ds.chainvote.assets">OneTimeCodeAsset</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="it/unibo/ds/chainvote/TransactionSerializer.html" class="type-name-link" title="class in it.unibo.ds.chainvote">TransactionSerializer</a> - Class in <a href="it/unibo/ds/chainvote/package-summary.html">it.unibo.ds.chainvote</a></dt>
+<dd>
+<div class="block">The custom transactions serializer.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/TransactionSerializer.html#%3Cinit%3E()" class="member-name-link">TransactionSerializer()</a> - Constructor for class it.unibo.ds.chainvote.<a href="it/unibo/ds/chainvote/TransactionSerializer.html" title="class in it.unibo.ds.chainvote">TransactionSerializer</a></dt>
+<dd>
+<div class="block">Creates the new transaction serializer.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:U">U</h2>
 <dl class="index">
@@ -165,9 +272,18 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:V">V</h2>
 <dl class="index">
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionStatus.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionStatus.html" title="enum class in it.unibo.ds.chainvote.facade">ElectionStatus</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this class with the specified name.</div>
+</dd>
 <dt><a href="it/unibo/ds/chainvote/utils/UserCodeData.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class it.unibo.ds.chainvote.utils.<a href="it/unibo/ds/chainvote/utils/UserCodeData.html" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
+</dd>
+<dt><a href="it/unibo/ds/chainvote/facade/ElectionStatus.html#values()" class="member-name-link">values()</a> - Static method in enum class it.unibo.ds.chainvote.facade.<a href="it/unibo/ds/chainvote/facade/ElectionStatus.html" title="enum class in it.unibo.ds.chainvote.facade">ElectionStatus</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum class, in
+the order they are declared.</div>
 </dd>
 <dt><a href="it/unibo/ds/chainvote/utils/UserCodeData.html#values()" class="member-name-link">values()</a> - Static method in enum class it.unibo.ds.chainvote.utils.<a href="it/unibo/ds/chainvote/utils/UserCodeData.html" title="enum class in it.unibo.ds.chainvote.utils">UserCodeData</a></dt>
 <dd>
@@ -179,7 +295,7 @@ the order they are declared.</div>
 <div class="block">Verifies if the given code has been generated for the given user and election passed in a transient map.</div>
 </dd>
 </dl>
-<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a></main>
+<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a></main>
 </div>
 </div>
 </body>

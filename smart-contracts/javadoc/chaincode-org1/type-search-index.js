@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"it.unibo.ds.chainvote.contract","l":"ElectionInfoContract"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"it.unibo.ds.chainvote.contract","l":"ElectionInfoContract"},{"p":"it.unibo.ds.chainvote","l":"SerializersUtils"},{"p":"it.unibo.ds.chainvote","l":"TransactionSerializer"}];updateSearchResults();

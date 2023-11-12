@@ -1,3 +1,6 @@
+it.unibo.ds.chainvote
 it.unibo.ds.chainvote.assets
 it.unibo.ds.chainvote.contract
+it.unibo.ds.chainvote.facade
+it.unibo.ds.chainvote.facade.converter
 it.unibo.ds.chainvote.utils
