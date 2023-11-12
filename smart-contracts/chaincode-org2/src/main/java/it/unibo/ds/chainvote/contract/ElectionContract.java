@@ -89,10 +89,12 @@ public final class ElectionContract implements ContractInterface {
      *         {@code ELECTION_ALREADY_EXISTS} as payload if it has already been created an {@link Election}
      *         with the same {@code electionId}
      *     </li>
-     *     <li>{@code ELECTION_INVALID_BUILD_ARGUMENT} as payload if at least one of the given arguments is not valid</li>
      *     <li>
-     *         {@link ElectionContractErrors#ELECTION_INFO_NOT_FOUND} as payload if the {@link ElectionInfo}
-     *         labeled by electionId hasn't been created.
+     *         {@code ELECTION_INVALID_BUILD_ARGUMENT} as payload if at least one of the given arguments is not valid
+     *     </li>
+     *     <li>
+     *         {@code ELECTION_INFO_NOT_FOUND} as payload if the {@link ElectionInfo} labeled by
+     *         {@code electionId} hasn't been created.
      *     </li>
      * </ul>
      */
@@ -163,11 +165,10 @@ public final class ElectionContract implements ContractInterface {
      * @throws ChaincodeException with
      * <ul>
      *     <li>
-     *         {@link ElectionContractErrors#CROSS_INVOCATION_FAILED} as payload if something went wrong during
-     *         cross channel invocation
+     *         {@code CROSS_INVOCATION_FAILED} as payload if something went wrong during cross channel invocation
      *     </li>
      *     <li>
-     *         {@link ElectionContractErrors#ELECTION_INFO_NOT_FOUND} as payload if {@link Chaincode.Response}
+     *         {@code ELECTION_INFO_NOT_FOUND} as payload if {@link Chaincode.Response}
      *         received doesn't contain a {@link ElectionInfo}.
      *     </li>
      * </ul>
@@ -215,27 +216,24 @@ public final class ElectionContract implements ContractInterface {
      * </pre>
      * Constraints: String must be non-empty.
      * Transient String values must be converted in base64 bytes.
-     * @param ctx the {@link Context}.  A transient map is expected with the following
-     *        key-value pairs: {@link UserCodeData#USER_ID} and {@link UserCodeData#CODE}.
+     * @param ctx the {@link Context}. A transient map is expected with the following
+     *        key-value pairs: {@code userId} and {@code code}.
      * @param choice the {@link Choice} of the vote.
      * @param electionId the id of the {@link Election} where the vote is cast.
      * @return the {@link Boolean} representing the successfulness of the operation.
      * @throws ChaincodeException with
      * <ul>
      *     <li>
-     *         {@link ElectionContractErrors#ELECTION_NOT_FOUND} as payload if the {@link Election}
-     *         in which the vote should be cast doesn't exist
+     *         {@code ELECTION_NOT_FOUND} as payload if the {@link Election} in which the vote should be cast doesn't exist
      *     </li>
      *     <li>
-     *         {@link ElectionContractErrors#INVALID_CREDENTIALS_TO_CAST_VOTE} as payload in case
-     *         {@link UserCodeData#USER_ID} or {@link UserCodeData#CODE} aren't valid
+     *         {@code INVALID_CREDENTIALS_TO_CAST_VOTE} as payload in case {@code userId} or {@code code} aren't valid
      *     </li>
      *     <li>
-     *         {@link ElectionContractErrors#INVALID_BALLOT_BUILD_ARGUMENTS} in case the arguments used to build the
-     *         {@link Ballot} are not valid
+     *         {@code INVALID_BALLOT_BUILD_ARGUMENTS} in case the arguments used to build the {@link Ballot} are not valid
      *     </li>
      *     <li>
-     *         {@link ElectionContractErrors#INVALID_BALLOT_CAST_ARGUMENTS} in case something went wrong with casting.
+     *         {@code INVALID_BALLOT_CAST_ARGUMENTS} in case something went wrong with casting.
      *     </li>
      * </ul>
      */
@@ -288,8 +286,8 @@ public final class ElectionContract implements ContractInterface {
      * @param ctx the {@link Context}.
      * @param electionId the id of the {@link Election} to delete.
      * @return the {@link Election} deleted.
-     * @throws ChaincodeException with {@link ElectionContractErrors#ELECTION_NOT_FOUND} as payload if the
-     * {@link Election} labeled by electionId doesn't exist.
+     * @throws ChaincodeException with {@code ELECTION_NOT_FOUND} as payload if the {@link Election} labeled by
+     * {@code electionId} doesn't exist.
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public Election deleteElection(final Context ctx, final String electionId) {
@@ -334,7 +332,7 @@ public final class ElectionContract implements ContractInterface {
      * </pre>
      * @param ctx the {@link Context}.
      * @return the {@link Election}s serialized.
-     * @throws ChaincodeException with  {@link ElectionContractErrors#CROSS_INVOCATION_FAILED} as payload if something
+     * @throws ChaincodeException with  {@code CROSS_INVOCATION_FAILED} as payload if something
      * went wrong during cross channel invocation.
      */
     @Transaction(intent = Transaction.TYPE.EVALUATE)
