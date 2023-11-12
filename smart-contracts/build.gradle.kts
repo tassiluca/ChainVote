@@ -15,7 +15,7 @@ subprojects {
     group = "it.unibo.ds.chainvote"
 
     java {
-        // Hyperledger Fabric chaincode libs works only with Java 11!
+        // Hyperledger Fabric chaincode library works only with Java 11!
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
