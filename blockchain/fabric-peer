@@ -1,4 +1,4 @@
 FROM hyperledger/fabric-peer:2.5.4
 RUN groupadd -r peer && useradd -r -g peer peer
-USER peer
 RUN apt update && apt upgrade -y; apt install curl -y; apt install jq -y
+USER peer

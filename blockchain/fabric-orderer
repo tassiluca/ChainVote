@@ -1,4 +1,4 @@
 FROM hyperledger/fabric-orderer:2.5.4
 RUN groupadd -r orderer && useradd -r -g orderer orderer
-USER orderer
 RUN apt update && apt upgrade -y; apt install curl -y; apt install jq -y
+USER orderer
