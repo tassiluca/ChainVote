@@ -6,9 +6,9 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * An implementation of {@link CodeGeneratorStrategy} that uses {@link java.security.SecureRandom}.
+ * An implementation of {@link CodesGeneratorStrategy} that uses {@link java.security.SecureRandom}.
  */
-public final class SecureRandomGenerator implements CodeGeneratorStrategy {
+public final class SecureRandomGenerator implements CodesGeneratorStrategy {
 
     @Override
     public OneTimeCode generateCode(final Predicate<OneTimeCode> alreadyGenerated) {

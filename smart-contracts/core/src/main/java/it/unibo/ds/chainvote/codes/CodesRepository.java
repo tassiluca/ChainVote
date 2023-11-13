@@ -6,7 +6,7 @@ import java.util.Optional;
  * An interface with method to store/retrieve from a data source the one-time-codes data.
  * @param <C> the type of the context.
  */
-public interface CodeRepository<C> {
+public interface CodesRepository<C> {
 
     /**
      * Retrieve the one-time-code associated to the given user for the given election.

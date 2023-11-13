@@ -33,7 +33,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-final class CodeManagerContractTest {
+final class CodesManagerContractTest {
 
     private static final String ELECTION_ID = "test-election";
     private static final String USER_ID = "mrossi";

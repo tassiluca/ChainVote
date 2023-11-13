@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 /**
  * An interface modeling a {@link OneTimeCode} generator strategy.
  */
-public interface CodeGeneratorStrategy {
+public interface CodesGeneratorStrategy {
 
     /**
      * Generates a new, not already generated, code.
