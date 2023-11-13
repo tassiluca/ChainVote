@@ -83,20 +83,20 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">An implementation of a choice in a <a href="it/unibo/ds/chainvote/assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodeGeneratorStrategy</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodesGeneratorStrategy</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">An interface modeling a <a href="it/unibo/ds/chainvote/codes/OneTimeCode.html" title="interface in it.unibo.ds.chainvote.codes"><code>OneTimeCode</code></a> generator strategy.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="type parameter in CodeManager">C</a>&gt;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="type parameter in CodesManager">C</a>&gt;</div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">An interface modeling a <a href="it/unibo/ds/chainvote/codes/OneTimeCode.html" title="interface in it.unibo.ds.chainvote.codes"><code>OneTimeCode</code></a> manager, which exposes functions
  to generate, (in)validate and verify one-time-codes.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodeManagerImpl</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&gt;</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodesManagerImpl</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" title="type parameter in CodesManagerImpl">C</a>&gt;</div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">A base implementation of <a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodeManager</code></a> which implements main core logic, independent of any technology.</div>
+<div class="block">A base implementation of <a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodesManager</code></a> which implements main core logic, independent of any technology.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="it/unibo/ds/chainvote/codes/CodeRepository.html" title="interface in it.unibo.ds.chainvote.codes">CodeRepository</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodeRepository.html" title="type parameter in CodeRepository">C</a>&gt;</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="it/unibo/ds/chainvote/codes/CodesRepository.html" title="interface in it.unibo.ds.chainvote.codes">CodesRepository</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodesRepository.html" title="type parameter in CodesRepository">C</a>&gt;</div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">An interface with method to store/retrieve from a data source the one-time-codes data.</div>
 </div>
@@ -150,7 +150,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/codes/HashGenerator.html" title="class in it.unibo.ds.chainvote.codes">HashGenerator</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">An implementation of <a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodeGeneratorStrategy</code></a> that uses a hash function.</div>
+<div class="block">An implementation of <a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodesGeneratorStrategy</code></a> that uses a hash function.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="it/unibo/ds/chainvote/codes/IncorrectCodeException.html" title="class in it.unibo.ds.chainvote.codes">IncorrectCodeException</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
@@ -174,7 +174,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/codes/SecureRandomGenerator.html" title="class in it.unibo.ds.chainvote.codes">SecureRandomGenerator</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">An implementation of <a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodeGeneratorStrategy</code></a> that uses <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/SecureRandom.html" title="class or interface in java.security" class="external-link"><code>SecureRandom</code></a>.</div>
+<div class="block">An implementation of <a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodesGeneratorStrategy</code></a> that uses <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/SecureRandom.html" title="class or interface in java.security" class="external-link"><code>SecureRandom</code></a>.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="it/unibo/ds/chainvote/utils/Utils.html" title="class in it.unibo.ds.chainvote.utils">Utils</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">

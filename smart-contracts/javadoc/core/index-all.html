@@ -180,24 +180,24 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="it/unibo/ds/chainvote/assets/ElectionInfoImpl.Builder.html#choices(java.util.List)" class="member-name-link">choices(List&lt;Choice&gt;)</a> - Method in class it.unibo.ds.chainvote.assets.<a href="it/unibo/ds/chainvote/assets/ElectionInfoImpl.Builder.html" title="class in it.unibo.ds.chainvote.assets">ElectionInfoImpl.Builder</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" class="type-name-link" title="interface in it.unibo.ds.chainvote.codes">CodeGeneratorStrategy</a> - Interface in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" class="type-name-link" title="interface in it.unibo.ds.chainvote.codes">CodesGeneratorStrategy</a> - Interface in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
 <dd>
 <div class="block">An interface modeling a <a href="it/unibo/ds/chainvote/codes/OneTimeCode.html" title="interface in it.unibo.ds.chainvote.codes"><code>OneTimeCode</code></a> generator strategy.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html" class="type-name-link" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="type parameter in CodeManager">C</a>&gt; - Interface in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html" class="type-name-link" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="type parameter in CodesManager">C</a>&gt; - Interface in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
 <dd>
 <div class="block">An interface modeling a <a href="it/unibo/ds/chainvote/codes/OneTimeCode.html" title="interface in it.unibo.ds.chainvote.codes"><code>OneTimeCode</code></a> manager, which exposes functions
  to generate, (in)validate and verify one-time-codes.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" class="type-name-link" title="class in it.unibo.ds.chainvote.codes">CodeManagerImpl</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" title="type parameter in CodeManagerImpl">C</a>&gt; - Class in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" class="type-name-link" title="class in it.unibo.ds.chainvote.codes">CodesManagerImpl</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" title="type parameter in CodesManagerImpl">C</a>&gt; - Class in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
 <dd>
-<div class="block">A base implementation of <a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodeManager</code></a> which implements main core logic, independent of any technology.</div>
+<div class="block">A base implementation of <a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodesManager</code></a> which implements main core logic, independent of any technology.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html#%3Cinit%3E(it.unibo.ds.chainvote.codes.CodeRepository,it.unibo.ds.chainvote.codes.CodeGeneratorStrategy)" class="member-name-link">CodeManagerImpl(CodeRepository&lt;C&gt;, CodeGeneratorStrategy)</a> - Constructor for class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodeManagerImpl</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html#%3Cinit%3E(it.unibo.ds.chainvote.codes.CodesRepository,it.unibo.ds.chainvote.codes.CodesGeneratorStrategy)" class="member-name-link">CodesManagerImpl(CodesRepository&lt;C&gt;, CodesGeneratorStrategy)</a> - Constructor for class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodesManagerImpl</a></dt>
 <dd>
 <div class="block">Creates a new manager.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeRepository.html" class="type-name-link" title="interface in it.unibo.ds.chainvote.codes">CodeRepository</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodeRepository.html" title="type parameter in CodeRepository">C</a>&gt; - Interface in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesRepository.html" class="type-name-link" title="interface in it.unibo.ds.chainvote.codes">CodesRepository</a>&lt;<a href="it/unibo/ds/chainvote/codes/CodesRepository.html" title="type parameter in CodesRepository">C</a>&gt; - Interface in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
 <dd>
 <div class="block">An interface with method to store/retrieve from a data source the one-time-codes data.</div>
 </dd>
@@ -305,15 +305,15 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:G">G</h2>
 <dl class="index">
-<dt><a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html#generateCode()" class="member-name-link">generateCode()</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodeGeneratorStrategy</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html#generateCode()" class="member-name-link">generateCode()</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodesGeneratorStrategy</a></dt>
 <dd>
 <div class="block">Generates a new code, no matter if it has already been generated.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html#generateCode(java.lang.String)" class="member-name-link">generateCode(String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodeGeneratorStrategy</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html#generateCode(java.lang.String)" class="member-name-link">generateCode(String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodesGeneratorStrategy</a></dt>
 <dd>
 <div class="block">Generates a new code, no matter if it has already been generated.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html#generateCode(java.util.function.Predicate)" class="member-name-link">generateCode(Predicate&lt;OneTimeCode&gt;)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodeGeneratorStrategy</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html#generateCode(java.util.function.Predicate)" class="member-name-link">generateCode(Predicate&lt;OneTimeCode&gt;)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodesGeneratorStrategy</a></dt>
 <dd>
 <div class="block">Generates a new, not already generated, code.</div>
 </dd>
@@ -321,7 +321,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/codes/SecureRandomGenerator.html#generateCode(java.util.function.Predicate)" class="member-name-link">generateCode(Predicate&lt;OneTimeCode&gt;)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/SecureRandomGenerator.html" title="class in it.unibo.ds.chainvote.codes">SecureRandomGenerator</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html#generateCode(java.util.function.Predicate,java.lang.String)" class="member-name-link">generateCode(Predicate&lt;OneTimeCode&gt;, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodeGeneratorStrategy</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html#generateCode(java.util.function.Predicate,java.lang.String)" class="member-name-link">generateCode(Predicate&lt;OneTimeCode&gt;, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodesGeneratorStrategy</a></dt>
 <dd>
 <div class="block">Generates a new, not already generated, code.</div>
 </dd>
@@ -333,35 +333,35 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Generates a new, not already generated, code.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html#generateCode(java.util.Set)" class="member-name-link">generateCode(Set&lt;OneTimeCode&gt;)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodeGeneratorStrategy</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html#generateCode(java.util.Set)" class="member-name-link">generateCode(Set&lt;OneTimeCode&gt;)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodesGeneratorStrategy</a></dt>
 <dd>
 <div class="block">Generates a new code different from those given in input.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html#generateCode(java.util.Set,java.lang.String)" class="member-name-link">generateCode(Set&lt;OneTimeCode&gt;, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodeGeneratorStrategy</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html#generateCode(java.util.Set,java.lang.String)" class="member-name-link">generateCode(Set&lt;OneTimeCode&gt;, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes">CodesGeneratorStrategy</a></dt>
 <dd>
 <div class="block">Generates a new code different from those given in input.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#generateCodeFor(C,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(C, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#generateCodeFor(C,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(C, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Generates a new <a href="it/unibo/ds/chainvote/codes/OneTimeCode.html" title="interface in it.unibo.ds.chainvote.codes"><code>OneTimeCode</code></a> for the given election.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html#generateCodeFor(C,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(C, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodeManagerImpl</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html#generateCodeFor(C,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(C, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodesManagerImpl</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#generateCodeFor(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(C, String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#generateCodeFor(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(C, String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Generates a new <a href="it/unibo/ds/chainvote/codes/OneTimeCode.html" title="interface in it.unibo.ds.chainvote.codes"><code>OneTimeCode</code></a> for the given election.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html#generateCodeFor(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(C, String, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodeManagerImpl</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html#generateCodeFor(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(C, String, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodesManagerImpl</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#generateCodeFor(java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#generateCodeFor(java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Generates a new <a href="it/unibo/ds/chainvote/codes/OneTimeCode.html" title="interface in it.unibo.ds.chainvote.codes"><code>OneTimeCode</code></a>.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#generateCodeFor(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#generateCodeFor(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">generateCodeFor(String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Generates a new <a href="it/unibo/ds/chainvote/codes/OneTimeCode.html" title="interface in it.unibo.ds.chainvote.codes"><code>OneTimeCode</code></a> for the given election.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeRepository.html#get(C,java.lang.String,java.lang.String)" class="member-name-link">get(C, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeRepository.html" title="interface in it.unibo.ds.chainvote.codes">CodeRepository</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesRepository.html#get(C,java.lang.String,java.lang.String)" class="member-name-link">get(C, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesRepository.html" title="interface in it.unibo.ds.chainvote.codes">CodesRepository</a></dt>
 <dd>
 <div class="block">Retrieve the one-time-code associated to the given user for the given election.</div>
 </dd>
@@ -485,7 +485,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/codes/HashGenerator.html" class="type-name-link" title="class in it.unibo.ds.chainvote.codes">HashGenerator</a> - Class in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
 <dd>
-<div class="block">An implementation of <a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodeGeneratorStrategy</code></a> that uses a hash function.</div>
+<div class="block">An implementation of <a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodesGeneratorStrategy</code></a> that uses a hash function.</div>
 </dd>
 <dt><a href="it/unibo/ds/chainvote/codes/HashGenerator.html#%3Cinit%3E()" class="member-name-link">HashGenerator()</a> - Constructor for class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/HashGenerator.html" title="class in it.unibo.ds.chainvote.codes">HashGenerator</a></dt>
 <dd>&nbsp;</dd>
@@ -513,13 +513,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Represents a <a href="it/unibo/ds/chainvote/utils/Choice.html" title="class in it.unibo.ds.chainvote.utils"><code>Choice</code></a> for blank vote.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#invalidate(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">invalidate(C, String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#invalidate(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">invalidate(C, String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Invalidate the given code for the given election.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html#invalidate(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">invalidate(C, String, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodeManagerImpl</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html#invalidate(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">invalidate(C, String, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodesManagerImpl</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#invalidate(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">invalidate(String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#invalidate(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">invalidate(String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Invalidate the given code for the given election.</div>
 </dd>
@@ -550,13 +550,13 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="it/unibo/ds/chainvote/assets/ElectionInfoImpl.html#isOpen()" class="member-name-link">isOpen()</a> - Method in class it.unibo.ds.chainvote.assets.<a href="it/unibo/ds/chainvote/assets/ElectionInfoImpl.html" title="class in it.unibo.ds.chainvote.assets">ElectionInfoImpl</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#isValid(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">isValid(C, String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#isValid(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">isValid(C, String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Check if the given code is still valid, i.e.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html#isValid(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">isValid(C, String, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodeManagerImpl</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html#isValid(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">isValid(C, String, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodesManagerImpl</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#isValid(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">isValid(String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#isValid(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">isValid(String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Check if the given code is still valid, i.e.</div>
 </dd>
@@ -596,14 +596,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Builds a new Pair.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeRepository.html#put(C,java.lang.String,java.lang.String,it.unibo.ds.chainvote.codes.OneTimeCode)" class="member-name-link">put(C, String, String, OneTimeCode)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeRepository.html" title="interface in it.unibo.ds.chainvote.codes">CodeRepository</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesRepository.html#put(C,java.lang.String,java.lang.String,it.unibo.ds.chainvote.codes.OneTimeCode)" class="member-name-link">put(C, String, String, OneTimeCode)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesRepository.html" title="interface in it.unibo.ds.chainvote.codes">CodesRepository</a></dt>
 <dd>
 <div class="block">Save the association between the given user and code for the given election.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:R">R</h2>
 <dl class="index">
-<dt><a href="it/unibo/ds/chainvote/codes/CodeRepository.html#replace(C,java.lang.String,java.lang.String,it.unibo.ds.chainvote.codes.OneTimeCode)" class="member-name-link">replace(C, String, String, OneTimeCode)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeRepository.html" title="interface in it.unibo.ds.chainvote.codes">CodeRepository</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesRepository.html#replace(C,java.lang.String,java.lang.String,it.unibo.ds.chainvote.codes.OneTimeCode)" class="member-name-link">replace(C, String, String, OneTimeCode)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesRepository.html" title="interface in it.unibo.ds.chainvote.codes">CodesRepository</a></dt>
 <dd>
 <div class="block">Replace the old otc associated to the election with the given one.</div>
 </dd>
@@ -620,7 +620,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="it/unibo/ds/chainvote/codes/SecureRandomGenerator.html" class="type-name-link" title="class in it.unibo.ds.chainvote.codes">SecureRandomGenerator</a> - Class in <a href="it/unibo/ds/chainvote/codes/package-summary.html">it.unibo.ds.chainvote.codes</a></dt>
 <dd>
-<div class="block">An implementation of <a href="it/unibo/ds/chainvote/codes/CodeGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodeGeneratorStrategy</code></a> that uses <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/SecureRandom.html" title="class or interface in java.security" class="external-link"><code>SecureRandom</code></a>.</div>
+<div class="block">An implementation of <a href="it/unibo/ds/chainvote/codes/CodesGeneratorStrategy.html" title="interface in it.unibo.ds.chainvote.codes"><code>CodesGeneratorStrategy</code></a> that uses <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/SecureRandom.html" title="class or interface in java.security" class="external-link"><code>SecureRandom</code></a>.</div>
 </dd>
 <dt><a href="it/unibo/ds/chainvote/codes/SecureRandomGenerator.html#%3Cinit%3E()" class="member-name-link">SecureRandomGenerator()</a> - Constructor for class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/SecureRandomGenerator.html" title="class in it.unibo.ds.chainvote.codes">SecureRandomGenerator</a></dt>
 <dd>&nbsp;</dd>
@@ -664,13 +664,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#verifyCodeOwner(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">verifyCodeOwner(C, String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#verifyCodeOwner(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">verifyCodeOwner(C, String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Verifies if the given code has been generated for the given user and election.</div>
 </dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html#verifyCodeOwner(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">verifyCodeOwner(C, String, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodeManagerImpl</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html#verifyCodeOwner(C,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">verifyCodeOwner(C, String, String, String)</a> - Method in class it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManagerImpl.html" title="class in it.unibo.ds.chainvote.codes">CodesManagerImpl</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="it/unibo/ds/chainvote/codes/CodeManager.html#verifyCodeOwner(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">verifyCodeOwner(String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodeManager.html" title="interface in it.unibo.ds.chainvote.codes">CodeManager</a></dt>
+<dt><a href="it/unibo/ds/chainvote/codes/CodesManager.html#verifyCodeOwner(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">verifyCodeOwner(String, String, String)</a> - Method in interface it.unibo.ds.chainvote.codes.<a href="it/unibo/ds/chainvote/codes/CodesManager.html" title="interface in it.unibo.ds.chainvote.codes">CodesManager</a></dt>
 <dd>
 <div class="block">Verifies if the given code has been generated for the given user and election.</div>
 </dd>
