@@ -8,44 +8,88 @@
         <%- include('commons/navbar') %>
         <main>
             <div class="row justify-content-center">
-                <h1 id="electionName">Election id / name</h1>
+                <h1 id="electionName">Election <%- electionData.electionId %></h1>
             </div>
             <div class="row" id="content">
                 <div class="col-md-5 center mx-auto">
-                    <h2 id="question">Who do you want to be the next rector of UniBo?</h2>
-                    <form action="" method="post">
-                        <button type="button" class="btn btn-outline-primary btn-block">Request my one time code</button>
-                    </form>
-                    <p>To adjust here depending on API :)</p>
-                    <form id="voteForm" action="" method="post">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="inputGroup-sizing-default">One time code</span>
+                    <h2 id="question">Goal: <%- electionData.goal %></h2>
+                    <div class="container mt-5">
+                        <div class="row">
+                            <!-- First Column -->
+                            <div class="col-md-6">
+                                <h2>Request code</h2>
+                                <form id="voteCodeForm">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="uid">User id</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="user-id" id="voteCodeForm-id" placeholder="userid">
+                                    </div>
+                                    <input type="hidden" name="election-id" value="<%- electionData.electionId %>" />
+                                    <button type="submit" class="btn btn-primary">Request Code</button>
+                                </form>
                             </div>
-                            <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+
+                            <!-- Second Column -->
+                            <div class="col-md-6">
+                                <h2>Form 2</h2>
+                                <form id="voteForm" action="" method="post">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">One time code</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="otc" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                    </div>
+                                    <% electionData.choices.forEach(function(entry) { %>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="choiceRadio" id="<%= entry.choice %>-id" value="<%= entry.choice %>" />
+                                            <label class="form-check-label" for="choiceRadio"><%= entry.choice %></label>
+                                        </div>
+                                    <% }) %>
+                                    <button type="button" class="btn btn-outline-primary btn-block" onclick="sendVote(e)">Send your vote</button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" />
-                            <label class="form-check-label" for="exampleRadios1">Option 1</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2" />
-                            <label class="form-check-label" for="exampleRadios2">Option 2</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" />
-                            <label class="form-check-label" for="exampleRadios3">Option 3</label>
-                        </div>
-                        <button type="button" class="btn btn-outline-primary btn-block" onclick="sendVote()">Send your vote</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </main>
         <%- include('commons/footer') %>
         <script>
+            function requestCode() {
+                const userId = $('#voteCodeForm input[name="user-id"]').val();
+                const electionId = $('#voteCodeForm input[name="election-id"]').val();
+
+                if (!userId) {
+                    alert('Please provide your email for requesting the code');
+                    return;
+                }
+
+                const data = {
+                    userId: userId,
+                    electionId: electionId,
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: 'http://localhost:3000/elections/code',
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8"
+                }).done(function(response) {
+                    if(response.success) {
+                        $('#voteForm input[name="otc"]').val(response.code);
+                    } else {
+                        alert(`Error requesting code. ${response.message}`);
+                    }
+                }).fail(function(error) {
+                    console.error('Error submitting vote:', error.message);
+                    alert(`Error requesting code. ${error.message}`);
+                });
+            }
+
             function sendVote() {
-                const oneTimeCode = document.querySelector('#voteForm input[type="text"]').value;
-                const selectedOption = document.querySelector('#voteForm input[name="exampleRadios"]:checked');
+                const oneTimeCode = $('#voteForm input[type="text"]').val();
+                const selectedOption = $('#voteForm input[name="choiceRadio"]:checked').val();
 
                 if (!oneTimeCode || !selectedOption) {
                     alert('Please fill in all fields');
@@ -54,22 +98,37 @@
 
                 const data = {
                     oneTimeCode: oneTimeCode,
-                    selectedOption: selectedOption.value,
+                    selectedOption: selectedOption,
                 };
 
-                // Replace 'http://localhost:3000/cast-vote' with your actual endpoint
-                axios.post('http://localhost:3000/cast-vote', data)
-                    .then(response => {
-                        // Handle success, e.g., show a success message
-                        console.log(response.data);
-                        alert('Vote submitted successfully!');
-                    })
-                    .catch(error => {
-                        // Handle error, e.g., show an error message
-                        console.error('Error submitting vote:', error);
-                        alert('Error submitting vote. Please try again.');
-                    });
+                $.ajax({
+                    type: "POST",
+                    url: 'http://localhost:3000/elections/vote/<%= electionData.electionId %>',
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8"
+                }).done(function(response) {
+                    console.log(data);
+                }).fail(function(error) {
+                    console.error('Error submitting vote:', error.responseText);
+                    alert('Error submitting vote. Please try again.');
+                });
             }
+
+            $(document).ready(function() {
+                $('#voteCodeForm').submit(function(event) {
+                    event.preventDefault();
+                    requestCode();
+                });
+
+                $('#voteForm').submit(function(event) {
+                    // Prevent the default form submission behavior
+                    event.preventDefault();
+
+                    // Your custom logic to handle the vote submission
+                    console.log("Vote submitted!");
+                    // You can add your AJAX logic or any other processing here
+                });
+            });
         </script>
     </body>
 </html>
