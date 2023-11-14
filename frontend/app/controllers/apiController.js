@@ -1,7 +1,7 @@
 const axiosRequest = require('./utils');
 
 // TODO: just for testing
-const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjU0Y2JhOTIyOTA2NjlkMzFhOTlmMDBiIiwiZW1haWwiOiJhZG1pbkB0ZXN0Lml0IiwicGFzc3dvcmQiOiIkMmIkMTAkQzJwaVU2ZmZIdHFsY3ZkSmVnN25JT1FIdldBcUhiUE1uV0lJRU5oa28zVjZzMUtnc0NkL3UiLCJmaXJzdE5hbWUiOiJhZG1pbmlzdHJhdG9yIiwic2Vjb25kTmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiX192IjowfSwiaWF0IjoxNjk5NTU5NjU4LCJleHAiOjE2OTk1NjA1NTgsImF1ZCI6Imh0dHBzOi8vd3d3LmNoYWludm90ZS5jb20iLCJpc3MiOiJDaGFpblZvdGUifQ.LRsgSbvs2WuZ_IW8g3i-cWYo01qiZjroDeJ6HYOIopW399JWrFBbVqd05NxYPYUuiLwbG6Rvxlp2sq-eMbecWUNZbQdkTDIL3EKbig3aAxyN1IHPbjhtYaY6nQ8jeHG9NOKGB3oRX6TlVhOxx4m-oUMGrWTNXXkFve75WDyO7ZOyvPL-hqmAHkXCh5FUInVtXQdUQ1BqXrH2_mOu3Xb39hf0NEqW16mpdnaSzui_zWSO65SCke8XvuKWQpt9brsPkdTLvE_tEgbggR9w1MqZyvaQjBqjlyR-h2dSGI--ZlJacdnCiNUNx8Y_tZ47spFL7Wp8-MIJBRm6ec2BoMY37ev_y4F7tQnjNK0pa10XvNyqZSe78zlukkHeZ1ixveYSfkR09QY0Lqy9Nl-yH-QCW2rZKuXJLomOeAlszGVPGm69KkfL66-h19NgfFFvepjkWpiC1s-DRC6Azy5OJlnqdf5I4PuLHYjeTSTmLE5d186B9Sa-vs7a_bu5-WVhy9LOclzji7Dt3dt7Dk_WBsU3X14B-0fxnfjUTsNEgRNpQvcGT9u8af3s428TVELBOtCSLk8cibdjBVnnoWAH4Qsup_n6RVRbBIkwe-30S-W37nzpH88AT9204gulKokzNoTPzPadTCfEGLCBmJgz-_oDFd9H8s0mVRfimRZFrNkPkS4";
+const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjU1MzQyOWE3NmU5NjIyZTA3OWQyMjJiIiwiZW1haWwiOiJsdWNoaW5vLnByb3ZhQHRlc3QuaXQiLCJwYXNzd29yZCI6IiQyYiQxMCRpYk55ZGZaREF5WEs4UWtzeEcySy4uZ2FjaDZNNk9rQm1HU2FOYkwzZUUwby53N3VCUGhEaSIsImZpcnN0TmFtZSI6Ikx1Y2hpbm8iLCJzZWNvbmROYW1lIjoiVGFzc29saW5vIiwicm9sZSI6InVzZXIiLCJfX3YiOjB9LCJpYXQiOjE2OTk5NTUzNTcsImV4cCI6MTY5OTk1NjI1NywiYXVkIjoiaHR0cHM6Ly93d3cuY2hhaW52b3RlLmNvbSIsImlzcyI6IkNoYWluVm90ZSJ9.ci6QeGUuAClJHoBklE0X_BZRUZ4aJBOIKAjCFOgaBIPRzMMtC3OSsK-0WqyjZyRAqt_RDkSG4B_rH6v8Y8DeSIgEVKDP5QU92kYVriBB_DlKN9WeOg4e_1v1dxuDTdoVgPR_QEAYK268qJLDNoY6T2ofGMcvb8Jrbx7ltv0bdxGoYbPbd1XnpckW5CLr6DiI55gCpcjveovnCo0FLdhsXXdDcUhRGhAfrDFbsYRYXRfblC1jhDkgyU44W6-tvkqCdwcwmXtZ1FgFALiZjtNjYZFbeg7s8V-0sjk-RnHpemunuAsL1ZduEkcqYIY9VjD73e8F8X3oGsKqvqxOebe6QB7TdZwhNxOmNeKaP0t4t3pspSDlzwwuD0SekOgx8c9gMRX9ZZy_DKbBhSBqaFiA9dTvEnKDYu5ia2z2bHaEi6V6Tbho6yhyGv9FpeL-0du9MbFBdn6P3P5n0mm9yjUTCqLhn_YLkPfOYZPOekkdWfSRWFCkdIO4rVsVY3V9D3fX6vXYYAIgJgQsB-M1bc1S6Hkdhp2HZvrWef6JrS-r921fGh9qsGXhcGmEu-kuanFKMWr_R-tcH4brfOPkL3m-FaFUK5HHyXh-KTpiCK5HKGcyzYykOQZaqLx5UR_x5Ogi7eJf6zeNx5lO9mJQl3duDrm12XU2MSLVB7-I90GYM9I";
 
 const getAllElections = async (req, res) => {
     try {
@@ -10,7 +10,7 @@ const getAllElections = async (req, res) => {
         const electionsData = electionsDetailsResponse.data;
         for (let i = 0; i < electionsData.length; i++) {
             const entry = reformatDates(electionsData[i]);
-            entry.open = new Date(entry.endDate) > Date.now();
+            entry.open = new Date(`${entry.endDate}Z`) > Date.now();
         }
         res.render('dashboard', { electionsData });
     } catch (error) {
@@ -34,8 +34,8 @@ const getElection = async (req, res) => {
 };
 
 function reformatDates(electionData) {
-    electionData.formattedStartDate = formatDate(electionData.startDate);
-    electionData.formattedEndDate = formatDate(electionData.endDate);
+    electionData.formattedStartDate = formatDate(`${electionData.startDate}Z`);
+    electionData.formattedEndDate = formatDate(`${electionData.endDate}Z`);
     return electionData;
 }
 
