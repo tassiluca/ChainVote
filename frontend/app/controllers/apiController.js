@@ -1,7 +1,7 @@
 const axiosRequest = require('./utils');
 
 // TODO: just for testing
-const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjU1MjliNzk1MmU0MzVmODZkMGU3YTUxIiwiZW1haWwiOiJwcm92YS5wcm92YTVAdGVzdC5pdCIsInBhc3N3b3JkIjoiJDJiJDEwJDJYd25DalJSQzduZlRUOW95blEvYy5kLmRvcUI3QzRaYU14VUxCRGJOLkp3UGNYUDlxaW5LIiwiZmlyc3ROYW1lIjoiR2lvcGFpbiIsInNlY29uZE5hbWUiOiJOb0dhaW4iLCJyb2xlIjoidXNlciIsIl9fdiI6MH0sImlhdCI6MTY5OTkxMjYwNywiZXhwIjoxNjk5OTEzNTA3LCJhdWQiOiJodHRwczovL3d3dy5jaGFpbnZvdGUuY29tIiwiaXNzIjoiQ2hhaW5Wb3RlIn0.mWQudiaYMV-K5Cpad10we28lqzXSJ7g5q6afIyvhpWAtbcfQ0ZHwKBwnKP-N-NNBULVLHTe9B4pRqF6d3NKXMob0oZ8pAByTNrgh52kl0jyOzR50dF6G5G9L_oKPAsXVMUiM8CPtsVraBf38NBW-KDCYd8zHk-0dXglnBHJWFlHI0wOSkIF49i0KT5Jm30jQqhRBmGywvRcssGBdlYafxl11rFsUpPJK71-0sdDHab1iaqPucmgIQXpbBP5q97n_59ioV8A4a6dls4P-I4Cd6bjAKrYTYj-zFM3ERyyOsfC7lWwFFQ0Bg3MWeBDpq53gEWonk7dy_FcfY7ln6FbCnppmHqPQsGQX0ZLu1WAwc0mSGBkqZhqiDN68-_JX5oE9vFOXhUYQjyOuX1dBN6bfClOw5cCEUbaGHGARSnPAfx1eHYxj1TlkvzQ4tFWPwJyEm1a8pd1T4sXdUwjFQ81mOQdLDC7C9YKmxv9dUqEx6jozL_oWm83FB_UBxkXGUjr4H2-c_UgpAv8PwK8aREYa42HNu17qcRdbi5TsVn-AseNMiNQuC0RNEDqF5cnHIKqm7JAgQVcbEij7F72ByphENlKSGWj5LVjHsooYB_s53sdskLt65mZtx0HlP7e4eI9o9m4PV9J9qdnzrRqi1_cd_7EIw_hnSV0SIQWWm7vtlLc";
+const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjU1MzQ1ZjIxZTM4NWEyODhkOGJjN2E0IiwiZW1haWwiOiJwcm92YS5wcm92YUB0ZXN0Lml0IiwicGFzc3dvcmQiOiIkMmIkMTAkb2QvQ1ZKa3pQRm9xb0tpUEdqdW0zZU4uNi9vTzVNZk02dFVzMFBDMjV3NUlLY1NYNjFBUWkiLCJmaXJzdE5hbWUiOiJHaW9wYWluIiwic2Vjb25kTmFtZSI6Ik5vR2FpbiIsInJvbGUiOiJ1c2VyIiwiX192IjowfSwiaWF0IjoxNjk5OTU2NTE4LCJleHAiOjE2OTk5NTc0MTgsImF1ZCI6Imh0dHBzOi8vd3d3LmNoYWludm90ZS5jb20iLCJpc3MiOiJDaGFpblZvdGUifQ.plRW9IR1WPLvKapCHKHugRCiupM0WEIKIDDiRtw5FlRjknr5FuznpEbJ9WMWBgSbFjaaAFaU8Sya2Qap3kADm9s1diU92H8fY1t4Ecv4i9yu96OTlALuo8lQTvlIfXuOAiTUu8NOq-oYBECa82PQDQHFuXHMBv2F-abetziWzN2ov9xn0ZqcCXOoC9_QPQzR-gV-OJMUtosNyQyqY3jHseuIAmFxiTDJdlafH0EqvgBM4kUBnU4zuWjKNMF84h-tfnxYFcKHUUhzixZPUD4-D-U-dvbIdMIF1rqv8gnNxF7r02fl1HORgr3zegP3di2Cf9vob3I4EQBoKQ4AlXZQ2X6eKfnIZtikAany-rSPb5am5v4qK4UCYsxdVq-7x_MUUjt8V7NHxR72dJ9BN_gyjEvxeGv6y96-I5lUb-X7KnZCDUc_nR2i7UZvtJbU47Pxr6QmLgzQa957J6vAwSxO6P41Z0enSh7CX29FNUdQtspyKQtt29JgHJiUA-9cAQRntB3tOs4EgTYvukpnwh8utPGHcNYrYL0adYd8h0Nt_XSvkGUORYe0mJEX-iQKnHfr5AYlLCdGI7bHLhQDWSA94ZhIVj-DWAc3XnWJ6S_NZv_QZCiUraqbg3EJWiowFGZQbeZyvyQDVBUyLHkFmk0mZCyUPhu325IaGQAXa1KHCPY";
 
 const getAllElections = async (req, res) => {
     try {
@@ -36,9 +36,19 @@ const getElection = async (req, res) => {
 const castVote = async (req, res) => {
     try {
         const electionId = req.params.electionId;
-
-        //TODO: if the request is a post process the data for the election
-        
+        if(req.method === 'POST') {
+           const data = {
+                code: req.body.code,
+                userId: req.body.userId,
+                choice: req.body.choice
+            }
+            console.log(data);
+            const voteUrl = `http://localhost:8080/election/vote/${electionId}`;
+            const voteResponse = await axiosRequest('PUT', voteUrl, data, token);
+            return res.send({
+                success: voteResponse.success,
+            });
+        }
 
         const electionDetailsUrl = `http://localhost:8080/election/detail/${electionId}`;
         const electionInfoDetailsUrl = `http://localhost:8080/election/info/detail/${electionId}`;

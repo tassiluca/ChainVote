@@ -32,7 +32,7 @@
 
                             <!-- Second Column -->
                             <div class="col-md-6">
-                                <h2>Form 2</h2>
+                                <h2>Vote form</h2>
                                 <form id="voteForm" action="" method="post">
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
@@ -40,13 +40,19 @@
                                         </div>
                                         <input type="text" class="form-control" name="otc" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                                     </div>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">User id</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="user-id" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                    </div>
                                     <% electionData.choices.forEach(function(entry) { %>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="choiceRadio" id="<%= entry.choice %>-id" value="<%= entry.choice %>" />
                                             <label class="form-check-label" for="choiceRadio"><%= entry.choice %></label>
                                         </div>
                                     <% }) %>
-                                    <button type="button" class="btn btn-outline-primary btn-block" onclick="sendVote(e)">Send your vote</button>
+                                    <button type="submit" class="btn btn-outline-primary btn-block">Send your vote</button>
                                 </form>
                             </div>
                         </div>
@@ -78,6 +84,7 @@
                 }).done(function(response) {
                     if(response.success) {
                         $('#voteForm input[name="otc"]').val(response.code);
+                        $('#voteForm input[name="user-id"]').val(userId);
                     } else {
                         alert(`Error requesting code. ${response.message}`);
                     }
@@ -88,17 +95,19 @@
             }
 
             function sendVote() {
-                const oneTimeCode = $('#voteForm input[type="text"]').val();
-                const selectedOption = $('#voteForm input[name="choiceRadio"]:checked').val();
+                const electionCode = $('#voteForm input[type="text"]').val();
+                const choice = $('#voteForm input[name="choiceRadio"]:checked').val();
+                const userId = $('#voteForm input[name="user-id"]').val();
 
-                if (!oneTimeCode || !selectedOption) {
+                if (!electionCode || !choice) {
                     alert('Please fill in all fields');
                     return;
                 }
 
                 const data = {
-                    oneTimeCode: oneTimeCode,
-                    selectedOption: selectedOption,
+                    code: electionCode,
+                    choice: choice,
+                    userId: userId,
                 };
 
                 $.ajax({
@@ -107,7 +116,13 @@
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8"
                 }).done(function(response) {
-                    console.log(data);
+                    if(response.success){
+                        $('#voteForm input[type="text"]').val('');
+                        $('#voteForm input[name="choiceRadio"]:checked').prop('checked', false);
+                        alert(`Vote casted successfully!`);
+                    } else {
+                        alert(`Error submitting vote`);
+                    }
                 }).fail(function(error) {
                     console.error('Error submitting vote:', error.responseText);
                     alert('Error submitting vote. Please try again.');
@@ -121,12 +136,8 @@
                 });
 
                 $('#voteForm').submit(function(event) {
-                    // Prevent the default form submission behavior
                     event.preventDefault();
-
-                    // Your custom logic to handle the vote submission
-                    console.log("Vote submitted!");
-                    // You can add your AJAX logic or any other processing here
+                    sendVote();
                 });
             });
         </script>
