@@ -1,7 +1,7 @@
 const axiosRequest = require('./utils');
 
 // TODO: just for testing
-const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjU1MzQyOWE3NmU5NjIyZTA3OWQyMjJiIiwiZW1haWwiOiJsdWNoaW5vLnByb3ZhQHRlc3QuaXQiLCJwYXNzd29yZCI6IiQyYiQxMCRpYk55ZGZaREF5WEs4UWtzeEcySy4uZ2FjaDZNNk9rQm1HU2FOYkwzZUUwby53N3VCUGhEaSIsImZpcnN0TmFtZSI6Ikx1Y2hpbm8iLCJzZWNvbmROYW1lIjoiVGFzc29saW5vIiwicm9sZSI6InVzZXIiLCJfX3YiOjB9LCJpYXQiOjE2OTk5NTUzNTcsImV4cCI6MTY5OTk1NjI1NywiYXVkIjoiaHR0cHM6Ly93d3cuY2hhaW52b3RlLmNvbSIsImlzcyI6IkNoYWluVm90ZSJ9.ci6QeGUuAClJHoBklE0X_BZRUZ4aJBOIKAjCFOgaBIPRzMMtC3OSsK-0WqyjZyRAqt_RDkSG4B_rH6v8Y8DeSIgEVKDP5QU92kYVriBB_DlKN9WeOg4e_1v1dxuDTdoVgPR_QEAYK268qJLDNoY6T2ofGMcvb8Jrbx7ltv0bdxGoYbPbd1XnpckW5CLr6DiI55gCpcjveovnCo0FLdhsXXdDcUhRGhAfrDFbsYRYXRfblC1jhDkgyU44W6-tvkqCdwcwmXtZ1FgFALiZjtNjYZFbeg7s8V-0sjk-RnHpemunuAsL1ZduEkcqYIY9VjD73e8F8X3oGsKqvqxOebe6QB7TdZwhNxOmNeKaP0t4t3pspSDlzwwuD0SekOgx8c9gMRX9ZZy_DKbBhSBqaFiA9dTvEnKDYu5ia2z2bHaEi6V6Tbho6yhyGv9FpeL-0du9MbFBdn6P3P5n0mm9yjUTCqLhn_YLkPfOYZPOekkdWfSRWFCkdIO4rVsVY3V9D3fX6vXYYAIgJgQsB-M1bc1S6Hkdhp2HZvrWef6JrS-r921fGh9qsGXhcGmEu-kuanFKMWr_R-tcH4brfOPkL3m-FaFUK5HHyXh-KTpiCK5HKGcyzYykOQZaqLx5UR_x5Ogi7eJf6zeNx5lO9mJQl3duDrm12XU2MSLVB7-I90GYM9I";
+const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjU1MzQ1ZjIxZTM4NWEyODhkOGJjN2E0IiwiZW1haWwiOiJwcm92YS5wcm92YUB0ZXN0Lml0IiwicGFzc3dvcmQiOiIkMmIkMTAkb2QvQ1ZKa3pQRm9xb0tpUEdqdW0zZU4uNi9vTzVNZk02dFVzMFBDMjV3NUlLY1NYNjFBUWkiLCJmaXJzdE5hbWUiOiJHaW9wYWluIiwic2Vjb25kTmFtZSI6Ik5vR2FpbiIsInJvbGUiOiJ1c2VyIiwiX192IjowfSwiaWF0IjoxNjk5OTU2NTE4LCJleHAiOjE2OTk5NTc0MTgsImF1ZCI6Imh0dHBzOi8vd3d3LmNoYWludm90ZS5jb20iLCJpc3MiOiJDaGFpblZvdGUifQ.plRW9IR1WPLvKapCHKHugRCiupM0WEIKIDDiRtw5FlRjknr5FuznpEbJ9WMWBgSbFjaaAFaU8Sya2Qap3kADm9s1diU92H8fY1t4Ecv4i9yu96OTlALuo8lQTvlIfXuOAiTUu8NOq-oYBECa82PQDQHFuXHMBv2F-abetziWzN2ov9xn0ZqcCXOoC9_QPQzR-gV-OJMUtosNyQyqY3jHseuIAmFxiTDJdlafH0EqvgBM4kUBnU4zuWjKNMF84h-tfnxYFcKHUUhzixZPUD4-D-U-dvbIdMIF1rqv8gnNxF7r02fl1HORgr3zegP3di2Cf9vob3I4EQBoKQ4AlXZQ2X6eKfnIZtikAany-rSPb5am5v4qK4UCYsxdVq-7x_MUUjt8V7NHxR72dJ9BN_gyjEvxeGv6y96-I5lUb-X7KnZCDUc_nR2i7UZvtJbU47Pxr6QmLgzQa957J6vAwSxO6P41Z0enSh7CX29FNUdQtspyKQtt29JgHJiUA-9cAQRntB3tOs4EgTYvukpnwh8utPGHcNYrYL0adYd8h0Nt_XSvkGUORYe0mJEX-iQKnHfr5AYlLCdGI7bHLhQDWSA94ZhIVj-DWAc3XnWJ6S_NZv_QZCiUraqbg3EJWiowFGZQbeZyvyQDVBUyLHkFmk0mZCyUPhu325IaGQAXa1KHCPY";
 
 const getAllElections = async (req, res) => {
     try {
@@ -33,6 +33,60 @@ const getElection = async (req, res) => {
     }
 };
 
+const castVote = async (req, res) => {
+    try {
+        const electionId = req.params.electionId;
+        if(req.method === 'POST') {
+           const data = {
+                code: req.body.code,
+                userId: req.body.userId,
+                choice: req.body.choice
+            }
+            console.log(data);
+            const voteUrl = `http://localhost:8080/election/vote/${electionId}`;
+            const voteResponse = await axiosRequest('PUT', voteUrl, data, token);
+            return res.send({
+                success: voteResponse.success,
+            });
+        }
+
+        const electionDetailsUrl = `http://localhost:8080/election/detail/${electionId}`;
+        const electionInfoDetailsUrl = `http://localhost:8080/election/info/detail/${electionId}`;
+        const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, token);
+        const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, token);
+        const electionData = reformatDates(electionDetailsResponse.data);
+
+        electionData.choices = electionInfoResponse.data.choices;
+        electionData.electionId = electionId;
+        electionData.goal = electionInfoResponse.data.goal;
+        res.render('cast-vote', {electionData});
+    } catch (error) {
+        res.render('not-found');
+    }
+}
+
+
+const createELectionCode = async (req, res) => {
+    const electionId = req.body.electionId;
+    const userId = req.body.userId;
+    const data = {
+        electionId: electionId,
+        userId: userId
+    }
+    const electionCodeRequest = "http://localhost:8080/code/generate";
+    const electionDetailsResponse = await axiosRequest('POST', electionCodeRequest, data, token);
+    console.log(electionDetailsResponse);
+    if (electionDetailsResponse.success) {
+        return res.send({
+            success: true,
+            code: electionDetailsResponse.data
+        });
+    }
+    const error = electionDetailsResponse.error;
+    throw new Error("Error generating code: " + error.message);
+};
+
+
 function reformatDates(electionData) {
     electionData.formattedStartDate = formatDate(`${electionData.startDate}Z`);
     electionData.formattedEndDate = formatDate(`${electionData.endDate}Z`);
@@ -54,4 +108,6 @@ function formatDate(date) {
 module.exports = {
     getAllElections,
     getElection,
+    castVote,
+    createELectionCode
 }
