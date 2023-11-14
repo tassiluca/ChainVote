@@ -15,7 +15,6 @@ export function validationHandler(validations: ValidationChain[]) {
         }
 
         const errors = validationResult(req);
-        console.log(errors);
         if (errors.isEmpty()) {
             return next();
         }
