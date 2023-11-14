@@ -46,7 +46,7 @@ afterAll(async () => {
 });
 
 describe("POST /election", () => {
-    test("Can create a new election", async () => createElection(app, adminJwtToken.accessToken), MAX_TIMEOUT);
+    test("Can create a new election", async () => await createElection(app, adminJwtToken.accessToken), MAX_TIMEOUT);
 });
 
 

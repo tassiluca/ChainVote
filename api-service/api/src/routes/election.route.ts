@@ -3,6 +3,8 @@ import {castVote, createElection, deleteElection, getAllElection, readElection} 
 import RedisLimiterStorage from "../configs/redis.config";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
 import {authenticationHandler} from "../middleware/authentication.middleware";
+import {validationHandler} from "../middleware/validation.middleware";
+import {body, param} from "express-validator";
 
 const electionRouter = Router();
 
@@ -81,7 +83,13 @@ electionRouter.get("/all", authenticationHandler, getAllElection);
  *                  description: Generic server error
  *
  */
-electionRouter.get("/detail/:electionId", authenticationHandler, readElection);
+electionRouter.get("/detail/:electionId",
+    authenticationHandler,
+    validationHandler([
+        param("electionId").exists().isNumeric()
+    ]),
+    readElection
+);
 
 /**
  * @openapi
@@ -110,7 +118,13 @@ electionRouter.get("/detail/:electionId", authenticationHandler, readElection);
  *                  description: Generic server error
  *
  */
-electionRouter.post("/", authenticationHandler, createElection);
+electionRouter.post(
+    "/",
+    authenticationHandler,
+    validationHandler([
+        body("electionId").exists().isNumeric()
+    ]),
+    createElection);
 
 /**
  * @openapi
@@ -151,7 +165,18 @@ electionRouter.post("/", authenticationHandler, createElection);
  *                  description: Generic server error
  *
  */
-electionRouter.put("/vote/:electionId", authenticationHandler, castVote);
+electionRouter.put("/vote/:electionId",
+    authenticationHandler,
+    validationHandler([
+        // Param validation
+        param("electionId").exists().isNumeric(),
+
+        // Body validation
+        body("choice").exists(),
+        body("userId").exists().isAlphanumeric(),
+        body("code").exists().isAlphanumeric()
+    ]),
+    castVote);
 
 /**
  * @openapi
@@ -179,6 +204,11 @@ electionRouter.put("/vote/:electionId", authenticationHandler, castVote);
  *                  description: Generic server error
  *
  */
-electionRouter.delete("/", authenticationHandler, deleteElection);
+electionRouter.delete("/",
+    authenticationHandler,
+    validationHandler([
+        body("electionId").exists().isNumeric()
+    ]),
+    deleteElection);
 
 export default electionRouter;
