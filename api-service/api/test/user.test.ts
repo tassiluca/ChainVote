@@ -55,9 +55,7 @@ describe("GET /users/", () => {
             .set("Authorization", `Bearer ${jwtUser.accessToken}`)
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
-            //.expect(StatusCodes.OK);
-
-        console.log(response.body);
+            .expect(StatusCodes.OK);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data).toHaveProperty("email");
@@ -198,6 +196,18 @@ describe("PUT /users/", () => {
             expect(response.body.data).toBe(true);
             expect(response.body.code).toBe(StatusCodes.OK);
     }, MAX_TIMEOUT);
+
+
+    test("Can't edit the password of an user", async () => {
+        const response = await request(app).put(`/users/${user.email}`)
+            .send({ data: { password: "Password2!" }})
+            .set("Authorization", `Bearer ${jwtUser.accessToken}`)
+            .set("Accept", "application/json")
+            .expect("Content-Type", /json/)
+            .expect(StatusCodes.BAD_REQUEST);
+
+        console.log(response.body);
+    });
 
 });
 

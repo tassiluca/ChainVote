@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { createUser, getProfile, editProfile, deleteProfile } from "../controllers/users";
 import { authenticationHandler } from "../middleware/authentication.middleware";
-import {ApiLimiterEntry} from "core-components";
-import { apiLimiter } from "core-components";
+import { validationHandler } from "../middleware/validation.middleware";
+import {body, param} from "express-validator";
+import {ApiLimiterEntry,apiLimiter} from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
 
 const userRouter = Router();
@@ -50,13 +51,21 @@ userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *          responses:
  *              '200':
  *                  description: Request accepted successfully.
+*               '400':
+ *                  description: Bad request
  *              '429':
  *                  description: Limit of requests reached for this endpoint.
  *              '500':
  *                  description: Generic server error
  *
  */
-userRouter.get("/:email", authenticationHandler, getProfile);
+userRouter.get(
+    "/:email",
+    authenticationHandler,
+    validationHandler([
+        param("email").exists().isEmail()
+    ]),
+    getProfile);
 
 userRouter.get("/", authenticationHandler, getProfile);
 
@@ -77,14 +86,31 @@ userRouter.get("/", authenticationHandler, getProfile);
  *          responses:
  *              '200':
  *                  description: Request accepted successfully.
+*               '400':
+ *                  description: Bad request
  *              '429':
  *                  description: Limit of requests reached for this endpoint.
  *              '500':
  *                  description: Generic server error
  *
  */
-userRouter.put("/:email", authenticationHandler, editProfile);
+userRouter.put(
+    "/:email",
+    authenticationHandler,
+    validationHandler([
+        // Param validation
+        param("email").exists().isEmail(),
 
+        // Body validation
+        body("data").isObject().notEmpty(),
+        body("data.firstName").optional().isAlpha(),
+        body("data.secondName").optional().isAlpha(),
+
+        // Check that the user is not trying to change the email or the password
+        body("data.password").not().exists(),
+        body("data.email").not().exists(),
+    ]),
+    editProfile);
 userRouter.put("/", authenticationHandler, editProfile);
 
 /**
@@ -104,13 +130,21 @@ userRouter.put("/", authenticationHandler, editProfile);
  *          responses:
  *              '200':
  *                  description: Request accepted successfully.
+ *              '400':
+ *                  description: Bad request
  *              '429':
  *                  description: Limit of requests reached for this endpoint.
  *              '500':
  *                  description: Generic server error
  *
  */
-userRouter.delete("/:email", authenticationHandler, deleteProfile);
+userRouter.delete(
+    "/:email",
+    authenticationHandler,
+    validationHandler([
+        param("email").exists().isEmail()
+    ]),
+    deleteProfile);
 
 userRouter.delete("/", authenticationHandler, deleteProfile);
 
@@ -143,12 +177,22 @@ userRouter.delete("/", authenticationHandler, deleteProfile);
  *          responses:
  *              '201':
  *                  description: The new user is created.
+*               '400':
+ *                  description: Bad request
  *              '429':
  *                  description: Limit of requests reached for this endpoint.
  *              '500':
  *                  description: Generic server error
  *
  */
-userRouter.post("/", createUser);
+userRouter.post(
+    "/",
+    validationHandler([
+        body("email").exists().isEmail(),
+        body("password").exists().isStrongPassword(),
+        body("firstName").exists().isAlpha(),
+        body("secondName").exists().isAlpha(),
+    ]),
+    createUser);
 
 export default userRouter;
