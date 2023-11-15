@@ -8,7 +8,7 @@ import {
 import {apiLimiter, ApiLimiterEntry} from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
 import {authenticationHandler} from "../middleware/authentication.middleware";
-import {validationHandler} from "../middleware/validation.middleware";
+import {validationHandler} from "core-components";
 import {body, param} from "express-validator";
 
 const electionInfoRouter = Router();

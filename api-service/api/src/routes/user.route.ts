@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createUser, getProfile, editProfile, deleteProfile } from "../controllers/users";
 import { authenticationHandler } from "../middleware/authentication.middleware";
-import { validationHandler } from "../middleware/validation.middleware";
+import { validationHandler } from "core-components";
 import {body, param} from "express-validator";
 import {ApiLimiterEntry,apiLimiter} from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";

@@ -3,7 +3,7 @@ import {generateCodeFor, invalidate, isValid, verifyCodeOwner} from "../controll
 import RedisLimiterStorage from "../configs/redis.config";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
 import {authenticationHandler} from "../middleware/authentication.middleware";
-import {validationHandler} from "../middleware/validation.middleware";
+import {validationHandler} from "core-components"
 import {body} from "express-validator";
 
 const codesRoute =  Router();

@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from 'express';
 import { validationResult, ValidationChain } from 'express-validator';
-import {BadRequestError} from "core-components";
+import {BadRequestError} from "../errors/errors";
 
 
 /**

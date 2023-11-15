@@ -3,7 +3,7 @@ import {castVote, createElection, deleteElection, getAllElection, readElection} 
 import RedisLimiterStorage from "../configs/redis.config";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
 import {authenticationHandler} from "../middleware/authentication.middleware";
-import {validationHandler} from "../middleware/validation.middleware";
+import {validationHandler} from "core-components";
 import {body, param} from "express-validator";
 
 const electionRouter = Router();
