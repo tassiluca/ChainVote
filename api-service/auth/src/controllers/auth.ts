@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { User, UnauthorizedError, BadRequestError, NotFoundError } from "core-components"
+import { User, UnauthorizedError, NotFoundError } from "core-components"
 import { Jwt } from "core-components";
 import {StatusCodes} from "http-status-codes";
 
@@ -13,10 +13,6 @@ import {StatusCodes} from "http-status-codes";
 export async function login(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
-
-    if(!email || !password) {
-        return next(new BadRequestError("Please provide email and password"));
-    }
 
     try {
         const user = await User.findOne({email: email});
@@ -56,10 +52,6 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
 
     const email = req.body.email;
     const refreshToken = req.body.refreshToken;
-
-    if(!email || !refreshToken) {
-        return next(new BadRequestError("Invalid request, please retry"));
-    }
 
     const user = await User.findOne({email: email});
     if(user === null || user === undefined) {

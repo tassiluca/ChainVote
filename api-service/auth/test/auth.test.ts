@@ -65,7 +65,7 @@ describe("POST /auth/login", () => {
 
         expect(response.body.code).toBe(StatusCodes.BAD_REQUEST);
         expect(response.body.error.name).toBe("Bad Request");
-        expect(response.body.error.message).toBe("Please provide email and password");
+        expect(response.body.error.message).toBe("Some validation errors occurred on the request.");
 
         const response2 = await request(app).post("/auth/login")
             .send({
@@ -77,7 +77,7 @@ describe("POST /auth/login", () => {
 
         expect(response2.body.code).toBe(StatusCodes.BAD_REQUEST);
         expect(response2.body.error.name).toBe("Bad Request");
-        expect(response2.body.error.message).toBe("Please provide email and password");
+        expect(response2.body.error.message).toBe("Some validation errors occurred on the request.");
     });
 });
 
@@ -126,7 +126,7 @@ describe("POST /auth/refresh", () => {
         const response = await request(app).post("/auth/refresh")
             .send({
                 email: user.email,
-                refreshToken: "wrong.token"
+                refreshToken: jwtDefault.accessToken + "wrong"
             })
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
