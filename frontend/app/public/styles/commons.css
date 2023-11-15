@@ -2,7 +2,7 @@ html {
     margin: 1%;
 }
 
-nav .hidden {
+.hidden {
     display: none;
 }
 
