@@ -32,7 +32,6 @@ export {
     defaultErrorHandler
 } from "./middleware/error.middleware";
 
-
 export {
     apiLimiter
 } from "./middleware/limiter.middleware";
@@ -41,6 +40,9 @@ export {
     defaultResponseHandler
 } from "./middleware/response.middleware";
 
+export {
+    validationHandler
+} from "./middleware/validation.middleware";
 
 /**
  * Exporting intefaces

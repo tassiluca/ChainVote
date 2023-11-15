@@ -8,6 +8,8 @@ import {
 import {apiLimiter, ApiLimiterEntry} from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
 import {authenticationHandler} from "../middleware/authentication.middleware";
+import {validationHandler} from "core-components";
+import {body, param} from "express-validator";
 
 const electionInfoRouter = Router();
 
@@ -80,7 +82,13 @@ electionInfoRouter.get("/all", authenticationHandler, getAllElectionInfo);
  *                  description: Generic server error
  *
  */
-electionInfoRouter.get("/detail/:electionId",   authenticationHandler, readElectionInfo);
+electionInfoRouter.get(
+    "/detail/:electionId",
+    authenticationHandler,
+    validationHandler([
+        param("electionId").exists().isAlphanumeric()
+    ]),
+    readElectionInfo);
 
 /**
  * @openapi
@@ -120,7 +128,17 @@ electionInfoRouter.get("/detail/:electionId",   authenticationHandler, readElect
  *                  description: Generic server error
  *
  */
-electionInfoRouter.post("/", authenticationHandler, createElectionInfo);
+electionInfoRouter.post(
+    "/",
+    authenticationHandler,
+    validationHandler([
+        body("goal").exists().isString(),
+        body("voters").exists().isNumeric(),
+        body("startDate").exists().isISO8601(),
+        body("endDate").exists().isISO8601(),
+        body("choices").exists().isArray()
+    ]),
+    createElectionInfo);
 
 /**
  * @openapi
@@ -148,6 +166,12 @@ electionInfoRouter.post("/", authenticationHandler, createElectionInfo);
  *                  description: Generic server error
  *
  */
-electionInfoRouter.delete("/", authenticationHandler, deleteElectionInfo);
+electionInfoRouter.delete(
+    "/",
+    authenticationHandler,
+    validationHandler([
+        body("electionId").exists().isAlphanumeric()
+    ]),
+    deleteElectionInfo);
 
 export default electionInfoRouter;

@@ -3,6 +3,8 @@ import {generateCodeFor, invalidate, isValid, verifyCodeOwner} from "../controll
 import RedisLimiterStorage from "../configs/redis.config";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
 import {authenticationHandler} from "../middleware/authentication.middleware";
+import {validationHandler} from "core-components"
+import {body} from "express-validator";
 
 const codesRoute =  Router();
 
@@ -58,9 +60,6 @@ codesRoute.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *                              electionId:
  *                                  type: string
  *                                  description: The id of a valid election.
- *                              code:
- *                                  type: string
- *                                  description: The voting code for an election.
  *
  *          responses:
  *              '201':
@@ -71,7 +70,14 @@ codesRoute.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *                  description: Generic server error
  *
  */
-codesRoute.post("/generate", authenticationHandler, generateCodeFor);
+codesRoute.post(
+    "/generate",
+    authenticationHandler,
+    validationHandler([
+        body("userId").exists().isAlphanumeric(),
+        body("electionId").exists().isNumeric(),
+    ]),
+    generateCodeFor);
 
 /**
  * @openapi
@@ -105,7 +111,16 @@ codesRoute.post("/generate", authenticationHandler, generateCodeFor);
  *                  description: Generic server error
  *
  */
-codesRoute.post("/check", authenticationHandler, isValid);
+codesRoute.post(
+    "/check",
+    authenticationHandler,
+    validationHandler([
+        body("userId").exists().isAlphanumeric(),
+        body("electionId").exists().isNumeric(),
+        body("code").exists().isAlphanumeric()
+    ]),
+    isValid
+);
 
 /**
  * @openapi
@@ -139,7 +154,14 @@ codesRoute.post("/check", authenticationHandler, isValid);
  *                  description: Generic server error
  *
  */
-codesRoute.post("/verify-owner", authenticationHandler, verifyCodeOwner);
+codesRoute.post("/verify-owner",
+    authenticationHandler,
+    validationHandler([
+        body("userId").exists().isAlphanumeric(),
+        body("electionId").exists().isNumeric(),
+        body("code").exists().isAlphanumeric()
+    ]),
+    verifyCodeOwner);
 
 /**
  * @openapi
@@ -173,6 +195,14 @@ codesRoute.post("/verify-owner", authenticationHandler, verifyCodeOwner);
  *                  description: Generic server error
  *
  */
-codesRoute.patch("/invalidate", authenticationHandler, invalidate);
+codesRoute.patch(
+    "/invalidate",
+    authenticationHandler,
+    validationHandler([
+        body("userId").exists().isAlphanumeric(),
+        body("electionId").exists().isNumeric(),
+        body("code").exists().isAlphanumeric()
+    ]),
+    invalidate);
 
 export default codesRoute;
