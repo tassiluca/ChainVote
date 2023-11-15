@@ -24,10 +24,20 @@
                         <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" onkeyup="clearPassword(); checkRepeatedPassword();" required>
                         <label for="inputRepeatPassword" class="sr-only">Repeat Password</label>
                         <input type="password" id="inputRepeatPassword" class="form-control" placeholder="Repeat Password" onkeyup="checkRepeatedPassword();" required>
+                        <label for="inputRole" class="sr-only">Repeat Password</label>
+                        <select id="inputRole"  name="role" class="custom-select">
+                            <option selected value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
                         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
                         <div class="text-center mx-auto credentials-route">
                             <p>
                                 Already subscribed? <a class="navbar-brand" href="/sign-in">Log in here</a>
+                            </p>
+                        </div>
+                        <div class="text-center mx-auto credentials-route hidden" id="div-error-sign-up">
+                            <p class="error" id="error-sign-up">
+                                Something went wrong with sign up, try again.
                             </p>
                         </div>
                     </form>

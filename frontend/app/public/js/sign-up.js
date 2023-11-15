@@ -6,6 +6,7 @@ $(document).ready(() => {
     const email = document.querySelector('#inputEmail');
     const password = document.querySelector('#inputPassword');
     const repeatPassword = document.querySelector('#inputRepeatPassword');
+    const role = document.querySelector('#inputRole');
 
     function goPreviousWindow() {
         window.history.back();
@@ -36,9 +37,25 @@ $(document).ready(() => {
         event.preventDefault();
         validateForm();
         if (isFormValid()) {
-
-            form.submit();
-            
+            $.ajax({
+                url: 'http://localhost:3000/users', // + process.env.SIGN_UP_URL,
+                type: "POST",
+                data: {
+                    'name': name.value,
+                    'surname': surname.value,
+                    'email': email.value,
+                    'password': password.value,
+                    'role': role.value
+                },
+                success: function(msg) {
+                    hide(document.querySelector("#div-error-sign-up"));
+                    window.location = 'http://localhost:3000/'
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest + " " + textStatus + " " + errorThrown);
+                    show(document.querySelector("#div-error-sign-up"));
+                }
+            });
         }
     })
 
@@ -74,6 +91,12 @@ $(document).ready(() => {
     }
     function setSuccess(element) {
         element.classList.remove('error');
+    }
+    function hide(element) {
+        element.classList.add('hidden');
+    }
+    function show(element) {
+        element.classList.remove('hidden');
     }
     function isEmailValid(value) {
         const reg = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;

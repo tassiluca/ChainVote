@@ -1,7 +1,5 @@
 const axiosRequest = require('./utils');
-
-const redirectUrlSignUp = "http://localhost:8080/users/"
-const redirectUrlSignIn = "http://localhost:8180/auth/login/"
+require('dotenv').config()
 
 const getSignUp = async (req, res) => {
     try {
@@ -15,23 +13,35 @@ const postSignUp = async (req, res) => {
     try {
         console.log("Sign up post request")
         if (req.body.name && req.body.surname &&
-             req.body.email && req.body.password) {
-            console.log(req.body);
-            const {name, surname, email, password} = req.body
-            const response = await axiosRequest('POST', redirectUrlSignUp, {name: name, surname: surname, email: email, password: password});
-            if (response.err) {
-                res.status(400).json({message: response.err})
-            } else {
-                res.status(200).json({
+             req.body.email && req.body.password && req.body.role) {
+            const {name, surname, email, password, role} = req.body;
+            const response = {success: true, body: {
+                    code: 200,
+                    data: "data-test"
+                }}
+                /*
+                await axiosRequest('POST', process.env.SIGN_UP_URL, {
+                name: name, surname: surname, email: email, password: password, role: role
+            });
+            */
+            if (response.success) {
+                res.status(response.body.code).json({
                     message: "User successfully created.",
-                    data: response.data
+                    data: response.body.data
+                })
+            } else {
+                res.status(response.body.code).json({
+                    name: response.body.error.name,
+                    message: response.body.error.message
                 })
             }
         } else {
             res.status(403).json({message: "Bad credentials"})
         }
-    } catch (e) {
-        res.status(500).end();
+    } catch (error) {
+        res.status(500).json(
+            {message: error}
+        );
     }
 };
 
@@ -47,24 +57,36 @@ const getSignIn = async (req, res) => {
 const postSignIn = async (req, res) => {
     try {
         console.log("Sign in post request")
-        console.log(req.session)
-        if (req.session.authenticated) {
-            console.log(req.session)
-            res.json(req.session)
-        } else if (req.body.email && req.body.password) {
+        console.log(req.body)
+        if (req.body.email && req.body.password) {
             const {email, password} = req.body
-            const response = await axiosRequest('POST', redirectUrlSignIn, {email: email, password: password});
+            const response = {success: false, data: {
+                    accessToken: "an access token",
+                    refreshToken: "a refresh token"
+                }, body: {code: 400, error: {name: 'an error', message: "an error message"}}}
+                /*
+                await axiosRequest('POST', process.env.SIGN_IN_URL, {email: email, password: password});
             console.log(response)
-            if (response.err) {
-                res.status(403).json({
-                    message: response.err + ". Bad credentials."
+
+                 */
+            if (response.success) {
+                if (req.session && req.session.accessToken) {
+                    console.log('Destroying session...')
+                    req.session.destroy((err) => {
+                        if (err) {
+                            console.error('Error destroying session:', err);
+                        }
+                    });
+                }
+                req.session.accessToken = response.data.accessToken
+                req.session.refreshToken = response.data.refreshToken
+                res.status(response.body.code).json({
+                    message: "User successfully logged in."
                 })
             } else {
-                req.session.authenticated = true;
-                req.session.jwt = response.bearer
-                res.status(200).json({
-                    message: "User successfully logged in.",
-                    session: req.session
+                res.status(response.body.code).json({
+                    name: response.body.error.name,
+                    message: response.body.error.message
                 })
             }
         } else {
@@ -72,8 +94,10 @@ const postSignIn = async (req, res) => {
                 message: "Bad credentials."
             })
         }
-    } catch (e) {
-        res.status(500).end();
+    } catch (error) {
+        res.status(500).json(
+            {message: error}
+        );
     }
 };
 

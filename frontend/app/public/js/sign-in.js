@@ -11,23 +11,26 @@ $(document).ready(() => {
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-        if (isFormValid()) {
-            unsetWrong(errordiv)
-            form.submit();
-        } else {
-            setWrong(errordiv);
-        }
+        $.ajax({
+            url: "http://localhost:3000/sign-in", // + process.env.SIGN_IN_URL,
+            type: "POST",
+            data: {
+                'email': email.value,
+                'password': password.value
+            },
+            success: function(msg) {
+                hide(document.querySelector("#div-error-sign-in"))
+                window.location = 'http://localhost:3000/'
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                show(document.querySelector("#div-error-sign-in"))
+            }
+        });
     })
-
-    function isFormValid() {
-        return false;
-    }
-
-    function setWrong(element) {
-        element.classList.remove('hidden');
-    }
-
-    function unsetWrong(element) {
+    function hide(element) {
         element.classList.add('hidden');
+    }
+    function show(element) {
+        element.classList.remove('hidden');
     }
 });

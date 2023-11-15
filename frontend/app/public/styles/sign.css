@@ -6,6 +6,10 @@ main input {
     margin: 10px 0;
 }
 
+main select {
+    margin-bottom: 10px;
+}
+
 .error {
     color: red;
 }
