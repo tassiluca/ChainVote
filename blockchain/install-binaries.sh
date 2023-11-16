@@ -10,7 +10,7 @@ if [[ -d ./bin ]]; then
     exit
 fi;
 
-curl -sSL https://bit.ly/2ysbOFE | bash -s
+curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s
 mv ./fabric-samples/bin ./bin/
 rm -rf ./fabric-samples
 echo "Done. Binaries downloaded into $PWD/bin directory."
