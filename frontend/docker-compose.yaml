@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build: .
+    ports:
+      - 3000:3000
+    networks:
+      - api-service_backend
+
+networks:
+  api-service_backend:
+    external: true

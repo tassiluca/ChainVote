@@ -14,6 +14,7 @@ services:
       - ${ARTIFACTS_DIR}:/tmp/hyperledger
     networks:
       - blockchain_fabric-ca
+      - backend
     links:
       - mongodb
       - redis
@@ -30,6 +31,7 @@ services:
       - PRODUCTION=true
     networks:
       - blockchain_fabric-ca
+      - backend
     links:
       - mongodb
       - redis
@@ -82,3 +84,4 @@ services:
 networks:
   blockchain_fabric-ca:
     external: true
+  backend:
