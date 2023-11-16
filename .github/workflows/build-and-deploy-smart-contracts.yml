@@ -74,4 +74,4 @@ jobs:
       - name: Up network and test deploy smart contracts
         run: |
           cd smart-contracts
-          sudo ./gradlew upAndDeploy
+          sudo ./gradlew upAndDeploy --stacktrace
