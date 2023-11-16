@@ -1,4 +1,2 @@
 FROM hyperledger/fabric-ca:1.5.7
-RUN groupadd -r ca && useradd -r -g ca ca
 RUN apt update && apt upgrade -y; apt install curl -y; apt install jq -y
-USER ca
