@@ -60,29 +60,28 @@ const postSignIn = async (req, res) => {
         console.log(req.body)
         if (req.body.email && req.body.password) {
             const {email, password} = req.body
-            const response = {success: false, data: {
+            const response = {success: true, data: {
                     accessToken: "an access token",
                     refreshToken: "a refresh token"
-                }, body: {code: 400, error: {name: 'an error', message: "an error message"}}}
+                }, body: {code: 200, error: {name: 'an error', message: "an error message"}}}
                 /*
                 await axiosRequest('POST', process.env.SIGN_IN_URL, {email: email, password: password});
             console.log(response)
-
                  */
             if (response.success) {
+                const redirectUrl = '/';
                 if (req.session && req.session.accessToken) {
                     console.log('Destroying session...')
                     req.session.destroy((err) => {
                         if (err) {
-                            console.error('Error destroying session:', err);
+                            console.error('Error destroying session: ', err);
                         }
                     });
                 }
                 req.session.accessToken = response.data.accessToken
                 req.session.refreshToken = response.data.refreshToken
-                res.status(response.body.code).json({
-                    message: "User successfully logged in."
-                })
+
+                res.redirect(response.body.code, redirectUrl);
             } else {
                 res.status(response.body.code).json({
                     name: response.body.error.name,
