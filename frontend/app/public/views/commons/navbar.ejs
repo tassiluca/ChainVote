@@ -11,12 +11,21 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
+            <% if (typeof responseData === 'undefined' || !responseData.logged) { %>
             <li>
                 <a href="../sign-up" class="nav-link"><i class="fas fa-user"></i> Sign Up</a>
             </li>
             <li>
                 <a href="../sign-in" class="nav-link"><i class="fas fa-sign-in-alt"></i> Login</a>
             </li>
+            <% } else { %>
+            <li>
+                <a href="../private-area" class="nav-link"><i class="bi bi-person-bounding-box"></i> Local area</a>
+            </li>
+            <li>
+                <a href="/" class="nav-link"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </li>
+            <% } %>
         </ul>
     </div>
 </nav>

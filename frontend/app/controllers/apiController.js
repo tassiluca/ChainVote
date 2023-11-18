@@ -8,7 +8,7 @@ const urlBackendAPI = process.env.API_URL || "http://localhost:8080/"
 const urlAuthAPI = process.env.AUTH_URL || "http://localhost:8081/"
 
 
-const getAllElections = async (req, res) => {
+const getAllElections = async (req, res, next) => {
     try {
         const allElectionsUrl = `http://api-server:8080/election/info/all`;
         const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, token);
@@ -18,14 +18,15 @@ const getAllElections = async (req, res) => {
             entry.open = new Date(`${entry.endDate}Z`) > Date.now();
         }
 
-    
-        res.render('dashboard', { electionsData });
+        res.locals.data = electionsData;
+        res.locals.view = 'dashboard';
     } catch (error) {
-        res.render('not-found');
+        res.locals.view = 'not-found';
     }
+    next();
 };
 
-const getElection = async (req, res) => {
+const getElection = async (req, res, next) => {
     try {
         const electionId = req.params.electionId;
         const electionDetailsUrl = `http://api-server:8080/election/detail/${electionId}`;
@@ -34,29 +35,18 @@ const getElection = async (req, res) => {
         const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, token);
         const electionData = reformatDates(electionDetailsResponse.data);
         electionData.choices = electionInfoResponse.data.choices;
-        res.render('election-info', { electionData });
+
+        res.locals.data = electionData;
+        res.locals.view = 'election-info';
     } catch (error) {
-        res.render('not-found');
+        res.locals.view = 'not-found';
     }
+    next();
 };
 
-const castVote = async (req, res) => {
+const getCastVote = async (req, res, next) => {
     try {
         const electionId = req.params.electionId;
-        if(req.method === 'POST') {
-           const data = {
-                code: req.body.code,
-                userId: req.body.userId,
-                choice: req.body.choice
-            }
-            console.log(data);
-            const voteUrl = `http://api-server:8080/election/vote/${electionId}`;
-            const voteResponse = await axiosRequest('PUT', voteUrl, data, token);
-            return res.send({
-                success: voteResponse.success,
-            });
-        }
-
         const electionDetailsUrl = `http://api-server:8080/election/detail/${electionId}`;
         const electionInfoDetailsUrl = `http://api-server:8080/election/info/detail/${electionId}`;
         const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, token);
@@ -66,12 +56,28 @@ const castVote = async (req, res) => {
         electionData.choices = electionInfoResponse.data.choices;
         electionData.electionId = electionId;
         electionData.goal = electionInfoResponse.data.goal;
-        res.render('cast-vote', {electionData});
+
+        res.locals.view = 'cast-vote';
+        res.locals.data = electionData;
     } catch (error) {
-        res.render('not-found');
+        res.locals.view = 'not-found';
     }
+    next();
 }
 
+
+const postCastVote = async (req, res) => {
+    const data = {
+        code: req.body.code,
+        userId: req.body.userId,
+        choice: req.body.choice
+    }
+    const voteUrl = `http://api-server:8080/election/vote/${electionId}`;
+    const voteResponse = await axiosRequest('PUT', voteUrl, data, token);
+    return res.send({
+        success: voteResponse.success,
+    });
+}
 
 const createElectionCode = async (req, res) => {
     const electionId = req.body.electionId;
@@ -115,6 +121,7 @@ function formatDate(date) {
 module.exports = {
     getAllElections,
     getElection,
-    castVote,
-    createElectionCode
+    getCastVote,
+    createElectionCode,
+    postCastVote
 }

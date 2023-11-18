@@ -1,12 +1,9 @@
 const axiosRequest = require('./utils');
 require('dotenv').config()
 
-const getSignUp = async (req, res) => {
-    try {
-        res.render('sign-up');
-    } catch (error) {
-        res.render('not-found');
-    }
+const getSignUp = async (req, res, next) => {
+    res.locals.view = 'sign-up';
+    next();
 };
 
 const postSignUp = async (req, res) => {
@@ -18,6 +15,7 @@ const postSignUp = async (req, res) => {
             const response = await axiosRequest('POST', process.env.SIGN_UP_URL, {
                 name: name, surname: surname, email: email, password: password, role: role
             })
+
             if (response.success) {
                 const redirectUrl = '/';
                 res.status(response.body.code).json({
@@ -42,13 +40,9 @@ const postSignUp = async (req, res) => {
     }
 };
 
-const getSignIn = async (req, res) => {
-    try {
-        console.log("Sign in get request")
-        res.render('sign-in');
-    } catch (error) {
-        res.render('not-found');
-    }
+const getSignIn = async (req, res, next) => {
+    res.locals.view = 'sign-in';
+    next();
 };
 
 const postSignIn = async (req, res) => {
@@ -99,27 +93,10 @@ const postSignIn = async (req, res) => {
     }
 };
 
-const getForgotCredentials = async (req, res) => {
-    try {
-        console.log("forgot credentials get request")
-        res.render('forgot-credentials');
-    } catch (error) {
-        res.render('not-found');
-    }
-};
-
-const postForgotCredentials = async (req, res) => {
-    try {
-        console.log("forgot credentials post request")
-    } catch (error) {
-    }
-};
 
 module.exports = {
     getSignIn,
     postSignIn,
     getSignUp,
     postSignUp,
-    getForgotCredentials,
-    postForgotCredentials
 }
