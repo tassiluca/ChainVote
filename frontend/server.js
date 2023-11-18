@@ -4,6 +4,10 @@ const port = 3000;
 const apiRoutes = require("./app/routes/api");
 const session = require('express-session');
 const store = new session.MemoryStore();
+const bodyParser = require('body-parser');
+
+const axios = require('axios');
+const SERVER_URL = 'http://localhost:3000';
 
 app.use(session({
     secret: 'my-secret-key',
@@ -15,6 +19,8 @@ app.use(session({
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(bodyParser.json());
+
 app.use("/", apiRoutes);
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/app/public/views');

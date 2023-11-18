@@ -6,6 +6,9 @@ const responseMiddleware = require("../controllers/responseMiddleware");
 
 router.get('/elections', apiController.getAllElections, responseMiddleware);
 router.get('/elections/:electionId', apiController.getElection, responseMiddleware);
+router.get('/elections/:id', apiController.getElection);
+router.use('/elections/vote/:electionId', apiController.castVote);
+router.post('/elections/code', apiController.createElectionCode);
 router.get('/sign-in', userController.getSignIn, responseMiddleware);
 router.post('/sign-in', userController.postSignIn, responseMiddleware);
 router.get('/sign-up', userController.getSignUp, responseMiddleware);

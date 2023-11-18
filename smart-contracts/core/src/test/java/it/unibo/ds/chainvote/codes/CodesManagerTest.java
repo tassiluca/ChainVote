@@ -12,11 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CodeManagerTest {
+class CodesManagerTest {
 
     private static final String ELECTION_ID = "test-election";
     private static final String USER_ID = "mrossi";
-    private final CodeManager<Void> localManager = new CodeManagerImpl<>(new CodeRepository<>() {
+    private final CodesManager<Void> localManager = new CodesManagerImpl<>(new CodesRepository<>() {
 
         private final Map<String, Map<String, OneTimeCode>> codes = new HashMap<>();
 

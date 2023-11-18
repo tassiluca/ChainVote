@@ -1,8 +1,9 @@
 import { Router } from "express";
 import {login, refreshToken} from "../controllers/auth";
-import { apiLimiter } from "core-components";
+import {apiLimiter, validationHandler} from "core-components";
 import { ApiLimiterEntry } from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
+import {body} from "express-validator";
 
 
 const API_LIMITER_RULES: ApiLimiterEntry = {
@@ -60,7 +61,14 @@ authRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *              '500':
  *                  description: Generic server error
  */
-authRouter.post("/login", login);
+authRouter.post(
+    "/login",
+    validationHandler([
+        body("email").exists().isEmail(),
+        body("password").exists().isString()
+    ]),
+    login
+);
 
 /**
  * @openapi
@@ -95,6 +103,13 @@ authRouter.post("/login", login);
  *              '500':
  *                  description: Generic server error
  */
-authRouter.post("/refresh", refreshToken);
+authRouter.post(
+    "/refresh",
+    validationHandler([
+        body("email").exists().isEmail(),
+        body("refreshToken").exists().isJWT()
+    ]),
+    refreshToken
+);
 
 export default authRouter;

@@ -1,11 +1,17 @@
 package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.SerializersUtils;
-import it.unibo.ds.chainvote.codes.*;
 import it.unibo.ds.chainvote.TransientUtils;
 import it.unibo.ds.chainvote.assets.OneTimeCodeAsset;
+import it.unibo.ds.chainvote.codes.AlreadyGeneratedCodeException;
+import it.unibo.ds.chainvote.codes.CodesManager;
+import it.unibo.ds.chainvote.codes.CodesManagerImpl;
+import it.unibo.ds.chainvote.codes.CodesRepository;
+import it.unibo.ds.chainvote.codes.HashGenerator;
+import it.unibo.ds.chainvote.codes.IncorrectCodeException;
+import it.unibo.ds.chainvote.codes.InvalidCodeException;
+import it.unibo.ds.chainvote.codes.OneTimeCode;
 import it.unibo.ds.chainvote.utils.UserCodeData;
 import it.unibo.ds.chainvote.utils.Pair;
 import org.hyperledger.fabric.contract.Context;
@@ -40,7 +46,7 @@ import static it.unibo.ds.chainvote.utils.UserCodeData.USER_ID;
 public final class CodesManagerContract implements ContractInterface {
 
     static final String CODES_COLLECTION = "CodesCollection";
-    private final CodeManager<Context> codeManager = new CodeManagerImpl<>(new LedgerRepository(), new HashGenerator());
+    private final CodesManager<Context> codesManager = new CodesManagerImpl<>(new LedgerRepository(), new HashGenerator());
     private final ElectionContract electionContract = new ElectionContract();
     private enum Error {
         INCORRECT_INPUT,
@@ -69,7 +75,7 @@ public final class CodesManagerContract implements ContractInterface {
             throw new ChaincodeException("The given election doesn't exists", Error.INCORRECT_INPUT.toString());
         }
         try {
-            return codeManager.generateCodeFor(context, electionId, userId, seed + userId).getCode();
+            return codesManager.generateCodeFor(context, electionId, userId, seed + userId).getCode();
         } catch (AlreadyGeneratedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
         }
@@ -85,7 +91,7 @@ public final class CodesManagerContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean isValid(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
-        return codeManager.isValid(context, electionId, codeUserPair.first(), codeUserPair.second());
+        return codesManager.isValid(context, electionId, codeUserPair.first(), codeUserPair.second());
     }
 
     /**
@@ -105,7 +111,7 @@ public final class CodesManagerContract implements ContractInterface {
     public boolean invalidate(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
         try {
-            codeManager.invalidate(context, electionId, codeUserPair.first(), codeUserPair.second());
+            codesManager.invalidate(context, electionId, codeUserPair.first(), codeUserPair.second());
             return true;
         } catch (InvalidCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_INVALIDATED_CODE.toString());
@@ -124,10 +130,10 @@ public final class CodesManagerContract implements ContractInterface {
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public boolean verifyCodeOwner(final Context context, final String electionId) {
         final Pair<String, String> codeUserPair = UserCodeData.getUserCodePairFrom(context.getStub().getTransient());
-        return codeManager.verifyCodeOwner(context, electionId, codeUserPair.first(), codeUserPair.second());
+        return codesManager.verifyCodeOwner(context, electionId, codeUserPair.first(), codeUserPair.second());
     }
 
-    private static class LedgerRepository implements CodeRepository<Context> {
+    private static final class LedgerRepository implements CodesRepository<Context> {
 
         private final Genson genson = SerializersUtils.gensonInstance();
 

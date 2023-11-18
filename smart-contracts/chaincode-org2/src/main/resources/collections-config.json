@@ -2,11 +2,11 @@
   {
     "name": "CodesCollection",
     "policy": "OR('org2MSP.peer', 'org2MSP.admin')",
-    "requiredPeerCount": 0,
+    "requiredPeerCount": 1,
     "maxPeerCount": 1,
-    "blockToLive":0,
+    "blockToLive": 0,
     "memberOnlyRead": true,
-    "memberOnlyWrite": false,
+    "memberOnlyWrite": true,
     "endorsementPolicy": {
       "signaturePolicy": "OR('org2MSP.peer')"
     }

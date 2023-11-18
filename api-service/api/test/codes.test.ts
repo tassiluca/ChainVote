@@ -51,12 +51,14 @@ describe("POST /code/", () => {
 
     test("Can create a new code", async () => {
         const electionId = await createElection(app, adminJwtToken.accessToken);
-        createCodeForElection(app, user.id, electionId, userJwtToken.accessToken);
+        await createCodeForElection(app, user.id, electionId, userJwtToken.accessToken);
     }, MAX_TIMEOUT);
 
     test("Can check if a code is valid", async () => {
         const electionId = await createElection(app, adminJwtToken.accessToken);
         const code = await createCodeForElection(app, user.id, electionId, userJwtToken.accessToken);
+
+        console.log(code, user.id, electionId);
         const response = await request(app).post("/code/check")
             .send({code: code, userId: user.id, electionId: electionId })
             .set("Authorization", `Bearer ${userJwtToken.accessToken}`)

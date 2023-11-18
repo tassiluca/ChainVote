@@ -5,7 +5,7 @@ package it.unibo.ds.chainvote.codes;
  * to generate, (in)validate and verify one-time-codes.
  * @param <C> the type of the context.
  */
-public interface CodeManager<C> {
+public interface CodesManager<C> {
 
     /**
      * Generates a new {@link OneTimeCode} for the given election.

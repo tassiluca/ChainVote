@@ -6,10 +6,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 
 /**
- * An implementation of {@link CodeGeneratorStrategy} that uses a hash function.
+ * An implementation of {@link CodesGeneratorStrategy} that uses a hash function.
  * In order to be used an initial argument must be provided.
  */
-public final class HashGenerator implements CodeGeneratorStrategy {
+public final class HashGenerator implements CodesGeneratorStrategy {
 
     private static final int CODE_LENGTH = 10;
 

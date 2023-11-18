@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * An {@link ElectionFacade} implementation.
  */
-public class ElectionFacadeImpl implements ElectionFacade {
+public final class ElectionFacadeImpl implements ElectionFacade {
 
     private final ElectionStatus status;
     private final String id;
@@ -22,7 +22,12 @@ public class ElectionFacadeImpl implements ElectionFacade {
     private final double affluence;
     private final Map<String, Long> results;
 
-    public ElectionFacadeImpl(Election election, ElectionInfo info) {
+    /**
+     * Creates a new {@link ElectionFacade} instance.
+     * @param election the {@link Election} instance.
+     * @param info the {@link ElectionInfo} instance.
+     */
+    public ElectionFacadeImpl(final Election election, final ElectionInfo info) {
         this.status = info.isOpen() ? ElectionStatus.OPEN : ElectionStatus.CLOSED;
         this.id = Utils.calculateID(info);
         this.goal = info.getGoal();
@@ -68,11 +73,16 @@ public class ElectionFacadeImpl implements ElectionFacade {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ElectionFacadeImpl that = (ElectionFacadeImpl) o;
-        return Double.compare(that.affluence, affluence) == 0 && status == that.status && Objects.equals(id, that.id) && Objects.equals(goal, that.goal) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(results, that.results);
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final ElectionFacadeImpl that = (ElectionFacadeImpl) o;
+        return Double.compare(that.affluence, affluence) == 0 && status == that.status && Objects.equals(id, that.id)
+            && Objects.equals(goal, that.goal) && Objects.equals(startDate, that.startDate)
+            && Objects.equals(endDate, that.endDate) && Objects.equals(results, that.results);
     }
 
     @Override
