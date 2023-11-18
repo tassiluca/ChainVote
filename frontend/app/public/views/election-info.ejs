@@ -8,20 +8,20 @@
         <%- include('commons/navbar') %>
         <main>
             <div class="row justify-content-center">
-                <h1 id="electionName"><%= electionData.goal %></h1>
+                <h1 id="electionName"><%= responseData.data.goal %></h1>
             </div>
             <div class="row" id="content">
                 <div class="col-md-5 center mx-auto">
-                    <p><strong>Start date: </strong><%= electionData.formattedStartDate %></p>
-                    <p><strong>End date: </strong><%= electionData.formattedEndDate %></p>
+                    <p><strong>Start date: </strong><%= responseData.data.formattedStartDate %></p>
+                    <p><strong>End date: </strong><%= responseData.data.formattedEndDate %></p>
                     <p><strong>Choices: </strong></p>
                     <ul>
-                        <% electionData.choices.forEach(function(entry) { %>
+                        <% responseData.data.choices.forEach(function(entry) { %>
                             <li><%= entry.choice %></li>
                         <% }) %>
                     </ul>
-                    <p><strong>Affluence: </strong> <%= electionData.affluence %></p>
-                    <% if (Object.keys(electionData.results).length === 0) { %>
+                    <p><strong>Affluence: </strong> <%= responseData.data.affluence %></p>
+                    <% if (Object.keys(responseData.data.results).length === 0) { %>
                         <p><strong>This election is still open. Therefore results are not available, yet.</strong></p>
                     <% } else { %>
                         <p><strong>Results: </strong></p>
@@ -30,7 +30,7 @@
                             <th>Option</th>
                             <th>N° votes</th>
                             </tr>
-                            <% Object.entries(electionData.results).forEach(([option, count]) => { %>
+                            <% Object.entries(responseData.data.results).forEach(([option, count]) => { %>
                             <tr>
                                 <td><%= option %></td>
                                 <td><%= count %></td>

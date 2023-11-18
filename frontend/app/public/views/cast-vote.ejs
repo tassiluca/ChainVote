@@ -8,11 +8,11 @@
         <%- include('commons/navbar') %>
         <main>
             <div class="row justify-content-center">
-                <h1 id="electionName">Election <%- electionData.electionId %></h1>
+                <h1 id="electionName">Election <%- responseData.data.electionId %></h1>
             </div>
             <div class="row" id="content">
                 <div class="col-md-5 center mx-auto">
-                    <h2 id="question">Goal: <%- electionData.goal %></h2>
+                    <h2 id="question">Goal: <%- responseData.data.goal %></h2>
                     <div class="container mt-5">
                         <div class="row">
                             <!-- First Column -->
@@ -25,7 +25,7 @@
                                         </div>
                                         <input type="text" class="form-control" name="user-id" id="voteCodeForm-id" placeholder="userid">
                                     </div>
-                                    <input type="hidden" name="election-id" value="<%- electionData.electionId %>" />
+                                    <input type="hidden" name="election-id" value="<%- responseData.data.electionId %>" />
                                     <button type="submit" class="btn btn-primary">Request Code</button>
                                 </form>
                             </div>
@@ -46,7 +46,7 @@
                                         </div>
                                         <input type="text" class="form-control" name="user-id" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                                     </div>
-                                    <% electionData.choices.forEach(function(entry) { %>
+                                    <% responseData.data.choices.forEach(function(entry) { %>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="choiceRadio" id="<%= entry.choice %>-id" value="<%= entry.choice %>" />
                                             <label class="form-check-label" for="choiceRadio"><%= entry.choice %></label>
@@ -112,7 +112,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: 'http://localhost:3000/elections/vote/<%= electionData.electionId %>',
+                    url: 'http://localhost:3000/elections/vote/<%= responseData.data.electionId %>',
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8"
                 }).done(function(response) {

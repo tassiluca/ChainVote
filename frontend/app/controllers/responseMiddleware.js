@@ -20,7 +20,7 @@ const responseMiddleware = (req, res, next) => {
         responseData.email = req.session.email
     }
 
-    return res.render(view, { dataResponse: responseData });
+    return res.render(view, { responseData: responseData });
 }
 
 module.exports = responseMiddleware;
