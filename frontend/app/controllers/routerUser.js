@@ -15,19 +15,16 @@ const postSignUp = async (req, res) => {
         if (req.body.name && req.body.surname &&
              req.body.email && req.body.password && req.body.role) {
             const {name, surname, email, password, role} = req.body;
-            const response = {success: true, body: {
-                    code: 200,
-                    data: "data-test"
-                }}
-                /*
-                await axiosRequest('POST', process.env.SIGN_UP_URL, {
+            const response = await axiosRequest('POST', process.env.SIGN_UP_URL, {
                 name: name, surname: surname, email: email, password: password, role: role
-            });
-            */
+            })
             if (response.success) {
+                const redirectUrl = '/';
                 res.status(response.body.code).json({
+                    success: true,
                     message: "User successfully created.",
-                    data: response.body.data
+                    data: response.body.data,
+                    url: redirectUrl
                 })
             } else {
                 res.status(response.body.code).json({
@@ -60,28 +57,30 @@ const postSignIn = async (req, res) => {
         console.log(req.body)
         if (req.body.email && req.body.password) {
             const {email, password} = req.body
-            const response = {success: true, data: {
-                    accessToken: "an access token",
-                    refreshToken: "a refresh token"
-                }, body: {code: 200, error: {name: 'an error', message: "an error message"}}}
-                /*
-                await axiosRequest('POST', process.env.SIGN_IN_URL, {email: email, password: password});
+            const response = await axiosRequest('POST', process.env.SIGN_IN_URL, {email: email, password: password});
             console.log(response)
-                 */
             if (response.success) {
                 const redirectUrl = '/';
                 if (req.session && req.session.accessToken) {
-                    console.log('Destroying session...')
-                    req.session.destroy((err) => {
+                    console.log('Regenerating session...')
+                    req.session.regenerate(function(err) {
                         if (err) {
-                            console.error('Error destroying session: ', err);
+                            res.status(500).json(
+                                {message: err}
+                            );
                         }
-                    });
+                    })
                 }
+
                 req.session.accessToken = response.data.accessToken
                 req.session.refreshToken = response.data.refreshToken
+                req.session.email = req.body.email
 
-                res.redirect(response.body.code, redirectUrl);
+                res.status(response.body.code).json({
+                    success: true,
+                    message: "User successfully logged in.",
+                    url: redirectUrl
+                });
             } else {
                 res.status(response.body.code).json({
                     name: response.body.error.name,

@@ -1,63 +1,44 @@
 "use strict";
 $(document).ready(() => {
-    const errordiv = document.getElementById('error-case')
     const form = document.getElementById('login');
     const email = document.getElementById('inputEmail');
     const password = document.getElementById('inputPassword');
 
-    var goPreviousWindow = function() {
+    function goPreviousWindow() {
         window.history.back();
     }
 
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-        try {
-            const response = await fetch('http://localhost:3000/sign-in', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' // Set the content type to JSON
-                },
-                body: {'email': email.value, 'password': password.value} // Add the JSON string to the body
-            });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+        const data = {
+            'email': email.value,
+            'password': password.value,
+        };
 
-            // If the response is JSON, you can parse it
-            const result = await response.json();
-            console.log('Success:', result);
-
-            // If the response contains a redirect, navigate to the redirected URL
-            window.location.href = result.url;
-
-        } catch (error) {
-            console.error('Error:', error.message);
-            // Handle the error
-        }
-
-        /*
         $.ajax({
-            url: 'http://localhost:3000/sign-in', // + process.env.SIGN_UP_URL,
             type: "POST",
-            data: {
-                'email': email.value,
-                'password': password.value
-            },
-            success: function(msg) {
-                console.log(msg)
+            url: 'http://localhost:3000/sign-in',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8"
+        }).done(function(response) {
+            alert(response.message)
+            // console.log('Response: ' + response)
+            if(response.success) {
                 hide(document.querySelector("#div-error-sign-in"))
-                // If the response contains a redirect, navigate to the redirected URL
-                window.location.href = msg.url;
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                console.log(errorThrown);
+                window.location.href = response.url;
+            } else {
+                document.getElementById('error-sign-in').innerHTML = response.message;
                 show(document.querySelector("#div-error-sign-in"));
             }
+        }).fail(function(error) {
+            alert(error.message)
+            // console.log('Error: ' + JSON.stringify(error))
+            document.getElementById('error-sign-in').innerHTML = 'Error ' + error.status + ': ' + error.responseJSON.message;
+            show(document.querySelector("#div-error-sign-in"));
         });
-
-         */
     })
+
     function hide(element) {
         element.classList.add('hidden');
     }

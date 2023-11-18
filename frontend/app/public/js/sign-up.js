@@ -37,24 +37,35 @@ $(document).ready(() => {
         event.preventDefault();
         validateForm();
         if (isFormValid()) {
+
+            const data = {
+                'name': name.value,
+                'surname': surname.value,
+                'email': email.value,
+                'password': password.value,
+                'role': role.value
+            };
+
             $.ajax({
-                url: 'http://localhost:3000/users', // + process.env.SIGN_UP_URL,
                 type: "POST",
-                data: {
-                    'name': name.value,
-                    'surname': surname.value,
-                    'email': email.value,
-                    'password': password.value,
-                    'role': role.value
-                },
-                success: function(msg) {
-                    hide(document.querySelector("#div-error-sign-up"));
-                    window.location = 'http://localhost:3000/'
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    console.log(XMLHttpRequest + " " + textStatus + " " + errorThrown);
+                url: 'http://localhost:3000/sign-up',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8"
+            }).done(function(response) {
+                alert(response.message)
+                // console.log('Response: ' + response)
+                if(response.success) {
+                    hide(document.querySelector("#div-error-sign-up"))
+                    window.location.href = response.url;
+                } else {
+                    document.getElementById('error-sign-up').innerHTML = response.message;
                     show(document.querySelector("#div-error-sign-up"));
                 }
+            }).fail(function(error) {
+                alert(error.message)
+                // console.log('Error: ' + JSON.stringify(error))
+                document.getElementById('error-sign-up').innerHTML = 'Error ' + error.status + ': ' + error.responseJSON.message;
+                show(document.querySelector("#div-error-sign-up"));
             });
         }
     })
