@@ -8,7 +8,6 @@ const urlBackendAPI = process.env.API_URL || "http://localhost:8080/"
 const urlAuthAPI = process.env.AUTH_URL || "http://localhost:8081/"
 
 
-
 const getAllElections = async (req, res) => {
     try {
         const allElectionsUrl = `http://api-server:8080/election/info/all`;
