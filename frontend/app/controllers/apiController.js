@@ -17,7 +17,6 @@ const getAllElections = async (req, res, next) => {
             const entry = reformatDates(electionsData[i]);
             entry.open = new Date(`${entry.endDate}Z`) > Date.now();
         }
-
         res.locals.data = electionsData;
         res.locals.view = 'dashboard';
     } catch (error) {
@@ -35,7 +34,6 @@ const getElection = async (req, res, next) => {
         const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, token);
         const electionData = reformatDates(electionDetailsResponse.data);
         electionData.choices = electionInfoResponse.data.choices;
-
         res.locals.data = electionData;
         res.locals.view = 'election-info';
     } catch (error) {

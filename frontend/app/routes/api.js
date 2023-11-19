@@ -13,6 +13,7 @@ router.get('/sign-in', userController.getSignIn, responseMiddleware);
 router.post('/sign-in', userController.postSignIn);
 router.get('/sign-up', userController.getSignUp, responseMiddleware);
 router.post('/sign-up', userController.postSignUp);
+router.get('/user-area', userController.getUserArea, responseMiddleware);
 
 router.get('/', (req, res) => res.render('index'),  responseMiddleware);
 

@@ -93,10 +93,22 @@ const postSignIn = async (req, res) => {
     }
 };
 
+const getUserArea = async (req, res, next) => {
+    try {
+        const userAreaUrl = `http://localhost:8080/users/${req.session.email}}`;
+        const userData = await axiosRequest('GET', userAreaUrl, null, rq.session.accessToken);
+        res.locals.view = 'user-area';
+        res.locals.data = userData;
+    } catch (error) {
+        res.locals.view = 'sign-in';
+    }
+    next();
+}
 
 module.exports = {
     getSignIn,
     postSignIn,
     getSignUp,
     postSignUp,
+    getUserArea,
 }
