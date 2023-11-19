@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
 
-    const urlToRequest = window.location.href;
+    const urlToSignUp = window.location.origin + '/sign-up';
 
     const form = document.querySelector('#login');
     const name = document.querySelector('#inputName');
@@ -52,7 +52,7 @@ $(document).ready(() => {
 
             $.ajax({
                 type: "POST",
-                url: urlToRequest,
+                url: urlToSignUp,
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function(response) {

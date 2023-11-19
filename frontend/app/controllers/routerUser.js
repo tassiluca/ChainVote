@@ -1,9 +1,15 @@
 const axiosRequest = require('./utils');
 
 const urlBackendAPI = process.env.API_URL || "http://localhost:8080"
+const urlApiServer = process.env.API_SERVER_URL || 'http://api-server:8080'
 const urlLogin = process.env.AUTH_URL || "http://localhost:8180"
 const urlSignIn = urlLogin + "/auth/login"
 const urlSignUp = urlBackendAPI + "/users"
+
+const getDefault = async (req, res, next) => {
+    res.locals.view = 'index';
+    next();
+};
 
 const getSignUp = async (req, res, next) => {
     res.locals.view = 'sign-up';
@@ -53,7 +59,6 @@ const postSignIn = async (req, res) => {
         if (req.body.email && req.body.password) {
             const {email, password} = req.body;
             const response = await axiosRequest('POST', urlSignIn, {email: email, password: password});
-            console.log('Response: ' + JSON.stringify(response));
             if (response.success) {
                 const redirectUrl = '/';
                 if (req.session && req.session.accessToken) {
@@ -87,7 +92,6 @@ const postSignIn = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log('Error: ' + error);
         res.status(500).json(
             {message: error}
         );
@@ -96,7 +100,7 @@ const postSignIn = async (req, res) => {
 
 const getUserArea = async (req, res, next) => {
     try {
-        const userAreaUrl = `http://api-server:8080/users/${req.session.email}}`;
+        const userAreaUrl = urlApiServer + `/users/${req.session.email}`;
         const userData = await axiosRequest('GET', userAreaUrl, null, req.session.accessToken);
         res.locals.view = 'user-area';
         res.locals.data = userData;
@@ -107,6 +111,7 @@ const getUserArea = async (req, res, next) => {
 }
 
 module.exports = {
+    getDefault,
     getSignIn,
     postSignIn,
     getSignUp,

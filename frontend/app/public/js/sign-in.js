@@ -2,15 +2,11 @@
 
 $(document).ready(() => {
 
-    const urlToRequest = window.location.href;
+    const urlToSignIn = window.location.origin + '/sign-in';
 
     const form = document.getElementById('login');
     const email = document.getElementById('inputEmail');
     const password = document.getElementById('inputPassword');
-
-    function goPreviousWindow() {
-        window.history.back();
-    }
 
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
@@ -20,10 +16,9 @@ $(document).ready(() => {
             'password': password.value,
         };
 
-        console.log(urlToRequest);
         $.ajax({
             type: "POST",
-            url: urlToRequest,
+            url: urlToSignIn,
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
         }).done(function(response) {

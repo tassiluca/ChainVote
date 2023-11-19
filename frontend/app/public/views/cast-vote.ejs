@@ -63,6 +63,8 @@
         <%- include('commons/footer') %>
         <script>
             function requestCode() {
+                const urlToRequestCode = window.location.origin + '/elections/code';
+
                 const userId = $('#voteCodeForm input[name="user-id"]').val();
                 const electionId = $('#voteCodeForm input[name="election-id"]').val();
 
@@ -78,7 +80,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: 'http://localhost:3000/elections/code',
+                    url: urlToRequestCode,
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8"
                 }).done(function(response) {
@@ -95,6 +97,8 @@
             }
 
             function sendVote() {
+                const urlToSendVote = window.location.origin + '/elections/vote/';
+
                 const electionCode = $('#voteForm input[type="text"]').val();
                 const choice = $('#voteForm input[name="choiceRadio"]:checked').val();
                 const userId = $('#voteForm input[name="user-id"]').val();
@@ -112,7 +116,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: 'http://localhost:3000/elections/vote/<%= responseData.data.electionId %>',
+                    url: urlToSendVote + '<%= responseData.data.electionId %>',
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8"
                 }).done(function(response) {
