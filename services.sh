@@ -35,7 +35,11 @@ function startup() {
     check_prerequisites
     pushd smart-contracts
     echo "Upping network and deploying smart contracts..."
-    ./gradlew upAndDeploy
+    if [[ "$(uname | tr '[:upper:]' '[:lower:]')" == "linux" ]]; then
+        sudo ./gradlew upAndDeploy
+    else 
+        ./gradlew upAndDeploy
+    fi
     popd
     pushd api-service
     echo "Upping API service..."
@@ -43,7 +47,7 @@ function startup() {
     popd
     pushd frontend
     echo "Frontend setup..."
-    docker compose up
+    docker compose up -d
     popd
 }
 
