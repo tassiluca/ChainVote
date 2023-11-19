@@ -5,7 +5,7 @@
 <title>Ballot (core API)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="description" content="declaration: package: it.unibo.ds.chainvote.assets, interface: Ballot">
+<meta name="description" content="declaration: package: it.unibo.ds.chainvote.elections, interface: Ballot">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../script-dir/jquery-ui.min.css" title="Style">
@@ -67,17 +67,17 @@ loadScripts(document, 'script');</script>
 <main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">it.unibo.ds.chainvote.assets</a></div>
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">it.unibo.ds.chainvote.elections</a></div>
 <h1 title="Interface Ballot" class="title">Interface Ballot</h1>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Known Implementing Classes:</dt>
-<dd><code><a href="BallotImpl.html" title="class in it.unibo.ds.chainvote.assets">BallotImpl</a></code></dd>
+<dd><code><a href="BallotImpl.html" title="class in it.unibo.ds.chainvote.elections">BallotImpl</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">Ballot</span></div>
-<div class="block">An interface modeling the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a>.</div>
+<div class="block">An interface modeling the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a>.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -95,7 +95,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils">Choice</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getChoice()" class="member-name-link">getChoice</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Return the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a>'s <a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils"><code>Choice</code></a> cast.</div>
+<div class="block">Return the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a>'s <a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils"><code>Choice</code></a> cast.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link">LocalDateTime</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getDate()" class="member-name-link">getDate</a>()</code></div>
@@ -105,12 +105,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getElectionId()" class="member-name-link">getElectionId</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Return the <a href="Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> id the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a> is related to.</div>
+<div class="block">Return the <a href="Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> id the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a> is related to.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getVoterId()" class="member-name-link">getVoterId</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Return the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a>'s voter id.</div>
+<div class="block">Return the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a>'s voter id.</div>
 </div>
 </div>
 </div>
@@ -130,10 +130,10 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getElectionId()">
 <h3>getElectionId</h3>
 <div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getElectionId</span>()</div>
-<div class="block">Return the <a href="Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> id the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a> is related to.</div>
+<div class="block">Return the <a href="Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> id the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a> is related to.</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>the <a href="Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> id.</dd>
+<dd>the <a href="Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> id.</dd>
 </dl>
 </section>
 </li>
@@ -141,10 +141,10 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getVoterId()">
 <h3>getVoterId</h3>
 <div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getVoterId</span>()</div>
-<div class="block">Return the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a>'s voter id.</div>
+<div class="block">Return the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a>'s voter id.</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a>'s voter id.</dd>
+<dd>the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a>'s voter id.</dd>
 </dl>
 </section>
 </li>
@@ -163,7 +163,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getChoice()">
 <h3>getChoice</h3>
 <div class="member-signature"><span class="return-type"><a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils">Choice</a></span>&nbsp;<span class="element-name">getChoice</span>()</div>
-<div class="block">Return the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a>'s <a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils"><code>Choice</code></a> cast.</div>
+<div class="block">Return the <a href="Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a>'s <a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils"><code>Choice</code></a> cast.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the <a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils"><code>Choice</code></a>.</dd>

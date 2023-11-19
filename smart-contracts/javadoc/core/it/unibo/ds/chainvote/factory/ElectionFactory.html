@@ -77,7 +77,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">ElectionFactory</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">A factory for <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>s.</div>
+<div class="block">A factory for <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a>s.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -105,26 +105,26 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets">Election</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#buildElection(it.unibo.ds.chainvote.assets.ElectionInfo)" class="member-name-link">buildElection</a><wbr>(<a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets">ElectionInfo</a>&nbsp;electionInfo)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections">Election</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#buildElection(it.unibo.ds.chainvote.elections.ElectionInfo)" class="member-name-link">buildElection</a><wbr>(<a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections">ElectionInfo</a>&nbsp;electionInfo)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Build an <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> given the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a>.</div>
+<div class="block">Build an <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> given the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets">Election</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#buildElection(it.unibo.ds.chainvote.assets.ElectionInfo,java.util.Map)" class="member-name-link">buildElection</a><wbr>(<a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets">ElectionInfo</a>&nbsp;electionInfo,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections">Election</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#buildElection(it.unibo.ds.chainvote.elections.ElectionInfo,java.util.Map)" class="member-name-link">buildElection</a><wbr>(<a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections">ElectionInfo</a>&nbsp;electionInfo,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&gt;&nbsp;results)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Build an <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> given the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> and a starting results by following
+<div class="block">Build an <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> given the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> and a starting results by following
  the <code>checkDataAndResults(LocalDateTime, Map)</code> rules.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets">ElectionInfo</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections">ElectionInfo</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#buildElectionInfo(java.lang.String,long,java.time.LocalDateTime,java.time.LocalDateTime,java.util.List)" class="member-name-link">buildElectionInfo</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;goal,
  long&nbsp;votersNumber,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link">LocalDateTime</a>&nbsp;startingDate,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link">LocalDateTime</a>&nbsp;endingDate,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils">Choice</a>&gt;&nbsp;choices)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Build an <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> checking if parameters are correct:
+<div class="block">Build an <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> checking if parameters are correct:
  Each object must be non-null,
  String must be non-empty.</div>
 </div>
@@ -162,56 +162,56 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="buildElectionInfo(java.lang.String,long,java.time.LocalDateTime,java.time.LocalDateTime,java.util.List)">
 <h3>buildElectionInfo</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets">ElectionInfo</a></span>&nbsp;<span class="element-name">buildElectionInfo</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;goal,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections">ElectionInfo</a></span>&nbsp;<span class="element-name">buildElectionInfo</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;goal,
  long&nbsp;votersNumber,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link">LocalDateTime</a>&nbsp;startingDate,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link">LocalDateTime</a>&nbsp;endingDate,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils">Choice</a>&gt;&nbsp;choices)</span></div>
-<div class="block">Build an <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> checking if parameters are correct:
+<div class="block">Build an <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> checking if parameters are correct:
  Each object must be non-null,
  String must be non-empty.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>goal</code> - the goal of the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> to build.</dd>
-<dd><code>votersNumber</code> - the maximum number of voters of the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> to build.</dd>
-<dd><code>startingDate</code> - the starting <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link"><code>LocalDateTime</code></a> of the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> to build.</dd>
-<dd><code>endingDate</code> - the ending <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link"><code>LocalDateTime</code></a> of the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> to build.</dd>
-<dd><code>choices</code> - the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link"><code>List</code></a> of <a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils"><code>Choice</code></a>s  of the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> to build.</dd>
+<dd><code>goal</code> - the goal of the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> to build.</dd>
+<dd><code>votersNumber</code> - the maximum number of voters of the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> to build.</dd>
+<dd><code>startingDate</code> - the starting <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link"><code>LocalDateTime</code></a> of the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> to build.</dd>
+<dd><code>endingDate</code> - the ending <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDateTime.html" title="class or interface in java.time" class="external-link"><code>LocalDateTime</code></a> of the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> to build.</dd>
+<dd><code>choices</code> - the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link"><code>List</code></a> of <a href="../utils/Choice.html" title="class in it.unibo.ds.chainvote.utils"><code>Choice</code></a>s  of the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> to build.</dd>
 <dt>Returns:</dt>
-<dd>the new <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a>.</dd>
+<dd>the new <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a>.</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - in case checks on parameters fail.</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="buildElection(it.unibo.ds.chainvote.assets.ElectionInfo)">
+<section class="detail" id="buildElection(it.unibo.ds.chainvote.elections.ElectionInfo)">
 <h3>buildElection</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets">Election</a></span>&nbsp;<span class="element-name">buildElection</span><wbr><span class="parameters">(<a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets">ElectionInfo</a>&nbsp;electionInfo)</span></div>
-<div class="block">Build an <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> given the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a>.</div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections">Election</a></span>&nbsp;<span class="element-name">buildElection</span><wbr><span class="parameters">(<a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections">ElectionInfo</a>&nbsp;electionInfo)</span></div>
+<div class="block">Build an <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> given the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>electionInfo</code> - the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> used to build the <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>.</dd>
+<dd><code>electionInfo</code> - the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> used to build the <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a>.</dd>
 <dt>Returns:</dt>
-<dd>the new <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>.</dd>
+<dd>the new <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a>.</dd>
 <dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - in case <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> is already closed.</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - in case <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> is already closed.</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="buildElection(it.unibo.ds.chainvote.assets.ElectionInfo,java.util.Map)">
+<section class="detail" id="buildElection(it.unibo.ds.chainvote.elections.ElectionInfo,java.util.Map)">
 <h3>buildElection</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets">Election</a></span>&nbsp;<span class="element-name">buildElection</span><wbr><span class="parameters">(<a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets">ElectionInfo</a>&nbsp;electionInfo,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections">Election</a></span>&nbsp;<span class="element-name">buildElection</span><wbr><span class="parameters">(<a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections">ElectionInfo</a>&nbsp;electionInfo,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&gt;&nbsp;results)</span></div>
-<div class="block">Build an <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> given the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> and a starting results by following
+<div class="block">Build an <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> given the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> and a starting results by following
  the <code>checkDataAndResults(LocalDateTime, Map)</code> rules.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>electionInfo</code> - the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> used to build the <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>.</dd>
-<dd><code>results</code> - the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link"><code>Map</code></a> representing the starting results used to build the <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>.</dd>
+<dd><code>electionInfo</code> - the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> used to build the <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a>.</dd>
+<dd><code>results</code> - the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link"><code>Map</code></a> representing the starting results used to build the <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a>.</dd>
 <dt>Returns:</dt>
-<dd>the new <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>.</dd>
+<dd>the new <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a>.</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - in case checks on parameters fail.</dd>
 </dl>

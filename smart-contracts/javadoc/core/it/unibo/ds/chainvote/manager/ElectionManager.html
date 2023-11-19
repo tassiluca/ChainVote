@@ -77,7 +77,7 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">ElectionManager</span></div>
-<div class="block">An interface modeling an <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> manager.</div>
+<div class="block">An interface modeling an <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> manager.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -93,11 +93,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#castVote(it.unibo.ds.chainvote.assets.Election,it.unibo.ds.chainvote.assets.ElectionInfo,it.unibo.ds.chainvote.assets.Ballot)" class="member-name-link">castVote</a><wbr>(<a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets">Election</a>&nbsp;election,
- <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets">ElectionInfo</a>&nbsp;electionInfo,
- <a href="../assets/Ballot.html" title="interface in it.unibo.ds.chainvote.assets">Ballot</a>&nbsp;ballot)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#castVote(it.unibo.ds.chainvote.elections.Election,it.unibo.ds.chainvote.elections.ElectionInfo,it.unibo.ds.chainvote.elections.Ballot)" class="member-name-link">castVote</a><wbr>(<a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections">Election</a>&nbsp;election,
+ <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections">ElectionInfo</a>&nbsp;electionInfo,
+ <a href="../elections/Ballot.html" title="interface in it.unibo.ds.chainvote.elections">Ballot</a>&nbsp;ballot)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Cast a vote given by the <a href="../assets/Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a> in the <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>, given the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a>.</div>
+<div class="block">Cast a vote given by the <a href="../elections/Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a> in the <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a>, given the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a>.</div>
 </div>
 </div>
 </div>
@@ -114,17 +114,17 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="castVote(it.unibo.ds.chainvote.assets.Election,it.unibo.ds.chainvote.assets.ElectionInfo,it.unibo.ds.chainvote.assets.Ballot)">
+<section class="detail" id="castVote(it.unibo.ds.chainvote.elections.Election,it.unibo.ds.chainvote.elections.ElectionInfo,it.unibo.ds.chainvote.elections.Ballot)">
 <h3>castVote</h3>
-<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">castVote</span><wbr><span class="parameters">(<a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets">Election</a>&nbsp;election,
- <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets">ElectionInfo</a>&nbsp;electionInfo,
- <a href="../assets/Ballot.html" title="interface in it.unibo.ds.chainvote.assets">Ballot</a>&nbsp;ballot)</span></div>
-<div class="block">Cast a vote given by the <a href="../assets/Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a> in the <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>, given the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a>.</div>
+<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">castVote</span><wbr><span class="parameters">(<a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections">Election</a>&nbsp;election,
+ <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections">ElectionInfo</a>&nbsp;electionInfo,
+ <a href="../elections/Ballot.html" title="interface in it.unibo.ds.chainvote.elections">Ballot</a>&nbsp;ballot)</span></div>
+<div class="block">Cast a vote given by the <a href="../elections/Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a> in the <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a>, given the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>election</code> - the <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a> in which the vote is registered.</dd>
-<dd><code>electionInfo</code> - the <a href="../assets/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.assets"><code>ElectionInfo</code></a> of the <a href="../assets/Election.html" title="interface in it.unibo.ds.chainvote.assets"><code>Election</code></a>.</dd>
-<dd><code>ballot</code> - the <a href="../assets/Ballot.html" title="interface in it.unibo.ds.chainvote.assets"><code>Ballot</code></a> containing the vote to cast.</dd>
+<dd><code>election</code> - the <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a> in which the vote is registered.</dd>
+<dd><code>electionInfo</code> - the <a href="../elections/ElectionInfo.html" title="interface in it.unibo.ds.chainvote.elections"><code>ElectionInfo</code></a> of the <a href="../elections/Election.html" title="interface in it.unibo.ds.chainvote.elections"><code>Election</code></a>.</dd>
+<dd><code>ballot</code> - the <a href="../elections/Ballot.html" title="interface in it.unibo.ds.chainvote.elections"><code>Ballot</code></a> containing the vote to cast.</dd>
 </dl>
 </section>
 </li>
