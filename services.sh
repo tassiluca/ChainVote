@@ -31,7 +31,6 @@ function check_prerequisites() {
 }
 
 function startup() {
-    echo "Starting the blockchain network, the API service and the frontend application..."
     check_prerequisites
     pushd smart-contracts
     echo "Upping network and deploying smart contracts..."
