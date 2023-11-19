@@ -95,7 +95,7 @@ const postSignIn = async (req, res) => {
 
 const getUserArea = async (req, res, next) => {
     try {
-        const userAreaUrl = `http://localhost:8080/users/${req.session.email}}`;
+        const userAreaUrl = `http://api-server:8080/users/${req.session.email}}`;
         const userData = await axiosRequest('GET', userAreaUrl, null, rq.session.accessToken);
         res.locals.view = 'user-area';
         res.locals.data = userData;
