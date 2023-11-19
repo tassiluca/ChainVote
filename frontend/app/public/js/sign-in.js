@@ -1,6 +1,9 @@
 "use strict";
 
 $(document).ready(() => {
+
+    const urlToRequest = window.location.href;
+
     const form = document.getElementById('login');
     const email = document.getElementById('inputEmail');
     const password = document.getElementById('inputPassword');
@@ -17,10 +20,10 @@ $(document).ready(() => {
             'password': password.value,
         };
 
-
+        console.log(urlToRequest);
         $.ajax({
             type: "POST",
-            url: 'http://auth-server:8180/auth/login',
+            url: urlToRequest,
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
         }).done(function(response) {

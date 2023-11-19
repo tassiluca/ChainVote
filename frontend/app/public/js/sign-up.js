@@ -1,6 +1,9 @@
 "use strict";
 
 $(document).ready(() => {
+
+    const urlToRequest = window.location.href;
+
     const form = document.querySelector('#login');
     const name = document.querySelector('#inputName');
     const surname = document.querySelector('#inputSurname');
@@ -49,7 +52,7 @@ $(document).ready(() => {
 
             $.ajax({
                 type: "POST",
-                url: 'http://api-server:8080/users/',
+                url: urlToRequest,
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function(response) {
