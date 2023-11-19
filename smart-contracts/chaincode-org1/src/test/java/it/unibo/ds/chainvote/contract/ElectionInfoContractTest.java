@@ -2,7 +2,7 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.SerializersUtils;
-import it.unibo.ds.chainvote.assets.ElectionInfo;
+import it.unibo.ds.chainvote.elections.ElectionInfo;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
 import it.unibo.ds.chainvote.utils.FixedVotes;

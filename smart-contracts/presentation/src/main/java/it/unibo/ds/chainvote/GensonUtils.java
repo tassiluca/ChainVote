@@ -2,12 +2,12 @@ package it.unibo.ds.chainvote;
 
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
-import it.unibo.ds.chainvote.assets.Ballot;
-import it.unibo.ds.chainvote.assets.BallotImpl;
-import it.unibo.ds.chainvote.assets.Election;
-import it.unibo.ds.chainvote.assets.ElectionImpl;
-import it.unibo.ds.chainvote.assets.ElectionInfo;
-import it.unibo.ds.chainvote.assets.ElectionInfoImpl;
+import it.unibo.ds.chainvote.elections.Ballot;
+import it.unibo.ds.chainvote.elections.BallotImpl;
+import it.unibo.ds.chainvote.elections.Election;
+import it.unibo.ds.chainvote.elections.ElectionImpl;
+import it.unibo.ds.chainvote.elections.ElectionInfo;
+import it.unibo.ds.chainvote.elections.ElectionInfoImpl;
 import it.unibo.ds.chainvote.codes.OneTimeCode;
 import it.unibo.ds.chainvote.codes.OneTimeCodeImpl;
 import it.unibo.ds.chainvote.converters.*;

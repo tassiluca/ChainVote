@@ -1,4 +1,4 @@
-package it.unibo.ds.chainvote.assets;
+package it.unibo.ds.chainvote.elections;
 
 import it.unibo.ds.chainvote.utils.Choice;
 

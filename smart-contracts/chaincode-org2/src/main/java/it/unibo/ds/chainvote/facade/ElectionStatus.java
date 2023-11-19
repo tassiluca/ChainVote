@@ -1,7 +1,7 @@
 package it.unibo.ds.chainvote.facade;
 
-import it.unibo.ds.chainvote.assets.Ballot;
-import it.unibo.ds.chainvote.assets.Election;
+import it.unibo.ds.chainvote.elections.Ballot;
+import it.unibo.ds.chainvote.elections.Election;
 
 /**
  * An enum representing the possible {@link Election} status when it's serialized as an {@link ElectionFacade}.

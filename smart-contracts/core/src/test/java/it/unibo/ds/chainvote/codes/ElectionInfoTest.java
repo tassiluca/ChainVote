@@ -1,6 +1,6 @@
 package it.unibo.ds.chainvote.codes;
 
-import it.unibo.ds.chainvote.assets.ElectionInfo;
+import it.unibo.ds.chainvote.elections.ElectionInfo;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
 

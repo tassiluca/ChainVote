@@ -5,8 +5,8 @@ import com.owlike.genson.Converter;
 import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import it.unibo.ds.chainvote.assets.ElectionInfo;
-import it.unibo.ds.chainvote.assets.ElectionInfoImpl;
+import it.unibo.ds.chainvote.elections.ElectionInfo;
+import it.unibo.ds.chainvote.elections.ElectionInfoImpl;
 import it.unibo.ds.chainvote.utils.Choice;
 
 import java.time.LocalDateTime;

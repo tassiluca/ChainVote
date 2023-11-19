@@ -1,9 +1,9 @@
 package it.unibo.ds.chainvote.factory;
 
-import it.unibo.ds.chainvote.assets.Election;
-import it.unibo.ds.chainvote.assets.ElectionImpl;
-import it.unibo.ds.chainvote.assets.ElectionInfo;
-import it.unibo.ds.chainvote.assets.ElectionInfoImpl;
+import it.unibo.ds.chainvote.elections.Election;
+import it.unibo.ds.chainvote.elections.ElectionImpl;
+import it.unibo.ds.chainvote.elections.ElectionInfo;
+import it.unibo.ds.chainvote.elections.ElectionInfoImpl;
 import it.unibo.ds.chainvote.utils.Choice;
 import it.unibo.ds.chainvote.utils.FixedVotes;
 import it.unibo.ds.chainvote.utils.Utils;

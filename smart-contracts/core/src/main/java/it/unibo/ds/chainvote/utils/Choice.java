@@ -1,6 +1,6 @@
 package it.unibo.ds.chainvote.utils;
 
-import it.unibo.ds.chainvote.assets.Election;
+import it.unibo.ds.chainvote.elections.Election;
 
 import java.util.Objects;
 

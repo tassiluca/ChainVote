@@ -1,8 +1,8 @@
 package it.unibo.ds.chainvote;
 
 import com.owlike.genson.Genson;
-import it.unibo.ds.chainvote.assets.Ballot;
-import it.unibo.ds.chainvote.assets.BallotImpl;
+import it.unibo.ds.chainvote.elections.Ballot;
+import it.unibo.ds.chainvote.elections.BallotImpl;
 import it.unibo.ds.chainvote.utils.Choice;
 import org.junit.jupiter.api.Test;
 

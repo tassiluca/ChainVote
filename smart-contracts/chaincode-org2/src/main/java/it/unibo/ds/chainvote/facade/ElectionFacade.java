@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
- * An interface modeling the {@link it.unibo.ds.chainvote.assets.Election} serialization.
+ * An interface modeling the {@link it.unibo.ds.chainvote.elections.Election} serialization.
  */
 public interface ElectionFacade {
 
@@ -45,7 +45,7 @@ public interface ElectionFacade {
     double getAffluence();
 
     /**
-     * Allows access to {@link Map} representing results of the {@link it.unibo.ds.chainvote.assets.Election}.
+     * Allows access to {@link Map} representing results of the {@link it.unibo.ds.chainvote.elections.Election}.
      * @return the {@link Map} representing the results.
      */
     Map<String, Long> getResults();

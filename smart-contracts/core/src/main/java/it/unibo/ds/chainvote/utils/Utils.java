@@ -1,7 +1,7 @@
 package it.unibo.ds.chainvote.utils;
 
-import it.unibo.ds.chainvote.assets.Election;
-import it.unibo.ds.chainvote.assets.ElectionInfo;
+import it.unibo.ds.chainvote.elections.Election;
+import it.unibo.ds.chainvote.elections.ElectionInfo;
 
 import java.time.LocalDateTime;
 import java.util.*;

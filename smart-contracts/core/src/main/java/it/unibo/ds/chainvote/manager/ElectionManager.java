@@ -1,8 +1,8 @@
 package it.unibo.ds.chainvote.manager;
 
-import it.unibo.ds.chainvote.assets.Ballot;
-import it.unibo.ds.chainvote.assets.Election;
-import it.unibo.ds.chainvote.assets.ElectionInfo;
+import it.unibo.ds.chainvote.elections.Ballot;
+import it.unibo.ds.chainvote.elections.Election;
+import it.unibo.ds.chainvote.elections.ElectionInfo;
 
 /**
  * An interface modeling an {@link Election} manager.
