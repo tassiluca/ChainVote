@@ -15,7 +15,7 @@ const responseMiddleware = (req, res, next) => {
         data: data
     };
 
-    if (req.session) {
+    if (req.session && req.session.accessToken) {
         responseData.logged = true;
         responseData.email = req.session.email
     }

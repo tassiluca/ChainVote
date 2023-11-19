@@ -1,4 +1,5 @@
 "use strict";
+
 $(document).ready(() => {
     const form = document.querySelector('#login');
     const name = document.querySelector('#inputName');
@@ -48,12 +49,11 @@ $(document).ready(() => {
 
             $.ajax({
                 type: "POST",
-                url: 'http://localhost:3000/sign-up',
+                url: 'http://api-server:8080/users/',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function(response) {
                 alert(response.message)
-                // console.log('Response: ' + response)
                 if(response.success) {
                     hide(document.querySelector("#div-error-sign-up"))
                     window.location.href = response.url;
@@ -62,9 +62,8 @@ $(document).ready(() => {
                     show(document.querySelector("#div-error-sign-up"));
                 }
             }).fail(function(error) {
-                alert(error.message)
-                // console.log('Error: ' + JSON.stringify(error))
-                document.getElementById('error-sign-up').innerHTML = 'Error ' + error.status + ': ' + error.responseJSON.message;
+                alert(error.statusText)
+                document.getElementById('error-sign-up').innerHTML = 'Error ' + error.status + ': ' + error.statusText;
                 show(document.querySelector("#div-error-sign-up"));
             });
         }

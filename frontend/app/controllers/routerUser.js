@@ -1,6 +1,11 @@
 const axiosRequest = require('./utils');
 require('dotenv').config()
 
+const urlBackendAPI = process.env.API_URL || "http://localhost:8080"
+const urlLogin = process.env.AUTH_URL || "http://localhost:8180"
+const urlSignIn = urlLogin + "/auth/login"
+const urlSignUp = urlBackendAPI + "/users"
+
 const getSignUp = async (req, res, next) => {
     res.locals.view = 'sign-up';
     next();
@@ -8,11 +13,10 @@ const getSignUp = async (req, res, next) => {
 
 const postSignUp = async (req, res) => {
     try {
-        console.log("Sign up post request")
         if (req.body.name && req.body.surname &&
              req.body.email && req.body.password && req.body.role) {
             const {name, surname, email, password, role} = req.body;
-            const response = await axiosRequest('POST', process.env.SIGN_UP_URL, {
+            const response = await axiosRequest('POST', urlSignUp, {
                 name: name, surname: surname, email: email, password: password, role: role
             })
 
@@ -47,16 +51,12 @@ const getSignIn = async (req, res, next) => {
 
 const postSignIn = async (req, res) => {
     try {
-        console.log("Sign in post request")
-        console.log(req.body)
         if (req.body.email && req.body.password) {
             const {email, password} = req.body
-            const response = await axiosRequest('POST', process.env.SIGN_IN_URL, {email: email, password: password});
-            console.log(response)
+            const response = await axiosRequest('POST', urlSignIn, {email: email, password: password});
             if (response.success) {
                 const redirectUrl = '/';
                 if (req.session && req.session.accessToken) {
-                    console.log('Regenerating session...')
                     req.session.regenerate(function(err) {
                         if (err) {
                             res.status(500).json(

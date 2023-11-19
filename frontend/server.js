@@ -6,9 +6,6 @@ const session = require('express-session');
 const store = new session.MemoryStore();
 const bodyParser = require('body-parser');
 
-const axios = require('axios');
-const SERVER_URL = 'http://localhost:3000';
-
 app.use(session({
     secret: 'my-secret-key',
     cookie: { maxAge: 30000 },
