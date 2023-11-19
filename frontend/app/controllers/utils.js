@@ -1,5 +1,8 @@
 const axios = require('axios');
 
+const urlBackendAPI = process.env.API_URL || "http://localhost:8080"
+const urlLogin = process.env.AUTH_URL || "http://localhost:8180"
+
 const axiosRequest = async (method, url, data = null, token = null) => {
     try {
         const config = {
@@ -21,4 +24,6 @@ const axiosRequest = async (method, url, data = null, token = null) => {
     }
 };
 
-module.exports = axiosRequest;
+module.exports = {
+    axiosRequest,
+}

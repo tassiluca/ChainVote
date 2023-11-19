@@ -1,4 +1,5 @@
 "use strict";
+
 $(document).ready(() => {
     const form = document.getElementById('login');
     const email = document.getElementById('inputEmail');
@@ -16,14 +17,14 @@ $(document).ready(() => {
             'password': password.value,
         };
 
+
         $.ajax({
             type: "POST",
-            url: 'http://localhost:3000/sign-in',
+            url: 'http://auth-server:8180/auth/login',
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
         }).done(function(response) {
             alert(response.message)
-            // console.log('Response: ' + response)
             if(response.success) {
                 hide(document.querySelector("#div-error-sign-in"))
                 window.location.href = response.url;
@@ -32,9 +33,8 @@ $(document).ready(() => {
                 show(document.querySelector("#div-error-sign-in"));
             }
         }).fail(function(error) {
-            alert(error.message)
-            // console.log('Error: ' + JSON.stringify(error))
-            document.getElementById('error-sign-in').innerHTML = 'Error ' + error.status + ': ' + error.responseJSON.message;
+            alert(error.statusText)
+            document.getElementById('error-sign-in').innerHTML = 'Error ' + error.status + ': ' + error.statusText;
             show(document.querySelector("#div-error-sign-in"));
         });
     })
