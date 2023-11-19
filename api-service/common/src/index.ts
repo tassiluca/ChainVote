@@ -1,7 +1,6 @@
 /**
  * Exporting models 
  */
-
 export {
     User
 } from "./models/users/users";
@@ -23,11 +22,9 @@ export {
     TooManyRequests
 } from "./errors/errors";
 
-
 /**
  * Exporting middlewares
  */
-
 export {
     defaultErrorHandler
 } from "./middleware/error.middleware";
@@ -43,6 +40,10 @@ export {
 export {
     validationHandler
 } from "./middleware/validation.middleware";
+
+export {
+    authenticationHandler
+} from "./middleware/authentication.middleware"
 
 /**
  * Exporting intefaces
