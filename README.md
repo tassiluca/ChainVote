@@ -1,16 +1,36 @@
-# ChainVote
+<div style="text-align:center">
+
+**Distributed Systems Final Project**
+
+```
+ ██████╗██╗  ██╗ █████╗ ██╗███╗   ██╗██╗   ██╗ ██████╗ ████████╗███████╗
+██╔════╝██║  ██║██╔══██╗██║████╗  ██║██║   ██║██╔═══██╗╚══██╔══╝██╔════╝
+██║     ███████║███████║██║██╔██╗ ██║██║   ██║██║   ██║   ██║   █████╗  
+██║     ██╔══██║██╔══██║██║██║╚██╗██║╚██╗ ██╔╝██║   ██║   ██║   ██╔══╝  
+╚██████╗██║  ██║██║  ██║██║██║ ╚████║ ╚████╔╝ ╚██████╔╝   ██║   ███████╗
+ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝  ╚═══╝   ╚═════╝    ╚═╝   ╚══════╝
+```
+
+</div>
 
 ## Requirements
 
+- Unix system (either Linux or MacOS)
 - Docker
   - on Mac OS make sure the file sharing implementation for the container is set to `osfx (Legacy)` (Settings -> General)
+- `npm`
 
-## Installation
+## Startup
 
-To bring up the network and deploy the smart contracts simply (it will take a couple of minutes):
+To bring up the whole system (it will take some minutes):
+
 ```bash
-cd smart-contracts
-./gradlew upAndDeploy
+./services up
+```
+
+To shutdown:
+```bash
+./services down
 ```
 
 ## Documentation

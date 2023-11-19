@@ -20,7 +20,7 @@ const getAllElections = async (req, res, next) => {
         res.locals.data = electionsData;
         res.locals.view = 'dashboard';
     } catch (error) {
-        res.locals.view = 'not-found';
+        res.locals.view = 'sign-in';
     }
     next();
 };
@@ -37,7 +37,7 @@ const getElection = async (req, res, next) => {
         res.locals.data = electionData;
         res.locals.view = 'election-info';
     } catch (error) {
-        res.locals.view = 'not-found';
+        res.locals.view = 'sign-in';
     }
     next();
 };
@@ -58,7 +58,7 @@ const getCastVote = async (req, res, next) => {
         res.locals.view = 'cast-vote';
         res.locals.data = electionData;
     } catch (error) {
-        res.locals.view = 'not-found';
+        res.locals.view = 'sign-in';
     }
     next();
 }
