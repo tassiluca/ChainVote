@@ -1,6 +1,6 @@
 import { Router } from "express";
-import {login, refreshToken} from "../controllers/auth";
-import {apiLimiter, validationHandler} from "core-components";
+import {login, logout, refreshToken} from "../controllers/auth";
+import {apiLimiter, authenticationHandler, validationHandler} from "core-components";
 import { ApiLimiterEntry } from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
 import {body} from "express-validator";
@@ -8,6 +8,12 @@ import {body} from "express-validator";
 
 const API_LIMITER_RULES: ApiLimiterEntry = {
     "/login": {
+        "POST": {
+            time: 20,
+            limit: 100
+        }
+    },
+    "/logout": {
         "POST": {
             time: 20,
             limit: 100
@@ -54,8 +60,6 @@ authRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *                  description: The request was handled successfully.
  *              '400':
  *                  description: The request was malformed. Probably some data is missing.
- *              '401':
- *                  description: The request was unauthorized. Login data is invalid.
  *              '429':
  *                  description: Limit of requests reached for this endpoint.
  *              '500':
@@ -68,6 +72,30 @@ authRouter.post(
         body("password").exists().isString()
     ]),
     login
+);
+
+/**
+ * @openapi
+ *
+ * paths:
+ *   /auth/logout:
+ *      post:
+ *          summary: Logout
+ *          description: Logout a user from the system disabling the passed jwt token
+ *          responses:
+ *              '200':
+ *                  description: The request was handled successfully.
+ *              '401':
+ *                  description: The request was unauthorized. Login data is invalid.
+ *              '429':
+ *                  description: Limit of requests reached for this endpoint.
+ *              '500':
+ *                  description: Generic server error
+ */
+authRouter.post(
+    "/logout",
+    authenticationHandler,
+    logout
 );
 
 /**

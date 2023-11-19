@@ -43,6 +43,23 @@
           "400": {
             "description": "The request was malformed. Probably some data is missing."
           },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout",
+        "description": "Logout a user from the system disabling the passed jwt token",
+        "responses": {
+          "200": {
+            "description": "The request was handled successfully."
+          },
           "401": {
             "description": "The request was unauthorized. Login data is invalid."
           },

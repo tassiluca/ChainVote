@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { User, UnauthorizedError, NotFoundError } from "core-components"
+import {User, UnauthorizedError, NotFoundError} from "core-components"
 import { Jwt } from "core-components";
 import {StatusCodes} from "http-status-codes";
 
@@ -40,7 +40,33 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     }
 }
 
+/**
+ * Logout an user
+ * 
+ * @param req 
+ * @param res 
+ * @param next 
+ */
+export async function logout(req: Request, res: Response, next: NextFunction) {
+    const authorizationHeader = req.headers["authorization"] as string;
+    const accessToken = authorizationHeader.split(" ")[1];
+    try {
+        await Jwt.findOneAndUpdate(
+            {accessToken: accessToken},
+            { $set: { enabled: false } },
+            { new: true, useFindAndModify: false },
+        );
 
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = {
+            message: "User logged out"
+        }
+    } catch (error) {
+        return next(error);
+    }
+
+    return next();
+}
 
 /**
  * Refresh the access token.
@@ -84,3 +110,5 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
 
     return next();
 }
+
+

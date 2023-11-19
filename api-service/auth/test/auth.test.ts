@@ -81,6 +81,34 @@ describe("POST /auth/login", () => {
     });
 });
 
+
+describe("POST /auth/logout", () => {
+    let jwtDefault;
+
+    beforeEach(async () => {
+        jwtDefault = await Jwt.createTokenPair(user, {"accessToken": "10m", "refreshToken": "20m"});
+    });
+
+    afterEach(async () => {
+        await Jwt.findOneAndDelete({refreshToken: jwtDefault.refreshToken});
+    });
+
+    test("Can logout successfully from the application", async () => {
+        const logoutResponse = await request(app).post("/auth/logout")
+            .set("Authorization", `Bearer ${jwtDefault.accessToken}`)
+            .set("Accept", "application/json")
+            .expect("Content-Type", /json/)
+            .expect(StatusCodes.OK);
+
+        expect(logoutResponse.body.success).toBe(true);
+        const tokenDoc = await Jwt.findOne({accessToken: jwtDefault.accessToken});
+
+        expect(tokenDoc!.enabled).toBe(false);
+    });
+
+
+});
+
 describe("POST /auth/refresh", () => {
     let jwtDefault;
 
