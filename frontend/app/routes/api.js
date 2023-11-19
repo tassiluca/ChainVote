@@ -15,6 +15,6 @@ router.get('/sign-up', userController.getSignUp, responseMiddleware);
 router.post('/sign-up', userController.postSignUp);
 router.get('/user-area', userController.getUserArea, responseMiddleware);
 
-router.get('/', (req, res) => res.render('index'),  responseMiddleware);
+router.get('/', userController.getDefault, responseMiddleware);
 
 module.exports = router;

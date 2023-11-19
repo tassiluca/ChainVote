@@ -2,7 +2,6 @@ const axiosRequest = require('./utils');
 
 const urlApiServer = process.env.API_SERVER_URL || "http://api-server:8080"
 
-
 const getAllElections = async (req, res, next) => {
     try {
         const allElectionsUrl = urlApiServer + `/election/info/all`;
@@ -58,7 +57,6 @@ const getCastVote = async (req, res, next) => {
     next();
 }
 
-
 const postCastVote = async (req, res) => {
     const data = {
         code: req.body.code,
@@ -91,7 +89,6 @@ const createElectionCode = async (req, res) => {
     const error = electionDetailsResponse.error;
     throw new Error("Error generating code: " + error.message);
 };
-
 
 function reformatDates(electionData) {
     electionData.formattedStartDate = formatDate(`${electionData.startDate}Z`);
