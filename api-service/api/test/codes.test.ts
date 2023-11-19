@@ -51,16 +51,16 @@ describe("POST /code/", () => {
 
     test("Can create a new code", async () => {
         const electionId = await createElection(app, adminJwtToken.accessToken);
-        await createCodeForElection(app, user.id, electionId, userJwtToken.accessToken);
+        await createCodeForElection(app, electionId, userJwtToken.accessToken);
     }, MAX_TIMEOUT);
 
     test("Can check if a code is valid", async () => {
         const electionId = await createElection(app, adminJwtToken.accessToken);
-        const code = await createCodeForElection(app, user.id, electionId, userJwtToken.accessToken);
+        const code = await createCodeForElection(app, electionId, userJwtToken.accessToken);
 
         console.log(code, user.id, electionId);
         const response = await request(app).post("/code/check")
-            .send({code: code, userId: user.id, electionId: electionId })
+            .send({code: code, electionId: electionId })
             .set("Authorization", `Bearer ${userJwtToken.accessToken}`)
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
@@ -73,7 +73,7 @@ describe("POST /code/", () => {
 
     test("Can verify code owner", async () => {
         const electionId = await createElection(app, adminJwtToken.accessToken);
-        const code = await createCodeForElection(app, user.id, electionId, userJwtToken.accessToken);
+        const code = await createCodeForElection(app, electionId, userJwtToken.accessToken);
         const response = await request(app).post("/code/verify-owner")
             .send({code: code, userId: user.id, electionId: electionId})
             .set("Authorization", `Bearer ${userJwtToken.accessToken}`)
@@ -89,14 +89,13 @@ describe("POST /code/", () => {
 describe("PATCH /code/", () => {
     test("Can invalidate a code", async () => {
         const electionId = await createElection(app,adminJwtToken.accessToken);
-        const code = await createCodeForElection(app, user.id, electionId, userJwtToken.accessToken);
+        const code = await createCodeForElection(app, electionId, userJwtToken.accessToken);
         const response = await request(app).patch("/code/invalidate")
             .send({code: code, userId: user.id, electionId: electionId})
             .set("Authorization", `Bearer ${adminJwtToken.accessToken}`)
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(StatusCodes.OK);
-
         expect(response.body.data).toBeDefined();
         expect(response.body.success).toBe(true);
     }, MAX_TIMEOUT);

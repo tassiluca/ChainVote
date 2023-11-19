@@ -40,6 +40,8 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     }
 }
 
+
+
 /**
  * Refresh the access token.
  * If the refresh token is valid, then a new token pair is generated and returned.

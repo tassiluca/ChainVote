@@ -31,7 +31,7 @@ export async function isValid(req: Request, res: Response, next: NextFunction) {
         const contract: Contract = network.getContract(contractName);
 
         const code = req.body.code;
-        const userId = req.body.userId;
+        const userId = res.locals.user._id.toString();
         const electionId = req.body.electionId;
 
         const codeRequest: Uint8Array = await contract.evaluate('CodesManagerContract:isValid', {
@@ -69,7 +69,7 @@ export async function verifyCodeOwner(req: Request, res: Response, next: NextFun
         const contract: Contract = network.getContract(contractName);
 
         const code = req.body.code;
-        const userId = req.body.userId;
+        const userId = res.locals.user._id.toString();
         const electionId = req.body.electionId;
 
         const codeRequest: Uint8Array = await contract.evaluate('CodesManagerContract:verifyCodeOwner', {
@@ -109,7 +109,7 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
 
         const randomNumber = Math.floor(Math.random() * 1_000_000_000);
         const seed: string = seedrandom(randomNumber+ Date.now()).int32().toString();
-        const userId = req.body.userId;
+        const userId = res.locals.user._id.toString();
 
         const codeRequest: Uint8Array = await contract.submit('CodesManagerContract:generateCodeFor', {
             arguments: [electionId, seed],

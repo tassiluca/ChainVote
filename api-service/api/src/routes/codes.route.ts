@@ -16,7 +16,6 @@ const API_LIMITER_RULES: ApiLimiterEntry = {
             limit: 100
         }
     },
-
     "/check": {
         "POST": {
             time: 20,
@@ -57,10 +56,6 @@ codesRoute.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *                              userId:
  *                                  type: string
  *                                  description: The id of a user.
- *                              electionId:
- *                                  type: string
- *                                  description: The id of a valid election.
- *
  *          responses:
  *              '201':
  *                  description: The election is created successfully.
@@ -74,7 +69,6 @@ codesRoute.post(
     "/generate",
     authenticationHandler,
     validationHandler([
-        body("userId").exists().isAlphanumeric(),
         body("electionId").exists().isNumeric(),
     ]),
     generateCodeFor);
@@ -93,9 +87,6 @@ codesRoute.post(
  *                      schema:
  *                          type: object
  *                          properties:
- *                              userId:
- *                                  type: string
- *                                  description: The id of the user.
  *                              electionId:
  *                                  type: string
  *                                  description: The id of an election.
@@ -115,7 +106,6 @@ codesRoute.post(
     "/check",
     authenticationHandler,
     validationHandler([
-        body("userId").exists().isAlphanumeric(),
         body("electionId").exists().isNumeric(),
         body("code").exists().isAlphanumeric()
     ]),
@@ -136,9 +126,6 @@ codesRoute.post(
  *                      schema:
  *                          type: object
  *                          properties:
- *                              userId:
- *                                  type: string
- *                                  description: The id of the user.
  *                              electionId:
  *                                  type: string
  *                                  description: The id of an election.
@@ -157,7 +144,6 @@ codesRoute.post(
 codesRoute.post("/verify-owner",
     authenticationHandler,
     validationHandler([
-        body("userId").exists().isAlphanumeric(),
         body("electionId").exists().isNumeric(),
         body("code").exists().isAlphanumeric()
     ]),
@@ -167,7 +153,7 @@ codesRoute.post("/verify-owner",
  * @openapi
  *
  * paths:
- *   /code/is-valid:
+ *   /code/invalidate:
  *      patch:
  *          summary: invalidate a code
  *          requestBody:
@@ -177,12 +163,12 @@ codesRoute.post("/verify-owner",
  *                      schema:
  *                          type: object
  *                          properties:
- *                              userId:
- *                                  type: string
- *                                  description: The id of the user that own the code.
  *                              electionId:
  *                                  type: string
  *                                  description: The id of an election.
+*                               userId:
+*                                  type: string
+*                                  description: The id of the owner of the code.
  *                              code:
  *                                  type: string
  *                                  description: The code to invalidate
@@ -199,8 +185,8 @@ codesRoute.patch(
     "/invalidate",
     authenticationHandler,
     validationHandler([
-        body("userId").exists().isAlphanumeric(),
         body("electionId").exists().isNumeric(),
+        body("userId").exists().isAlphanumeric(),
         body("code").exists().isAlphanumeric()
     ]),
     invalidate);

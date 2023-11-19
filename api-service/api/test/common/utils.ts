@@ -56,9 +56,9 @@ export async function createElection(app: Application, accessToken: string ) {
     return electionId;
 }
 
-export async function createCodeForElection(app: Application, userId, electionId, accessToken: string) {
+export async function createCodeForElection(app: Application, electionId, accessToken: string) {
     const response = await request(app).post("/code/generate")
-        .send({ userId: userId, electionId: electionId })
+        .send({ electionId: electionId })
         .set("Authorization", `Bearer ${accessToken}`)
         .set("Accept", "application/json")
         .expect("Content-Type", "application/json; charset=utf-8")

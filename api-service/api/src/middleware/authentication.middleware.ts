@@ -18,6 +18,7 @@ export async function authenticationHandler (req: Request, res: Response, next: 
         }
         const validationResponse:any = await jwtRecord.validateAccessToken();
         const user = await User.findOne({email: validationResponse.sub.email});
+
         if(user == null) {
             return next(new NotFoundError("User not found"));
         }
