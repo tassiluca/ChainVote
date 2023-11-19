@@ -42,7 +42,7 @@ function startup() {
     popd
     pushd api-service
     echo "Upping API service..."
-    ./startup.sh
+    ./startup.sh up
     popd
     pushd frontend
     echo "Frontend setup..."
@@ -56,7 +56,7 @@ function shutdown() {
     ./gradlew downNetwork
     popd
     pushd api-service
-    docker compose down
+    ./startup.sh down
     popd
     pushd frontend
     docker compose down
