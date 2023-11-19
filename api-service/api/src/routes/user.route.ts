@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createUser, getProfile, editProfile, deleteProfile } from "../controllers/users";
-import { authenticationHandler } from "../middleware/authentication.middleware";
+import { authenticationHandler } from "core-components";
 import { validationHandler } from "core-components";
 import {body, param} from "express-validator";
 import {ApiLimiterEntry,apiLimiter} from "core-components";

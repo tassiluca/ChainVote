@@ -2,7 +2,7 @@ import { Router } from "express";
 import {generateCodeFor, invalidate, isValid, verifyCodeOwner} from "../controllers/codes";
 import RedisLimiterStorage from "../configs/redis.config";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
-import {authenticationHandler} from "../middleware/authentication.middleware";
+import {authenticationHandler} from "core-components";
 import {validationHandler} from "core-components"
 import {body} from "express-validator";
 

@@ -7,7 +7,7 @@ import {
 } from "../controllers/election.info";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
-import {authenticationHandler} from "../middleware/authentication.middleware";
+import {authenticationHandler} from "core-components";
 import {validationHandler} from "core-components";
 import {body, param} from "express-validator";
 
