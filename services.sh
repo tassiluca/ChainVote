@@ -46,7 +46,7 @@ function startup() {
     popd
     pushd frontend
     echo "Frontend setup..."
-    docker compose up -d
+    docker compose up -d --build
     popd
 }
 

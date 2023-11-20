@@ -22,8 +22,7 @@ $(document).ready(() => {
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
         }).done(function(response) {
-            alert(response.message)
-            if(response.success) {
+            if (response.success) {
                 hide(document.querySelector("#div-error-sign-in"))
                 window.location.href = response.url;
             } else {
@@ -31,7 +30,6 @@ $(document).ready(() => {
                 show(document.querySelector("#div-error-sign-in"));
             }
         }).fail(function(error) {
-            alert(error.statusText)
             document.getElementById('error-sign-in').innerHTML = 'Error ' + error.status + ': ' + error.statusText;
             show(document.querySelector("#div-error-sign-in"));
         });

@@ -1,10 +1,9 @@
 const axiosRequest = require('./utils');
 
-const urlBackendAPI = process.env.API_URL || "http://localhost:8080"
-const urlApiServer = process.env.API_SERVER_URL || 'http://api-server:8080'
-const urlLogin = process.env.AUTH_URL || "http://localhost:8180"
-const urlSignIn = urlLogin + "/auth/login"
-const urlSignUp = urlBackendAPI + "/users"
+const urlApiServer = process.env.API_SERVER_URL || 'http://localhost:8080'
+const urlAuthServer = process.env.AUTH_SERVER_URL || "http://localhost:8180"
+const urlSignIn = urlAuthServer + "/auth/login"
+const urlSignUp = urlApiServer + "/users"
 
 const getDefault = async (req, res, next) => {
     res.locals.view = 'index';
@@ -60,7 +59,7 @@ const postSignIn = async (req, res) => {
             const {email, password} = req.body;
             const response = await axiosRequest('POST', urlSignIn, {email: email, password: password});
             if (response.success) {
-                const redirectUrl = '/';
+                const redirectUrl = '/elections';
                 if (req.session && req.session.accessToken) {
                     req.session.regenerate(function(err) {
                         if (err) {

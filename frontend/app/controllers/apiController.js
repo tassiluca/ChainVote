@@ -1,6 +1,6 @@
 const axiosRequest = require('./utils');
 
-const urlApiServer = process.env.API_SERVER_URL || "http://api-server:8080"
+const urlApiServer = process.env.API_SERVER_URL || "http://localhost:8080"
 
 const getAllElections = async (req, res, next) => {
     try {

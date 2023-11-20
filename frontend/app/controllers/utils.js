@@ -16,7 +16,7 @@ const axiosRequest = async (method, url, data = null, token = null) => {
         const response = await axios(config);
         return response.data;
     } catch (error) {
-        console.error(`Error making API call to ${url}:`, error.response.data);
+        console.error(`Error making API call to ${url}:`, error);
         throw error;
     }
 };
