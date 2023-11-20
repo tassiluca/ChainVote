@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 
 app.use(session({
     secret: 'my-secret-key',
-    cookie: { maxAge: 30000 },
+    cookie: { maxAge: 30000 * 60 },
     saveUninitialized: false,
     resave: false,
     store: store
