@@ -21,15 +21,15 @@ const postSignUp = async (req, res) => {
              req.body.email && req.body.password && req.body.role) {
             const {name, surname, email, password, role} = req.body;
             const response = await axiosRequest('POST', urlSignUp, {
-                name: name, surname: surname, email: email, password: password, role: role
+                firstName: name, secondName: surname, email: email, password: password, role: role
             })
-
+            console.log(response);
             if (response.success) {
                 const redirectUrl = '/';
                 res.status(response.code).json({
                     success: true,
                     message: "User successfully created.",
-                    data: response.body.data,
+                    data: response.data,
                     url: redirectUrl
                 })
             } else {
@@ -42,8 +42,8 @@ const postSignUp = async (req, res) => {
             res.status(403).json({message: "Bad credentials"})
         }
     } catch (error) {
-        res.status(500).json(
-            {message: error}
+        res.status(error.response.data.code).json(
+            {message: error.response.data.error.message}
         );
     }
 };
@@ -91,8 +91,8 @@ const postSignIn = async (req, res) => {
             });
         }
     } catch (error) {
-        res.status(500).json(
-            {message: error}
+        res.status(error.response.data.code).json(
+            {message: error.response.data.error.message}
         );
     }
 };

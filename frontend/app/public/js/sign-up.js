@@ -65,8 +65,7 @@ $(document).ready(() => {
                     show(document.querySelector("#div-error-sign-up"));
                 }
             }).fail(function(error) {
-                alert(error.statusText)
-                document.getElementById('error-sign-up').innerHTML = 'Error ' + error.status + ': ' + error.statusText;
+                document.getElementById('error-sign-up').innerHTML = 'Error ' + error.status + ': ' + error.responseJSON.message;
                 show(document.querySelector("#div-error-sign-up"));
             });
         }
