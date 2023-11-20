@@ -109,6 +109,21 @@ const getUserArea = async (req, res, next) => {
     next();
 }
 
+const logout = async (req, res) => {
+    const urlLogout = urlAuthServer + "/auth/logout"
+    try {
+        await axiosRequest('POST', urlLogout, null, req.session.accessToken);
+    } catch (error) {
+        console.error(error.data);
+    }
+    req.session.destroy((error) => {
+        if (error) {
+            console.log("Error destroying session:", error);
+        }
+        res.redirect('/');
+    });
+}
+
 module.exports = {
     getDefault,
     getSignIn,
@@ -116,4 +131,5 @@ module.exports = {
     getSignUp,
     postSignUp,
     getUserArea,
+    logout,
 }
