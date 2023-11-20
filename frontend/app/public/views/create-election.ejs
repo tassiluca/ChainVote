@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create election</title>
+    <%- include('commons/head') %>
+    <link rel="stylesheet" href="../styles/create-election.css">
+</head>
+<body>
+<%- include('commons/navbar') %>
+<main>
+    <div class="row">
+        <div class="col-md-4 center mx-auto">
+            <form action="/submit-sign-in" class="form-signin" id="login" method="post">
+                <h1 class="h3 mb-3 text-center font-weight-normal">Create election</h1>
+                <label for="inputGoal" class="sr-only">Goal</label>
+                <input type="text" id="inputGoal" class="form-control" placeholder="Goal" name="goal" required autofocus>
+                <label for="inputVoters" class="sr-only">Voters number</label>
+                <input type="number" id="inputVoters" class="form-control" placeholder="Voters number" name="voters" required>
+                <label for="inputStartDate" class="sr-only">Start date</label>
+                <input type="datetime-local" id="inputStartDate" class="form-control" placeholder="Start date" name="startDate" required>
+                <label for="inputEndDate" class="sr-only">End date</label>
+                <input type="datetime-local" id="inputEndDate" class="form-control" placeholder="End date" name="endDate" required>
+                <div id="divChoices"></div>
+                <button id="addElection" class="btn btn-xs btn-primary" type="button">+</button>
+                <button id="removeElection" class="btn btn-xs btn-primary" type="button">-</button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Create election</button>
+                <div id="div-error-create-election" class="text-center mx-auto credentials-route hidden">
+                    <p class="error" id="error-create-election">
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<%- include('commons/footer') %>
+<script src="./js/create-election.js"></script>
+</body>
+</html>
