@@ -23,7 +23,6 @@ const postSignUp = async (req, res) => {
             const response = await axiosRequest('POST', urlSignUp, {
                 firstName: name, secondName: surname, email: email, password: password, role: role
             })
-            console.log(response);
             if (response.success) {
                 const redirectUrl = '/';
                 res.status(response.code).json({

@@ -15,6 +15,7 @@ router.get('/sign-up', userController.getSignUp, responseMiddleware);
 router.post('/sign-up', userController.postSignUp);
 router.get('/user-area', userController.getUserArea, responseMiddleware);
 router.get('/logout', userController.logout);
+router.get('/create-election', apiController.getCreateElection, responseMiddleware);
 
 router.get('/', userController.getDefault, responseMiddleware);
 
