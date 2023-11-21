@@ -7,6 +7,10 @@ services:
     build:
       context: .
       dockerfile: fabric-ca
+      args:
+        UID: ${HOST_UID}
+        GID: ${HOST_GID}
+        OS: ${HOST_OS}
     command: sh -c 'fabric-ca-server start -d -b tls-ca-admin:tls-ca-adminpw --port 7052'
     environment:
       - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
@@ -30,6 +34,10 @@ services:
     build:
       context: .
       dockerfile: fabric-ca
+      args:
+        UID: ${HOST_UID}
+        GID: ${HOST_GID}
+        OS: ${HOST_OS}
     command: sh -c 'fabric-ca-server start -d -b rca-org0-admin:rca-org0-adminpw --port 7053'
     environment:
       - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
@@ -53,6 +61,10 @@ services:
     build:
       context: .
       dockerfile: fabric-ca
+      args:
+        UID: ${HOST_UID}
+        GID: ${HOST_GID}
+        OS: ${HOST_OS}
     command: sh -c 'fabric-ca-server start -d -b rca-org1-admin:rca-org1-adminpw --port 7054'
     environment:
       - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
@@ -76,6 +88,10 @@ services:
     build:
       context: .
       dockerfile: fabric-ca
+      args:
+        UID: ${HOST_UID}
+        GID: ${HOST_GID}
+        OS: ${HOST_OS}
     command: /bin/bash -c 'fabric-ca-server start -d -b rca-org2-admin:rca-org2-adminpw --port 7055'
     environment:
       - FABRIC_CA_SERVER_HOME=/tmp/hyperledger/fabric-ca/crypto
