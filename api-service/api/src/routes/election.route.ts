@@ -174,7 +174,6 @@ electionRouter.put("/vote/:electionId",
 
         // Body validation
         body("choice").exists(),
-        body("userId").exists().isAlphanumeric(),
         body("code").exists().isAlphanumeric()
     ]),
     castVote);

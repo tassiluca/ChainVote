@@ -117,7 +117,7 @@ export async function castVote(req: Request, res: Response, next: NextFunction) 
 
         const electionId: string = req.params.electionId;
         const choice: string = req.body.choice;
-        const userId: string = req.body.userId;
+        const userId: string = res.locals.user._id.toString();
         const code: string = req.body.code;
 
         const submission: Uint8Array = await contract.submit('ElectionContract:castVote', {

@@ -19,12 +19,6 @@
                             <div class="col-md-6">
                                 <h2>Request code</h2>
                                 <form id="voteCodeForm">
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="uid">User id</span>
-                                        </div>
-                                        <input type="text" class="form-control" name="user-id" id="voteCodeForm-id" placeholder="userid">
-                                    </div>
                                     <input type="hidden" name="election-id" value="<%- responseData.data.electionId %>" />
                                     <button type="submit" class="btn btn-primary">Request Code</button>
                                 </form>
@@ -39,12 +33,6 @@
                                             <span class="input-group-text">One time code</span>
                                         </div>
                                         <input type="text" class="form-control" name="otc" aria-label="Default" aria-describedby="inputGroup-sizing-default">
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">User id</span>
-                                        </div>
-                                        <input type="text" class="form-control" name="user-id" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                                     </div>
                                     <% responseData.data.choices.forEach(function(entry) { %>
                                         <div class="form-check">
@@ -64,17 +52,9 @@
         <script>
             function requestCode() {
                 const urlToRequestCode = window.location.origin + '/elections/code';
-
-                const userId = $('#voteCodeForm input[name="user-id"]').val();
                 const electionId = $('#voteCodeForm input[name="election-id"]').val();
 
-                if (!userId) {
-                    alert('Please provide your email for requesting the code');
-                    return;
-                }
-
                 const data = {
-                    userId: userId,
                     electionId: electionId,
                 };
 
@@ -86,13 +66,9 @@
                 }).done(function(response) {
                     if(response.success) {
                         $('#voteForm input[name="otc"]').val(response.code);
-                        $('#voteForm input[name="user-id"]').val(userId);
-                    } else {
-                        alert(`Error requesting code. ${response.message}`);
                     }
                 }).fail(function(error) {
-                    console.error('Error submitting vote:', error.message);
-                    alert(`Error requesting code. ${error.message}`);
+                    console.error('Error requesting code:', error.message);
                 });
             }
 
@@ -101,7 +77,6 @@
 
                 const electionCode = $('#voteForm input[type="text"]').val();
                 const choice = $('#voteForm input[name="choiceRadio"]:checked').val();
-                const userId = $('#voteForm input[name="user-id"]').val();
 
                 if (!electionCode || !choice) {
                     alert('Please fill in all fields');
@@ -110,8 +85,7 @@
 
                 const data = {
                     code: electionCode,
-                    choice: choice,
-                    userId: userId,
+                    choice: choice
                 };
 
                 $.ajax({
@@ -120,15 +94,13 @@
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8"
                 }).done(function(response) {
+                    alert(response.message);
                     if(response.success){
                         $('#voteForm input[type="text"]').val('');
                         $('#voteForm input[name="choiceRadio"]:checked').prop('checked', false);
-                        alert(`Vote casted successfully!`);
-                    } else {
-                        alert(`Error submitting vote`);
+                        window.location.href = response.url;
                     }
-                }).fail(function(error) {
-                    console.error('Error submitting vote:', error.responseText);
+                }).fail(function(e) {
                     alert('Error submitting vote. Please try again.');
                 });
             }

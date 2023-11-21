@@ -110,6 +110,7 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
         const randomNumber = Math.floor(Math.random() * 1_000_000_000);
         const seed: string = seedrandom(randomNumber+ Date.now()).int32().toString();
         const userId = res.locals.user._id.toString();
+        console.log(userId);
 
         const codeRequest: Uint8Array = await contract.submit('CodesManagerContract:generateCodeFor', {
             arguments: [electionId, seed],

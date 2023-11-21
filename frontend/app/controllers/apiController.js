@@ -58,16 +58,26 @@ const getCastVote = async (req, res, next) => {
 }
 
 const postCastVote = async (req, res) => {
-    const data = {
-        code: req.body.code,
-        userId: req.body.userId,
-        choice: req.body.choice
+    try {
+        const electionId = req.params.electionId;
+        const data = {
+            code: req.body.code,
+            choice: req.body.choice
+        }
+        const voteUrl = urlApiServer + `/election/vote/${electionId}`;
+        const voteResponse = await axiosRequest('PUT', voteUrl, data, req.session.accessToken);
+        const redirectUrl = '/';
+        return res.send({
+            success: voteResponse.success,
+            message: "Vote casted successfully.",
+            url: redirectUrl
+        });
+    } catch (error) {
+        res.status(error.response.data.code).json(
+            {message: error.response.data.error.message}
+        );
     }
-    const voteUrl = urlApiServer + `/election/vote/${electionId}`;
-    const voteResponse = await axiosRequest('PUT', voteUrl, data, req.session.accessToken);
-    return res.send({
-        success: voteResponse.success,
-    });
+
 }
 
 const getCreateElection = async (req, res, next) => {
@@ -125,23 +135,24 @@ const postCreateElection = async (req, res) => {
 }
 
 const createElectionCode = async (req, res) => {
-    const electionId = req.body.electionId;
-    const userId = req.body.userId;
-    const data = {
-        electionId: electionId,
-        userId: userId
+    try {
+        const electionId = req.body.electionId;
+        const data = {
+            electionId: electionId
+        }
+        const electionCodeRequest = urlApiServer + "/code/generate";
+        const electionDetailsResponse = await axiosRequest('POST', electionCodeRequest, data, req.session.accessToken);
+        if (electionDetailsResponse.success) {
+            return res.send({
+                success: true,
+                code: electionDetailsResponse.data
+            });
+        }
+    } catch (error) {
+        res.status(error.response.data.code).json(
+            {message: error.response.data.error.message}
+        );
     }
-    const electionCodeRequest = urlApiServer + "/code/generate";
-    const electionDetailsResponse = await axiosRequest('POST', electionCodeRequest, data, req.session.accessToken);
-    console.log(electionDetailsResponse);
-    if (electionDetailsResponse.success) {
-        return res.send({
-            success: true,
-            code: electionDetailsResponse.data
-        });
-    }
-    const error = electionDetailsResponse.error;
-    throw new Error("Error generating code: " + error.message);
 };
 
 function reformatDates(electionData) {
