@@ -5,7 +5,6 @@
 set -e  # Exit immediately if some command (simple or compound) returns a non-zero status
 
 # Directory where store blockchain artifacts
-# ARTIFACTS_DIR=$HOME/$(jq -r '.blockchainDataDirectory' ../config.json)
 export $(cat ../config.env | xargs)
 export ARTIFACTS_DIR=$(pwd)/../$ARTIFACTS_DIR
 
@@ -40,12 +39,12 @@ function upNetwork() {
     ./enroll.sh
     echo "Creating crypto material"
     cd ./channels_config
-    ./channel_artifacts.sh #$ARTIFACTS_DIR
+    ./channel_artifacts.sh
     echo "Bring up the whole network"
     docker compose up -d --wait
     echo "Services up and running!"
     echo "Create and joining channels"
-    ./channel_creation.sh #$ARTIFACTS_DIR
+    ./channel_creation.sh
 }
 
 function downNetwork() {
