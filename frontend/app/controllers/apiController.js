@@ -83,17 +83,16 @@ const postCreateElection = async (req, res) => {
         if (req.body.goal && req.body.voters && req.body.startDate && req.body.endDate && req.body.choices) {
             const goal = req.body.goal;
             const voters = req.body.voters;
-            const startDate = formatDate(req.body.startDate);
-            const endDate = formatDate(req.body.endDate);
+            const startDate = new Date(req.body.startDate).toISOString();
+            const endDate = new Date(req.body.endDate).toISOString();
             const choices = req.body.choices;
+
             const responseElectionInfo = await axiosRequest('POST', urlCreateElectionInfo, {
                 goal: goal, voters: voters, startDate: startDate, endDate: endDate, choices: choices
             }, req.session.accessToken);
             if (responseElectionInfo.success) {
-
-                const {electionId} = responseElectionInfo.data.electionId;
+                const electionId = responseElectionInfo.data.electionId;
                 const responseElection = await axiosRequest('POST', urlCreateElection, {electionId: electionId}, req.session.accessToken);
-
                 if (responseElection.success) {
                     const redirectUrl = '/';
                     res.status(responseElectionInfo.code).json({

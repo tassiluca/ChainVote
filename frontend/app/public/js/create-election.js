@@ -40,10 +40,12 @@ $(document).ready(() => {
         event.preventDefault();
 
         const choices = []
-        const inputContainers = document.querySelectorAll("#choice");
+        const inputContainers = document.querySelectorAll(".choice");
         inputContainers.forEach((container) => {
             choices.splice(Number(container.id), 0, container.value);
         });
+
+        console.log()
 
         const data = {
             'goal': goal.value,

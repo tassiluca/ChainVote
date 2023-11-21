@@ -68,8 +68,6 @@ const postSignIn = async (req, res) => {
                         }
                     })
                 }
-
-                console.log("prova");
                 
                 req.session.accessToken = response.data.accessToken;
                 req.session.refreshToken = response.data.refreshToken;
