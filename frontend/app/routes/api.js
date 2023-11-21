@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const apiController = require("../controllers/apiController");
-const userController = require("../controllers/routerUser");
-const responseMiddleware = require("../controllers/responseMiddleware");
+const userController = require("../controllers/userController");
+const responseMiddleware = require("../middlewares/responseMiddleware");
+const refreshTokenMiddleware = require("../middlewares/refreshTokenMiddleware");
+
+router.use(refreshTokenMiddleware);
 
 router.get('/elections', apiController.getAllElections, responseMiddleware);
 router.get('/elections/:electionId', apiController.getElection, responseMiddleware);

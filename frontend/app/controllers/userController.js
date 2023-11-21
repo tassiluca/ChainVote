@@ -1,4 +1,4 @@
-const axiosRequest = require('./utils');
+const axiosRequest = require('../utils/utils');
 
 const urlApiServer = process.env.API_SERVER_URL || 'http://localhost:8080'
 const urlAuthServer = process.env.AUTH_SERVER_URL || "http://localhost:8180"
@@ -72,6 +72,8 @@ const postSignIn = async (req, res) => {
                 req.session.accessToken = response.data.accessToken;
                 req.session.refreshToken = response.data.refreshToken;
                 req.session.email = req.body.email;
+
+                req.session.expire = Date.now() + 15 * 60 * 1000;
 
                 res.status(response.code).json({
                     success: true,

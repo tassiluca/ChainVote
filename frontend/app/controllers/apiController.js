@@ -1,4 +1,4 @@
-const axiosRequest = require('./utils');
+const axiosRequest = require('../utils/utils');
 
 const urlApiServer = process.env.API_SERVER_URL || "http://localhost:8080"
 
@@ -97,7 +97,7 @@ const postCreateElection = async (req, res) => {
                     const redirectUrl = '/';
                     res.status(responseElectionInfo.code).json({
                         success: true,
-                        message: "User successfully logged in.",
+                        message: "Election created successfully.",
                         url: redirectUrl
                     });
                 } else {
