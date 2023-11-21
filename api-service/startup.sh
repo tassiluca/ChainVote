@@ -85,7 +85,7 @@ startup() {
   # Check if an user is already logged in verdaccio, if not, proceed to login
   if [ ! -f ~/.npmrc ]; then
       echo "No user logged in verdaccio, logging in..."
-      npm adduser --registry http://localhost:4873
+      npm login --registry http://localhost:4873
   fi
   npm unpublish --force
   npm install
