@@ -11,11 +11,11 @@ uplinks:
 packages:
   '@*/*':
     access: $all
-    publish: $authenticated
+    publish: $all
     proxy: npmjs
   '**':
     access: $all
-    publish: $authenticated
+    publish: $all
     proxy: npmjs
 middlewares:
   audit:

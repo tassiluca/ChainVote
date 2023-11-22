@@ -15,9 +15,12 @@ services:
     networks:
       - blockchain_fabric-ca
       - backend
+    depends_on:
+      - verdaccio
     links:
       - mongodb
       - redis
+      - verdaccio
 
   # Authentication service
   auth-server:
@@ -30,11 +33,13 @@ services:
       - REDIS_PORT=6379
       - PRODUCTION=true
     networks:
-      - blockchain_fabric-ca
       - backend
+    depends_on:
+      - verdaccio
     links:
       - mongodb
       - redis
+      - verdaccio
 
   # Mongodb service
   mongodb:
@@ -49,7 +54,7 @@ services:
         source: ./dbdata
         target: /data/db
     networks:
-      - blockchain_fabric-ca
+      - backend
 
   # Private npm registry
   verdaccio:
@@ -65,7 +70,7 @@ services:
       - ./verdaccio/conf:/verdaccio/conf
       - ./verdaccio/plugins:/verdaccio/plugins
     networks:
-      - blockchain_fabric-ca
+      - backend
 
 # Redis service, used for api rate limiting
   redis:
@@ -79,9 +84,10 @@ services:
         source: ./cache
         target: /data
     networks:
-      - blockchain_fabric-ca
+      - backend
 
 networks:
   blockchain_fabric-ca:
     external: true
   backend:
+
