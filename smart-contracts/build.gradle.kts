@@ -124,7 +124,7 @@ fun Chaincode.`package`() = executeCommand(
 
 tasks.register("packageChaincodes") {
     group = blockchainGroup
-    description = "Build and generate chaincode packages"
+    description = "Build and generate chaincodes packages"
     dependsOn(":${chaincodeOrg1.name}:installDist", ":${chaincodeOrg2.name}:installDist", "upNetwork")
     doLast {
         chaincodeOrg1.`package`()
@@ -216,7 +216,7 @@ fun Chaincode.deploy(peers: Set<Peer>, collectionsConfig: File? = null) {
 
 tasks.register("upAndDeploy") {
     group = blockchainGroup
-    description = "Up the network and deploy both chaincodes"
+    description = "Up the network and deploy chaincodes in one shot"
     dependsOn("upNetwork", "packageChaincodes")
     finalizedBy("cleanAllPackages")
     doLast {
