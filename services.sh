@@ -17,8 +17,21 @@ function print_help() {
     echo "  - npm"
 }
 
+function detect_os() {
+    unameOut="$(uname -s)"
+    case "${unameOut}" in
+        Linux*)     machine=Linux;;
+        Darwin*)    machine=Mac;;
+        CYGWIN*)    machine=Cygwin;;
+        MINGW*)     machine=MinGw;;
+        *)          machine="UNKNOWN:${unameOut}"
+    esac
+    echo "Detected OS: ${machine}"
+}
+
 function check_prerequisites() {
-    if [[ "$OSTYPE" != "linux-gnu"* && "$OSTYPE" != "darwin"* ]]; then # Check if the host is a Unix-like operating system
+    detect_os 
+    if [[ machine == "Linux" && machine != "Mac" ]]; then # Check if the host is a Unix-like operating system
         echo "Error: this script requires a Unix-like operating system (macOS or Linux)."
         exit 1
     elif ! command -v docker &> /dev/null; then # Check if Docker is installed

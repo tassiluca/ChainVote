@@ -1,7 +1,10 @@
 services:
   # Rest api service
   api-server:
-    build: ./api
+    build: 
+      context: ./api
+      args:
+        - INTERNAL_GATEWAY=${INTERNAL_GATEWAY}
     ports:
       - 8080:8080
     environment:
@@ -24,7 +27,10 @@ services:
 
   # Authentication service
   auth-server:
-    build: ./auth
+    build: 
+      context: ./auth
+      args:
+        - INTERNAL_GATEWAY=${INTERNAL_GATEWAY}
     ports:
       - 8180:8180
     environment:

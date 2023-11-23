@@ -5,7 +5,7 @@ set -e  # Exit immediately if some command (simple or compound) returns a non-ze
 # UTIL FUNCTIONS
 # ++++++++++++++++
 
-function print_help() {
+print_help() {
     echo "Usage: $0 [command]"
     echo ""
     echo "Commands:"
@@ -18,17 +18,15 @@ function print_help() {
     echo "  - npm"
 }
 
-check_prerequisites() {
-    if [[ "$OSTYPE" != "linux-gnu"* && "$OSTYPE" != "darwin"* ]]; then # Check if the host is a Unix-like operating system
-        echo "Error: this script requires a Unix-like operating system (macOS or Linux)."
-        exit 1
-    elif ! command -v docker &> /dev/null; then # Check if Docker is installed
-        echo "Error: Docker is not installed. Please install Docker before running this script."
-        exit 1
-    elif ! command -v npm &> /dev/null; then # Check if npm is installed
-        echo "Error: npm is not installed. Please install npm before running this script."
-        exit 1
-    fi
+detect_os() {
+    unameOut="$(uname -s)"
+    case "${unameOut}" in
+        Linux*)     machine=Linux;;
+        Darwin*)    machine=Mac;;
+        CYGWIN*)    machine=Cygwin;;
+        MINGW*)     machine=MinGw;;
+        *)          machine="UNKNOWN:${unameOut}"
+    esac
 }
 
 # Check if the container is running
@@ -59,15 +57,21 @@ copy_keys() {
 }
 
 
-# ++++++++++++++++
+# +++++++++++++++
 # MAIN
 # +++++++++++++++
 export $(cat ../config.env | xargs)
+detect_os
 export ARTIFACTS_DIR=$(pwd)/../$ARTIFACTS_DIR
+echo $echo
+if [ $machine == "Mac" ]; then
+    export INTERNAL_GATEWAY="host.docker.internal"
+else
+    export INTERNAL_GATEWAY="172.17.0.1"
+fi
 
 # Startup and configure the API-server
 startup() {
-  check_prerequisites
   docker-compose down
 
   # Launch the containers
