@@ -75,21 +75,24 @@ const postSignIn = async (req, res) => {
 
                 req.session.expire = Date.now() + 15 * 60 * 1000;
 
-                $.ajax({
-                    type: "GET",
-                    url: urlSignUp + `/${req.session.email}`,
-                    contentType: "application/json; charset=utf-8"
-                }).done(function(response) {
-                    if(response.success) {
-                        req.session.role = response.data.role;
+                const responseRole = await axiosRequest('GET',
+                    urlSignUp + `/${req.session.email}`,
+                    null,
+                    req.session.accessToken
+                );
+
+                if (responseRole.success) {
+                    if(responseRole.success) {
+                        req.session.role = responseRole.data.role;
                     } else {
                         alert('Error getting user role');
                     }
-                }).fail(function(error) {
-                    res.status(error.response.data.code).json(
-                        {message: error.response.data.error.message}
-                    );
-                });
+                } else {
+                    res.status(responseRole.code).json({
+                        name: responseRole.error.name,
+                        message: responseRole.error.message
+                    });
+                }
 
                 res.status(response.code).json({
                     success: true,
