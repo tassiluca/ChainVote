@@ -18,6 +18,7 @@
 - Unix system (either Linux or MacOS)
 - Docker
   - on Mac OS make sure the file sharing implementation for the container is set to `osfx (Legacy)` (Settings -> General)
+- Java 11 or higher
 - `npm`
 
 ## Startup
