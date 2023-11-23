@@ -8,7 +8,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
+      - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT&directConnection=true
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - CERTS_DIR=/tmp/hyperledger
@@ -34,7 +34,7 @@ services:
     ports:
       - 8180:8180
     environment:
-      - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
+      - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT&directConnection=true
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - PRODUCTION=true
@@ -49,7 +49,7 @@ services:
 
   # Mongodb service
   mongodb:
-    image: mongodb/mongodb-community-server:6.0-ubi8
+    image: mongodb/mongodb-community-server:4.4.12-ubi8
     environment:
       - MONGODB_INITDB_ROOT_USERNAME=user
       - MONGODB_INITDB_ROOT_PASSWORD=pass
