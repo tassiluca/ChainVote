@@ -34,25 +34,30 @@ function containers() {
 }
 
 function upNetwork() {
-    echo "Artifacts directory: $ARTIFACTS_DIR"
-    mkdir -p $ARTIFACTS_DIR/org0/{ca,artifacts,orderer1,orderer2,orderer3}
-    mkdir -p $ARTIFACTS_DIR/org1/{ca,peer1,peer2}
-    mkdir -p $ARTIFACTS_DIR/org2/{ca,peer1,peer2}
-    mkdir -p $ARTIFACTS_DIR/tls-ca
     echo "Setup binaries"
     if [[ ! -d ./bin/ ]]; then
         ./install-binaries.sh
     fi;
     export PATH="$PATH:$PWD/bin"
-    echo "Up ca-tls rca-org0 rca-org1 rca-org2"
-    containers up ca-tls rca-org0 rca-org1 rca-org2
-    echo "Enrol registrar of each CA and register all entities"
-    ./reg.sh
-    echo "Enrol entities for each organization"
-    ./enroll.sh
-    echo "Creating crypto material"
-    cd ./channels_config
-    ./channel_artifacts.sh
+    if [[ ! -d $ARTIFACTS_DIR ]]; then 
+        echo "Artifacts directory: $ARTIFACTS_DIR"
+        mkdir -p $ARTIFACTS_DIR/org0/{ca,artifacts,orderer1,orderer2,orderer3}
+        mkdir -p $ARTIFACTS_DIR/org1/{ca,peer1,peer2}
+        mkdir -p $ARTIFACTS_DIR/org2/{ca,peer1,peer2}
+        mkdir -p $ARTIFACTS_DIR/tls-ca
+        echo "Up ca-tls rca-org0 rca-org1 rca-org2"
+        containers up ca-tls rca-org0 rca-org1 rca-org2
+        echo "Enrol registrar of each CA and register all entities"
+        ./reg.sh
+        echo "Enrol entities for each organization"
+        ./enroll.sh
+        echo "Creating crypto material"
+        cd ./channels_config
+        ./channel_artifacts.sh
+    else
+        echo "Artifacts directory already exists: $ARTIFACTS_DIR"
+        cd ./channels_config 
+    fi;
     echo "Bring up the whole network"
     containers up
     echo "Create and joining channels"
@@ -63,8 +68,8 @@ function downNetwork() {
     export ARTIFACTS_DIR=$ARTIFACTS_DIR
     echo "Downing network..."
     containers down
-    echo "Delete $ARTIFACTS_DIR..."
-    rm -rf $ARTIFACTS_DIR
+    # echo "Delete $ARTIFACTS_DIR..."
+    # rm -rf $ARTIFACTS_DIR
     echo "Done."
 }
 
