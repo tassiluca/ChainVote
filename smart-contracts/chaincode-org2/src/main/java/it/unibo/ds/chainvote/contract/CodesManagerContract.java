@@ -3,7 +3,7 @@ package it.unibo.ds.chainvote.contract;
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.TransientUtils;
-import it.unibo.ds.chainvote.elections.OneTimeCodeAsset;
+import it.unibo.ds.chainvote.asset.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.codes.AlreadyGeneratedCodeException;
 import it.unibo.ds.chainvote.codes.CodesManager;
 import it.unibo.ds.chainvote.codes.CodesManagerImpl;

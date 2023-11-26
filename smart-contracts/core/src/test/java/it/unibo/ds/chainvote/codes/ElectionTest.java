@@ -9,6 +9,7 @@ import it.unibo.ds.chainvote.manager.ElectionManagerImpl;
 import it.unibo.ds.chainvote.utils.Choice;
 import it.unibo.ds.chainvote.utils.Utils;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 

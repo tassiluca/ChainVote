@@ -9,7 +9,8 @@ function print_help() {
     echo ""
     echo "Commands:"
     echo "  up      Startup the blockchain network, the API service and the frontend application"
-    echo "  down    Stop all the services"
+    echo "  down    Stop all the services (without removing blockchain artifacts)"
+    echo "  clean   Stop all the services and remove blockchain artifacts"
     echo ""
     echo "Pre-requisites:"
     echo "  - Unix-like operating system (macOS or Linux)"
@@ -59,10 +60,18 @@ function shutdown() {
     popd
 }
 
-if [ "$1" == "up" ]; then
+function clean() {
+    pushd blockchain
+    ./network.sh clean
+    popd
+}
+
+if [[ "$1" == "up" ]]; then
     startup
-elif [ "$1" == "down" ]; then
+elif [[ "$1" == "down" ]]; then
     shutdown
+elif [[ "$1" == "clean" ]]; then
+    clean
 else
     print_help
 fi

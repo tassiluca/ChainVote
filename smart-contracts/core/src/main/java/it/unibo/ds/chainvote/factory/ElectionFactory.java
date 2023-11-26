@@ -10,8 +10,8 @@ import it.unibo.ds.chainvote.utils.Utils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,7 +58,7 @@ public class ElectionFactory {
      * @throws IllegalArgumentException in case {@link Election} is already closed.
      */
     public static Election buildElection(final ElectionInfo electionInfo) {
-        return buildElection(electionInfo, new HashMap<>());
+        return buildElection(electionInfo, new TreeMap<>());
     }
 
     /**
@@ -119,7 +119,7 @@ public class ElectionFactory {
         final long votersNumber
     ) {
         checkResults(results, votersNumber, choices);
-        final Map<String, Long> retResults = new HashMap<>();
+        final TreeMap<String, Long> retResults = new TreeMap<>();
         results.keySet().forEach(choice -> retResults.put(choice, results.get(choice)));
         choices.stream()
             .filter(choice -> !results.containsKey(choice.getChoice()))
@@ -155,7 +155,7 @@ public class ElectionFactory {
      */
     private static void checkDataAndResults(final LocalDateTime end, final Map<String, Long> results) {
         boolean alreadyClosedElection = LocalDateTime.now().isAfter(end);
-        boolean resultsAreEmpty = results.equals(new HashMap<>())
+        boolean resultsAreEmpty = results.isEmpty()
                 || results.values().stream().reduce(Long::sum).orElse(0L) == 0L;
         if (alreadyClosedElection && resultsAreEmpty) {
             illegal("Already close election and empty results");

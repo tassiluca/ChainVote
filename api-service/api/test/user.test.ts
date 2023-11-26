@@ -61,9 +61,11 @@ describe("GET /users/", () => {
         expect(response.body.data).toHaveProperty("email");
         expect(response.body.data).toHaveProperty("firstName");
         expect(response.body.data).toHaveProperty("secondName");
+        expect(response.body.data).toHaveProperty("role");
         expect(response.body.data.email).toBe(user.email);
         expect(response.body.data.firstName).toBe(user.firstName);
         expect(response.body.data.secondName).toBe(user.secondName);
+        expect(response.body.data.role).toBe(user.role);
     }, MAX_TIMEOUT);
 
 

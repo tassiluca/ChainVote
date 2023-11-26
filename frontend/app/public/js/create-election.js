@@ -45,8 +45,6 @@ $(document).ready(() => {
             choices.splice(Number(container.id), 0, container.value);
         });
 
-        console.log()
-
         const data = {
             'goal': goal.value,
             'voters': voters.value,
@@ -55,15 +53,18 @@ $(document).ready(() => {
             'choices': choices
         };
 
+        show(document.querySelector("#process-create-election"));
+
         $.ajax({
             type: "POST",
             url: urlToCreateElection,
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
         }).done(function(response) {
-            alert(response.message)
-            if(response.success) {
-                hide(document.querySelector("#div-error-sign-up"))
+            if (response.success) {
+                console.log(JSON.stringify(response));
+                hide(document.querySelector("#div-error-sign-up"));
+                hide(document.querySelector("#process-create-election"));
                 window.location.href = response.url;
             } else {
                 document.getElementById('error-create-election').innerHTML = response.message;
@@ -74,6 +75,7 @@ $(document).ready(() => {
             document.getElementById('error-create-election').innerHTML = 'Error ' + error.status + ': ' + error.statusText;
             show(document.querySelector("#div-error-create-election"));
         });
+        hide(document.querySelector("#process-create-election"));
     })
 
     function hide(element) {

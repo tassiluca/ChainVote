@@ -24,7 +24,11 @@ $(document).ready(() => {
         }).done(function(response) {
             if (response.success) {
                 hide(document.querySelector("#div-error-sign-in"))
-                window.location.href = response.url;
+                if (window.location.href === urlToSignIn) {
+                    window.location.href = response.url;
+                } else {
+                    window.location.reload();
+                }
             } else {
                 document.getElementById('error-sign-in').innerHTML = response.message;
                 show(document.querySelector("#div-error-sign-in"));

@@ -86,7 +86,7 @@ electionInfoRouter.get(
     "/detail/:electionId",
     authenticationHandler,
     validationHandler([
-        param("electionId").exists().isAlphanumeric()
+        param("electionId").exists()
     ]),
     readElectionInfo);
 
@@ -170,7 +170,7 @@ electionInfoRouter.delete(
     "/",
     authenticationHandler,
     validationHandler([
-        body("electionId").exists().isAlphanumeric()
+        body("electionId").exists()
     ]),
     deleteElectionInfo);
 

@@ -2,7 +2,7 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.SerializersUtils;
-import it.unibo.ds.chainvote.elections.OneTimeCodeAsset;
+import it.unibo.ds.chainvote.asset.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.codes.OneTimeCodeImpl;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;

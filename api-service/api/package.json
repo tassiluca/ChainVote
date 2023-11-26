@@ -7,7 +7,7 @@
     "build": "tsc",
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts",
-    "test": "jest --silent --forceExit --runInBand",
+    "test": "jest --forceExit --runInBand",
     "start": "node dist/app.js",
     "generate-docs": "tsc && node ./dist/doc/doc-gen.js"
   },
