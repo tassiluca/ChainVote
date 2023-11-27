@@ -38,13 +38,11 @@ $(document).ready(() => {
 
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-
         const choices = []
         const inputContainers = document.querySelectorAll(".choice");
         inputContainers.forEach((container) => {
             choices.splice(Number(container.id), 0, container.value);
         });
-
         const data = {
             'goal': goal.value,
             'voters': voters.value,
@@ -52,9 +50,6 @@ $(document).ready(() => {
             'endDate': endDate.value,
             'choices': choices
         };
-
-        show(document.querySelector("#process-create-election"));
-
         $.ajax({
             type: "POST",
             url: urlToCreateElection,
@@ -62,26 +57,26 @@ $(document).ready(() => {
             contentType: "application/json; charset=utf-8"
         }).done(function(response) {
             if (response.success) {
-                console.log(JSON.stringify(response));
-                hide(document.querySelector("#div-error-sign-up"));
-                hide(document.querySelector("#process-create-election"));
-                window.location.href = response.url;
+                // window.location.href = response.url;
+                $("#success").text("Election created successfully.");
+                show($("#success"));
+                hide($("#error"));
             } else {
-                document.getElementById('error-create-election').innerHTML = response.message;
-                show(document.querySelector("#div-error-create-election"));
+                $("#error").text(response.message);
+                show($("#error"));
+                hide($("#success"));
             }
         }).fail(function(error) {
-            alert(error.statusText)
-            document.getElementById('error-create-election').innerHTML = 'Error ' + error.status + ': ' + error.statusText;
-            show(document.querySelector("#div-error-create-election"));
+            $("#error").text('Error ' + error.status + ': ' + error.statusText);
+            show($("#error"));
         });
         hide(document.querySelector("#process-create-election"));
     })
 
     function hide(element) {
-        element.classList.add('hidden');
+        $(element).addClass("hidden");
     }
     function show(element) {
-        element.classList.remove('hidden');
+        $(element).removeClass("hidden");
     }
 });

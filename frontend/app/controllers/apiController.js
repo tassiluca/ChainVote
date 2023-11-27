@@ -9,7 +9,7 @@ const getAllElections = async (req, res, next) => {
         const electionsData = electionsDetailsResponse.data;
         for (let i = 0; i < electionsData.length; i++) {
             const entry = reformatDates(electionsData[i]);
-            entry.open = new Date(`${entry.endDate}Z`) > Date.now();
+            entry.open = Date.now() > new Date(`${entry.startDate}Z`) && new Date(`${entry.endDate}Z`) > Date.now();
         }
         res.locals.data = electionsData;
         res.locals.view = 'dashboard';

@@ -10,12 +10,10 @@ $(document).ready(() => {
 
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-
         const data = {
             'email': email.value,
             'password': password.value,
         };
-
         $.ajax({
             type: "POST",
             url: urlToSignIn,
@@ -23,26 +21,26 @@ $(document).ready(() => {
             contentType: "application/json; charset=utf-8"
         }).done(function(response) {
             if (response.success) {
-                hide(document.querySelector("#div-error-sign-in"))
+                hide($("#error"))
                 if (window.location.href === urlToSignIn) {
                     window.location.href = response.url;
                 } else {
                     window.location.reload();
                 }
             } else {
-                document.getElementById('error-sign-in').innerHTML = response.message;
-                show(document.querySelector("#div-error-sign-in"));
+                $("#error").text(response.message);
+                show($("#error"));
             }
         }).fail(function(error) {
-            document.getElementById('error-sign-in').innerHTML = 'Error ' + error.status + ': ' + error.statusText;
-            show(document.querySelector("#div-error-sign-in"));
+            $("#error").text('Error ' + error.status + ': ' + error.statusText);
+            show($("#error"));
         });
     })
 
     function hide(element) {
-        element.classList.add('hidden');
+        $(element).addClass('hidden');
     }
     function show(element) {
-        element.classList.remove('hidden');
+        $(element).removeClass('hidden');
     }
 });
