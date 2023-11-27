@@ -50,27 +50,28 @@ $(document).ready(() => {
             'endDate': endDate.value,
             'choices': choices
         };
+        show($("#spinner"));
         $.ajax({
             type: "POST",
             url: urlToCreateElection,
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
-        }).done(function(response) {
+        }).done(response => {
             if (response.success) {
                 // window.location.href = response.url;
                 $("#success").text("Election created successfully.");
-                show($("#success"));
                 hide($("#error"));
+                show($("#success"));
             } else {
                 $("#error").text(response.message);
-                show($("#error"));
                 hide($("#success"));
+                show($("#error"));
             }
-        }).fail(function(error) {
+        }).fail(error => {
             $("#error").text('Error ' + error.status + ': ' + error.statusText);
             show($("#error"));
-        });
-        hide(document.querySelector("#process-create-election"));
+            hide($("#success"));
+        }).always(() => hide($("#spinner")));
     })
 
     function hide(element) {

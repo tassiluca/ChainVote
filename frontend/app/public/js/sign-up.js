@@ -12,10 +12,6 @@ $(document).ready(() => {
     const repeatPassword = document.querySelector('#inputRepeatPassword');
     const role = document.querySelector('#inputRole');
 
-    function goPreviousWindow() {
-        window.history.back();
-    }
-
     function isPasswordRepeatValid() {
         return password.value === repeatPassword.value
     }
