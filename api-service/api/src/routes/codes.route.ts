@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {generateCodeFor, invalidate, isValid, verifyCodeOwner} from "../controllers/codes";
+import {generateCodeFor, isValid, verifyCodeOwner} from "../controllers/codes";
 import RedisLimiterStorage from "../configs/redis.config";
 import {apiLimiter, ApiLimiterEntry} from "core-components";
 import {authenticationHandler} from "core-components";
@@ -20,13 +20,6 @@ const API_LIMITER_RULES: ApiLimiterEntry = {
         "POST": {
             time: 20,
             limit: 100,
-        }
-    },
-
-    "/invalidate": {
-        "PATCH": {
-            time: 20,
-            limit: 100
         }
     },
 
@@ -149,46 +142,5 @@ codesRoute.post("/verify-owner",
     ]),
     verifyCodeOwner);
 
-/**
- * @openapi
- *
- * paths:
- *   /code/invalidate:
- *      patch:
- *          summary: invalidate a code
- *          requestBody:
- *              required: true
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: object
- *                          properties:
- *                              electionId:
- *                                  type: string
- *                                  description: The id of an election.
-*                               userId:
-*                                  type: string
-*                                  description: The id of the owner of the code.
- *                              code:
- *                                  type: string
- *                                  description: The code to invalidate
- *          responses:
- *              '200':
- *                  description: The request was handled successfully
- *              '429':
- *                  description: Limit of requests reached for this endpoint.
- *              '500':
- *                  description: Generic server error
- *
- */
-codesRoute.patch(
-    "/invalidate",
-    authenticationHandler,
-    validationHandler([
-        body("electionId").exists().isNumeric(),
-        body("userId").exists().isAlphanumeric(),
-        body("code").exists().isAlphanumeric()
-    ]),
-    invalidate);
 
 export default codesRoute;
