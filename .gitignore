@@ -1,9 +1,5 @@
-# draw.io temp file
-*.dtmp
-*.bkp
-
-# MacOS file system
-*.DS_Store
-
-# Binaries
-*/bin/
+# Commons files to ignore
+# Single .gitignore are present in the specific folders
+.DS_Store
+.idea
+.chainvote

@@ -1,0 +1,12 @@
+### Binaries ###
+bin/
+
+### Chaincode jars/packages ###
+*.jar
+*.tar.gz
+
+### IDEs ###
+.idea/
+
+### Generated files ###
+generated/

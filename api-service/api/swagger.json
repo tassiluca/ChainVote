@@ -1,0 +1,547 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Chainvote API documentation",
+    "description": "This is the API documentation for the Chainvote API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local server"
+    }
+  ],
+  "paths": {
+    "/code/generate": {
+      "post": {
+        "summary": "Generate a new voting code",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "The id of a user."
+                  },
+                  "electionId": {
+                    "type": "string",
+                    "description": "The id of a valid election."
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "The voting code for an election."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The election is created successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/code/is-valid": {
+      "post": {
+        "summary": "Check if a given code is valid",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "The id of the user."
+                  },
+                  "electionId": {
+                    "type": "string",
+                    "description": "The id of an election."
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "The code to check"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request was handled successfully"
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "invalidate a code",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "The id of the user that own the code."
+                  },
+                  "electionId": {
+                    "type": "string",
+                    "description": "The id of an election."
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "The code to invalidate"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request was handled successfully"
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/code/verify-owner": {
+      "post": {
+        "summary": "Check if the code belongs to the specified user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "The id of the user."
+                  },
+                  "electionId": {
+                    "type": "string",
+                    "description": "The id of an election."
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "The code to check"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request was handled successfully"
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/election/info/all": {
+      "get": {
+        "summary": "Return all the election info created",
+        "responses": {
+          "200": {
+            "description": "Request accepted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/election/info/detail/{electionId}": {
+      "get": {
+        "summary": "Return a specific election created",
+        "parameters": [
+          {
+            "name": "electionId",
+            "in": "path",
+            "description": "The id of the election to get the info from.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request accepted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/election/info/": {
+      "post": {
+        "summary": "Create a new election info",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "goal": {
+                    "type": "string",
+                    "description": "The goal to reach with this election."
+                  },
+                  "voters": {
+                    "type": "string",
+                    "description": "The number of participants to the election."
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "description": "The start date of the election in ISO format."
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "description": "The end date of the election in ISO format."
+                  },
+                  "choices": {
+                    "type": "array",
+                    "description": "An array of string representing the mutually exclusive choices of the election."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an election info",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionId": {
+                    "type": "string",
+                    "description": "The election id to delete"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The resource was deleted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/election/all": {
+      "get": {
+        "summary": "Return all the election created",
+        "responses": {
+          "200": {
+            "description": "Request accepted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/election/": {
+      "post": {
+        "summary": "Create a new election",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionId": {
+                    "type": "string",
+                    "description": "The id of an election info to use."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an election",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "electionId": {
+                    "type": "string",
+                    "description": "The election id to delete"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The resource was deleted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/election/vote/{electionId}": {
+      "put": {
+        "summary": "Cast a vote for the election",
+        "parameters": [
+          {
+            "name": "electionId",
+            "in": "path",
+            "description": "The id of the election.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "choice": {
+                    "type": "string",
+                    "description": "The expressed vote."
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "The id of the user that is casting the vote."
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "The vote code."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The request was handled successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/users/{userEmail}": {
+      "get": {
+        "summary": "Return a specific user",
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "The email of the user to get the info from.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request accepted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a specific user",
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "The email of the user to update.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request accepted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a specific user",
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "The email of the user to delete.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request accepted successfully."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "summary": "Create a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The email of the user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password of the user, this will be encrypted."
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "description": "The first name of the user."
+                  },
+                  "secondName": {
+                    "type": "string",
+                    "description": "The second name of the user."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The new user is created."
+          },
+          "429": {
+            "description": "Limit of requests reached for this endpoint."
+          },
+          "500": {
+            "description": "Generic server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}

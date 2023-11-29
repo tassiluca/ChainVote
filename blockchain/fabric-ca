@@ -1,0 +1,12 @@
+FROM hyperledger/fabric-ca:1.5.7
+ARG UID
+ARG GID
+ARG OS
+RUN apt update && apt upgrade -y && \
+    apt install curl -y && \
+    apt install jq -y && \
+    apt install -y sudo && \
+    if [ "$OS" = "Linux" ]; then addgroup --gid $GID ca-user; fi && \
+    adduser --uid $UID --gid $GID --disabled-password --gecos "" ca-user && \
+    echo 'ca-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+USER ca-user

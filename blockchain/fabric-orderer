@@ -1,0 +1,2 @@
+FROM hyperledger/fabric-orderer:2.5.4
+RUN apt update && apt upgrade -y; apt install curl -y; apt install jq -y

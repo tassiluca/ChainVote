@@ -1,0 +1,28 @@
+html {
+    margin: 1%;
+}
+
+.hidden {
+    display: none;
+}
+
+footer {
+    background-color: #f8f9fa !important;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer ul {
+    padding: 0;
+    list-style: none;
+}
+
+footer ul li {
+    display: inline-block;
+}
+
+footer ul li:not(:last-child)::after {
+    content: " | ";
+}

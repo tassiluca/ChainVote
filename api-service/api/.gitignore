@@ -1,0 +1,10 @@
+# Node Modules
+node_modules/
+target/
+package-lock.json
+
+# Dist folder
+dist/
+
+# Secrets folder
+secrets/

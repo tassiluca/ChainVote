@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">    
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign in</title>
+        <%- include('commons/head') %>
+        <link rel="stylesheet" href="../styles/sign.css">
+    </head>
+    <body>
+        <%- include('commons/navbar') %>
+        <main>
+            <div class="row">
+                <div class="col-md-4 center mx-auto">
+                    <form action="/submit-sign-in" class="form-signin" id="login" method="post">
+                        <h1 class="h3 mb-3 text-center font-weight-normal">Log in</h1>
+                        <label for="inputEmail" class="sr-only">Email address</label>
+                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus>
+                        <label for="inputPassword" class="sr-only">Password</label>
+                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                        <div class="text-center mx-auto credentials-route">
+                            <p>
+                                New user? <a class="navbar-brand" href="/sign-up">Create an account</a><br/>
+                            </p>
+                        <div id="error" class="alert alert-danger hidden" role="alert"></div>
+                    </form>
+                </div>
+            </div>            
+        </main>
+        <%- include('commons/footer') %>
+        <script src="./js/sign-in.js"></script>
+    </body>
+</html>
