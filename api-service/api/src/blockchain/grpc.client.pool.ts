@@ -1,5 +1,13 @@
 import {connect, Gateway, Identity, Signer} from "@hyperledger/fabric-gateway";
-import {getPeerBasename, getPeerHost, getPeerHostAlias, getPeerOrganization, Org1Peer, Org2Peer} from "./peer.enum";
+import {
+    getPeerBasename,
+    getPeerHost,
+    getPeerHostAlias,
+    getPeerOrganization,
+    Org1Peer,
+    Org2Peer,
+    Org3Peer
+} from "./peer.enum";
 import {CommunicatorFactory} from "./communicator/communicator.factory";
 import {CommunicatorInterface} from "./communicator/communicator";
 import * as grpc from "@grpc/grpc-js";
@@ -9,8 +17,8 @@ class GrpcClientPool {
     private clients: Map<string, Gateway> = new Map();
 
     private constructor() {}
-
-    private async createClient(peer: Org1Peer | Org2Peer): Promise<Gateway> {
+    
+    private async createClient(peer: Org1Peer | Org2Peer | Org3Peer): Promise<Gateway> {
         let communicator: CommunicatorInterface;
         let client: grpc.Client, identity: Identity, signer: Signer;
         if(getPeerOrganization(peer) === 'org1') {
@@ -19,8 +27,15 @@ class GrpcClientPool {
                 getPeerHost(peer),
                 getPeerHostAlias(peer)
             )
-        } else {
+        } else if (getPeerOrganization(peer) === 'org2') {
             communicator = CommunicatorFactory.org2WithEndpoint(
+                getPeerBasename(peer),
+                getPeerHost(peer),
+                getPeerHostAlias(peer)
+            )
+        }
+        else {
+            communicator = CommunicatorFactory.org3WithEndpoint(
                 getPeerBasename(peer),
                 getPeerHost(peer),
                 getPeerHostAlias(peer)
@@ -57,7 +72,7 @@ class GrpcClientPool {
         return this.instance;
     }
 
-    public async getClientForPeer(peer: Org1Peer | Org2Peer): Promise<Gateway> {
+    public async getClientForPeer(peer: Org1Peer | Org2Peer | Org3Peer): Promise<Gateway> {
         if (!this.clients.has(peer)) {
             this.clients.set(peer, await this.createClient(peer));
         }
