@@ -52,17 +52,20 @@ $(document).ready(() => {
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function(response) {
-                alert(response.message)
-                if(response.success) {
-                    hide(document.querySelector("#div-error-sign-up"))
-                    window.location.href = response.url;
+                if (response.success) {
+                    $("#success").text(response.message);
+                    show($("#success"));
+                    hide($("#error"));
+                    // window.location.href = response.url;
                 } else {
-                    document.getElementById('error-sign-up').innerHTML = response.message;
-                    show(document.querySelector("#div-error-sign-up"));
+                    $("#error").text(response.message);
+                    show($("#error"));
+                    hide($("#success"));
                 }
             }).fail(function(error) {
-                document.getElementById('error-sign-up').innerHTML = 'Error ' + error.status + ': ' + error.responseJSON.message;
-                show(document.querySelector("#div-error-sign-up"));
+                $("#error").text('Error ' + error.status + ': ' + error.responseJSON.message);
+                show($("#error"));
+                hide($("#success"));
             });
         }
     })
@@ -101,10 +104,10 @@ $(document).ready(() => {
         element.classList.remove('error');
     }
     function hide(element) {
-        element.classList.add('hidden');
+        $(element).addClass("hidden");
     }
     function show(element) {
-        element.classList.remove('hidden');
+        $(element).removeClass("hidden");
     }
     function isEmailValid(value) {
         const reg = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
