@@ -122,15 +122,15 @@ const postSignIn = async (req, res) => {
 };
 
 const getUserArea = async (req, res, next) => {
-    try {
-        const userAreaUrl = urlApiServer + `/users/${req.session.email}`;
-        const userData = await axiosRequest('GET', userAreaUrl, null, req.session.accessToken);
-        res.locals.view = 'user-area';
-        res.locals.data = userData;
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+    if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
+        res.locals.view = 'sign-in';
+    } else {
+        try {
+            const userAreaUrl = urlApiServer + `/users/${req.session.email}`;
+            const userData = await axiosRequest('GET', userAreaUrl, null, req.session.accessToken);
+            res.locals.view = 'user-area';
+            res.locals.data = userData;
+        } catch (error) {
             res.locals.view = 'error';
         }
     }

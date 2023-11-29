@@ -3,20 +3,20 @@ const axiosRequest = require('../utils/utils');
 const urlApiServer = process.env.API_SERVER_URL || "http://localhost:8080"
 
 const getAllElections = async (req, res, next) => {
-    try {
-        const allElectionsUrl = urlApiServer + `/election/info/all`;
-        const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, req.session.accessToken);
-        const electionsData = electionsDetailsResponse.data;
-        for (let i = 0; i < electionsData.length; i++) {
-            const entry = reformatDates(electionsData[i]);
-            entry.open = Date.now() > new Date(`${entry.startDate}Z`) && new Date(`${entry.endDate}Z`) > Date.now();
-        }
-        res.locals.data = electionsData;
-        res.locals.view = 'dashboard';
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+    if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
+        res.locals.view = 'sign-in';
+    } else {
+        try {
+            const allElectionsUrl = urlApiServer + `/election/info/all`;
+            const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, req.session.accessToken);
+            const electionsData = electionsDetailsResponse.data;
+            for (let i = 0; i < electionsData.length; i++) {
+                const entry = reformatDates(electionsData[i]);
+                entry.open = Date.now() > new Date(`${entry.startDate}Z`) && new Date(`${entry.endDate}Z`) > Date.now();
+            }
+            res.locals.data = electionsData;
+            res.locals.view = 'dashboard';
+        } catch (error) {
             res.locals.view = 'error';
         }
     }
@@ -24,21 +24,21 @@ const getAllElections = async (req, res, next) => {
 };
 
 const getElection = async (req, res, next) => {
-    try {
-        const electionId = req.params.electionId;
-        const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
-        const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
-        const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
-        const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
-        const electionData = reformatDates(electionDetailsResponse.data);
-        electionData.choices = electionInfoResponse.data.choices;
-        electionData.electionId = electionId;
-        res.locals.data = electionData;
-        res.locals.view = 'election-info';
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+    if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
+        res.locals.view = 'sign-in';
+    } else {
+        try {
+            const electionId = req.params.electionId;
+            const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
+            const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
+            const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
+            const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
+            const electionData = reformatDates(electionDetailsResponse.data);
+            electionData.choices = electionInfoResponse.data.choices;
+            electionData.electionId = electionId;
+            res.locals.data = electionData;
+            res.locals.view = 'election-info';
+        } catch (error) {
             res.locals.view = 'not-found';
         }
     }
@@ -46,24 +46,24 @@ const getElection = async (req, res, next) => {
 };
 
 const getCastVote = async (req, res, next) => {
-    try {
-        const electionId = req.params.electionId;
-        const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
-        const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
-        const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
-        const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
-        const electionData = reformatDates(electionDetailsResponse.data);
+    if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
+        res.locals.view = 'sign-in';
+    } else {
+        try {
+            const electionId = req.params.electionId;
+            const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
+            const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
+            const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
+            const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
+            const electionData = reformatDates(electionDetailsResponse.data);
 
-        electionData.choices = electionInfoResponse.data.choices;
-        electionData.electionId = electionId;
-        electionData.goal = electionInfoResponse.data.goal;
+            electionData.choices = electionInfoResponse.data.choices;
+            electionData.electionId = electionId;
+            electionData.goal = electionInfoResponse.data.goal;
 
-        res.locals.view = 'cast-vote';
-        res.locals.data = electionData;
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+            res.locals.view = 'cast-vote';
+            res.locals.data = electionData;
+        } catch (error) {
             res.locals.view = 'error';
         }
     }
