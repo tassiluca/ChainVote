@@ -17,31 +17,55 @@ export class CommunicatorBuilder {
         this._mspId = '';
     }
 
+    /**
+     * Set the key path of the msp
+     * @param keyPath
+     */
     keyPath(keyPath: string): CommunicatorBuilder {
         this._keyPath = keyPath;
         return this;
     }
 
+    /**
+     * Set the certificate path of the msp
+     * @param certPath
+     */
     certPath(certPath: string): CommunicatorBuilder {
         this._certPath = certPath;
         return this;
     }
 
+    /**
+     * Set the peer tls path
+     * @param peerTlsPath
+     */
     peerTlsPath(peerTlsPath: string): CommunicatorBuilder {
         this._peerTlsPath = peerTlsPath;
         return this;
     }
 
+    /**
+     * Set the gateway peer endpoint that will interact with the blockchain
+     * @param peerEndpoint
+     */
     peerEndpoint(peerEndpoint: string): CommunicatorBuilder {
         this._peerEndpoint = peerEndpoint;
         return this;
     }
 
+    /**
+     * Set the host alias of the peer
+     * @param hostAlias
+     */
     hostAlias(hostAlias: string): CommunicatorBuilder {
         this._hostAlias = hostAlias;
         return this;
     }
 
+    /**
+     * Set the id of the msp
+     * @param mspId
+     */
     mspId(mspId: string): CommunicatorBuilder {
         this._mspId = mspId;
         return this;
