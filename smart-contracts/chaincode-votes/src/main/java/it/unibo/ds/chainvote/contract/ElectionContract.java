@@ -51,7 +51,7 @@ import java.util.Map;
 public final class ElectionContract implements ContractInterface {
 
     private static final String CHANNEL_INFO_NAME_CH1 = "ch1";
-    private static final String CHAINCODE_INFO_NAME_CH1 = "chaincode-org1";
+    private static final String CHAINCODE_INFO_NAME_CH1 = "chaincode-elections";
     private final Genson genson = SerializersUtils.gensonInstance();
     private static final CodesManagerContract CODES_MANAGER_CONTRACT = new CodesManagerContract();
 
