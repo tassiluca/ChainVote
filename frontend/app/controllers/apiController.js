@@ -68,7 +68,7 @@ const getCastVote = async (req, res, next) => {
         }
     }
     next();
-}
+};
 
 const postCastVote = async (req, res) => {
     try {
@@ -90,8 +90,7 @@ const postCastVote = async (req, res) => {
             {message: error.response.data.error.message}
         );
     }
-
-}
+};
 
 const getCreateElection = async (req, res, next) => {
     if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
@@ -102,7 +101,7 @@ const getCreateElection = async (req, res, next) => {
         res.locals.view = 'create-election';
     }
     next();
-}
+};
 
 const postCreateElection = async (req, res) => {
     try {
@@ -151,7 +150,7 @@ const postCreateElection = async (req, res) => {
             {message: error.response.data.error.message}
         );
     }
-}
+};
 
 const createElectionCode = async (req, res) => {
     try {
