@@ -9,10 +9,13 @@ import {convertToChoiceList} from "../blockchain/utils/utils";
 
 import { ac } from "../configs/accesscontrol.config";
 import {ErrorTypes, UnauthorizedError} from "core-components";
+import { DateTime } from 'luxon';
+
 
 const channelName = "ch1";
 const contractName = "chaincode-elections";
 const utf8Decoder = new TextDecoder();
+
 
 /**
  * Return all the generated data of election info.
@@ -78,6 +81,17 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
     return next();
 }
 
+
+/**
+ * Convert a date in ISO format to a date in the UTC timezone.
+ *
+ * @param isoDate the date to convert
+ */
+function convertToUTC(isoDate: string): string {
+    const convertedDateTime = DateTime.fromISO(isoDate, { zone: 'Europe/Rome' });
+    return convertedDateTime.toUTC().toISO() as string;
+}
+
 /**
  * Create an election info.
  *
@@ -101,12 +115,14 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         const contract: Contract = network.getContract(contractName);
 
         const choices: string= JSON.stringify(convertToChoiceList(req.body.choices));
+        const convertedStartDate = convertToUTC(req.body.startDate);
+        const convertedEndDate = convertToUTC(req.body.endDate);
 
         const data = [
             req.body.goal,
             req.body.voters,
-            req.body.startDate,
-            req.body.endDate,
+            convertedStartDate,
+            convertedEndDate,
             choices
         ];
         const submission: Uint8Array = await contract.submit('ElectionInfoContract:createElectionInfo', {
