@@ -11,7 +11,7 @@ import { ac } from "../configs/accesscontrol.config";
 import {UnauthorizedError} from "core-components";
 
 const channelName = "ch1";
-const contractName = "chaincode-org1";
+const contractName = "chaincode-elections";
 const utf8Decoder = new TextDecoder();
 
 /**
