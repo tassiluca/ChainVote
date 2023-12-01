@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import {Response as RespObj} from "../utils/response/response";
 import {StatusCodes} from "http-status-codes";
-import {InternalServerError} from "../errors/errors";
+import {BadRequestError, InternalServerError, NotFoundError} from "../errors/errors";
 
 export async function defaultResponseHandler(
     req: Request,
@@ -11,7 +11,7 @@ export async function defaultResponseHandler(
     const data = res.locals.data;
     const code = res.locals.code;
     if(data == undefined || code == undefined) {
-        return next(new InternalServerError("Need to define the response data and code"));
+        return next(new BadRequestError("The route doesn't exist"));
     }
     const response: RespObj = {
         success: true,

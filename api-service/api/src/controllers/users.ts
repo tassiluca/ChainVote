@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { BadRequestError, NotFoundError, UnauthorizedError, User } from "core-components";
+import {BadRequestError, ErrorTypes, NotFoundError, UnauthorizedError, User} from "core-components";
 import { ac } from "../configs/accesscontrol.config";
 
 async function setWorkData(req: Request, res: Response, next:NextFunction, isAllowed:boolean) {
@@ -10,11 +10,22 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
     if(email && email !== user.email) {
         try {
             if(!isAllowed) {
-                next(new UnauthorizedError("Can't access to the resource"));
+                next(
+                    new UnauthorizedError(
+                        "Can't access to the resource",
+                        undefined,
+                        ErrorTypes.AUTHENTICATION_ERROR
+                    )
+                );
             }
             user = await User.findOne({email: email});
             if(user == undefined) {
-                next(new NotFoundError("Can't find the user"));
+                next(new NotFoundError(
+                    "Can't find the user",
+                    undefined,
+                    ErrorTypes.AUTHENTICATION_ERROR
+                )
+            );
             }
         } catch(error) {
             throw error; 
@@ -41,7 +52,13 @@ export async function createUser(req: Request, res: Response, next: NextFunction
             secondName: user.secondName
         };
     } catch(error) {
-        return next(error);
+        return next(
+            new BadRequestError(
+                error.message,
+                undefined,
+                ErrorTypes.REGISTER_ERROR
+            )
+        );
     }
 
     return next();
@@ -76,7 +93,13 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
 
     const data = req.body.data;
     if(data === null || data === undefined) {
-        return next(new BadRequestError("Request need to have a \"data\" field"));
+        return next(
+            new BadRequestError(
+                "Request need to have a \"data\" field",
+                undefined,
+                ErrorTypes.VALIDATION_ERROR
+            )
+        );
     }
 
     try {

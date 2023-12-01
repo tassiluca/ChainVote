@@ -8,7 +8,7 @@ import {Org2Peer} from "../blockchain/peer.enum";
 import {StatusCodes} from "http-status-codes";
 import transformHyperledgerError from "../blockchain/errors/error.handling";
 import {ac} from "../configs/accesscontrol.config";
-import {UnauthorizedError} from "core-components";
+import {ErrorTypes, UnauthorizedError} from "core-components";
 
 const channelName = "ch2";
 const contractName = "chaincode-votes";
@@ -23,7 +23,13 @@ const utf8Decoder = new TextDecoder();
  */
 export async function isValid(req: Request, res: Response, next: NextFunction) {
     if(!ac.can(res.locals.user.role).readAny('code').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
@@ -61,7 +67,13 @@ export async function isValid(req: Request, res: Response, next: NextFunction) {
  */
 export async function verifyCodeOwner(req: Request, res: Response, next: NextFunction) {
     if(!ac.can(res.locals.user.role).readAny('code').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
@@ -98,7 +110,13 @@ export async function verifyCodeOwner(req: Request, res: Response, next: NextFun
  */
 export async function generateCodeFor(req: Request, res: Response, next: NextFunction) {
     if(!ac.can(res.locals.user.role).createAny('code').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);

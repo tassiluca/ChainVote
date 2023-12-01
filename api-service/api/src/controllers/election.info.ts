@@ -8,7 +8,7 @@ import transformHyperledgerError from "../blockchain/errors/error.handling";
 import {convertToChoiceList} from "../blockchain/utils/utils";
 
 import { ac } from "../configs/accesscontrol.config";
-import {UnauthorizedError} from "core-components";
+import {ErrorTypes, UnauthorizedError} from "core-components";
 
 const channelName = "ch1";
 const contractName = "chaincode-elections";
@@ -23,7 +23,13 @@ const utf8Decoder = new TextDecoder();
  */
 export async function getAllElectionInfo(req: Request, res: Response, next: NextFunction) {
     if(!ac.can(res.locals.user.role).readAny('electionInfo').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
 
     try {
@@ -42,13 +48,20 @@ export async function getAllElectionInfo(req: Request, res: Response, next: Next
 
 /**
  * Read an election data info with a specific id
+ * 
  * @param req
  * @param res
  * @param next
  */
 export async function readElectionInfo(req: Request, res: Response, next: NextFunction){
     if(!ac.can(res.locals.user.role).readAny('electionInfo').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
@@ -66,7 +79,7 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
 }
 
 /**
- * Create an election information.
+ * Create an election info.
  *
  * @param req request object
  * @param res response object
@@ -74,24 +87,36 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
  */
 export async function createElectionInfo(req: Request, res: Response, next: NextFunction){
     if(!ac.can(res.locals.user.role).createAny('electionInfo').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-        const goal: string = req.body.goal;
-        const voters: string = req.body.voters;
-        const startDate: string = req.body.startDate;
-        const endDate: string = req.body.endDate;
+
         const choices: string= JSON.stringify(convertToChoiceList(req.body.choices));
-        const data = [goal, voters, startDate, endDate, choices];
+
+        const data = [
+            req.body.goal,
+            req.body.voters,
+            req.body.startDate,
+            req.body.endDate,
+            choices
+        ];
         const submission: Uint8Array = await contract.submit('ElectionInfoContract:createElectionInfo', {
             arguments: data
         });
+
         const resultJson = JSON.parse(utf8Decoder.decode(submission));
         res.locals.code = StatusCodes.CREATED;
         res.locals.data = resultJson.result;
+
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -107,12 +132,19 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
  */
 export async function deleteElectionInfo(req: Request, res: Response, next: NextFunction) {
     if(!ac.can(res.locals.user.role).deleteAny('electionInfo').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
+
         const electionId: string = req.body.electionId;
         await contract.submitTransaction('ElectionInfoContract:deleteElectionInfo', electionId);
         res.locals.code = StatusCodes.OK;
