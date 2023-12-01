@@ -16,7 +16,7 @@ const getAllElections = async (req, res, next) => {
             const electionsData = electionsDetailsResponse.data;
             for (let i = 0; i < electionsData.length; i++) {
                 const entry = reformatDates(electionsData[i]);
-                entry.open = Date.now() > new Date(`${entry.startDate}Z`) && new Date(`${entry.endDate}Z`) > Date.now();
+                entry.open = Object.keys(entry.results).length === 0;
             }
             res.locals.data = electionsData;
             res.locals.view = 'dashboard';
@@ -36,6 +36,8 @@ const getElection = async (req, res, next) => {
             const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
             const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
             const electionData = reformatDates(electionDetailsResponse.data);
+
+            electionData.open = Object.keys(electionData.results).length === 0;
             electionData.choices = electionInfoResponse.data.choices;
             electionData.electionId = electionId;
             res.locals.data = electionData;
@@ -57,12 +59,16 @@ const getCastVote = async (req, res, next) => {
             const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
             const electionData = reformatDates(electionDetailsResponse.data);
 
-            electionData.choices = electionInfoResponse.data.choices;
-            electionData.electionId = electionId;
-            electionData.goal = electionInfoResponse.data.goal;
-
-            res.locals.view = 'cast-vote';
-            res.locals.data = electionData;
+            const isOpen = Object.keys(electionData.results).length === 0;
+            if (isOpen) {
+                electionData.choices = electionInfoResponse.data.choices;
+                electionData.electionId = electionId;
+                electionData.goal = electionInfoResponse.data.goal;
+                res.locals.view = 'cast-vote';
+                res.locals.data = electionData;
+            } else {
+                res.locals.view = 'election-closed';
+            }
         } catch (error) {
             res.locals.view = 'error';
         }

@@ -22,7 +22,7 @@
                         <% }) %>
                     </ul>
                     <p><strong>Affluence: </strong> <%= responseData.data.affluence %></p>
-                    <% if (Object.keys(responseData.data.results).length === 0) { %>
+                    <% if (responseData.data.open) { %>
                         <div class="alert alert-warning" role="alert">
                             <strong>This election is still open. Therefore results are not available, yet.</strong>
                         </div>
