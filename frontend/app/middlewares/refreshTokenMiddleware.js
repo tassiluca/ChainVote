@@ -17,7 +17,7 @@ const refreshTokenMiddleware = async (req, res, next) => {
                     refreshToken: refreshToken
                 };
                 const refreshResponse = await axiosRequest('POST', urlRefreshToken, data);
-                if(refreshResponse.success) {
+                if (refreshResponse.success) {
                     req.session.accessToken = refreshResponse.data.accessToken;
                     req.session.refreshToken = refreshResponse.data.refreshToken;
                     req.session.expire = Date.now() + 15 * 60 * 1000;
@@ -25,6 +25,8 @@ const refreshTokenMiddleware = async (req, res, next) => {
                     req.session.destroy();
                 }
             }
+        } else {
+            res.locals.view = 'sign-in';
         }
     } catch (error) {
         console.log(error);

@@ -2,21 +2,25 @@ const axiosRequest = require('../utils/utils');
 
 const urlApiServer = process.env.API_SERVER_URL || "http://localhost:8080"
 
+const {
+    chaincodeErrorCode,
+    badRequestErrorCode,
+    badRequestErrorMessage
+} = require('../utils/utils')
+
 const getAllElections = async (req, res, next) => {
-    try {
-        const allElectionsUrl = urlApiServer + `/election/info/all`;
-        const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, req.session.accessToken);
-        const electionsData = electionsDetailsResponse.data;
-        for (let i = 0; i < electionsData.length; i++) {
-            const entry = reformatDates(electionsData[i]);
-            entry.open = Date.now() > new Date(`${entry.startDate}Z`) && new Date(`${entry.endDate}Z`) > Date.now();
-        }
-        res.locals.data = electionsData;
-        res.locals.view = 'dashboard';
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+    if (req.session && req.session.accessToken) {
+        try {
+            const allElectionsUrl = urlApiServer + `/election/info/all`;
+            const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, req.session.accessToken);
+            const electionsData = electionsDetailsResponse.data;
+            for (let i = 0; i < electionsData.length; i++) {
+                const entry = reformatDates(electionsData[i]);
+                entry.open = Date.now() > new Date(`${entry.startDate}Z`) && new Date(`${entry.endDate}Z`) > Date.now();
+            }
+            res.locals.data = electionsData;
+            res.locals.view = 'dashboard';
+        } catch (error) {
             res.locals.view = 'error';
         }
     }
@@ -24,21 +28,19 @@ const getAllElections = async (req, res, next) => {
 };
 
 const getElection = async (req, res, next) => {
-    try {
-        const electionId = req.params.electionId;
-        const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
-        const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
-        const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
-        const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
-        const electionData = reformatDates(electionDetailsResponse.data);
-        electionData.choices = electionInfoResponse.data.choices;
-        electionData.electionId = electionId;
-        res.locals.data = electionData;
-        res.locals.view = 'election-info';
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+    if (req.session && req.session.accessToken) {
+        try {
+            const electionId = req.params.electionId;
+            const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
+            const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
+            const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
+            const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
+            const electionData = reformatDates(electionDetailsResponse.data);
+            electionData.choices = electionInfoResponse.data.choices;
+            electionData.electionId = electionId;
+            res.locals.data = electionData;
+            res.locals.view = 'election-info';
+        } catch (error) {
             res.locals.view = 'not-found';
         }
     }
@@ -46,29 +48,27 @@ const getElection = async (req, res, next) => {
 };
 
 const getCastVote = async (req, res, next) => {
-    try {
-        const electionId = req.params.electionId;
-        const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
-        const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
-        const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
-        const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
-        const electionData = reformatDates(electionDetailsResponse.data);
+    if (req.session && req.session.accessToken) {
+        try {
+            const electionId = req.params.electionId;
+            const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
+            const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
+            const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
+            const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
+            const electionData = reformatDates(electionDetailsResponse.data);
 
-        electionData.choices = electionInfoResponse.data.choices;
-        electionData.electionId = electionId;
-        electionData.goal = electionInfoResponse.data.goal;
+            electionData.choices = electionInfoResponse.data.choices;
+            electionData.electionId = electionId;
+            electionData.goal = electionInfoResponse.data.goal;
 
-        res.locals.view = 'cast-vote';
-        res.locals.data = electionData;
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+            res.locals.view = 'cast-vote';
+            res.locals.data = electionData;
+        } catch (error) {
             res.locals.view = 'error';
         }
     }
     next();
-}
+};
 
 const postCastVote = async (req, res) => {
     try {
@@ -90,35 +90,35 @@ const postCastVote = async (req, res) => {
             {message: error.response.data.error.message}
         );
     }
-
-}
+};
 
 const getCreateElection = async (req, res, next) => {
-    if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-        res.locals.view = 'sign-in';
-    } else if (req.session.role !== 'admin') {
-        res.locals.view = 'no-permission';
-    } else {
-        res.locals.view = 'create-election';
+    if (req.session && req.session.accessToken) {
+        if (req.session.role !== 'admin') {
+            res.locals.view = 'no-permission';
+        } else {
+            res.locals.view = 'create-election';
+        }
     }
     next();
-}
+};
 
 const postCreateElection = async (req, res) => {
-    try {
-        const urlCreateElection = urlApiServer + "/election";
-        const urlCreateElectionInfo = urlApiServer + "/election/info";
+    if (req.body.goal && req.body.voters &&
+        req.body.startDate && req.body.endDate && req.body.choices) {
+        try {
+            const urlCreateElection = urlApiServer + "/election";
+            const urlCreateElectionInfo = urlApiServer + "/election/info";
 
-        if (req.body.goal && req.body.voters && req.body.startDate && req.body.endDate && req.body.choices) {
-            const goal = req.body.goal;
-            const voters = req.body.voters;
-            const startDate = new Date(req.body.startDate).toISOString();
-            const endDate = new Date(req.body.endDate).toISOString();
-            const choices = req.body.choices;
+            const data = {
+                goal: req.body.goal,
+                voters: req.body.voters,
+                startDate: new Date(req.body.startDate).toISOString(),
+                endDate: new Date(req.body.endDate).toISOString(),
+                choices: req.body.choices
+            }
 
-            const responseElectionInfo = await axiosRequest('POST', urlCreateElectionInfo, {
-                goal: goal, voters: voters, startDate: startDate, endDate: endDate, choices: choices
-            }, req.session.accessToken);
+            const responseElectionInfo = await axiosRequest('POST', urlCreateElectionInfo, data, req.session.accessToken);
             if (responseElectionInfo.success) {
                 const electionId = responseElectionInfo.data.electionId;
                 const responseElection = await axiosRequest('POST', urlCreateElection, {electionId: electionId}, req.session.accessToken);
@@ -141,36 +141,42 @@ const postCreateElection = async (req, res) => {
                     message: responseElectionInfo.error.message
                 });
             }
-        } else {
-            res.status(403).json({
-                message: "Bad attributes."
+        } catch (error) {
+            res.status(error.response.data.code).json({
+                message: error.response.data.error.message
             });
         }
-    } catch (error) {
-        res.status(error.response.data.code).json(
-            {message: error.response.data.error.message}
-        );
+    } else {
+        res.status(badRequestErrorCode).json({
+            message: badRequestErrorMessage
+        });
     }
-}
+};
 
 const createElectionCode = async (req, res) => {
-    try {
-        const electionId = req.body.electionId;
-        const data = {
-            electionId: electionId
-        }
-        const electionCodeRequest = urlApiServer + "/code/generate";
-        const electionDetailsResponse = await axiosRequest('POST', electionCodeRequest, data, req.session.accessToken);
-        if (electionDetailsResponse.success) {
-            return res.send({
-                success: true,
-                code: electionDetailsResponse.data
+    if (req.body.electionId) {
+        try {
+            const electionId = req.body.electionId;
+            const data = {
+                electionId: electionId
+            }
+            const electionCodeRequest = urlApiServer + "/code/generate";
+            const electionDetailsResponse = await axiosRequest('POST', electionCodeRequest, data, req.session.accessToken);
+            if (electionDetailsResponse.success) {
+                return res.send({
+                    success: true,
+                    code: electionDetailsResponse.data
+                });
+            }
+        } catch (error) {
+            res.status(error.response.data.code).json({
+                message: error.response.data.error.message
             });
         }
-    } catch (error) {
-        res.status(error.response.data.code).json(
-            {message: error.response.data.error.message}
-        );
+    } else {
+        res.status(badRequestErrorCode).json({
+            message: badRequestErrorMessage
+        });
     }
 };
 

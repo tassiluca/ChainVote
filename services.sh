@@ -15,6 +15,7 @@ function print_help() {
     echo "Pre-requisites:"
     echo "  - Unix-like operating system (macOS or Linux)"
     echo "  - Docker"
+    echo "  - Java"
     echo "  - npm"
 }
 
@@ -31,15 +32,18 @@ function detect_os() {
 }
 
 function check_prerequisites() {
-    detect_os 
-    if [[ machine == "Linux" && machine != "Mac" ]]; then # Check if the host is a Unix-like operating system
-        echo "Error: this script requires a Unix-like operating system (macOS or Linux)."
+    local os_name=$(uname -s)
+    if [[ "$os_name" != "Linux" && "$os_name" != "Darwin" ]]; then # Check if the host is a Unix-like operating system
+        echo "Error: this script requires a Unix-like operating system (either macOS or Linux)."
         exit 1
     elif ! command -v docker &> /dev/null; then # Check if Docker is installed
         echo "Error: Docker is not installed. Please install Docker before running this script."
         exit 1
     elif ! command -v npm &> /dev/null; then # Check if npm is installed
         echo "Error: npm is not installed. Please install npm before running this script."
+        exit 1
+    elif ! command -v java &> /dev/null; then # Check if Java is installed
+        echo "Error: Java is not installed. Please install Java before running this script."
         exit 1
     fi
 }
@@ -48,7 +52,7 @@ function startup() {
     check_prerequisites
     pushd smart-contracts
     echo "Upping network and deploying smart contracts..."
-    ./gradlew upAndDeploy
+    ./gradlew upAndDeploy --stacktrace
     popd
     pushd api-service
     echo "Upping API service..."
@@ -74,8 +78,8 @@ function shutdown() {
 }
 
 function clean() {
-    pushd blockchain
-    ./network.sh clean
+    pushd smart-contracts
+    ./gradlew downNetworkAndClean
     popd
 }
 
