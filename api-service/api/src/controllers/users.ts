@@ -56,7 +56,7 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
         res.locals.data = {
             email: user.email,
             firstName: user.firstName,
-            secondName: user.secondName, 
+            secondName: user.secondName,
             role: user.role
         };
     } catch (error) {

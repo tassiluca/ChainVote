@@ -45,7 +45,7 @@ final class ElectionContractTest {
 
     private static final String GOAL = "a test for election";
     private static final String CHANNEL_INFO_NAME_CH1 = "ch1";
-    private static final String CHAINCODE_INFO_NAME_CH1 = "chaincode-org1";
+    private static final String CHAINCODE_INFO_NAME_CH1 = "chaincode-elections";
     private static final long VOTERS = 400L;
     private static final Map<String, Integer> START_TIME_MAP = Map.of(
         "y", 2022,

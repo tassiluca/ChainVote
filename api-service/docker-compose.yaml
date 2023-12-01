@@ -1,11 +1,14 @@
 services:
   # Rest api service
   api-server:
-    build: ./api
+    build: 
+      context: ./api
+      args:
+        - INTERNAL_GATEWAY=${INTERNAL_GATEWAY}
     ports:
       - 8080:8080
     environment:
-      - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
+      - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT&directConnection=true
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - CERTS_DIR=/tmp/hyperledger
@@ -15,30 +18,38 @@ services:
     networks:
       - blockchain_fabric-ca
       - backend
+    depends_on:
+      - verdaccio
     links:
       - mongodb
       - redis
+      - verdaccio
 
   # Authentication service
   auth-server:
-    build: ./auth
+    build: 
+      context: ./auth
+      args:
+        - INTERNAL_GATEWAY=${INTERNAL_GATEWAY}
     ports:
       - 8180:8180
     environment:
-      - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT
+      - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT&directConnection=true
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - PRODUCTION=true
     networks:
-      - blockchain_fabric-ca
       - backend
+    depends_on:
+      - verdaccio
     links:
       - mongodb
       - redis
+      - verdaccio
 
   # Mongodb service
   mongodb:
-    image: mongodb/mongodb-community-server:6.0-ubi8
+    image: mongodb/mongodb-community-server:4.4.12-ubi8
     environment:
       - MONGODB_INITDB_ROOT_USERNAME=user
       - MONGODB_INITDB_ROOT_PASSWORD=pass
@@ -49,7 +60,7 @@ services:
         source: ./dbdata
         target: /data/db
     networks:
-      - blockchain_fabric-ca
+      - backend
 
   # Private npm registry
   verdaccio:
@@ -65,7 +76,7 @@ services:
       - ./verdaccio/conf:/verdaccio/conf
       - ./verdaccio/plugins:/verdaccio/plugins
     networks:
-      - blockchain_fabric-ca
+      - backend
 
 # Redis service, used for api rate limiting
   redis:
@@ -79,9 +90,10 @@ services:
         source: ./cache
         target: /data
     networks:
-      - blockchain_fabric-ca
+      - backend
 
 networks:
   blockchain_fabric-ca:
     external: true
   backend:
+

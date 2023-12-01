@@ -1,2 +1,5 @@
-plugins/
-storage/
+plugins/*
+storage/*
+
+!plugins/.gitkeep
+!storage/.gitkeep
