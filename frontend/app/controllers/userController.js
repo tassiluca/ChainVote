@@ -1,5 +1,11 @@
 const axiosRequest = require('../utils/utils');
 
+const {
+    chaincodeErrorCode,
+    badRequestErrorCode,
+    badRequestErrorMessage
+} = require('../utils/utils')
+
 const urlApiServer = process.env.API_SERVER_URL || 'http://localhost:8080'
 const urlAuthServer = process.env.AUTH_SERVER_URL || "http://localhost:8180"
 const urlSignIn = urlAuthServer + "/auth/login"
@@ -16,9 +22,9 @@ const getSignUp = async (req, res, next) => {
 };
 
 const postSignUp = async (req, res) => {
-    try {
-        if (req.body.name && req.body.surname &&
-             req.body.email && req.body.password && req.body.role) {
+    if (req.body.name && req.body.surname &&
+        req.body.email && req.body.password && req.body.role) {
+        try {
             const {name, surname, email, password, role} = req.body;
             const response = await axiosRequest('POST', urlSignUp, {
                 firstName: name, secondName: surname, email: email, password: password, role: role
@@ -37,13 +43,13 @@ const postSignUp = async (req, res) => {
                     message: response.error.message
                 })
             }
-        } else {
-            res.status(403).json({message: "Bad credentials"})
+        } catch (error) {
+            res.status(error.response.data.code).json(
+                {message: error.response.data.error.message}
+            );
         }
-    } catch (error) {
-        res.status(error.response.data.code).json(
-            {message: error.response.data.error.message}
-        );
+    } else {
+        res.status(badRequestErrorCode).json({message: badRequestErrorMessage})
     }
 };
 
@@ -57,18 +63,19 @@ const getSignIn = async (req, res, next) => {
 };
 
 const postSignIn = async (req, res) => {
-    try {
-        if (req.body.email && req.body.password) {
+    if (req.body.email && req.body.password) {
+        try {
             const {email, password} = req.body;
             const response = await axiosRequest('POST', urlSignIn, {email: email, password: password});
+
             if (response.success) {
                 const redirectUrl = '/elections';
                 if (req.session && req.session.accessToken) {
                     req.session.regenerate(function(err) {
                         if (err) {
-                            res.status(500).json(
-                                {message: err}
-                            );
+                            res.status(500).json({
+                                message: err
+                            });
                         }
                     })
                 }
@@ -86,11 +93,7 @@ const postSignIn = async (req, res) => {
                 );
 
                 if (responseRole.success) {
-                    if(responseRole.success) {
-                        req.session.role = responseRole.data.role;
-                    } else {
-                        alert('Error getting user role');
-                    }
+                    req.session.role = responseRole.data.role;
                 } else {
                     res.status(responseRole.code).json({
                         name: responseRole.error.name,
@@ -109,28 +112,26 @@ const postSignIn = async (req, res) => {
                     message: response.error.message
                 });
             }
-        } else {
-            res.status(403).json({
-                message: "Bad credentials."
+        } catch (error) {
+            res.status(error.response.data.code).json({
+                message: error.response.data.error.message
             });
         }
-    } catch (error) {
-        res.status(error.response.data.code).json(
-            {message: error.response.data.error.message}
-        );
+    } else {
+        res.status(badRequestErrorCode).json({
+            message: badRequestErrorMessage
+        });
     }
 };
 
 const getUserArea = async (req, res, next) => {
-    try {
-        const userAreaUrl = urlApiServer + `/users/${req.session.email}`;
-        const userData = await axiosRequest('GET', userAreaUrl, null, req.session.accessToken);
-        res.locals.view = 'user-area';
-        res.locals.data = userData;
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+    if (req.session && req.session.accessToken) {
+        try {
+            const userAreaUrl = urlApiServer + `/users/${req.session.email}`;
+            const userData = await axiosRequest('GET', userAreaUrl, null, req.session.accessToken);
+            res.locals.view = 'user-area';
+            res.locals.data = userData;
+        } catch (error) {
             res.locals.view = 'error';
         }
     }

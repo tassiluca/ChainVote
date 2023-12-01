@@ -1,4 +1,7 @@
 const axios = require('axios');
+const chaincodeErrorCode = '500'
+const badRequestErrorCode = '400'
+const badRequestErrorMessage = 'Bad request'
 
 const axiosRequest = async (method, url, data = null, token = null) => {
     try {
@@ -22,3 +25,9 @@ const axiosRequest = async (method, url, data = null, token = null) => {
 };
 
 module.exports = axiosRequest
+
+module.exports = {
+    chaincodeErrorCode,
+    badRequestErrorCode,
+    badRequestErrorMessage
+}
