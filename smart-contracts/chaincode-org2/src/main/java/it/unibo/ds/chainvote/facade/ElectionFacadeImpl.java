@@ -5,7 +5,7 @@ import it.unibo.ds.chainvote.elections.ElectionInfo;
 import it.unibo.ds.chainvote.utils.Utils;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,7 +34,7 @@ public final class ElectionFacadeImpl implements ElectionFacade {
         this.startDate = info.getStartDate();
         this.endDate = info.getEndDate();
         this.affluence = ((double) election.getBallots().size()) / info.getVotersNumber();
-        this.results = info.isOpen() ? new HashMap<>() : election.getResults();
+        this.results = info.isOpen() ? new TreeMap<>() : election.getResults();
     }
 
     @Override

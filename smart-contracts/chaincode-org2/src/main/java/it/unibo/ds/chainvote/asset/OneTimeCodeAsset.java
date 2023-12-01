@@ -1,4 +1,4 @@
-package it.unibo.ds.chainvote.elections;
+package it.unibo.ds.chainvote.asset;
 
 import com.owlike.genson.annotation.JsonProperty;
 import it.unibo.ds.chainvote.codes.OneTimeCode;

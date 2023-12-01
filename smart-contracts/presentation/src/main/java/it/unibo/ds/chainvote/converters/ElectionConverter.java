@@ -10,7 +10,7 @@ import it.unibo.ds.chainvote.elections.ElectionImpl;
 import it.unibo.ds.chainvote.utils.Choice;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -51,7 +51,7 @@ public final class ElectionConverter implements Converter<Election> {
         while (reader.hasNext()) {
             reader.next();
             if ("results".equals(reader.name())) {
-                results = new HashMap<>();
+                results = new TreeMap<>();
                 reader.beginObject();
                 while (reader.hasNext()) {
                     reader.next();

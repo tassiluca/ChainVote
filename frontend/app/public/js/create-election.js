@@ -38,15 +38,11 @@ $(document).ready(() => {
 
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-
         const choices = []
         const inputContainers = document.querySelectorAll(".choice");
         inputContainers.forEach((container) => {
             choices.splice(Number(container.id), 0, container.value);
         });
-
-        console.log()
-
         const data = {
             'goal': goal.value,
             'voters': voters.value,
@@ -54,32 +50,34 @@ $(document).ready(() => {
             'endDate': endDate.value,
             'choices': choices
         };
-
+        show($("#spinner"));
         $.ajax({
             type: "POST",
             url: urlToCreateElection,
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
-        }).done(function(response) {
-            alert(response.message)
-            if(response.success) {
-                hide(document.querySelector("#div-error-sign-up"))
-                window.location.href = response.url;
+        }).done(response => {
+            if (response.success) {
+                // window.location.href = response.url;
+                $("#success").text("Election created successfully.");
+                hide($("#error"));
+                show($("#success"));
             } else {
-                document.getElementById('error-create-election').innerHTML = response.message;
-                show(document.querySelector("#div-error-create-election"));
+                $("#error").text(response.message);
+                hide($("#success"));
+                show($("#error"));
             }
-        }).fail(function(error) {
-            alert(error.statusText)
-            document.getElementById('error-create-election').innerHTML = 'Error ' + error.status + ': ' + error.statusText;
-            show(document.querySelector("#div-error-create-election"));
-        });
+        }).fail(error => {
+            $("#error").text('Error ' + error.status + ': ' + error.statusText);
+            show($("#error"));
+            hide($("#success"));
+        }).always(() => hide($("#spinner")));
     })
 
     function hide(element) {
-        element.classList.add('hidden');
+        $(element).addClass("hidden");
     }
     function show(element) {
-        element.classList.remove('hidden');
+        $(element).removeClass("hidden");
     }
 });

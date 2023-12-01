@@ -37,7 +37,7 @@ public final class CodesManagerImpl<C> implements CodesManager<C> {
         final String userId,
         final String arg
     ) throws AlreadyGeneratedCodeException {
-        return generate(context, electionId, userId, codeGenerator.generateCode(arg));
+        return generate(context, electionId, userId, codeGenerator.generateCode(electionId + userId + arg));
     }
 
     private OneTimeCode generate(

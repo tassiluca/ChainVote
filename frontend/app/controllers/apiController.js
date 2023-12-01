@@ -9,12 +9,16 @@ const getAllElections = async (req, res, next) => {
         const electionsData = electionsDetailsResponse.data;
         for (let i = 0; i < electionsData.length; i++) {
             const entry = reformatDates(electionsData[i]);
-            entry.open = new Date(`${entry.endDate}Z`) > Date.now();
+            entry.open = Date.now() > new Date(`${entry.startDate}Z`) && new Date(`${entry.endDate}Z`) > Date.now();
         }
         res.locals.data = electionsData;
         res.locals.view = 'dashboard';
     } catch (error) {
-        res.locals.view = 'sign-in';
+        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
+            res.locals.view = 'sign-in';
+        } else {
+            res.locals.view = 'error';
+        }
     }
     next();
 };
@@ -28,10 +32,15 @@ const getElection = async (req, res, next) => {
         const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
         const electionData = reformatDates(electionDetailsResponse.data);
         electionData.choices = electionInfoResponse.data.choices;
+        electionData.electionId = electionId;
         res.locals.data = electionData;
         res.locals.view = 'election-info';
     } catch (error) {
-        res.locals.view = 'sign-in';
+        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
+            res.locals.view = 'sign-in';
+        } else {
+            res.locals.view = 'not-found';
+        }
     }
     next();
 };
@@ -52,7 +61,11 @@ const getCastVote = async (req, res, next) => {
         res.locals.view = 'cast-vote';
         res.locals.data = electionData;
     } catch (error) {
-        res.locals.view = 'sign-in';
+        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
+            res.locals.view = 'sign-in';
+        } else {
+            res.locals.view = 'error';
+        }
     }
     next();
 }
@@ -81,7 +94,13 @@ const postCastVote = async (req, res) => {
 }
 
 const getCreateElection = async (req, res, next) => {
-    res.locals.view = 'create-election';
+    if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
+        res.locals.view = 'sign-in';
+    } else if (req.session.role !== 'admin') {
+        res.locals.view = 'no-permission';
+    } else {
+        res.locals.view = 'create-election';
+    }
     next();
 }
 
@@ -104,7 +123,7 @@ const postCreateElection = async (req, res) => {
                 const electionId = responseElectionInfo.data.electionId;
                 const responseElection = await axiosRequest('POST', urlCreateElection, {electionId: electionId}, req.session.accessToken);
                 if (responseElection.success) {
-                    const redirectUrl = '/';
+                    const redirectUrl = '/elections';
                     res.status(responseElectionInfo.code).json({
                         success: true,
                         message: "Election created successfully.",

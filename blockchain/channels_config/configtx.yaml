@@ -62,7 +62,7 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('org1MSP.admin', 'org1MSP.peer', 'org1MSP.client', 'org2MSP.admin', 'org2MSP.peer', 'org2MSP.client')"
+                Rule: "OR('org1MSP.member', 'org2MSP.member')"
             Writers:
                 Type: Signature
                 Rule: "OR('org1MSP.admin', 'org1MSP.client', 'org2MSP.admin', 'org2MSP.client')"
@@ -96,16 +96,16 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('org2MSP.admin', 'org2MSP.peer', 'org2MSP.client')"
+                Rule: "OR('org2MSP.member', 'org3MSP.member')"
             Writers:
                 Type: Signature
-                Rule: "OR('org2MSP.admin', 'org2MSP.client')"
+                Rule: "OR('org2MSP.admin', 'org2MSP.client', 'org3MSP.admin', 'org3MSP.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('org2MSP.admin')"
+                Rule: "OR('org2MSP.admin', 'org3MSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('org2MSP.peer')"
+                Rule: "OR('org2MSP.peer', 'org3MSP.peer')"
 
         # leave this flag set to true.
         AnchorPeers:
@@ -114,6 +114,41 @@ Organizations:
             # encoded in the genesis block in the Application section context
             - Host: peer1-org2
               Port: 9051
+
+    - &org3
+        # DefaultOrg defines the organization which is used in the sampleconfig
+        # of the fabric.git development environment
+        Name: org3MSP
+
+        # ID to load the MSP definition as
+        ID: org3MSP
+
+        MSPDir: $(ARTIFACTS_DIR)/org3/msp
+
+        # Policies defines the set of policies at this level of the config tree
+        # For organization policies, their canonical path is usually
+        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('org3MSP.member', 'org2MSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('org3MSP.admin', 'org3MSP.client', 'org2MSP.admin', 'org2MSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('org3MSP.admin', 'org2MSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('org3MSP.peer', 'org2MSP.peer')"
+
+        # leave this flag set to true.
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer1-org3
+              Port: 20051
 
 ################################################################################
 #
@@ -186,6 +221,7 @@ Application: &ApplicationDefaults
     Organizations:
         - *org1
         - *org2
+        - *org3
 
     # Policies defines the set of policies at this level of the config tree
     # For Application policies, their canonical path is
@@ -205,7 +241,7 @@ Application: &ApplicationDefaults
             Rule: "ANY Endorsement"
         Endorsement:
             Type: ImplicitMeta
-            Rule: "ANY Endorsement"
+            Rule: "MAJORITY Endorsement"
 
     Capabilities:
         <<: *ApplicationCapabilities
@@ -329,28 +365,31 @@ Profiles:
             Capabilities:
                 <<: *OrdererCapabilities
         Consortiums:
-            SampleConsortium:
+            ElectionsConsortium:
                 Organizations:
                     - *org1
                     - *org2
+                    - *org3
     
     OrgsChannel1:
-        Consortium: SampleConsortium
+        Consortium: ElectionsConsortium
         <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *org1
                 - *org2
+                - *org3
             Capabilities:
                 <<: *ApplicationCapabilities
 
     OrgsChannel2:
-        Consortium: SampleConsortium
+        Consortium: ElectionsConsortium
         <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *org2
+                - *org3
             Capabilities:
                 <<: *ApplicationCapabilities

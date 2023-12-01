@@ -6,7 +6,7 @@ import { Org2Peer } from "../blockchain/peer.enum";
 import transformHyperledgerError from "../blockchain/errors/error.handling";
 import {toChoice} from "../blockchain/utils/utils";
 import {ac} from "../configs/accesscontrol.config";
-import {UnauthorizedError} from "core-components";
+import {InternalServerError, UnauthorizedError} from "core-components";
 
 const channelName = "ch2";
 const contractName = "chaincode-org2";
@@ -125,6 +125,9 @@ export async function castVote(req: Request, res: Response, next: NextFunction) 
             transientData: {userId: userId, code: code}
         });
         const result = utf8Decoder.decode(submission);
+        if(!JSON.parse(result).result) {
+            return next(new InternalServerError("Error while casting vote"));
+        }
         res.locals.code = StatusCodes.OK;
         res.locals.data = JSON.parse(result).result;
     } catch (error) {

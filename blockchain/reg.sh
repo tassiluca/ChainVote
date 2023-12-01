@@ -22,13 +22,17 @@ fabric-ca-client register -d --id.name orderer3-org0 --id.secret orderer3PW --id
 
 # Identities for the organization 1
 fabric-ca-client register -d --id.name peer1-org1 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7052
-fabric-ca-client register -d --id.name peer2-org1 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7052
 fabric-ca-client register -d --id.name client-org1 --id.secret clientPW --id.type client -u https://0.0.0.0:7052
 
 # Identities for the organization 2 
 fabric-ca-client register -d --id.name peer1-org2 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7052
 fabric-ca-client register -d --id.name peer2-org2 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7052
 fabric-ca-client register -d --id.name client-org2 --id.secret clientPW --id.type client -u https://0.0.0.0:7052
+
+# Identities for the organization 3
+fabric-ca-client register -d --id.name peer1-org3 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7052
+fabric-ca-client register -d --id.name peer2-org3 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7052
+fabric-ca-client register -d --id.name client-org3 --id.secret clientPW --id.type client -u https://0.0.0.0:7052
 
 #####################################################################################################################
 # Bring up RCA-ORG0
@@ -58,7 +62,6 @@ fabric-ca-client enroll -d -u https://rca-org1-admin:rca-org1-adminpw@0.0.0.0:70
 sleep 5
 
 fabric-ca-client register -d --id.name peer1-org1 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7054
-fabric-ca-client register -d --id.name peer2-org1 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7054
 fabric-ca-client register -d --id.name admin-org1 --id.secret org1AdminPW --id.type admin -u https://0.0.0.0:7054
 fabric-ca-client register -d --id.name client-org1 --id.secret clientPW --id.type client -u https://0.0.0.0:7054
 
@@ -77,5 +80,21 @@ fabric-ca-client register -d --id.name peer1-org2 --id.secret peer1PW --id.type 
 fabric-ca-client register -d --id.name peer2-org2 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7055
 fabric-ca-client register -d --id.name admin-org2 --id.secret org2AdminPW --id.type admin -u https://0.0.0.0:7055
 fabric-ca-client register -d --id.name client-org2 --id.secret clientPW --id.type client -u https://0.0.0.0:7055
+
+#####################################################################################################################
+# Bring up RCA-ORG3
+#####################################################################################################################
+echo "Working on RCA-ORG3"
+
+export FABRIC_CA_CLIENT_TLS_CERTFILES=$ARTIFACTS_DIR/org3/ca/crypto/ca-cert.pem
+export FABRIC_CA_CLIENT_HOME=$ARTIFACTS_DIR/org3/ca/admin
+
+fabric-ca-client enroll -d -u https://rca-org3-admin:rca-org3-adminpw@0.0.0.0:7056
+sleep 5
+
+fabric-ca-client register -d --id.name peer1-org3 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7056
+fabric-ca-client register -d --id.name peer2-org3 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7056
+fabric-ca-client register -d --id.name admin-org3 --id.secret org3AdminPW --id.type admin -u https://0.0.0.0:7056
+fabric-ca-client register -d --id.name client-org3 --id.secret clientPW --id.type client -u https://0.0.0.0:7056
 
 echo "All CA and registration done"

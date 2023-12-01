@@ -8,41 +8,56 @@ set -e  # Exit immediately if some command (simple or compound) returns a non-ze
 export $(cat ../config.env | xargs)
 export ARTIFACTS_DIR=$(pwd)/../$ARTIFACTS_DIR
 
-if [[ "$#" != 1 || ($1 != "up" && $1 != "down") ]]; then
+function printHelp() {
     echo "Usage: ./network [up|down]"
     echo "Description:"
     echo "  Script used to easily bring up and down the network."
     echo 
     echo "Options:"
     echo "  up  - Bring up the network"
-    echo "  down - Bring down the network"
-    exit 1
-fi;
+    echo "  down - Bring down the network (without removing artifacts)"
+    echo "  clean - Bring down the network and remove artifacts"
+}
+
+function containers() {
+    local uid=$(id -u)
+    local gid=$(id -g)
+    local os=$(uname -s)
+    if [ "$1" == "down" ]; then
+        HOST_UID=$uid HOST_GID=$gid HOST_OS=$os docker compose down
+    elif [ "$1" == "up" ]; then
+        HOST_UID=$uid HOST_GID=$gid HOST_OS=$os docker compose up -d --build --wait "${@:2}"
+    else
+        echo "Invalid command."
+        exit 1
+    fi
+}
 
 function upNetwork() {
-    echo "Artifacts directory: $ARTIFACTS_DIR"
-    if [[ ! -d $ARTIFACTS_DIR ]]; then 
-        mkdir -p $ARTIFACTS_DIR 
-    fi;
-    export ARTIFACTS_DIR=$ARTIFACTS_DIR
     echo "Setup binaries"
     if [[ ! -d ./bin/ ]]; then
         ./install-binaries.sh
     fi;
     export PATH="$PATH:$PWD/bin"
-    echo "Up ca-tls rca-org0 rca-org1 rca-org2"
-    docker compose up -d --wait ca-tls rca-org0 rca-org1 rca-org2
-    echo "Services up and running!"
-    echo "Enrol registrar of each CA and register all entities"
-    ./reg.sh
-    echo "Enrol entities for each organization"
-    ./enroll.sh
+    if [[ ! -d $ARTIFACTS_DIR ]]; then 
+        echo "Artifacts directory: $ARTIFACTS_DIR"
+        mkdir -p $ARTIFACTS_DIR/org0/{ca,artifacts,orderer1,orderer2,orderer3}
+        mkdir -p $ARTIFACTS_DIR/org1/{ca,peer1}
+        mkdir -p $ARTIFACTS_DIR/org2/{ca,peer1,peer2}
+        mkdir -p $ARTIFACTS_DIR/org3/{ca,peer1,peer2}
+        mkdir -p $ARTIFACTS_DIR/tls-ca
+        echo "Up ca-tls rca-org0 rca-org1 rca-org2"
+        containers up ca-tls rca-org0 rca-org1 rca-org2 rca-org3
+        echo "Enrol registrar of each CA and register all entities"
+        ./reg.sh
+        echo "Enrol entities for each organization"
+        ./enroll.sh
+    fi;
     echo "Creating crypto material"
     cd ./channels_config
     ./channel_artifacts.sh
     echo "Bring up the whole network"
-    docker compose up -d --wait
-    echo "Services up and running!"
+    containers up
     echo "Create and joining channels"
     ./channel_creation.sh
 }
@@ -50,8 +65,13 @@ function upNetwork() {
 function downNetwork() {
     export ARTIFACTS_DIR=$ARTIFACTS_DIR
     echo "Downing network..."
-    docker-compose down
-    echo "Delete $ARTIFACTS_DIR..."
+    containers down
+    echo "Done."
+}
+
+function downNetworkAndClean() {
+    downNetwork
+    echo "Removing artifacts..."
     rm -rf $ARTIFACTS_DIR
     echo "Done."
 }
@@ -60,4 +80,9 @@ if [[ $1 == "up" ]]; then
     upNetwork
 elif [[ $1 == "down" ]]; then
     downNetwork
+elif [[ $1 == "clean" ]]; then
+    downNetworkAndClean
+else
+    printHelp
+    exit 1
 fi;

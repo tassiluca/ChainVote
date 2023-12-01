@@ -18,7 +18,6 @@ final class OneTimeCodeSerializationTest {
     @Test
     void testSerialization() {
         final var serialized = genson.serialize(getOTC());
-        System.out.println(serialized);
         assertEquals(getSerialized(), serialized);
     }
 

@@ -14,6 +14,9 @@
         <div class="col-md-4 center mx-auto">
             <form action="/submit-sign-in" class="form-signin" id="login" method="post">
                 <h1 class="h3 mb-3 text-center font-weight-normal">Create election</h1>
+                <div id="process-create-election" class="text-center mx-auto credentials-route hidden">
+                    <p>Creating an election...</p>
+                </div>
                 <label for="inputGoal" class="sr-only">Goal</label>
                 <input type="text" id="inputGoal" class="form-control" placeholder="Goal" name="goal" required autofocus>
                 <label for="inputVoters" class="sr-only">Voters number</label>
@@ -25,11 +28,12 @@
                 <div id="divChoices"></div>
                 <button id="addElection" class="btn btn-xs btn-primary" type="button">+</button>
                 <button id="removeElection" class="btn btn-xs btn-primary" type="button">-</button>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Create election</button>
-                <div id="div-error-create-election" class="text-center mx-auto credentials-route hidden">
-                    <p class="error" id="error-create-election">
-                    </p>
-                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">
+                    Create election
+                    <span id="spinner" class="spinner-border spinner-border-sm hidden" role="status" aria-hidden="true"></span>
+                </button>
+                <div id="error" class="alert alert-danger hidden" role="alert"></div>
+                <div id="success" class="alert alert-success hidden" role="alert"></div>
             </form>
         </div>
     </div>

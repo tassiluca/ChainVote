@@ -12,6 +12,7 @@
             </div>
             <div class="row" id="content">
                 <div class="col-md-5 center mx-auto">
+                    <p><strong>Id: </strong><%= responseData.data.electionId %></p>
                     <p><strong>Start date: </strong><%= responseData.data.formattedStartDate %></p>
                     <p><strong>End date: </strong><%= responseData.data.formattedEndDate %></p>
                     <p><strong>Choices: </strong></p>
@@ -22,7 +23,9 @@
                     </ul>
                     <p><strong>Affluence: </strong> <%= responseData.data.affluence %></p>
                     <% if (Object.keys(responseData.data.results).length === 0) { %>
-                        <p><strong>This election is still open. Therefore results are not available, yet.</strong></p>
+                        <div class="alert alert-warning" role="alert">
+                            <strong>This election is still open. Therefore results are not available, yet.</strong>
+                        </div>
                     <% } else { %>
                         <p><strong>Results: </strong></p>
                         <table>

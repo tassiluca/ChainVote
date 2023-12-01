@@ -48,8 +48,12 @@ const postSignUp = async (req, res) => {
 };
 
 const getSignIn = async (req, res, next) => {
-    res.locals.view = 'sign-in';
-    next();
+    if (req.session && req.session.accessToken) {
+        res.redirect('/');
+    } else {
+        res.locals.view = 'sign-in';
+        next();
+    }
 };
 
 const postSignIn = async (req, res) => {
@@ -74,6 +78,25 @@ const postSignIn = async (req, res) => {
                 req.session.email = req.body.email;
 
                 req.session.expire = Date.now() + 15 * 60 * 1000;
+
+                const responseRole = await axiosRequest('GET',
+                    urlSignUp + `/${req.session.email}`,
+                    null,
+                    req.session.accessToken
+                );
+
+                if (responseRole.success) {
+                    if(responseRole.success) {
+                        req.session.role = responseRole.data.role;
+                    } else {
+                        alert('Error getting user role');
+                    }
+                } else {
+                    res.status(responseRole.code).json({
+                        name: responseRole.error.name,
+                        message: responseRole.error.message
+                    });
+                }
 
                 res.status(response.code).json({
                     success: true,
@@ -105,7 +128,11 @@ const getUserArea = async (req, res, next) => {
         res.locals.view = 'user-area';
         res.locals.data = userData;
     } catch (error) {
-        res.locals.view = 'sign-in';
+        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
+            res.locals.view = 'sign-in';
+        } else {
+            res.locals.view = 'error';
+        }
     }
     next();
 }

@@ -2,17 +2,17 @@
 <html>    
     <head>
         <%- include('commons/head') %>
-        <link rel="stylesheet" href="../styles/personal-area.css">
+        <link rel="stylesheet" href="/styles/personal-area.css">
     </head>
     <body>
         <%- include('commons/navbar') %>
         <main>
             <div class="row justify-content-center">
-                <h1 id="electionName">Election <%- responseData.data.electionId %></h1>
+                <h1 id="electionName">Goal: <%- responseData.data.goal %></h1>
             </div>
             <div class="row" id="content">
-                <div class="col-md-5 center mx-auto">
-                    <h2 id="question">Goal: <%- responseData.data.goal %></h2>
+                <div class="col-md-6 center mx-auto">
+                    <h2 id="question" class="text-center">Election <%- responseData.data.electionId %></h2>
                     <div class="container mt-5">
                         <div class="row">
                             <!-- First Column -->
@@ -20,10 +20,12 @@
                                 <h2>Request code</h2>
                                 <form id="voteCodeForm">
                                     <input type="hidden" name="election-id" value="<%- responseData.data.electionId %>" />
-                                    <button type="submit" class="btn btn-primary">Request Code</button>
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        Request Code
+                                        <span id="spinner-code" class="spinner-border spinner-border-sm hidden" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </form>
                             </div>
-
                             <!-- Second Column -->
                             <div class="col-md-6">
                                 <h2>Vote form</h2>
@@ -40,10 +42,15 @@
                                             <label class="form-check-label" for="choiceRadio"><%= entry.choice %></label>
                                         </div>
                                     <% }) %>
-                                    <button type="submit" class="btn btn-outline-primary btn-block">Send your vote</button>
+                                    <button type="submit" class="btn btn-outline-primary btn-block">
+                                        Send your vote
+                                        <span id="spinner-election" class="spinner-border spinner-border-sm hidden" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </form>
                             </div>
                         </div>
+                        <div id="error" class="alert alert-danger hidden" role="alert"></div>
+                        <div id="success" class="alert alert-success hidden" role="alert"></div>
                     </div>
                 </div>
             </div>
@@ -53,56 +60,68 @@
             function requestCode() {
                 const urlToRequestCode = window.location.origin + '/elections/code';
                 const electionId = $('#voteCodeForm input[name="election-id"]').val();
-
                 const data = {
                     electionId: electionId,
                 };
-
+                show($("#spinner-code"));
                 $.ajax({
                     type: "POST",
                     url: urlToRequestCode,
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8"
                 }).done(function(response) {
-                    if(response.success) {
+                    if (response.success) {
                         $('#voteForm input[name="otc"]').val(response.code);
                     }
                 }).fail(function(error) {
-                    console.error('Error requesting code:', error.message);
-                });
+                    hide($("#success"));
+                    $("#error").text("Error requesting code: " + error.responseJSON.message);
+                    show($("#error"));
+                }).always(() => hide($("#spinner-code")));
             }
 
             function sendVote() {
                 const urlToSendVote = window.location.origin + '/elections/vote/';
-
                 const electionCode = $('#voteForm input[type="text"]').val();
                 const choice = $('#voteForm input[name="choiceRadio"]:checked').val();
-
                 if (!electionCode || !choice) {
-                    alert('Please fill in all fields');
+                    $("#error").text("Please fill in all fields");
+                    show($("#error"));
+                    hide($("#success"));
                     return;
                 }
-
                 const data = {
                     code: electionCode,
                     choice: choice
                 };
-
+                show($("#spinner-election"));
                 $.ajax({
                     type: "POST",
                     url: urlToSendVote + '<%= responseData.data.electionId %>',
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8"
                 }).done(function(response) {
-                    alert(response.message);
-                    if(response.success){
+                    if (response.success) {
                         $('#voteForm input[type="text"]').val('');
                         $('#voteForm input[name="choiceRadio"]:checked').prop('checked', false);
-                        window.location.href = response.url;
+                        $("#success").text(response.message);
+                        show($("#success"));
+                        hide($("#error"));
+                        // window.location.href = response.url;
                     }
-                }).fail(function(e) {
-                    alert('Error submitting vote. Please try again.');
-                });
+                }).fail(e => {
+                    $("#error").text(e.responseJSON.message);
+                    show($("#error"));
+                    hide($("#success"));
+                }).always(() => hide($("#spinner-election")));
+            }
+
+            function hide(element) {
+                $(element).addClass("hidden");
+            }
+    
+            function show(element) {
+                $(element).removeClass("hidden");
             }
 
             $(document).ready(function() {

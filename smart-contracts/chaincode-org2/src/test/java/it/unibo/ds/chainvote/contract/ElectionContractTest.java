@@ -5,7 +5,7 @@ import it.unibo.ds.chainvote.Response;
 import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.elections.Election;
 import it.unibo.ds.chainvote.elections.ElectionInfo;
-import it.unibo.ds.chainvote.elections.OneTimeCodeAsset;
+import it.unibo.ds.chainvote.asset.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.codes.OneTimeCode;
 import it.unibo.ds.chainvote.codes.OneTimeCodeImpl;
 import it.unibo.ds.chainvote.facade.ElectionFacadeImpl;
@@ -445,7 +445,6 @@ final class ElectionContractTest {
                 Choice choiceToCast = CHOICE_ELECTION.get(index);
                 mockCodeValidity(ELECTION_ID, userId, code);
                 assertDoesNotThrow(() -> electionContract.castVote(context, choiceToCast, ELECTION_ID));
-                System.out.println(electionForTestWithPreResults.getResults());
                 assertEquals(
                     getResultsWithBlankChoice(
                         CHOICE_ELECTION.stream().collect(

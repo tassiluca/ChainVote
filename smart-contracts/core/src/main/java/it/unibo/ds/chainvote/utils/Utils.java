@@ -58,7 +58,7 @@ public final class Utils {
      * @return the {@link Map} containing the {@link FixedVotes#INFORMAL_BALLOT}.
      */
     public static Map<String, Long> getResultsWithBlankChoice(final Map<String, Long> results) {
-        final Map<String, Long> retResults = new HashMap<>();
+        final Map<String, Long> retResults = new TreeMap<>();
         results.keySet().forEach(choice -> retResults.put(choice, results.get(choice)));
         if (!retResults.containsKey(FixedVotes.INFORMAL_BALLOT.getChoice().getChoice())) {
             retResults.put(FixedVotes.INFORMAL_BALLOT.getChoice().getChoice(), 0L);

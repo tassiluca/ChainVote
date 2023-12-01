@@ -3,7 +3,7 @@ package it.unibo.ds.chainvote.contract;
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.SerializersUtils;
 import it.unibo.ds.chainvote.TransientUtils;
-import it.unibo.ds.chainvote.elections.OneTimeCodeAsset;
+import it.unibo.ds.chainvote.asset.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.codes.AlreadyGeneratedCodeException;
 import it.unibo.ds.chainvote.codes.CodesManager;
 import it.unibo.ds.chainvote.codes.CodesManagerImpl;
@@ -24,6 +24,7 @@ import org.hyperledger.fabric.shim.ledger.CompositeKey;
 
 import java.util.Optional;
 
+import static it.unibo.ds.chainvote.utils.UserCodeData.SEED;
 import static it.unibo.ds.chainvote.utils.UserCodeData.USER_ID;
 
 /**
@@ -56,9 +57,9 @@ public final class CodesManagerContract implements ContractInterface {
 
     /**
      * Generate a new one-time-code for the given election and user.
-     * @param context the transaction context. A transient map is expected with the {@code userId} key-value entry.
+     * @param context the transaction context. A transient map is expected with the following
+     *                key-value pairs: {@code userId} adn {@code seed}.
      * @param electionId the election identifier
-     * @param seed a random (non-deterministic) seed for the code generation
      * @return a string representation of the generated one-time-code.
      * @throws ChaincodeException with:
      * <ul>
@@ -67,15 +68,16 @@ public final class CodesManagerContract implements ContractInterface {
      * </ul>
      */
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public String generateCodeFor(final Context context, final String electionId, final String seed) {
+    public String generateCodeFor(final Context context, final String electionId) {
         final var userId = TransientUtils.getStringFromTransient(context.getStub().getTransient(), USER_ID.getKey());
+        final var seed = TransientUtils.getStringFromTransient(context.getStub().getTransient(), SEED.getKey());
         if (seed.isBlank()) {
             throw new ChaincodeException("Seed cannot be blank", Error.INCORRECT_INPUT.toString());
         } else if (!electionContract.electionExists(context, electionId)) {
             throw new ChaincodeException("The given election doesn't exists", Error.INCORRECT_INPUT.toString());
         }
         try {
-            return codesManager.generateCodeFor(context, electionId, userId, seed + userId).getCode();
+            return codesManager.generateCodeFor(context, electionId, userId, seed).getCode();
         } catch (AlreadyGeneratedCodeException exception) {
             throw new ChaincodeException(exception.getMessage(), Error.ALREADY_GENERATED_CODE.toString());
         }

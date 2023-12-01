@@ -63,13 +63,16 @@ val chaincodeOrg2 = Chaincode("chaincode-org2", "org2")
 data class Peer(val organization: String, val name: String, val address: String)
 val peersOrg1 = setOf(
     Peer("org1", "peer1", "localhost:7051"),
-    Peer("org1", "peer2", "localhost:8051"),
 )
 val peersOrg2 = setOf(
     Peer("org2", "peer1", "localhost:9051"),
     Peer("org2", "peer2", "localhost:10051"),
 )
-val allPeers = peersOrg1.plus(peersOrg2)
+val peersOrg3 = setOf(
+    Peer("org3", "peer1", "localhost:20051"),
+    Peer("org3", "peer2", "localhost:30051")
+)
+val allPeers = peersOrg1.plus(peersOrg2).plus(peersOrg3)
 
 val blockchainDirectory: File = Path(projectDir.parent, "blockchain").toFile()
 val configurationFile: File = File(projectDir.parent, "config.env")
@@ -103,8 +106,14 @@ fun executeCommand(
 
 tasks.register("downNetwork") {
     group = blockchainGroup
-    description = "Bring down the blockchain network"
+    description = "Bring down the blockchain network without cleaning artifacts"
     doLast { executeCommand("$networkScript down") }
+}
+
+tasks.register("downNetworkAndClean") {
+    group = blockchainGroup
+    description = "Bring down the blockchain network and clean the artifacts"
+    doLast { executeCommand("$networkScript clean") }
 }
 
 tasks.register("upNetwork") {
@@ -124,7 +133,7 @@ fun Chaincode.`package`() = executeCommand(
 
 tasks.register("packageChaincodes") {
     group = blockchainGroup
-    description = "Build and generate chaincode packages"
+    description = "Build and generate chaincodes packages"
     dependsOn(":${chaincodeOrg1.name}:installDist", ":${chaincodeOrg2.name}:installDist", "upNetwork")
     doLast {
         chaincodeOrg1.`package`()
@@ -159,11 +168,10 @@ fun Chaincode.packageId(): String? {
     return Regex("$name[^,]+").find(outputStream.toString())?.value
 }
 
-fun Chaincode.approveFor(peers: Set<Peer>, collectionsConfig: File? = null) {
+fun Chaincode.approveFor(peers: Set<Peer>, channels: Set<String>, collectionsConfig: File? = null) {
     val packageId = packageId() ?: error("No package found for $name")
     peers.map { it.organization }.distinct().forEach { org ->
         println(">> Approval for $org")
-        val channels = setOf("ch${org.last()}", "ch${organization.last()}").distinct()
         val approvalPeer = peers.find { it.organization == org }!!
         channels.forEach { channel ->
             executeCommand(
@@ -208,21 +216,25 @@ fun Chaincode.commit(peers: Set<Peer>, collectionsConfig: File? = null) {
     )
 }
 
-fun Chaincode.deploy(peers: Set<Peer>, collectionsConfig: File? = null) {
+fun Chaincode.deploy(peers: Set<Peer>, channels: Set<String>, collectionsConfig: File? = null) {
     installOn(peers)
-    approveFor(peers, collectionsConfig)
+    approveFor(peers, channels, collectionsConfig)
     commit(peers, collectionsConfig)
 }
 
 tasks.register("upAndDeploy") {
     group = blockchainGroup
-    description = "Up the network and deploy both chaincodes"
+    description = "Up the network and deploy chaincodes in one shot"
     dependsOn("upNetwork", "packageChaincodes")
     finalizedBy("cleanAllPackages")
     doLast {
-        chaincodeOrg1.deploy(allPeers)
+        chaincodeOrg1.deploy(allPeers, setOf("ch1"))
         chaincodeOrg2.apply {
-            deploy(peersOrg2, projectDir.resolveAll(name, "src", "main", "resources", "collections-config.json"))
+            installOn(peersOrg2)
+            installOn(peersOrg3)
+            approveFor(peersOrg2, setOf("ch1", "ch2"), projectDir.resolveAll(name, "src", "main", "resources", "collections-config.json"))
+            approveFor(peersOrg3, setOf("ch1", "ch2"), projectDir.resolveAll(name, "src", "main", "resources", "collections-config.json"))
+            commit(peersOrg2, projectDir.resolveAll(name, "src", "main", "resources", "collections-config.json"))
         }
     }
 }

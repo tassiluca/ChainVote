@@ -3,7 +3,7 @@ package it.unibo.ds.chainvote.elections;
 import it.unibo.ds.chainvote.utils.Choice;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,7 +26,7 @@ public final class ElectionImpl implements Election {
 
     @Override
     public Map<String, Long> getResults() {
-        return Map.copyOf(this.results);
+        return new TreeMap<>(this.results);
     }
 
     @Override
@@ -92,7 +92,7 @@ public final class ElectionImpl implements Election {
 
         @Override
         public Election build() {
-            return new ElectionImpl(this.results.orElse(new HashMap<>()), this.ballots.orElse(new ArrayList<>()));
+            return new ElectionImpl(this.results.orElse(new TreeMap<>()), this.ballots.orElse(new ArrayList<>()));
         }
     }
 }

@@ -2,7 +2,7 @@ package it.unibo.ds.chainvote.contract;
 
 import com.owlike.genson.Genson;
 import it.unibo.ds.chainvote.SerializersUtils;
-import it.unibo.ds.chainvote.elections.OneTimeCodeAsset;
+import it.unibo.ds.chainvote.asset.OneTimeCodeAsset;
 import it.unibo.ds.chainvote.codes.OneTimeCodeImpl;
 import it.unibo.ds.chainvote.factory.ElectionFactory;
 import it.unibo.ds.chainvote.utils.Choice;
@@ -59,7 +59,12 @@ final class CodesManagerContractTest {
 
         @BeforeEach
         void setup() {
-            when(stub.getTransient()).thenReturn(Map.of(UserCodeData.USER_ID.getKey(), USER_ID.getBytes(UTF_8)));
+            when(stub.getTransient()).thenReturn(
+                Map.of(
+                    UserCodeData.USER_ID.getKey(), USER_ID.getBytes(UTF_8),
+                    UserCodeData.SEED.getKey(), SEED.getBytes(UTF_8)
+                )
+            );
             // by default suppose the election already exists: here is created a sample one!
             when(context.getStub().getStringState(ELECTION_ID)).thenReturn(genson.serialize(
                 ElectionFactory.buildElection(
@@ -77,7 +82,7 @@ final class CodesManagerContractTest {
         @Test
         void whenNotAlreadyRequested() {
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final String generatedCode = contract.generateCodeFor(context, ELECTION_ID, SEED);
+            final String generatedCode = contract.generateCodeFor(context, ELECTION_ID);
             assertNotNull(generatedCode);
             verify(stub).putPrivateData(CODES_COLLECTION, KEY, genson.serialize(
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl(generatedCode))
@@ -90,7 +95,7 @@ final class CodesManagerContractTest {
                 new OneTimeCodeAsset(ELECTION_ID, USER_ID, new OneTimeCodeImpl("0"))
             ).getBytes(UTF_8);
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(mockedCode);
-            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID, SEED));
+            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("A one-time-code for the given election and user has already been generated");
@@ -101,7 +106,7 @@ final class CodesManagerContractTest {
         void whenElectionDoesNotExists() {
             when(context.getStub().getStringState(ELECTION_ID)).thenReturn("");
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID, SEED));
+            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("The given election doesn't exists");
@@ -111,7 +116,13 @@ final class CodesManagerContractTest {
         @Test
         void whenSeedIsEmpty() {
             when(stub.getPrivateData(CODES_COLLECTION, KEY)).thenReturn(new byte[0]);
-            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID, ""));
+            when(stub.getTransient()).thenReturn(
+                Map.of(
+                    UserCodeData.USER_ID.getKey(), USER_ID.getBytes(UTF_8),
+                    UserCodeData.SEED.getKey(), " ".getBytes(UTF_8)
+                )
+            );
+            final Throwable thrown = catchThrowable(() -> contract.generateCodeFor(context, ELECTION_ID));
             assertThat(thrown)
                 .isInstanceOf(ChaincodeException.class)
                 .hasMessage("Seed cannot be blank");

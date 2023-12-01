@@ -13,7 +13,9 @@ public enum UserCodeData {
     /** The user identifier entry key. */
     USER_ID("userId"),
     /** The one-time-code entry key. */
-    CODE("code");
+    CODE("code"),
+    /** The seed used to inject randomness in the {@link it.unibo.ds.chainvote.codes.OneTimeCode} generation. */
+    SEED("seed");
 
     private final String key;
 
