@@ -63,7 +63,6 @@ copy_keys() {
 export $(cat ../config.env | xargs)
 detect_os
 export ARTIFACTS_DIR=$(pwd)/../$ARTIFACTS_DIR
-echo $echo
 if [ $machine == "Mac" ]; then
     export INTERNAL_GATEWAY="host.docker.internal"
 else
@@ -72,6 +71,11 @@ fi
 
 # Startup and configure the API-server
 startup() {
+
+  echo "STEP 0: Setting up permissions for verdaccio storage and plugins folders"
+  sudo chmod go+rwx ./verdaccio/storage
+  sudo chmod go+rwx ./verdaccio/plugins
+
   docker-compose down
 
   # Launch the containers
@@ -116,6 +120,8 @@ startup() {
   echo "STEP 4: Launching api and auth containers"
   launch_container api-server
   launch_container auth-server
+
+  echo "STEP 5: Done"
 }
 
 # Shutdown the API-server
