@@ -26,7 +26,7 @@ const refreshTokenMiddleware = async (req, res, next) => {
                 }
             }
         } else {
-            res.redirect('/sign-in');
+            res.locals.view = 'sign-in';
         }
     } catch (error) {
         console.log(error);
