@@ -80,6 +80,7 @@ Organizations:
             # encoded in the genesis block in the Application section context
             - Host: peer1-org1
               Port: 7051
+
     - &org2
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
@@ -99,7 +100,7 @@ Organizations:
                 Rule: "OR('org2MSP.member', 'org3MSP.member')"
             Writers:
                 Type: Signature
-                Rule: "OR('org2MSP.admin', 'org2MSP.client', 'org3MSP.admin', 'org3MSP.client')"
+                Rule: "OR('org2MSP.admin', 'org2MSP.client')"
             Admins:
                 Type: Signature
                 Rule: "OR('org2MSP.admin')"
@@ -134,7 +135,7 @@ Organizations:
                 Rule: "OR('org3MSP.member', 'org2MSP.member')"
             Writers:
                 Type: Signature
-                Rule: "OR('org3MSP.admin', 'org3MSP.client', 'org2MSP.admin', 'org2MSP.client')"
+                Rule: "OR('org3MSP.admin', 'org3MSP.client')"
             Admins:
                 Type: Signature
                 Rule: "OR('org3MSP.admin')"
