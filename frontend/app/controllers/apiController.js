@@ -22,7 +22,6 @@ const getAllElections = async (req, res, next) => {
                     null, 
                     req.session.accessToken
                 );
-                console.log(electionDetail);
                 entry.open = Object.keys(electionDetail.data.results).length === 0;
             }
             res.locals.data = electionsData;
@@ -44,7 +43,6 @@ const getElection = async (req, res, next) => {
             const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
             const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
             const electionData = reformatDates(electionDetailsResponse.data);
-            console.log(electionData);
             electionData.open = Object.keys(electionData.results).length === 0;
             electionData.choices = electionInfoResponse.data.choices;
             electionData.electionId = electionId;
@@ -122,7 +120,6 @@ const postCreateElection = async (req, res) => {
         try {
             const urlCreateElection = urlApiServer + "/election";
             const urlCreateElectionInfo = urlApiServer + "/election/info";
-
             const data = {
                 goal: req.body.goal,
                 voters: req.body.voters,
@@ -130,7 +127,6 @@ const postCreateElection = async (req, res) => {
                 endDate: new Date(req.body.endDate).toISOString(),
                 choices: req.body.choices
             }
-
             const responseElectionInfo = await axiosRequest('POST', urlCreateElectionInfo, data, req.session.accessToken);
             if (responseElectionInfo.success) {
                 const electionId = responseElectionInfo.data.electionId;
