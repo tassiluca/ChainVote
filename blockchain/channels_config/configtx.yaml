@@ -71,7 +71,7 @@ Organizations:
                 Rule: "OR('org1MSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('org1MSP.peer', 'org2MSP.peer', 'org3MSP.peer')"
+                Rule: "OR('org1MSP.peer')"
 
         # leave this flag set to true.
         AnchorPeers:
@@ -105,7 +105,7 @@ Organizations:
                 Rule: "OR('org2MSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('org2MSP.peer', 'org3MSP.peer')"
+                Rule: "OR('org2MSP.peer')"
 
         # leave this flag set to true.
         AnchorPeers:
@@ -140,7 +140,7 @@ Organizations:
                 Rule: "OR('org3MSP.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('org3MSP.peer', 'org2MSP.peer')"
+                Rule: "OR('org3MSP.peer')"
 
         # leave this flag set to true.
         AnchorPeers:
