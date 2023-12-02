@@ -60,9 +60,10 @@ $(document).ready(() => {
                     document.getElementById('error-sign-up').innerHTML = response.message;
                     show(document.querySelector("#div-error-sign-up"));
                 }
-            }).fail(function(error) {
-                document.getElementById('error-sign-up').innerHTML = 'Error ' + error.status + ': ' + error.responseJSON.message;
-                show(document.querySelector("#div-error-sign-up"));
+            }).fail(error => {
+                $("#error").text('Error ' + error.status + ': ' + error.responseJSON.message);
+                show($("#error"));
+                hide($("#success"));
             });
         }
     })

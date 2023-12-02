@@ -100,9 +100,19 @@
                         $('#voteForm input[name="choiceRadio"]:checked').prop('checked', false);
                         window.location.href = response.url;
                     }
-                }).fail(function(e) {
-                    alert('Error submitting vote. Please try again.');
-                });
+                }).fail(error => {
+                    $("#error").text('Error ' + error.status + ': ' + error.responseJSON.message);
+                    show($("#error"));
+                    hide($("#success"));
+                }).always(() => hide($("#spinner-election")));
+            }
+
+            function hide(element) {
+                $(element).addClass("hidden");
+            }
+    
+            function show(element) {
+                $(element).removeClass("hidden");
             }
 
             $(document).ready(function() {

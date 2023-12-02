@@ -59,7 +59,7 @@ $(document).ready(() => {
         }).done(response => {
             if (response.success) {
                 // window.location.href = response.url;
-                $("#success").text("Election created successfully.");
+                $("#success").text(response.message);
                 hide($("#error"));
                 show($("#success"));
             } else {
@@ -68,7 +68,7 @@ $(document).ready(() => {
                 show($("#error"));
             }
         }).fail(error => {
-            $("#error").text('Error ' + error.status + ': ' + error.statusText);
+            $("#error").text('Error ' + error.status + ': ' + error.responseJSON.message);
             show($("#error"));
             hide($("#success"));
         }).always(() => hide($("#spinner")));

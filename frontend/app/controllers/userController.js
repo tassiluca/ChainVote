@@ -1,9 +1,11 @@
 const axiosRequest = require('../utils/utils');
 
 const {
-    chaincodeErrorCode,
+    chaincodeErrorType,
     badRequestErrorCode,
-    badRequestErrorMessage
+    badRequestErrorMessage,
+    signUpSuccessfulMessage,
+    signInSuccessfulMessage
 } = require('../utils/utils')
 
 const urlApiServer = process.env.API_SERVER_URL || 'http://localhost:8080'
@@ -33,23 +35,30 @@ const postSignUp = async (req, res) => {
                 const redirectUrl = '/';
                 res.status(response.code).json({
                     success: true,
-                    message: "User successfully created.",
+                    message: signUpSuccessfulMessage,
                     data: response.data,
                     url: redirectUrl
                 })
             } else {
                 res.status(response.code).json({
-                    name: response.error.name,
-                    message: response.error.message
+                    message: response.error.name
                 })
             }
         } catch (error) {
-            res.status(error.response.data.code).json(
-                {message: error.response.data.error.message}
-            );
+            let message;
+            if (error.response.data.error.type === chaincodeErrorType) {
+                message = error.response.data.error.message;
+            } else {
+                message = error.response.data.error.name;
+            }
+            res.status(error.response.data.code).json({
+                message: message
+            });
         }
     } else {
-        res.status(badRequestErrorCode).json({message: badRequestErrorMessage})
+        res.status(badRequestErrorCode).json({
+            message: badRequestErrorMessage
+        })
     }
 };
 
@@ -96,25 +105,29 @@ const postSignIn = async (req, res) => {
                     req.session.role = responseRole.data.role;
                 } else {
                     res.status(responseRole.code).json({
-                        name: responseRole.error.name,
-                        message: responseRole.error.message
+                        message: responseRole.error.name
                     });
                 }
 
                 res.status(response.code).json({
                     success: true,
-                    message: "User successfully logged in.",
+                    message: signInSuccessfulMessage,
                     url: redirectUrl
                 });
             } else {
                 res.status(response.code).json({
-                    name: response.error.name,
-                    message: response.error.message
+                    message: response.error.name
                 });
             }
         } catch (error) {
+            let message;
+            if (error.response.data.error.type === chaincodeErrorType) {
+                message = error.response.data.error.message;
+            } else {
+                message = error.response.data.error.name;
+            }
             res.status(error.response.data.code).json({
-                message: error.response.data.error.message
+                message: message
             });
         }
     } else {
