@@ -24,9 +24,8 @@ const axiosRequest = async (method, url, data = null, token = null) => {
     }
 };
 
-module.exports = axiosRequest
-
 module.exports = {
+    axiosRequest,
     chaincodeErrorCode,
     badRequestErrorCode,
     badRequestErrorMessage

@@ -1,9 +1,8 @@
-const axiosRequest = require('../utils/utils');
-
 const {
     chaincodeErrorCode,
     badRequestErrorCode,
-    badRequestErrorMessage
+    badRequestErrorMessage,
+    axiosRequest
 } = require('../utils/utils')
 
 const urlApiServer = process.env.API_SERVER_URL || 'http://localhost:8080'
@@ -113,6 +112,7 @@ const postSignIn = async (req, res) => {
                 });
             }
         } catch (error) {
+            console.log(error);
             res.status(error.response.data.code).json({
                 message: error.response.data.error.message
             });

@@ -1,8 +1,7 @@
-const axiosRequest = require('../utils/utils');
-
 const urlApiServer = process.env.API_SERVER_URL || "http://localhost:8080"
 
 const {
+    axiosRequest,
     chaincodeErrorCode,
     badRequestErrorCode,
     badRequestErrorMessage
@@ -13,14 +12,23 @@ const getAllElections = async (req, res, next) => {
         try {
             const allElectionsUrl = urlApiServer + `/election/info/all`;
             const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, req.session.accessToken);
+            console.log(electionsDetailsResponse);
             const electionsData = electionsDetailsResponse.data;
             for (let i = 0; i < electionsData.length; i++) {
                 const entry = reformatDates(electionsData[i]);
-                entry.open = Object.keys(entry.results).length === 0;
+                const electionDetail = await axiosRequest(
+                    'GET', 
+                    urlApiServer + `/election/detail/${electionsData[i].electionId}`, 
+                    null, 
+                    req.session.accessToken
+                );
+                console.log(electionDetail);
+                entry.open = Object.keys(electionDetail.data.results).length === 0;
             }
             res.locals.data = electionsData;
             res.locals.view = 'dashboard';
         } catch (error) {
+            console.log(error);
             res.locals.view = 'error';
         }
     }
@@ -36,7 +44,7 @@ const getElection = async (req, res, next) => {
             const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
             const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
             const electionData = reformatDates(electionDetailsResponse.data);
-
+            console.log(electionData);
             electionData.open = Object.keys(electionData.results).length === 0;
             electionData.choices = electionInfoResponse.data.choices;
             electionData.electionId = electionId;
@@ -58,7 +66,6 @@ const getCastVote = async (req, res, next) => {
             const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
             const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
             const electionData = reformatDates(electionDetailsResponse.data);
-
             const isOpen = Object.keys(electionData.results).length === 0;
             if (isOpen) {
                 electionData.choices = electionInfoResponse.data.choices;
