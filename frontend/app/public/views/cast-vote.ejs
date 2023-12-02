@@ -109,8 +109,8 @@
                         hide($("#error"));
                         // window.location.href = response.url;
                     }
-                }).fail(e => {
-                    $("#error").text(e.responseJSON.message);
+                }).fail(error => {
+                    $("#error").text('Error ' + error.status + ': ' + error.responseJSON.message);
                     show($("#error"));
                     hide($("#success"));
                 }).always(() => hide($("#spinner-election")));

@@ -31,8 +31,8 @@ $(document).ready(() => {
                 $("#error").text(response.message);
                 show($("#error"));
             }
-        }).fail(function(error) {
-            $("#error").text('Error ' + error.status + ': ' + error.statusText);
+        }).fail(error => {
+            $("#error").text('Error ' + error.status + ': ' + error.responseJSON.message);
             show($("#error"));
         });
     })

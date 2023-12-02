@@ -1,7 +1,12 @@
 const axios = require('axios');
-const chaincodeErrorCode = '500'
+const chaincodeErrorType = '1'
 const badRequestErrorCode = '400'
 const badRequestErrorMessage = 'Bad request'
+const castVoteSuccessfulMessage = "Vote cast successfully."
+const createElectionSuccessfulMessage = "Election created successfully."
+const signUpSuccessfulMessage = "User successfully created."
+const signInSuccessfulMessage = "User successfully logged in."
+
 
 const axiosRequest = async (method, url, data = null, token = null) => {
     try {
@@ -26,7 +31,11 @@ const axiosRequest = async (method, url, data = null, token = null) => {
 
 module.exports = {
     axiosRequest,
-    chaincodeErrorCode,
+    chaincodeErrorType,
     badRequestErrorCode,
-    badRequestErrorMessage
+    badRequestErrorMessage,
+    castVoteSuccessfulMessage,
+    createElectionSuccessfulMessage,
+    signUpSuccessfulMessage,
+    signInSuccessfulMessage
 }

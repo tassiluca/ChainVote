@@ -62,7 +62,7 @@ $(document).ready(() => {
                     show($("#error"));
                     hide($("#success"));
                 }
-            }).fail(function(error) {
+            }).fail(error => {
                 $("#error").text('Error ' + error.status + ': ' + error.responseJSON.message);
                 show($("#error"));
                 hide($("#success"));
