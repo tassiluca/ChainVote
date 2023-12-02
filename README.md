@@ -23,15 +23,25 @@
 
 ## Startup
 
-To bring up the whole system (it will take some minutes):
+To bring up all services:
 
 ```bash
 ./services up
 ```
+The first time it will pull Hyperledger Fabric binaries and docker images to create blockchain artifacts.
+Therefore, it will take a while ($\approx$ 10-15 minutes, depending on your system) to bring up the entire system.
 
-To shutdown:
+:warning: `TODO`: sudo ...
+
+To shutdown the services without cleaning the blockchain artifacts (it will speed up the bring up of the network next times):
 ```bash
 ./services down
+```
+
+To remove blockchain artifacts:
+
+```bash
+./services clean
 ```
 
 ## Documentation
@@ -39,11 +49,15 @@ To shutdown:
 - [Here](https://github.com/tassiLuca/ds-project-antonioni-rubboli-tassinari-ay2223/releases/latest) you can find the last release of the report.
 
 - **Smart Contracts** Javadoc
-  - [`chaincode-org1`](https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/chaincode-org1/)
-  - [`chaincode-org2`](https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/chaincode-org2/)
+  - [`chaincode-elections`](https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/chaincode-elections/)
+  - [`chaincode-votes`](https://tassiluca.github.io/ds-project-antonioni-rubboli-tassinari-ay2223/smart-contracts/javadoc/chaincode-votes/)
 
 - **RESTful API**
-  - :warning: TODO!
+  - :warning: `TODO`
+
+## Troubleshooting
+
+:warning: `TODO`
 
 ## Authors
 
