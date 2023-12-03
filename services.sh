@@ -52,7 +52,7 @@ function startup() {
     check_prerequisites
     pushd smart-contracts
     echo "Upping network and deploying smart contracts..."
-    ./gradlew upAndDeploy --stacktrace
+    ./gradlew upAndDeploy
     popd
     pushd api-service
     echo "Upping API service..."

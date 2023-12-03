@@ -1,6 +1,6 @@
 const axios = require('axios');
-const chaincodeErrorType = '1'
-const badRequestErrorCode = '400'
+const chaincodeErrorType = 1
+const badRequestErrorCode = 400
 const badRequestErrorMessage = 'Bad request'
 const castVoteSuccessfulMessage = "Vote cast successfully."
 const createElectionSuccessfulMessage = "Election created successfully."

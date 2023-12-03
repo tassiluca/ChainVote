@@ -14,7 +14,6 @@ const getAllElections = async (req, res, next) => {
         try {
             const allElectionsUrl = urlApiServer + `/election/info/all`;
             const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, req.session.accessToken);
-            console.log(electionsDetailsResponse);
             const electionsData = electionsDetailsResponse.data;
             for (let i = 0; i < electionsData.length; i++) {
                 const entry = reformatDates(electionsData[i]);
@@ -29,7 +28,6 @@ const getAllElections = async (req, res, next) => {
             res.locals.data = electionsData;
             res.locals.view = 'dashboard';
         } catch (error) {
-            console.log(error);
             res.locals.view = 'error';
         }
     }
