@@ -3,6 +3,17 @@ import { StatusCodes } from "http-status-codes";
 import {BadRequestError, ErrorTypes, NotFoundError, UnauthorizedError, User} from "core-components";
 import { ac } from "../configs/accesscontrol.config";
 
+
+/**
+ * Set the user identity to work with. This function should be used when, in an API control method, an admin entity
+ * wants to access to the data of another user. In this case, the request should specify the email of the user
+ * to control.
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @param isAllowed
+ */
 async function setWorkData(req: Request, res: Response, next:NextFunction, isAllowed:boolean) {
     let user = res.locals.user;
     const email = req.params.email;
@@ -35,6 +46,13 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
     return user;
 }
 
+/**
+ * Create a new user
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function createUser(req: Request, res: Response, next: NextFunction) {
     const user = new User({
         email: req.body.email,
@@ -64,6 +82,13 @@ export async function createUser(req: Request, res: Response, next: NextFunction
     return next();
 }
 
+/**
+ * Get the profile of the user
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function getProfile(req: Request, res: Response, next: NextFunction) {
     let user;
     const isAllowed = ac.can(res.locals.user.role).readAny('users').granted;
@@ -82,6 +107,13 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
     return next();
 }
 
+/**
+ * Edit the profile of the user
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function editProfile(req: Request, res: Response, next: NextFunction) {
     let user;
     const isAllowed = ac.can(res.locals.user.role).updateAny('users').granted;
@@ -112,6 +144,13 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
     return next();
 }
 
+/**
+ * Delete the profile of the user
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function deleteProfile(req: Request, res: Response, next: NextFunction) {
     let user;
     const isAllowed = ac.can(res.locals.user.role).deleteAny('users').granted;

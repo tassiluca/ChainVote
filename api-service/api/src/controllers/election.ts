@@ -7,6 +7,7 @@ import transformHyperledgerError from "../blockchain/errors/error.handling";
 import {toChoice} from "../blockchain/utils/utils";
 import {ac} from "../configs/accesscontrol.config";
 import {ErrorTypes, InternalServerError, UnauthorizedError} from "core-components";
+import {convertToISO} from "../utils/date.utils";
 
 const channelName = "ch2";
 const contractName = "chaincode-votes";
@@ -38,11 +39,14 @@ export async function getAllElection(req: Request, res: Response, next: NextFunc
             arguments: []
         });
 
-        const result = utf8Decoder.decode(submission);
+        const invocationResult = JSON.parse(utf8Decoder.decode(submission));
         res.locals.code = StatusCodes.OK;
-        res.locals.data = JSON.parse(result).result;
+        invocationResult.result.forEach((element: any) => {
+            element.startDate = convertToISO(element.startDate);
+            element.endDate = convertToISO(element.endDate);
+        });
+        res.locals.data = invocationResult.result;
     } catch (error) {
-        console.log(error);
         return next(transformHyperledgerError(error));
     }
     return next();
@@ -73,9 +77,14 @@ export async function readElection(req: Request, res: Response, next: NextFuncti
         const submission: Uint8Array = await contract.evaluate('ElectionContract:readElection', {
             arguments: [electionId]
         });
-        const result = utf8Decoder.decode(submission);
+        const invocationResult = JSON.parse(utf8Decoder.decode(submission));
+
+        invocationResult.result.startDate = convertToISO(invocationResult.result.startDate);
+        invocationResult.result.endDate = convertToISO(invocationResult.result.endDate);
+
         res.locals.code = StatusCodes.OK;
-        res.locals.data = JSON.parse(result).result;
+        res.locals.data = invocationResult.result;
+
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -108,9 +117,9 @@ export async function createElection(req: Request, res: Response, next: NextFunc
         const submission: Uint8Array = await contract.submit('ElectionContract:createElection', {
             arguments: [electionId, '{}']
         });
-        const result = utf8Decoder.decode(submission);
+        const invocationResult = JSON.parse(utf8Decoder.decode(submission));
         res.locals.code = StatusCodes.OK;
-        res.locals.data = JSON.parse(result).result;
+        res.locals.data = invocationResult.result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
