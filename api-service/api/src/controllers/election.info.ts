@@ -9,10 +9,12 @@ import {convertToChoiceList} from "../blockchain/utils/utils";
 
 import { ac } from "../configs/accesscontrol.config";
 import {ErrorTypes, UnauthorizedError} from "core-components";
+import {convertToISO, convertToUTC} from "../utils/date.utils";
 
 const channelName = "ch1";
 const contractName = "chaincode-elections";
 const utf8Decoder = new TextDecoder();
+
 
 /**
  * Return all the generated data of election info.
@@ -38,11 +40,20 @@ export async function getAllElectionInfo(req: Request, res: Response, next: Next
         const contract: Contract = network.getContract(contractName);
         const allAssets: Uint8Array = await contract.evaluate('ElectionInfoContract:getAllElectionInfo');
         const invocationResults = JSON.parse(utf8Decoder.decode(allAssets));
+
+        invocationResults.result.forEach((element: any) => {
+            element.startDate = convertToISO(element.startDate);
+            element.endDate = convertToISO(element.endDate);
+        });
+
         res.locals.code = StatusCodes.OK;
         res.locals.data = invocationResults.result;
+
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
+
+
     return next();
 }
 
@@ -70,8 +81,15 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
         const electionId: string = req.params.electionId
         const submission: Uint8Array = await contract.evaluateTransaction('ElectionInfoContract:readElectionInfo', electionId);
         const results = utf8Decoder.decode(submission);
+
+        const invocationResult = JSON.parse(results).result;
+
+        invocationResult.startDate = convertToISO(invocationResult.startDate);
+        invocationResult.endDate = convertToISO(invocationResult.endDate);
+
         res.locals.code = StatusCodes.OK;
-        res.locals.data = JSON.parse(results).result;
+        res.locals.data = invocationResult;
+
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -101,12 +119,14 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         const contract: Contract = network.getContract(contractName);
 
         const choices: string= JSON.stringify(convertToChoiceList(req.body.choices));
+        const convertedStartDate = convertToUTC(req.body.startDate);
+        const convertedEndDate = convertToUTC(req.body.endDate);
 
         const data = [
             req.body.goal,
             req.body.voters,
-            req.body.startDate,
-            req.body.endDate,
+            convertedStartDate,
+            convertedEndDate,
             choices
         ];
         const submission: Uint8Array = await contract.submit('ElectionInfoContract:createElectionInfo', {
