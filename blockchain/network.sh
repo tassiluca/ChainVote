@@ -58,6 +58,7 @@ function upNetwork() {
     ./channel_artifacts.sh
     echo "Bring up the whole network"
     containers up
+    sleep 10
     echo "Create and joining channels"
     ./channel_creation.sh
 }
