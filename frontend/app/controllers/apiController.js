@@ -2,7 +2,7 @@ const urlApiServer = process.env.API_SERVER_URL || "http://localhost:8080"
 
 const {
     axiosRequest,
-    chaincodeErrorType,
+    getBackendError,
     badRequestErrorCode,
     badRequestErrorMessage,
     castVoteSuccessfulMessage,
@@ -90,22 +90,16 @@ const postCastVote = async (req, res) => {
         }
         const voteUrl = urlApiServer + `/election/vote/${electionId}`;
         const voteResponse = await axiosRequest('PUT', voteUrl, data, req.session.accessToken);
-        const redirectUrl = '/';
-        return res.send({
-            success: voteResponse.success,
-            message: castVoteSuccessfulMessage,
-            url: redirectUrl
-        });
-    } catch (error) {
-        let message;
-        if (error.response.data.error.type === chaincodeErrorType) {
-            message = error.response.data.error.message;
-        } else {
-            message = error.response.data.error.name;
+        if (voteResponse.success) {
+            const redirectUrl = '/';
+            return res.send({
+                success: voteResponse.success,
+                message: castVoteSuccessfulMessage,
+                url: redirectUrl
+            });
         }
-        res.status(error.response.data.code).json(
-            {message: message}
-        );
+    } catch (error) {
+        res.status(error.response.data.code).json(getBackendError(error));
     }
 };
 
@@ -144,26 +138,10 @@ const postCreateElection = async (req, res) => {
                         message: createElectionSuccessfulMessage,
                         url: redirectUrl
                     });
-                } else {
-                    res.status(responseElectionInfo.code).json({
-                        message: responseElection.error.name
-                    });
                 }
-            } else {
-                res.status(responseElectionInfo.code).json({
-                    message: responseElectionInfo.error.name
-                });
             }
         } catch (error) {
-            let message;
-            if (error.response.data.error.type === chaincodeErrorType) {
-                message = error.response.data.error.message;
-            } else {
-                message = error.response.data.error.name;
-            }
-            res.status(error.response.data.code).json({
-                message: message
-            });
+            res.status(error.response.data.code).json(getBackendError(error));
         }
     } else {
         res.status(badRequestErrorCode).json({
@@ -188,15 +166,7 @@ const createElectionCode = async (req, res) => {
                 });
             }
         } catch (error) {
-            let message;
-            if (error.response.data.error.type === chaincodeErrorType) {
-                message = error.response.data.error.message;
-            } else {
-                message = error.response.data.error.name;
-            }
-            res.status(error.response.data.code).json({
-                message: message
-            });
+            res.status(error.response.data.code).json(getBackendError(error));
         }
     } else {
         res.status(badRequestErrorCode).json({

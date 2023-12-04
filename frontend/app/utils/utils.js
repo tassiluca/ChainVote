@@ -1,5 +1,4 @@
 const axios = require('axios');
-const chaincodeErrorType = 1
 const badRequestErrorCode = 400
 const badRequestErrorMessage = 'Bad request'
 const castVoteSuccessfulMessage = "Vote cast successfully."
@@ -29,13 +28,19 @@ const axiosRequest = async (method, url, data = null, token = null) => {
     }
 };
 
+function getBackendError(error) {
+    return {
+        message: error.response.data.error.message
+    }
+}
+
 module.exports = {
     axiosRequest,
-    chaincodeErrorType,
+    getBackendError,
     badRequestErrorCode,
     badRequestErrorMessage,
     castVoteSuccessfulMessage,
     createElectionSuccessfulMessage,
     signUpSuccessfulMessage,
-    signInSuccessfulMessage
+    signInSuccessfulMessage,
 }

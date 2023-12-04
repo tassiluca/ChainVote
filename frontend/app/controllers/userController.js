@@ -1,5 +1,5 @@
 const {
-    chaincodeErrorType,
+    getBackendError,
     badRequestErrorCode,
     badRequestErrorMessage,
     axiosRequest,
@@ -38,21 +38,9 @@ const postSignUp = async (req, res) => {
                     data: response.data,
                     url: redirectUrl
                 })
-            } else {
-                res.status(response.code).json({
-                    message: response.error.name
-                })
             }
         } catch (error) {
-            let message;
-            if (error.response.data.error.type === chaincodeErrorType) {
-                message = error.response.data.error.message;
-            } else {
-                message = error.response.data.error.name;
-            }
-            res.status(error.response.data.code).json({
-                message: message
-            });
+            res.status(error.response.data.code).json(getBackendError(error));
         }
     } else {
         res.status(badRequestErrorCode).json({
@@ -102,10 +90,6 @@ const postSignIn = async (req, res) => {
 
                 if (responseRole.success) {
                     req.session.role = responseRole.data.role;
-                } else {
-                    res.status(responseRole.code).json({
-                        message: responseRole.error.name
-                    });
                 }
 
                 res.status(response.code).json({
@@ -113,21 +97,9 @@ const postSignIn = async (req, res) => {
                     message: signInSuccessfulMessage,
                     url: redirectUrl
                 });
-            } else {
-                res.status(response.code).json({
-                    message: response.error.name
-                });
             }
         } catch (error) {
-            let message;
-            if (error.response.data.error.type === chaincodeErrorType) {
-                message = error.response.data.error.message;
-            } else {
-                message = error.response.data.error.name;
-            }
-            res.status(error.response.data.code).json({
-                message: message
-            });
+            res.status(error.response.data.code).json(getBackendError(error));
         }
     } else {
         res.status(badRequestErrorCode).json({

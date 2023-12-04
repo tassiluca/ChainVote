@@ -20,8 +20,8 @@ router.post('/elections/vote/:electionId', apiController.postCastVote);
 router.post('/elections/code', apiController.createElectionCode);
 router.get('/user-area', userController.getUserArea, responseMiddleware);
 router.get('/logout', userController.logout);
-router.get('/create-election', apiController.getCreateElection, responseMiddleware);
-router.post('/create-election', apiController.postCreateElection);
+router.get('/elections/create', apiController.getCreateElection, responseMiddleware);
+router.post('/elections/create', apiController.postCreateElection);
 
 
 module.exports = router;
