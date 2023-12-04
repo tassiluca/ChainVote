@@ -19,18 +19,6 @@ function print_help() {
     echo "  - npm"
 }
 
-function detect_os() {
-    unameOut="$(uname -s)"
-    case "${unameOut}" in
-        Linux*)     machine=Linux;;
-        Darwin*)    machine=Mac;;
-        CYGWIN*)    machine=Cygwin;;
-        MINGW*)     machine=MinGw;;
-        *)          machine="UNKNOWN:${unameOut}"
-    esac
-    echo "Detected OS: ${machine}"
-}
-
 function check_prerequisites() {
     local os_name=$(uname -s)
     if [[ "$os_name" != "Linux" && "$os_name" != "Darwin" ]]; then # Check if the host is a Unix-like operating system
