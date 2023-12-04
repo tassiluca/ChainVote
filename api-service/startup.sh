@@ -72,9 +72,11 @@ fi
 # Startup and configure the API-server
 startup() {
 
-  echo "STEP 0: Setting up permissions for verdaccio storage and plugins folders"
+  echo "STEP 0: Setting up folders permissions"
   sudo chmod go+rwx ./verdaccio/storage
   sudo chmod go+rwx ./verdaccio/plugins
+  sudo chmod go+rwx ./cache
+  sudo chmod go+rwx ./dbdata
 
   docker-compose down
 
