@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
 
-    const urlToCreateElection = window.location.origin + '/create-election';
+    const urlToCreateElection = window.location.origin + '/elections/create';
 
     const form = document.getElementById('login');
     const goal = document.getElementById('inputGoal');

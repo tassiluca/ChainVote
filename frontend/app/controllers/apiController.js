@@ -18,7 +18,6 @@ const getAllElections = async (req, res, next) => {
             for (let i = 0; i < electionsData.length; i++) {
                 reformatDates(electionsData[i]);
             }
-            console.log(electionsData);
             res.locals.data = electionsData;
             res.locals.view = 'dashboard';
         } catch (error) {
