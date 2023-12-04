@@ -49,7 +49,8 @@ function downNetworkAndClean() {
 }
 
 function createArtifacts() {
-    trap 'downNetworkAndClean' ERR # execute downNetworkAndClean if an error occurs
+    # execute downNetworkAndClean if an error occurs in this function
+    trap 'downNetworkAndClean' ERR 
     echo "Artifacts directory: $ARTIFACTS_DIR"
     mkdir -p $ARTIFACTS_DIR/org0/{ca,artifacts,orderer1,orderer2,orderer3}
     mkdir -p $ARTIFACTS_DIR/org1/{ca,peer1}
@@ -78,6 +79,7 @@ function upNetwork() {
     ./channel_artifacts.sh
     echo "Bring up the whole network"
     containers up
+    sleep 10
     echo "Create and joining channels"
     ./channel_creation.sh
 }
