@@ -12,19 +12,13 @@ const {
 const getAllElections = async (req, res, next) => {
     if (req.session && req.session.accessToken) {
         try {
-            const allElectionsUrl = urlApiServer + `/election/info/all`;
+            const allElectionsUrl = urlApiServer + `/election/all`;
             const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, req.session.accessToken);
             const electionsData = electionsDetailsResponse.data;
             for (let i = 0; i < electionsData.length; i++) {
-                const entry = reformatDates(electionsData[i]);
-                const electionDetail = await axiosRequest(
-                    'GET', 
-                    urlApiServer + `/election/detail/${electionsData[i].electionId}`, 
-                    null, 
-                    req.session.accessToken
-                );
-                entry.open = Object.keys(electionDetail.data.results).length === 0;
+                reformatDates(electionsData[i]);
             }
+            console.log(electionsData);
             res.locals.data = electionsData;
             res.locals.view = 'dashboard';
         } catch (error) {
@@ -176,8 +170,9 @@ const createElectionCode = async (req, res) => {
 };
 
 function reformatDates(electionData) {
-    electionData.formattedStartDate = formatDate(`${electionData.startDate}Z`);
-    electionData.formattedEndDate = formatDate(`${electionData.endDate}Z`);
+    electionData.formattedStartDate = formatDate(electionData.startDate);
+    electionData.formattedEndDate = formatDate(electionData.endDate);
+    console.l
     return electionData;
 }
 
