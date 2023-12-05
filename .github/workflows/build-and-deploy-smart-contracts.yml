@@ -56,24 +56,24 @@ jobs:
           cd smart-contracts
           ./gradlew downNetwork --stacktrace
 
-  Javadoc:
-    if: >-
-      github.event_name == 'push'
-      && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
-    runs-on: ubuntu-latest
-    needs: [ Build-And-Test, Test-Deploy ]
-    steps:
-      - name: Deploy JavaDoc 🚀
-        uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          javadoc-branch: api-doc
-          java-version: 17
-          target-folder: smart-contracts
-          project: gradle
-          custom-command: |
-            pushd smart-contracts
-            ./gradlew javadoc
-            popd
-            mkdir -p ./build/docs/javadoc
-            cp -r ./smart-contracts/build/javadoc/ ./build/docs/javadoc
+  # Javadoc:
+  #   if: >-
+  #     github.event_name == 'push'
+  #     && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
+  #   runs-on: ubuntu-latest
+  #   needs: [ Build-And-Test, Test-Deploy ]
+  #   steps:
+  #     - name: Deploy JavaDoc 🚀
+  #       uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
+  #       with:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         javadoc-branch: api-doc
+  #         java-version: 17
+  #         target-folder: smart-contracts
+  #         project: gradle
+  #         custom-command: |
+  #           pushd smart-contracts
+  #           ./gradlew javadoc
+  #           popd
+  #           mkdir -p ./build/docs/javadoc
+  #           cp -r ./smart-contracts/build/javadoc/ ./build/docs/javadoc
