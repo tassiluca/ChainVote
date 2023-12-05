@@ -123,14 +123,21 @@ const postCreateElection = async (req, res) => {
             const responseElectionInfo = await axiosRequest('POST', urlCreateElectionInfo, data, req.session.accessToken);
             if (responseElectionInfo.success) {
                 const electionId = responseElectionInfo.data.electionId;
-                const responseElection = await axiosRequest('POST', urlCreateElection, {electionId: electionId}, req.session.accessToken);
-                if (responseElection.success) {
-                    const redirectUrl = '/elections';
-                    res.status(responseElectionInfo.code).json({
-                        success: true,
-                        message: createElectionSuccessfulMessage,
-                        url: redirectUrl
-                    });
+                try {
+                    const responseElection = await axiosRequest('POST', urlCreateElection, {electionId: electionId}, req.session.accessToken);
+                    if (responseElection.success) {
+                        const redirectUrl = '/elections';
+                        res.status(responseElectionInfo.code).json({
+                            success: true,
+                            message: createElectionSuccessfulMessage,
+                            url: redirectUrl
+                        });
+                    }
+                } catch (error) {
+                    const responseDeleteElection = await axiosRequest('DELETE', urlCreateElectionInfo, {electionId: electionId}, req.session.accessToken);
+                    if (responseDeleteElection.success) {
+                        res.status(error.response.data.code).json(getBackendError(error));
+                    }
                 }
             }
         } catch (error) {
