@@ -116,8 +116,8 @@ const postCreateElection = async (req, res) => {
             const data = {
                 goal: req.body.goal,
                 voters: req.body.voters,
-                startDate: new Date(req.body.startDate).toISOString(),
-                endDate: new Date(req.body.endDate).toISOString(),
+                startDate: req.body.startDate,
+                endDate: req.body.endDate,
                 choices: req.body.choices
             }
             const responseElectionInfo = await axiosRequest('POST', urlCreateElectionInfo, data, req.session.accessToken);
