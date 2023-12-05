@@ -4,9 +4,9 @@ $(document).ready(() => {
 
     const urlToSignIn = window.location.origin + '/sign-in';
 
-    const form = document.getElementById('login');
-    const email = document.getElementById('inputEmail');
-    const password = document.getElementById('inputPassword');
+    const form = document.querySelector('#signInForm');
+    const email = document.querySelector('#inputEmail');
+    const password = document.querySelector('#inputPassword');
 
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
