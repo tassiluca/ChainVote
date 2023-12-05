@@ -183,7 +183,7 @@ function reformatDates(electionData) {
 }
 
 function formatDate(date) {
-    return new Date(date).toLocaleDateString('en-US', { 
+    return new Date(date).toLocaleDateString('en-IT', { 
         year: 'numeric', 
         month: 'long', 
         day: 'numeric',
