@@ -22,6 +22,9 @@
                         <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus>
                         <label for="inputPassword" class="sr-only">Password</label>
                         <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" onkeyup="clearPassword(); checkRepeatedPassword();" required>
+                        <div id="popup" class="popup hidden">
+                            <span class="popuptext" id="popupText">Password does not match rules: Must contain at least one uppercase letter, one lowercase, one number and one special character and its length must be between 8 and 16.</span>
+                        </div>
                         <label for="inputRepeatPassword" class="sr-only">Repeat Password</label>
                         <input type="password" id="inputRepeatPassword" class="form-control" placeholder="Repeat Password" onkeyup="checkRepeatedPassword();" required>
                         <label for="inputRole" class="sr-only">Repeat Password</label>
@@ -29,7 +32,7 @@
                             <option selected value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
-                        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+                        <button id="buttonSignUp" class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
                         <div class="text-center mx-auto credentials-route">
                             <p>
                                 Already subscribed? <a class="navbar-brand" href="/sign-in">Log in here</a>

@@ -4,7 +4,7 @@ $(document).ready(() => {
 
     const urlToSignUp = window.location.origin + '/sign-up';
 
-    const form = document.querySelector('#signUpForm');
+    const form = document.querySelector('form#signUpForm');
     const name = document.querySelector('#inputName');
     const surname = document.querySelector('#inputSurname');
     const email = document.querySelector('#inputEmail');
@@ -18,6 +18,9 @@ $(document).ready(() => {
 
     function clearPassword() {
         setSuccess(password)
+        hide($("#popup"));
+        var popup = document.getElementById("popupText");
+        popup.classList.remove("show");
     }
 
     function checkRepeatedPassword() {
@@ -33,7 +36,7 @@ $(document).ready(() => {
         }
     }
 
-    form.addEventListener('submit', function(event) {
+    form.addEventListener('submit', event => {
         event.preventDefault();
         validateForm();
         if (isFormValid()) {
@@ -92,6 +95,9 @@ $(document).ready(() => {
             setError(password, 'Password can\'t be empty.');
         } else if (!isPasswordValid(password.value)) {
             setError(password, 'Password don\'t match regex');
+            show($("#popup"));
+            var popup = document.getElementById("popupText");
+            popup.classList.toggle("show");
         } else {
             checkRepeatedPassword()
             setSuccess(password)
@@ -125,7 +131,7 @@ $(document).ready(() => {
     }
     function isFormValid() {
         let result = true;
-        const inputContainers = document.querySelectorAll("#login input");
+        const inputContainers = document.querySelectorAll("input");
         inputContainers.forEach((container) => {
             if (container.classList.contains('error')) {
                 result = false;
