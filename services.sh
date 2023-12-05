@@ -9,7 +9,7 @@ function print_help() {
     echo ""
     echo "Commands:"
     echo "  up      Startup the blockchain network, the API service and the frontend application"
-    echo "  down    Stop all the services (without removing blockchain artifacts)"
+    echo "  down    Stop all the services without removing blockchain artifacts"
     echo "  clean   Stop all the services and remove blockchain artifacts"
     echo ""
     echo "Pre-requisites:"
@@ -17,18 +17,6 @@ function print_help() {
     echo "  - Docker"
     echo "  - Java"
     echo "  - npm"
-}
-
-function detect_os() {
-    unameOut="$(uname -s)"
-    case "${unameOut}" in
-        Linux*)     machine=Linux;;
-        Darwin*)    machine=Mac;;
-        CYGWIN*)    machine=Cygwin;;
-        MINGW*)     machine=MinGw;;
-        *)          machine="UNKNOWN:${unameOut}"
-    esac
-    echo "Detected OS: ${machine}"
 }
 
 function check_prerequisites() {

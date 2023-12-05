@@ -4,7 +4,7 @@ $(document).ready(() => {
 
     const urlToCreateElection = window.location.origin + '/elections/create';
 
-    const form = document.getElementById('login');
+    const form = document.getElementById('createElectionForm');
     const goal = document.getElementById('inputGoal');
     const voters = document.getElementById('inputVoters');
     const startDate = document.getElementById('inputStartDate');

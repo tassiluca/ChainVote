@@ -4,7 +4,7 @@ $(document).ready(() => {
 
     const urlToSignUp = window.location.origin + '/sign-up';
 
-    const form = document.querySelector('#login');
+    const form = document.querySelector('#signUpForm');
     const name = document.querySelector('#inputName');
     const surname = document.querySelector('#inputSurname');
     const email = document.querySelector('#inputEmail');

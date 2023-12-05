@@ -2,6 +2,7 @@ name: Build And Deploy Smart Contracts
 
 on:
   push:
+    tags: '*'
     branches-ignore:
       - 'autodelivery**'
       - 'bump-**'
