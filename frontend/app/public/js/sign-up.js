@@ -18,9 +18,6 @@ $(document).ready(() => {
 
     function clearPassword() {
         setSuccess(password)
-        hide($("#popup"));
-        var popup = document.getElementById("popupText");
-        popup.classList.remove("show");
     }
 
     function checkRepeatedPassword() {
@@ -95,9 +92,6 @@ $(document).ready(() => {
             setError(password, 'Password can\'t be empty.');
         } else if (!isPasswordValid(password.value)) {
             setError(password, 'Password don\'t match regex');
-            show($("#popup"));
-            var popup = document.getElementById("popupText");
-            popup.classList.toggle("show");
         } else {
             checkRepeatedPassword()
             setSuccess(password)
