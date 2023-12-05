@@ -50,11 +50,34 @@ electionInfoRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *          summary: Return all the election info created
  *          responses:
  *              '200':
- *                  description: Request accepted successfully.
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 electionInfoRouter.get("/all", authenticationHandler, getAllElectionInfo);
@@ -65,7 +88,7 @@ electionInfoRouter.get("/all", authenticationHandler, getAllElectionInfo);
  * paths:
  *   /election/info/detail/{electionId}:
  *      get:
- *          summary: Return a specific election info created
+ *          summary: Return a specific election info created in the system
  *          parameters:
  *              - name: electionId
  *                in: path
@@ -75,11 +98,34 @@ electionInfoRouter.get("/all", authenticationHandler, getAllElectionInfo);
  *                  type: string
  *          responses:
  *              '200':
- *                  description: Request accepted successfully.
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 electionInfoRouter.get(
@@ -121,11 +167,34 @@ electionInfoRouter.get(
  *                                  description: An array of string representing the mutually exclusive choices of the election.
  *          responses:
  *              '201':
- *                  description: The resource was created successfully.
+ *                  description: Created
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 electionInfoRouter.post(
@@ -159,11 +228,34 @@ electionInfoRouter.post(
  *                                  description: The election id to delete
  *          responses:
  *              '200':
- *                  description: The resource was deleted successfully.
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 electionInfoRouter.delete(

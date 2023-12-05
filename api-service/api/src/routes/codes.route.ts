@@ -122,8 +122,8 @@ codesRoute.post(
  *                          code: 6e692a06ad
  *
  *          responses:
- *              '201':
- *                  description: Created
+ *              '200':
+ *                  description: Ok
  *                  content:
  *                      application/json:
  *                          schema:
@@ -194,8 +194,8 @@ codesRoute.post(
  *                          code: 6e692a06ad
  *
  *          responses:
- *              '201':
- *                  description: Created
+ *              '200':
+ *                  description: Ok
  *                  content:
  *                      application/json:
  *                          schema:
