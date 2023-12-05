@@ -134,7 +134,10 @@ const postCreateElection = async (req, res) => {
                         });
                     }
                 } catch (error) {
-                    await axiosRequest('DELETE', urlCreateElection + `/${electionId}`, null, req.session.accessToken);
+                    const responseDeleteElection = await axiosRequest('DELETE', urlCreateElectionInfo, {electionId: electionId}, req.session.accessToken);
+                    if (responseDeleteElection.success) {
+                        res.status(error.response.data.code).json(getBackendError(error));
+                    }
                 }
             }
         } catch (error) {
