@@ -34,6 +34,52 @@ const limitStorage = new RedisLimiterStorage();
 
 userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
 
+/**
+ * @openapi
+ *
+ * paths:
+ *   /users/{email}:
+ *      get:
+ *          summary: Return the profile of the user with the given email
+ *          parameters:
+ *              - name: email
+ *                in: path
+ *                description: The email of the user profile.
+ *                required: false
+ *                schema:
+ *                  type: string
+ *          responses:
+ *              '200':
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
+ *              '429':
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
+ *              '500':
+ *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
+ *
+ */
 userRouter.get(
     "/:email",
     authenticationHandler,
@@ -42,8 +88,69 @@ userRouter.get(
     ]),
     getProfile);
 
-userRouter.get("/", authenticationHandler, getProfile);
-
+/**
+ * @openapi
+ *
+ * paths:
+ *   /users/{userEmail}:
+ *      put:
+ *          summary: Update a specific user
+ *          parameters:
+ *              - name: userEmail
+ *                in: path
+ *                description: The email of the user to update.
+ *                required: false
+ *                schema:
+ *                  type: string
+ *              - name: data
+ *                in: body
+ *                description: The data to update the user with.
+ *                required: true
+ *                schema:
+ *                  type: object
+ *                  properties:
+ *                      firstName:
+ *                          type: string
+ *                          description: The first name of the user.
+ *                          example: "Jean"
+ *                          required: false
+ *                      secondName:
+ *                          type: string
+ *                          description: The second name of the user.
+ *                          example: "Paù"
+ *                          required: false
+ *          responses:
+ *              '200':
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
+ *              '429':
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
+ *              '500':
+ *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
+ *
+ */
 userRouter.put(
     "/:email",
     authenticationHandler,
@@ -62,22 +169,119 @@ userRouter.put(
     ]),
     editProfile);
 
-userRouter.put(
+
+/**
+ * @openapi
+ *
+ * paths:
+ *   /users/{userEmail}:
+ *      delete:
+ *          summary: Update a specific user
+ *          parameters:
+ *              - name: email
+ *                in: body
+ *                description: The email of the user to delete.
+ *                required: true
+ *                schema:
+ *                  type: string
+ *          responses:
+ *              '200':
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
+ *              '429':
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
+ *              '500':
+ *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
+ *
+ */
+userRouter.delete(
     "/",
     authenticationHandler,
-    editProfile
-);
-
-userRouter.delete(
-    "/:email",
-    authenticationHandler,
     validationHandler([
-        param("email").exists().isEmail()
+        body("email").exists().isEmail()
     ]),
     deleteProfile);
 
-userRouter.delete("/", authenticationHandler, deleteProfile);
-
+/**
+ * @openapi
+ *
+ * paths:
+ *   /users:
+ *      post:
+ *          summary: Create a new user
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              email:
+ *                                  type: string
+ *                                  description: The email of the user
+ *                              password:
+ *                                  type: string
+ *                                  description: The password of the user, this will be encrypted.
+ *                              firstName:
+ *                                  type: string
+ *                                  description: The first name of the user.
+ *                              secondName:
+ *                                  type: string
+ *                                  description: The second name of the user.
+ *          responses:
+ *              '200':
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
+ *              '429':
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
+ *              '500':
+ *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
+ *
+ */
 userRouter.post(
     "/",
     validationHandler([

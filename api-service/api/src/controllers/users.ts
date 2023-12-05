@@ -16,7 +16,7 @@ import { ac } from "../configs/accesscontrol.config";
  */
 async function setWorkData(req: Request, res: Response, next:NextFunction, isAllowed:boolean) {
     let user = res.locals.user;
-    const email = req.params.email;
+    const email = req.body.email;
     
     if(email && email !== user.email) {
         try {
