@@ -69,7 +69,8 @@ For more details have a look at the project documentation.
   - [`chaincode-votes`](https://tassiluca.github.io/ChainVote/smart-contracts/javadoc/chaincode-votes/)
 
 - **RESTful API**
-  - :warning: `TODO`
+  - [`api-server`](https://tassiluca.github.io/ChainVote/swagger-ui-api/)
+  - [`auth-server`](https://tassiluca.github.io/ChainVote/swagger-ui-auth/)
 
 ## Troubleshooting
 
