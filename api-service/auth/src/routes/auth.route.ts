@@ -57,13 +57,40 @@ authRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *
  *          responses:
  *              '200':
- *                  description: The request was handled successfully.
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *                                  - type: object
+ *                                    properties:
+ *                                      data:
+ *                                          type: boolean
+ *                                          description: Return true if the code is still valid, false otherwise
+ *                                          example: true
  *              '400':
- *                  description: The request was malformed. Probably some data is missing.
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  */
 authRouter.post(
     "/login",
@@ -84,13 +111,40 @@ authRouter.post(
  *          description: Logout a user from the system disabling the passed jwt token
  *          responses:
  *              '200':
- *                  description: The request was handled successfully.
- *              '401':
- *                  description: The request was unauthorized. Login data is invalid.
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *                                  - type: object
+ *                                    properties:
+ *                                      data:
+ *                                          type: boolean
+ *                                          description: Return true if the code is still valid, false otherwise
+ *                                          example: true
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  */
 authRouter.post(
     "/logout",
@@ -121,15 +175,40 @@ authRouter.post(
  *                                  description: The refresh token of the user.
  *          responses:
  *              '200':
- *                  description: The request was handled successfully.
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *                                  - type: object
+ *                                    properties:
+ *                                      data:
+ *                                          type: boolean
+ *                                          description: Return true if the code is still valid, false otherwise
+ *                                          example: true
  *              '400':
- *                  description: The request was malformed. Probably some data is missing.
- *              '404':
- *                  description: The user specified by the provided email doesn't exists.
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  */
 authRouter.post(
     "/refresh",
