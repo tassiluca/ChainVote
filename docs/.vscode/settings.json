@@ -1,0 +1,14 @@
+{
+    "grammarly.selectors": [
+        {
+            "language": "latex",
+            "scheme": "file",
+            "pattern": "report.tex"
+        }
+    ],
+    "cSpell.words": [
+        "chaincode",
+        "permissioned",
+        "permissionless"
+    ]
+}

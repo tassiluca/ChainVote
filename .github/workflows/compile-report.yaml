@@ -1,0 +1,21 @@
+name: Build and deploy report on GH release
+
+on: 
+  push:
+    tags: '*'
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'renovate.json'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  Setup-Compile-Publish-Report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: DanySK/compile-and-publish-all-latex@1.0.62
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
