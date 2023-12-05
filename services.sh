@@ -9,7 +9,7 @@ function print_help() {
     echo ""
     echo "Commands:"
     echo "  up      Startup the blockchain network, the API service and the frontend application"
-    echo "  down    Stop all the services (without removing blockchain artifacts)"
+    echo "  down    Stop all the services without removing blockchain artifacts"
     echo "  clean   Stop all the services and remove blockchain artifacts"
     echo ""
     echo "Pre-requisites:"
