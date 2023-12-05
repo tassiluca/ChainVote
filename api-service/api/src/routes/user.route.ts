@@ -34,31 +34,6 @@ const limitStorage = new RedisLimiterStorage();
 
 userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
 
-/**
- * @openapi
- *
- * paths:
- *   /users/{userEmail}:
- *      get:
- *          summary: Return a specific user
- *          parameters:
- *              - name: userEmail
- *                in: path
- *                description: The email of the user to get the info from.
- *                required: false
- *                schema:
- *                  type: string
- *          responses:
- *              '200':
- *                  description: Request accepted successfully.
-*               '400':
- *                  description: Bad request
- *              '429':
- *                  description: Limit of requests reached for this endpoint.
- *              '500':
- *                  description: Generic server error
- *
- */
 userRouter.get(
     "/:email",
     authenticationHandler,
@@ -69,31 +44,6 @@ userRouter.get(
 
 userRouter.get("/", authenticationHandler, getProfile);
 
-/**
- * @openapi
- *
- * paths:
- *   /users/{userEmail}:
- *      put:
- *          summary: Update a specific user
- *          parameters:
- *              - name: userEmail
- *                in: path
- *                description: The email of the user to update.
- *                required: false
- *                schema:
- *                  type: string
- *          responses:
- *              '200':
- *                  description: Request accepted successfully.
-*               '400':
- *                  description: Bad request
- *              '429':
- *                  description: Limit of requests reached for this endpoint.
- *              '500':
- *                  description: Generic server error
- *
- */
 userRouter.put(
     "/:email",
     authenticationHandler,
@@ -111,33 +61,13 @@ userRouter.put(
         body("data.email").not().exists(),
     ]),
     editProfile);
-userRouter.put("/", authenticationHandler, editProfile);
 
-/**
- * @openapi
- *
- * paths:
- *   /users/{userEmail}:
- *      delete:
- *          summary: Delete a specific user
- *          parameters:
- *              - name: userEmail
- *                in: path
- *                description: The email of the user to delete.
- *                required: false
- *                schema:
- *                  type: string
- *          responses:
- *              '200':
- *                  description: Request accepted successfully.
- *              '400':
- *                  description: Bad request
- *              '429':
- *                  description: Limit of requests reached for this endpoint.
- *              '500':
- *                  description: Generic server error
- *
- */
+userRouter.put(
+    "/",
+    authenticationHandler,
+    editProfile
+);
+
 userRouter.delete(
     "/:email",
     authenticationHandler,
@@ -148,43 +78,6 @@ userRouter.delete(
 
 userRouter.delete("/", authenticationHandler, deleteProfile);
 
-/**
- * @openapi
- *
- * paths:
- *   /users:
- *      post:
- *          summary: Create a new user
- *          requestBody:
- *              required: true
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: object
- *                          properties:
- *                              email:
- *                                  type: string
- *                                  description: The email of the user
- *                              password:
- *                                  type: string
- *                                  description: The password of the user, this will be encrypted.
- *                              firstName:
- *                                  type: string
- *                                  description: The first name of the user.
- *                              secondName:
- *                                  type: string
- *                                  description: The second name of the user.
- *          responses:
- *              '201':
- *                  description: The new user is created.
-*               '400':
- *                  description: Bad request
- *              '429':
- *                  description: Limit of requests reached for this endpoint.
- *              '500':
- *                  description: Generic server error
- *
- */
 userRouter.post(
     "/",
     validationHandler([

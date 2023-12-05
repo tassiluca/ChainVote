@@ -49,13 +49,44 @@ codesRoute.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *                              userId:
  *                                  type: string
  *                                  description: The id of a user.
+ *                      example:
+ *                          userId: 2050333334
  *          responses:
  *              '201':
- *                  description: The election is created successfully.
+ *                  description: Created
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *                                  - type: object
+ *                                    properties:
+ *                                      data:
+ *                                          type: string
+ *                                          description: The generated code
+ *                                          example: 123456
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 codesRoute.post(
@@ -86,13 +117,46 @@ codesRoute.post(
  *                              code:
  *                                  type: string
  *                                  description: The code to check
+ *                      example:
+ *                          userId: 2050333334
+ *                          code: 6e692a06ad
+ *
  *          responses:
- *              '200':
- *                  description: The request was handled successfully
+ *              '201':
+ *                  description: Created
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *                                  - type: object
+ *                                    properties:
+ *                                      data:
+ *                                          type: boolean
+ *                                          description: Return true if the code is still valid, false otherwise
+ *                                          example: true
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 codesRoute.post(
@@ -111,7 +175,7 @@ codesRoute.post(
  * paths:
  *   /code/verify-owner:
  *      post:
- *          summary: Check if the code belongs to the specified user
+ *          summary: Check if the code belongs to the user that is making the request (via JWT token)
  *          requestBody:
  *              required: true
  *              content:
@@ -125,13 +189,46 @@ codesRoute.post(
  *                              code:
  *                                  type: string
  *                                  description: The code to check
+ *                      example:
+ *                          userId: 2050333334
+ *                          code: 6e692a06ad
+ *
  *          responses:
- *              '200':
- *                  description: The request was handled successfully
+ *              '201':
+ *                  description: Created
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *                                  - type: object
+ *                                    properties:
+ *                                      data:
+ *                                          type: boolean
+ *                                          description: Return true if the code is still valid, false otherwise
+ *                                          example: true
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 codesRoute.post("/verify-owner",
