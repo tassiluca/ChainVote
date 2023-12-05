@@ -75,8 +75,6 @@ startup() {
   echo "STEP 0: Setting up folders permissions"
   sudo chmod go+rwx ./verdaccio/storage
   sudo chmod go+rwx ./verdaccio/plugins
-  sudo chmod go+rwx ./cache
-  sudo chmod go+rwx ./dbdata
 
   docker-compose down
 
@@ -107,12 +105,14 @@ startup() {
   echo "STEP 3: Launching the mongodb and redis containers"
   if [ ! -d "dbdata" ]; then
       mkdir -p "dbdata"
+      sudo chmod go+rwx ./dbdata
       echo "Directory 'dbdata' created."
   fi
   launch_container mongodb
 
   if [ ! -d "cache" ]; then
       mkdir -p "cache"
+      sudo chmod go+rwx ./cache
       echo "Directory 'cache' created."
   fi
   launch_container redis
