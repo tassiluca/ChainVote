@@ -17,22 +17,22 @@
                     </div>
                     <% responseData.data.forEach(function(election) { %>
                         <div class="card">
-                            <a href="/elections/<%= election.electionId %>">
+                            <a href="/elections/<%= election.id %>">
                                 <div class="card-body">
                                     <h5 class="card-title">
                                         <%= election.goal %>
-                                        <% if (election.open) { %>
+                                        <% if (election.status === 'open') { %>
                                             <span class="badge badge-success">Open</span>
-                                        <% } else { %>
+                                        <% } else if (election.status === 'closed') { %>
                                             <span class="badge badge-secondary">Closed</span>
                                         <% } %>
                                     </h5>
-                                    <p class="text-muted"><strong>Id:</strong> <%= election.electionId %></p>
+                                    <p class="text-muted"><strong>Id:</strong> <%= election.id %></p>
                                     <p class="text-muted"><strong>Starting date:</strong> <%= election.formattedStartDate %></p>
                                     <p class="text-muted"><strong>Ending date:</strong> <%= election.formattedEndDate %></p>
-                                    <a href="/elections/<%= election.electionId %>" class="card-link">See all infos</a>
-                                    <% if (election.open && responseData.role === 'user') { %>
-                                        <a href="/elections/vote/<%= election.electionId %>" class="card-link">Cast a vote</a>
+                                    <a href="/elections/<%= election.id %>" class="card-link">See all infos</a>
+                                    <% if (election.status === 'open' && responseData.role === 'user') { %>
+                                        <a href="/elections/vote/<%= election.id %>" class="card-link">Cast a vote</a>
                                     <% } %>
                                 </div>
                             </a>

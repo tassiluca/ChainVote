@@ -1,0 +1,63 @@
+name: Generate documentation and deploy on GH Pages
+
+on:
+  push:
+    tags: '*'
+    branches-ignore:
+      - 'autodelivery**'
+      - 'bump-**'
+      - 'renovate/**'
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+  workflow_dispatch:
+
+jobs:
+  generate-doc:
+    if: >-
+      github.event_name == 'push'
+      && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: 17
+
+      - name: Geneate Javadoc smart contracts
+        run : |
+          pushd smart-contracts
+          ./gradlew javadoc
+          popd
+          ls -lah ./smart-contracts/build/javadoc/
+          mkdir -p ./public/smart-contracts && cp -r ./smart-contracts/build/javadoc/ ./public/smart-contracts/
+
+      - name: Generate Swagger UI for API server
+        uses: Legion2/swagger-ui-action@v1
+        with:
+          output: ./public/swagger-ui-api
+          spec-file: ./api-service/api/swagger.json
+
+      - name: Generate Swagger UI for AUTH server
+        uses: Legion2/swagger-ui-action@v1
+        with:
+          output: ./public/swagger-ui-auth
+          spec-file: ./api-service/auth/swagger.json
+
+      - name: ls
+        run: |
+          ls -la ./public
+          ls -la ./public/smart-contracts/
+          ls -la ./public/swagger-ui-api
+          ls -la ./public/swagger-ui-auth
+      
+      - name: Deploy auth docs to GitHub Pageg
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: api-doc
+          publish_dir: ./public

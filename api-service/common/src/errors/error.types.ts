@@ -1,0 +1,10 @@
+export enum ErrorTypes {
+    CHAINCODE_ERROR = 1,
+    LOGIN_ERROR = 2,
+    REGISTER_ERROR = 3,
+    VALIDATION_ERROR = 4,
+    JWT_ERROR = 5,
+    AUTHENTICATION_ERROR = 6,
+    GENERIC_ERROR = 7,
+}
+

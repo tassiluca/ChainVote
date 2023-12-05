@@ -4,7 +4,7 @@ $(document).ready(() => {
 
     const urlToSignUp = window.location.origin + '/sign-up';
 
-    const form = document.querySelector('#login');
+    const form = document.querySelector('form#signUpForm');
     const name = document.querySelector('#inputName');
     const surname = document.querySelector('#inputSurname');
     const email = document.querySelector('#inputEmail');
@@ -33,7 +33,7 @@ $(document).ready(() => {
         }
     }
 
-    form.addEventListener('submit', function(event) {
+    form.addEventListener('submit', event => {
         event.preventDefault();
         validateForm();
         if (isFormValid()) {
@@ -52,17 +52,20 @@ $(document).ready(() => {
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function(response) {
-                alert(response.message)
-                if(response.success) {
-                    hide(document.querySelector("#div-error-sign-up"))
-                    window.location.href = response.url;
+                if (response.success) {
+                    $("#success").text(response.message);
+                    show($("#success"));
+                    hide($("#error"));
+                    // window.location.href = response.url;
                 } else {
-                    document.getElementById('error-sign-up').innerHTML = response.message;
-                    show(document.querySelector("#div-error-sign-up"));
+                    $("#error").text(response.message);
+                    show($("#error"));
+                    hide($("#success"));
                 }
-            }).fail(function(error) {
-                document.getElementById('error-sign-up').innerHTML = 'Error ' + error.status + ': ' + error.responseJSON.message;
-                show(document.querySelector("#div-error-sign-up"));
+            }).fail(error => {
+                $("#error").text('Error ' + error.status + ': ' + error.responseJSON.message);
+                show($("#error"));
+                hide($("#success"));
             });
         }
     })
@@ -101,10 +104,10 @@ $(document).ready(() => {
         element.classList.remove('error');
     }
     function hide(element) {
-        element.classList.add('hidden');
+        $(element).addClass("hidden");
     }
     function show(element) {
-        element.classList.remove('hidden');
+        $(element).removeClass("hidden");
     }
     function isEmailValid(value) {
         const reg = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
@@ -122,7 +125,7 @@ $(document).ready(() => {
     }
     function isFormValid() {
         let result = true;
-        const inputContainers = document.querySelectorAll("#login input");
+        const inputContainers = document.querySelectorAll("input");
         inputContainers.forEach((container) => {
             if (container.classList.contains('error')) {
                 result = false;

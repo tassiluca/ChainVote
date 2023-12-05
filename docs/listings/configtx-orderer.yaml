@@ -1,0 +1,27 @@
+Orderer: &OrdererDefaults
+  OrdererType: etcdraft
+  EtcdRaft:
+    Consenters:
+    - Host: orderer1-org0
+      Port: 7050
+      ClientTLSCert: $(ARTIFACTS_DIR)/org0/orderer1/tls-msp/signcerts/cert.pem
+      ServerTLSCert: $(ARTIFACTS_DIR)/org0/orderer1/tls-msp/signcerts/cert.pem
+    - ...
+  BatchTimeout: 2s
+  BatchSize:
+    ...
+  Organizations:
+    - *org0
+  # Canonical policy path:
+  #   /Channel/Orderer/<PolicyName>
+  Policies:
+    Readers:
+      ...
+    Writers:
+      ...
+    Admins:
+      ...
+    # BlockValidation specifies what signatures must be included
+    # in the block from the orderer for the peer to validate it.
+    BlockValidation:
+      ...

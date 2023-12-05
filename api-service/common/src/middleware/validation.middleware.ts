@@ -1,6 +1,7 @@
-import {Request, Response, NextFunction} from 'express';
-import { validationResult, ValidationChain } from 'express-validator';
+import {NextFunction, Request, Response} from 'express';
+import {ValidationChain, validationResult} from 'express-validator';
 import {BadRequestError} from "../errors/errors";
+import {ErrorTypes} from "../errors/error.types";
 
 
 /**
@@ -19,6 +20,12 @@ export function validationHandler(validations: ValidationChain[]) {
             return next();
         }
 
-        return next(new BadRequestError(`Some validation errors occurred on the request.`));
+        return next(
+            new BadRequestError(
+                `Some validation errors occurred on the request.`,
+                undefined,
+                ErrorTypes.VALIDATION_ERROR
+            )
+        );
     };
 }

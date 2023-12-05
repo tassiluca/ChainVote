@@ -1,0 +1,17 @@
+@startuml blockchain-up-sequence
+
+skinparam defaultTextAlignment center
+
+start
+
+:**1.** Launch Fabric CAs services containers (including TLS CA) \n (see ""docker-compose.yaml"");
+:**2.** Enroll each organizations CA's admin \n(including TLS CA) and register identities \n(see ""reg.sh"");
+:**3.** Enroll each entity of each organization \n(see ""enroll.sh"");
+:**4.** Create channel artifacts \n(see ""channels_config/createChannel.sh"");
+:**5.** Bring up all network's components containers \n (see ""docker-compose.yaml"");
+:**6.** Create and join each peer in its channel \n(see ""channels_config/channel_creation.sh"");
+#ccffcc:**Blockchain network up**; <<task>>
+
+stop
+
+@enduml

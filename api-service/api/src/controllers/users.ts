@@ -1,20 +1,42 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { BadRequestError, NotFoundError, UnauthorizedError, User } from "core-components";
+import {BadRequestError, ErrorTypes, NotFoundError, UnauthorizedError, User} from "core-components";
 import { ac } from "../configs/accesscontrol.config";
 
+
+/**
+ * Set the user identity to work with. This function should be used when, in an API control method, an admin entity
+ * wants to access to the data of another user. In this case, the request should specify the email of the user
+ * to control.
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @param isAllowed
+ */
 async function setWorkData(req: Request, res: Response, next:NextFunction, isAllowed:boolean) {
     let user = res.locals.user;
-    const email = req.params.email;
+    const email = req.body.email;
     
     if(email && email !== user.email) {
         try {
             if(!isAllowed) {
-                next(new UnauthorizedError("Can't access to the resource"));
+                next(
+                    new UnauthorizedError(
+                        "Can't access to the resource",
+                        undefined,
+                        ErrorTypes.AUTHENTICATION_ERROR
+                    )
+                );
             }
             user = await User.findOne({email: email});
             if(user == undefined) {
-                next(new NotFoundError("Can't find the user"));
+                next(new NotFoundError(
+                    "Can't find the user",
+                    undefined,
+                    ErrorTypes.AUTHENTICATION_ERROR
+                )
+            );
             }
         } catch(error) {
             throw error; 
@@ -24,6 +46,13 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
     return user;
 }
 
+/**
+ * Create a new user
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function createUser(req: Request, res: Response, next: NextFunction) {
     const user = new User({
         email: req.body.email,
@@ -41,12 +70,25 @@ export async function createUser(req: Request, res: Response, next: NextFunction
             secondName: user.secondName
         };
     } catch(error) {
-        return next(error);
+        return next(
+            new BadRequestError(
+                error.message,
+                undefined,
+                ErrorTypes.REGISTER_ERROR
+            )
+        );
     }
 
     return next();
 }
 
+/**
+ * Get the profile of the user
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function getProfile(req: Request, res: Response, next: NextFunction) {
     let user;
     const isAllowed = ac.can(res.locals.user.role).readAny('users').granted;
@@ -56,7 +98,7 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
         res.locals.data = {
             email: user.email,
             firstName: user.firstName,
-            secondName: user.secondName, 
+            secondName: user.secondName,
             role: user.role
         };
     } catch (error) {
@@ -65,6 +107,13 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
     return next();
 }
 
+/**
+ * Edit the profile of the user
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function editProfile(req: Request, res: Response, next: NextFunction) {
     let user;
     const isAllowed = ac.can(res.locals.user.role).updateAny('users').granted;
@@ -76,7 +125,13 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
 
     const data = req.body.data;
     if(data === null || data === undefined) {
-        return next(new BadRequestError("Request need to have a \"data\" field"));
+        return next(
+            new BadRequestError(
+                "Request need to have a \"data\" field",
+                undefined,
+                ErrorTypes.VALIDATION_ERROR
+            )
+        );
     }
 
     try {
@@ -89,6 +144,13 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
     return next();
 }
 
+/**
+ * Delete the profile of the user
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 export async function deleteProfile(req: Request, res: Response, next: NextFunction) {
     let user;
     const isAllowed = ac.can(res.locals.user.role).deleteAny('users').granted;

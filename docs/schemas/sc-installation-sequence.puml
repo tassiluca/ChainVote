@@ -1,0 +1,17 @@
+@startuml sc-installation-sequence
+
+skinparam defaultTextAlignment center
+
+start
+
+:**0.** Upping the blockchain network;
+:**1.** Compile smart contracts and generate Jar;
+:**2.** Packages the Jar into a "".tar.gz"" file with \n ""peer lifecycle chaincode package"" command;
+:**3.** Install the chaincode package on each peer \n that will endorse the transactions \n with ""peer lifecycle chaincode install"" command;
+:**4.** Approve the chaincode definition for organization with \n ""peer lifecycle chaincode approveformyorg"" command;
+:**5.** Organization can commit the chaincode definition to the channel \n with ""peer lifecycle chaincode commit"" command;
+#ccffcc:A new container has been spawned for each peer \n representing the smart contract installation for that peer;<<task>>
+
+stop
+
+@enduml

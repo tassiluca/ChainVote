@@ -608,11 +608,11 @@ chaincode:
 
     # The maximum duration to wait for the chaincode build and install process
     # to complete.
-    installTimeout: 300s
+    installTimeout: 500s
 
     # Timeout duration for starting up a container and waiting for Register
     # to come through.
-    startuptimeout: 300s
+    startuptimeout: 500s
 
     # Timeout duration for Invoke and Init calls to prevent runaway.
     # This timeout is used by all chaincodes in all the channels, including

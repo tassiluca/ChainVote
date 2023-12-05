@@ -1,22 +1,26 @@
-const axiosRequest = require('../utils/utils');
-
 const urlApiServer = process.env.API_SERVER_URL || "http://localhost:8080"
 
+const {
+    axiosRequest,
+    getBackendError,
+    badRequestErrorCode,
+    badRequestErrorMessage,
+    castVoteSuccessfulMessage,
+    createElectionSuccessfulMessage
+} = require('../utils/utils')
+
 const getAllElections = async (req, res, next) => {
-    try {
-        const allElectionsUrl = urlApiServer + `/election/info/all`;
-        const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, req.session.accessToken);
-        const electionsData = electionsDetailsResponse.data;
-        for (let i = 0; i < electionsData.length; i++) {
-            const entry = reformatDates(electionsData[i]);
-            entry.open = Date.now() > new Date(`${entry.startDate}Z`) && new Date(`${entry.endDate}Z`) > Date.now();
-        }
-        res.locals.data = electionsData;
-        res.locals.view = 'dashboard';
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+    if (req.session && req.session.accessToken) {
+        try {
+            const allElectionsUrl = urlApiServer + `/election/all`;
+            const electionsDetailsResponse = await axiosRequest('GET', allElectionsUrl, null, req.session.accessToken);
+            const electionsData = electionsDetailsResponse.data;
+            for (let i = 0; i < electionsData.length; i++) {
+                reformatDates(electionsData[i]);
+            }
+            res.locals.data = electionsData;
+            res.locals.view = 'dashboard';
+        } catch (error) {
             res.locals.view = 'error';
         }
     }
@@ -24,21 +28,20 @@ const getAllElections = async (req, res, next) => {
 };
 
 const getElection = async (req, res, next) => {
-    try {
-        const electionId = req.params.electionId;
-        const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
-        const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
-        const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
-        const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
-        const electionData = reformatDates(electionDetailsResponse.data);
-        electionData.choices = electionInfoResponse.data.choices;
-        electionData.electionId = electionId;
-        res.locals.data = electionData;
-        res.locals.view = 'election-info';
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+    if (req.session && req.session.accessToken) {
+        try {
+            const electionId = req.params.electionId;
+            const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
+            const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
+            const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
+            const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
+            const electionData = reformatDates(electionDetailsResponse.data);
+            electionData.open = Object.keys(electionData.results).length === 0;
+            electionData.choices = electionInfoResponse.data.choices;
+            electionData.electionId = electionId;
+            res.locals.data = electionData;
+            res.locals.view = 'election-info';
+        } catch (error) {
             res.locals.view = 'not-found';
         }
     }
@@ -46,29 +49,30 @@ const getElection = async (req, res, next) => {
 };
 
 const getCastVote = async (req, res, next) => {
-    try {
-        const electionId = req.params.electionId;
-        const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
-        const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
-        const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
-        const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
-        const electionData = reformatDates(electionDetailsResponse.data);
-
-        electionData.choices = electionInfoResponse.data.choices;
-        electionData.electionId = electionId;
-        electionData.goal = electionInfoResponse.data.goal;
-
-        res.locals.view = 'cast-vote';
-        res.locals.data = electionData;
-    } catch (error) {
-        if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-            res.locals.view = 'sign-in';
-        } else {
+    if (req.session && req.session.accessToken) {
+        try {
+            const electionId = req.params.electionId;
+            const electionDetailsUrl = urlApiServer + `/election/detail/${electionId}`;
+            const electionInfoDetailsUrl = urlApiServer + `/election/info/detail/${electionId}`;
+            const electionDetailsResponse = await axiosRequest('GET', electionDetailsUrl, null, req.session.accessToken);
+            const electionInfoResponse = await axiosRequest('GET', electionInfoDetailsUrl, null, req.session.accessToken);
+            const electionData = reformatDates(electionDetailsResponse.data);
+            const isOpen = Object.keys(electionData.results).length === 0;
+            if (isOpen) {
+                electionData.choices = electionInfoResponse.data.choices;
+                electionData.electionId = electionId;
+                electionData.goal = electionInfoResponse.data.goal;
+                res.locals.view = 'cast-vote';
+                res.locals.data = electionData;
+            } else {
+                res.locals.view = 'election-closed';
+            }
+        } catch (error) {
             res.locals.view = 'error';
         }
     }
     next();
-}
+};
 
 const postCastVote = async (req, res) => {
     try {
@@ -79,109 +83,107 @@ const postCastVote = async (req, res) => {
         }
         const voteUrl = urlApiServer + `/election/vote/${electionId}`;
         const voteResponse = await axiosRequest('PUT', voteUrl, data, req.session.accessToken);
-        const redirectUrl = '/';
-        return res.send({
-            success: voteResponse.success,
-            message: "Vote casted successfully.",
-            url: redirectUrl
-        });
+        if (voteResponse.success) {
+            const redirectUrl = '/';
+            return res.send({
+                success: voteResponse.success,
+                message: castVoteSuccessfulMessage,
+                url: redirectUrl
+            });
+        }
     } catch (error) {
-        res.status(error.response.data.code).json(
-            {message: error.response.data.error.message}
-        );
+        res.status(error.response.data.code).json(getBackendError(error));
     }
-
-}
+};
 
 const getCreateElection = async (req, res, next) => {
-    if (typeof req.session === 'undefined' || typeof req.session.accessToken === 'undefined') {
-        res.locals.view = 'sign-in';
-    } else if (req.session.role !== 'admin') {
-        res.locals.view = 'no-permission';
-    } else {
-        res.locals.view = 'create-election';
+    if (req.session && req.session.accessToken) {
+        if (req.session.role !== 'admin') {
+            res.locals.view = 'no-permission';
+        } else {
+            res.locals.view = 'create-election';
+        }
     }
     next();
-}
+};
 
 const postCreateElection = async (req, res) => {
-    try {
-        const urlCreateElection = urlApiServer + "/election";
-        const urlCreateElectionInfo = urlApiServer + "/election/info";
-
-        if (req.body.goal && req.body.voters && req.body.startDate && req.body.endDate && req.body.choices) {
-            const goal = req.body.goal;
-            const voters = req.body.voters;
-            const startDate = new Date(req.body.startDate).toISOString();
-            const endDate = new Date(req.body.endDate).toISOString();
-            const choices = req.body.choices;
-
-            const responseElectionInfo = await axiosRequest('POST', urlCreateElectionInfo, {
-                goal: goal, voters: voters, startDate: startDate, endDate: endDate, choices: choices
-            }, req.session.accessToken);
+    if (req.body.goal && req.body.voters &&
+        req.body.startDate && req.body.endDate && req.body.choices) {
+        try {
+            const urlCreateElection = urlApiServer + "/election";
+            const urlCreateElectionInfo = urlApiServer + "/election/info";
+            const data = {
+                goal: req.body.goal,
+                voters: req.body.voters,
+                startDate: req.body.startDate,
+                endDate: req.body.endDate,
+                choices: req.body.choices
+            }
+            const responseElectionInfo = await axiosRequest('POST', urlCreateElectionInfo, data, req.session.accessToken);
             if (responseElectionInfo.success) {
                 const electionId = responseElectionInfo.data.electionId;
-                const responseElection = await axiosRequest('POST', urlCreateElection, {electionId: electionId}, req.session.accessToken);
-                if (responseElection.success) {
-                    const redirectUrl = '/elections';
-                    res.status(responseElectionInfo.code).json({
-                        success: true,
-                        message: "Election created successfully.",
-                        url: redirectUrl
-                    });
-                } else {
-                    res.status(responseElectionInfo.code).json({
-                        name: responseElection.error.name,
-                        message: responseElection.error.message
-                    });
+                try {
+                    const responseElection = await axiosRequest('POST', urlCreateElection, {electionId: electionId}, req.session.accessToken);
+                    if (responseElection.success) {
+                        const redirectUrl = '/elections';
+                        res.status(responseElectionInfo.code).json({
+                            success: true,
+                            message: createElectionSuccessfulMessage,
+                            url: redirectUrl
+                        });
+                    }
+                } catch (error) {
+                    const responseDeleteElection = await axiosRequest('DELETE', urlCreateElectionInfo, {electionId: electionId}, req.session.accessToken);
+                    if (responseDeleteElection.success) {
+                        res.status(error.response.data.code).json(getBackendError(error));
+                    }
                 }
-            } else {
-                res.status(responseElectionInfo.code).json({
-                    name: responseElectionInfo.error.name,
-                    message: responseElectionInfo.error.message
-                });
             }
-        } else {
-            res.status(403).json({
-                message: "Bad attributes."
-            });
+        } catch (error) {
+            res.status(error.response.data.code).json(getBackendError(error));
         }
-    } catch (error) {
-        res.status(error.response.data.code).json(
-            {message: error.response.data.error.message}
-        );
+    } else {
+        res.status(badRequestErrorCode).json({
+            message: badRequestErrorMessage
+        });
     }
-}
+};
 
 const createElectionCode = async (req, res) => {
-    try {
-        const electionId = req.body.electionId;
-        const data = {
-            electionId: electionId
+    if (req.body.electionId) {
+        try {
+            const electionId = req.body.electionId;
+            const data = {
+                electionId: electionId
+            }
+            const electionCodeRequest = urlApiServer + "/code/generate";
+            const electionDetailsResponse = await axiosRequest('POST', electionCodeRequest, data, req.session.accessToken);
+            if (electionDetailsResponse.success) {
+                return res.send({
+                    success: true,
+                    code: electionDetailsResponse.data
+                });
+            }
+        } catch (error) {
+            res.status(error.response.data.code).json(getBackendError(error));
         }
-        const electionCodeRequest = urlApiServer + "/code/generate";
-        const electionDetailsResponse = await axiosRequest('POST', electionCodeRequest, data, req.session.accessToken);
-        if (electionDetailsResponse.success) {
-            return res.send({
-                success: true,
-                code: electionDetailsResponse.data
-            });
-        }
-    } catch (error) {
-        res.status(error.response.data.code).json(
-            {message: error.response.data.error.message}
-        );
+    } else {
+        res.status(badRequestErrorCode).json({
+            message: badRequestErrorMessage
+        });
     }
 };
 
 function reformatDates(electionData) {
-    electionData.formattedStartDate = formatDate(`${electionData.startDate}Z`);
-    electionData.formattedEndDate = formatDate(`${electionData.endDate}Z`);
+    electionData.formattedStartDate = formatDate(electionData.startDate);
+    electionData.formattedEndDate = formatDate(electionData.endDate);
+    console.l
     return electionData;
 }
 
 function formatDate(date) {
-    return new Date(date).toLocaleDateString('en-US', { 
+    return new Date(date).toLocaleDateString('en-IT', { 
         year: 'numeric', 
         month: 'long', 
         day: 'numeric',

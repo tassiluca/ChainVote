@@ -22,6 +22,10 @@ export {
     TooManyRequests
 } from "./errors/errors";
 
+export {
+    ErrorTypes
+} from "./errors/error.types";
+
 /**
  * Exporting middlewares
  */

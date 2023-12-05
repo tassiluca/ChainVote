@@ -1,4 +1,4 @@
-import {InternalServerError} from "core-components";
+import {BadRequestError, ErrorTypes} from "core-components";
 
 /**
  * Transform an error from the http module to an HTTP-based error
@@ -12,5 +12,5 @@ export default function transformHyperledgerError(error: Error) {
     } else {
         message = error.message.split(": ")[1];
     }
-    return new InternalServerError(message);
+    return new BadRequestError(message, error.stack, ErrorTypes.CHAINCODE_ERROR);
 }

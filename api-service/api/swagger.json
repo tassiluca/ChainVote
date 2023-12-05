@@ -11,6 +11,142 @@
       "description": "Local server"
     }
   ],
+  "components": {
+    "schemas": {
+      "CommonResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "True if the request was successful",
+            "example": true
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the request",
+            "example": "2021-06-01T16:00:00.000Z"
+          },
+          "data": {
+            "type": "object",
+            "description": "The data returned by the request"
+          },
+          "code": {
+            "type": "integer",
+            "description": "The HTTP status code of the request",
+            "example": 200
+          }
+        }
+      },
+      "TooManyRequestError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "value": false
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the request",
+            "example": "2021-06-01T16:00:00.000Z"
+          },
+          "error": {
+            "type": "object",
+            "description": "The error returned by the request",
+            "properties": {
+              "name": {
+                "type": "string",
+                "value": "Too Many Requests"
+              },
+              "description": {
+                "type": "string",
+                "value": "Api limit reached"
+              },
+              "type": {
+                "type": "string",
+                "value": 7
+              },
+              "code": {
+                "type": "integer",
+                "value": 409
+              }
+            }
+          }
+        }
+      },
+      "BadRequestError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "value": false
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the request",
+            "example": "2021-06-01T16:00:00.000Z"
+          },
+          "error": {
+            "type": "object",
+            "description": "The error returned by the request",
+            "properties": {
+              "name": {
+                "type": "string",
+                "value": "Bad Request"
+              },
+              "description": {
+                "type": "string",
+                "example": "Some validation errors occurred on the request."
+              },
+              "type": {
+                "type": "string",
+                "value": 4
+              },
+              "code": {
+                "type": "integer",
+                "value": 400
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "value": false
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the request",
+            "example": "2021-06-01T16:00:00.000Z"
+          },
+          "error": {
+            "type": "object",
+            "description": "The error returned by the request",
+            "properties": {
+              "name": {
+                "type": "string",
+                "value": "Internal server error"
+              },
+              "description": {
+                "type": "string",
+                "example": "Error while processing the request"
+              },
+              "type": {
+                "type": "string",
+                "value": 7
+              },
+              "code": {
+                "type": "integer",
+                "value": 500
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "paths": {
     "/code/generate": {
       "post": {
@@ -25,34 +161,86 @@
                   "userId": {
                     "type": "string",
                     "description": "The id of a user."
-                  },
-                  "electionId": {
-                    "type": "string",
-                    "description": "The id of a valid election."
-                  },
-                  "code": {
-                    "type": "string",
-                    "description": "The voting code for an election."
                   }
                 }
+              },
+              "example": {
+                "userId": 2050333334
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "The election is created successfully."
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "string",
+                          "description": "The generated code",
+                          "example": 123456
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
     },
-    "/code/is-valid": {
+    "/code/check": {
       "post": {
         "summary": "Check if a given code is valid",
         "requestBody": {
@@ -62,10 +250,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "userId": {
-                    "type": "string",
-                    "description": "The id of the user."
-                  },
                   "electionId": {
                     "type": "string",
                     "description": "The id of an election."
@@ -75,64 +259,87 @@
                     "description": "The code to check"
                   }
                 }
+              },
+              "example": {
+                "userId": 2050333334,
+                "code": "6e692a06ad"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "The request was handled successfully"
-          },
-          "429": {
-            "description": "Limit of requests reached for this endpoint."
-          },
-          "500": {
-            "description": "Generic server error"
-          }
-        }
-      },
-      "patch": {
-        "summary": "invalidate a code",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "userId": {
-                    "type": "string",
-                    "description": "The id of the user that own the code."
-                  },
-                  "electionId": {
-                    "type": "string",
-                    "description": "The id of an election."
-                  },
-                  "code": {
-                    "type": "string",
-                    "description": "The code to invalidate"
-                  }
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "boolean",
+                          "description": "Return true if the code is still valid, false otherwise",
+                          "example": true
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The request was handled successfully"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
     },
     "/code/verify-owner": {
       "post": {
-        "summary": "Check if the code belongs to the specified user",
+        "summary": "Check if the code belongs to the user that is making the request (via JWT token)",
         "requestBody": {
           "required": true,
           "content": {
@@ -140,10 +347,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "userId": {
-                    "type": "string",
-                    "description": "The id of the user."
-                  },
                   "electionId": {
                     "type": "string",
                     "description": "The id of an election."
@@ -153,19 +356,80 @@
                     "description": "The code to check"
                   }
                 }
+              },
+              "example": {
+                "userId": 2050333334,
+                "code": "6e692a06ad"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "The request was handled successfully"
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "boolean",
+                          "description": "Return true if the code is still valid, false otherwise",
+                          "example": true
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -175,13 +439,60 @@
         "summary": "Return all the election info created",
         "responses": {
           "200": {
-            "description": "Request accepted successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -202,13 +513,60 @@
         ],
         "responses": {
           "200": {
-            "description": "Request accepted successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -250,13 +608,60 @@
         },
         "responses": {
           "201": {
-            "description": "The resource was created successfully."
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       },
@@ -280,13 +685,60 @@
         },
         "responses": {
           "200": {
-            "description": "The resource was deleted successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -296,13 +748,60 @@
         "summary": "Return all the election created",
         "responses": {
           "200": {
-            "description": "Request accepted successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -327,14 +826,61 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "The resource was created successfully."
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       },
@@ -358,13 +904,60 @@
         },
         "responses": {
           "200": {
-            "description": "The resource was deleted successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -409,25 +1002,72 @@
         },
         "responses": {
           "200": {
-            "description": "The request was handled successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
     },
-    "/users/{userEmail}": {
+    "/users/{email}": {
       "get": {
-        "summary": "Return a specific user",
+        "summary": "Return the profile of the user with the given email",
         "parameters": [
           {
-            "name": "userEmail",
+            "name": "email",
             "in": "path",
-            "description": "The email of the user to get the info from.",
+            "description": "The email of the user profile.",
             "required": false,
             "schema": {
               "type": "string"
@@ -436,16 +1076,65 @@
         ],
         "responses": {
           "200": {
-            "description": "Request accepted successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
-      },
+      }
+    },
+    "/users/{userEmail}": {
       "put": {
         "summary": "Update a specific user",
         "parameters": [
@@ -457,28 +1146,98 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "description": "The data to update the user with.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string",
+                  "description": "The first name of the user.",
+                  "example": "Jean",
+                  "required": false
+                },
+                "secondName": {
+                  "type": "string",
+                  "description": "The second name of the user.",
+                  "example": "Paù",
+                  "required": false
+                }
+              }
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Request accepted successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       },
       "delete": {
-        "summary": "Delete a specific user",
+        "summary": "Update a specific user",
         "parameters": [
           {
-            "name": "userEmail",
-            "in": "path",
+            "name": "email",
+            "in": "body",
             "description": "The email of the user to delete.",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -486,13 +1245,60 @@
         ],
         "responses": {
           "200": {
-            "description": "Request accepted successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -529,19 +1335,65 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "The new user is created."
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
     }
   },
-  "components": {},
   "tags": []
 }

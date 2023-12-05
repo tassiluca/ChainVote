@@ -6,10 +6,11 @@ import { Org2Peer } from "../blockchain/peer.enum";
 import transformHyperledgerError from "../blockchain/errors/error.handling";
 import {toChoice} from "../blockchain/utils/utils";
 import {ac} from "../configs/accesscontrol.config";
-import {InternalServerError, UnauthorizedError} from "core-components";
+import {ErrorTypes, InternalServerError, UnauthorizedError} from "core-components";
+import {convertToISO} from "../utils/date.utils";
 
 const channelName = "ch2";
-const contractName = "chaincode-org2";
+const contractName = "chaincode-votes";
 const utf8Decoder = new TextDecoder();
 
 /**
@@ -21,7 +22,13 @@ const utf8Decoder = new TextDecoder();
  */
 export async function getAllElection(req: Request, res: Response, next: NextFunction) {
     if(!ac.can(res.locals.user.role).readAny('election').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
@@ -32,11 +39,14 @@ export async function getAllElection(req: Request, res: Response, next: NextFunc
             arguments: []
         });
 
-        const result = utf8Decoder.decode(submission);
+        const invocationResult = JSON.parse(utf8Decoder.decode(submission));
         res.locals.code = StatusCodes.OK;
-        res.locals.data = JSON.parse(result).result;
+        invocationResult.result.forEach((element: any) => {
+            element.startDate = convertToISO(element.startDate);
+            element.endDate = convertToISO(element.endDate);
+        });
+        res.locals.data = invocationResult.result;
     } catch (error) {
-        console.log(error);
         return next(transformHyperledgerError(error));
     }
     return next();
@@ -51,7 +61,13 @@ export async function getAllElection(req: Request, res: Response, next: NextFunc
  */
 export async function readElection(req: Request, res: Response, next: NextFunction) {
     if(!ac.can(res.locals.user.role).readAny('election').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
@@ -61,9 +77,14 @@ export async function readElection(req: Request, res: Response, next: NextFuncti
         const submission: Uint8Array = await contract.evaluate('ElectionContract:readElection', {
             arguments: [electionId]
         });
-        const result = utf8Decoder.decode(submission);
+        const invocationResult = JSON.parse(utf8Decoder.decode(submission));
+
+        invocationResult.result.startDate = convertToISO(invocationResult.result.startDate);
+        invocationResult.result.endDate = convertToISO(invocationResult.result.endDate);
+
         res.locals.code = StatusCodes.OK;
-        res.locals.data = JSON.parse(result).result;
+        res.locals.data = invocationResult.result;
+
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -79,7 +100,13 @@ export async function readElection(req: Request, res: Response, next: NextFuncti
  */
 export async function createElection(req: Request, res: Response, next: NextFunction){
     if(!ac.can(res.locals.user.role).createAny('election').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
@@ -90,9 +117,9 @@ export async function createElection(req: Request, res: Response, next: NextFunc
         const submission: Uint8Array = await contract.submit('ElectionContract:createElection', {
             arguments: [electionId, '{}']
         });
-        const result = utf8Decoder.decode(submission);
+        const invocationResult = JSON.parse(utf8Decoder.decode(submission));
         res.locals.code = StatusCodes.OK;
-        res.locals.data = JSON.parse(result).result;
+        res.locals.data = invocationResult.result;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -108,7 +135,13 @@ export async function createElection(req: Request, res: Response, next: NextFunc
  */
 export async function castVote(req: Request, res: Response, next: NextFunction) {
     if(!ac.can(res.locals.user.role).updateAny('election').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
@@ -126,7 +159,13 @@ export async function castVote(req: Request, res: Response, next: NextFunction) 
         });
         const result = utf8Decoder.decode(submission);
         if(!JSON.parse(result).result) {
-            return next(new InternalServerError("Error while casting vote"));
+            return next(
+                new InternalServerError(
+                    "Error while casting vote",
+                    undefined,
+                    ErrorTypes.CHAINCODE_ERROR
+                )
+            );
         }
         res.locals.code = StatusCodes.OK;
         res.locals.data = JSON.parse(result).result;
@@ -145,7 +184,13 @@ export async function castVote(req: Request, res: Response, next: NextFunction) 
  */
 export async function deleteElection(req: Request, res: Response, next: NextFunction) {
     if(!ac.can(res.locals.user.role).deleteAny('election').granted) {
-        next(new UnauthorizedError("Can't access to the resource"));
+        next(
+            new UnauthorizedError(
+                "Can't access to the resource",
+                undefined,
+                ErrorTypes.AUTHENTICATION_ERROR
+            )
+        );
     }
     try {
         const gatewayOrg2: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);

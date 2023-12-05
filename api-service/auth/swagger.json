@@ -11,6 +11,142 @@
       "description": "Local server"
     }
   ],
+  "components": {
+    "schemas": {
+      "CommonResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "True if the request was successful",
+            "example": true
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the request",
+            "example": "2021-06-01T16:00:00.000Z"
+          },
+          "data": {
+            "type": "object",
+            "description": "The data returned by the request"
+          },
+          "code": {
+            "type": "integer",
+            "description": "The HTTP status code of the request",
+            "example": 200
+          }
+        }
+      },
+      "TooManyRequestError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "value": false
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the request",
+            "example": "2021-06-01T16:00:00.000Z"
+          },
+          "error": {
+            "type": "object",
+            "description": "The error returned by the request",
+            "properties": {
+              "name": {
+                "type": "string",
+                "value": "Too Many Requests"
+              },
+              "description": {
+                "type": "string",
+                "value": "Api limit reached"
+              },
+              "type": {
+                "type": "string",
+                "value": 7
+              },
+              "code": {
+                "type": "integer",
+                "value": 409
+              }
+            }
+          }
+        }
+      },
+      "BadRequestError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "value": false
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the request",
+            "example": "2021-06-01T16:00:00.000Z"
+          },
+          "error": {
+            "type": "object",
+            "description": "The error returned by the request",
+            "properties": {
+              "name": {
+                "type": "string",
+                "value": "Bad Request"
+              },
+              "description": {
+                "type": "string",
+                "example": "Some validation errors occurred on the request."
+              },
+              "type": {
+                "type": "string",
+                "value": 4
+              },
+              "code": {
+                "type": "integer",
+                "value": 400
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "value": false
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the request",
+            "example": "2021-06-01T16:00:00.000Z"
+          },
+          "error": {
+            "type": "object",
+            "description": "The error returned by the request",
+            "properties": {
+              "name": {
+                "type": "string",
+                "value": "Internal server error"
+              },
+              "description": {
+                "type": "string",
+                "example": "Error while processing the request"
+              },
+              "type": {
+                "type": "string",
+                "value": 7
+              },
+              "code": {
+                "type": "integer",
+                "value": 500
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "paths": {
     "/auth/login": {
       "post": {
@@ -38,16 +174,70 @@
         },
         "responses": {
           "200": {
-            "description": "The request was handled successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "boolean",
+                          "description": "Return true if the code is still valid, false otherwise",
+                          "example": true
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           },
           "400": {
-            "description": "The request was malformed. Probably some data is missing."
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -58,16 +248,70 @@
         "description": "Logout a user from the system disabling the passed jwt token",
         "responses": {
           "200": {
-            "description": "The request was handled successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "boolean",
+                          "description": "Return true if the code is still valid, false otherwise",
+                          "example": true
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           },
-          "401": {
-            "description": "The request was unauthorized. Login data is invalid."
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -98,24 +342,74 @@
         },
         "responses": {
           "200": {
-            "description": "The request was handled successfully."
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CommonResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "boolean",
+                          "description": "Return true if the code is still valid, false otherwise",
+                          "example": true
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           },
           "400": {
-            "description": "The request was malformed. Probably some data is missing."
-          },
-          "404": {
-            "description": "The user specified by the provided email doesn't exists."
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BadRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "429": {
-            "description": "Limit of requests reached for this endpoint."
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/TooManyRequestError"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Generic server error"
+            "description": "Generic server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/InternalServerError"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
     }
   },
-  "components": {},
   "tags": []
 }

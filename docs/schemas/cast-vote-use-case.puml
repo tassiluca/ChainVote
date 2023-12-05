@@ -1,0 +1,49 @@
+@startuml cast-vote-use-case
+
+actor User as C
+participant ":api-server" as API
+participant ":CodesManagerContract" as CM
+participant ":ElectionContract" as EC
+participant ":ElectionInfoContract" as EI
+
+activate C
+activate API
+activate CM
+activate EC
+activate EI
+
+== Use case: User cast a new vote ==
+
+C ->> API : ""/election/vote/:electionId"" \n""{usr, code, choice}""
+API ->> EC : ""castVote(usr,electionId,code,choice)""
+
+alt#Gold #Pink ""electionId"" not exists
+    EC --> API : election not exists
+    API --> C : ""**500 Error**:"" \nelection not exists
+else #LightBlue
+    EC ->> CM : ""isValid(usr,""\n                ""electionId,""\n                ""code)""
+    alt#Gold #Pink ""code"" not valid
+        CM --> EC : false
+        EC --> API : ""code"" not valid
+        API --> C : ""**500 Error**: code"" is not valid
+    else #LightBlue ""code"" valid
+        CM --> EC : true
+        activate EC
+        EC -> EI : ""getElectionInfo(electionId)""
+        EI --> EC : electionInfo
+        alt#Gold #Pink election is closed
+            EC --> API : election is closed
+            API --> C : ""**500 Error**:"" \n""election is closed""
+        else #LightGreen
+            EC -> EC : save vote on \nthe ledger
+            EC --> EC
+            deactivate EC
+            EC -> CM : ""invalidate(code)""
+            CM --> EC
+            EC --> API : Ok!
+            API --> C : ""**200 Ok**""
+        end
+    end
+end
+
+@enduml

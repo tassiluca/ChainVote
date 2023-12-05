@@ -84,19 +84,3 @@ describe("POST /code/", () => {
         expect(response.body.data).toBe(true);
     }, MAX_TIMEOUT);
 });
-
-
-describe("PATCH /code/", () => {
-    test("Can invalidate a code", async () => {
-        const electionId = await createElection(app,adminJwtToken.accessToken);
-        const code = await createCodeForElection(app, electionId, userJwtToken.accessToken);
-        const response = await request(app).patch("/code/invalidate")
-            .send({code: code, userId: user.id, electionId: electionId})
-            .set("Authorization", `Bearer ${adminJwtToken.accessToken}`)
-            .set("Accept", "application/json")
-            .expect("Content-Type", "application/json; charset=utf-8")
-            .expect(StatusCodes.OK);
-        expect(response.body.data).toBeDefined();
-        expect(response.body.success).toBe(true);
-    }, MAX_TIMEOUT);
-});

@@ -1,0 +1,49 @@
+@startuml login-to-the-system
+
+actor User as C
+participant ":auth-server" as AUTH
+database "Database" as DB
+
+activate C
+activate AUTH
+activate DB
+
+== Use case: Login to the system ==
+
+C ->> AUTH : ""/auth/login {email, password}""
+AUTH ->> DB : ""getUser(email)""
+
+DB -> DB : ""retrieve user from database""
+activate DB
+DB --> DB: ""return response""
+deactivate DB
+
+
+alt#Gold #Pink user doesn't exist
+    DB --> AUTH : record not found
+    AUTH --> C : ""**401 Unauthorized**: login error""
+else #LightBlue user exists
+    DB --> AUTH : return user data
+    AUTH -> AUTH: ""compare password""
+    activate AUTH
+     AUTH --> AUTH: ""return comparsion result""
+    deactivate AUTH
+    alt#Gold #Pink password is incorrect
+        AUTH --> C : ""**401 Unauthorized**: login error""
+    else #LightBlue password is correct
+        AUTH -> AUTH : ""generate JWT pairs""
+        activate AUTH
+        AUTH --> AUTH : ""return JWT pairs""
+        AUTH -> DB: ""saveJWTPair()""
+        DB --> AUTH: ""save response""
+        deactivate AUTH
+        alt#Gold #Pink JWT pair not saved
+            AUTH --> C : ""**500 Internal Server Error**: \nError while saving JWT pairs""
+        else #LightGreen JWT pairs  saved
+            AUTH --> C : ""**200 OK**: JWT pairs""
+        end
+    end
+
+end
+
+@enduml

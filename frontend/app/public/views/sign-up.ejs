@@ -12,7 +12,7 @@
         <main>
             <div class="row">
                 <div class="col-md-4 center mx-auto">
-                    <form class="form-signin" id="login" method="post">
+                    <form id="signUpForm" method="post">
                         <h1 class="h3 text-center mb-3 font-weight-normal">Join our community</h1>
                         <label for="inputName" class="sr-only">Name</label>
                         <input type="text" id="inputName" class="form-control" placeholder="Name" name="name" required autofocus>
@@ -21,7 +21,7 @@
                         <label for="inputEmail" class="sr-only">Email address</label>
                         <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus>
                         <label for="inputPassword" class="sr-only">Password</label>
-                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" onkeyup="clearPassword(); checkRepeatedPassword();" required>
+                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\$%\^&\*\(\)_+\\\-\=\[\]\{\};:'&quot;,&lt;&gt;\.\/\?\|])[A-Za-z0-9!@#\$%\^&\*\(\)_+\\\-\=\[\]\{\};:'&quot;,&lt;&gt;\.\/\?\|].{8,16}" title="Must contains at least 1 lowercase letter, 1 upper case, 1 number, 1 special character and its length must be between 8 and 16 characters." onkeyup="clearPassword(); checkRepeatedPassword();" required>
                         <label for="inputRepeatPassword" class="sr-only">Repeat Password</label>
                         <input type="password" id="inputRepeatPassword" class="form-control" placeholder="Repeat Password" onkeyup="checkRepeatedPassword();" required>
                         <label for="inputRole" class="sr-only">Repeat Password</label>
@@ -29,21 +29,19 @@
                             <option selected value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
-                        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+                        <button id="buttonSignUp" class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
                         <div class="text-center mx-auto credentials-route">
                             <p>
                                 Already subscribed? <a class="navbar-brand" href="/sign-in">Log in here</a>
                             </p>
                         </div>
-                        <div class="text-center mx-auto credentials-route hidden" id="div-error-sign-up">
-                            <p class="error" id="error-sign-up">
-                            </p>
-                        </div>
+                        <div id="error" class="alert alert-danger hidden" role="alert"></div>
+                        <div id="success" class="alert alert-success hidden" role="alert"></div>
                     </form>
                 </div>
             </div>            
         </main>
         <%- include('commons/footer') %>
-        <script src="./js/sign-up.js"></script>
+        <script src="../js/sign-up.js"></script>
     </body>
 </html>

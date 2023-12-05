@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import {User, UnauthorizedError, NotFoundError} from "core-components"
+import {User, UnauthorizedError, NotFoundError, ErrorTypes} from "core-components"
 import { Jwt } from "core-components";
 import {StatusCodes} from "http-status-codes";
 
@@ -16,9 +16,13 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
     try {
         const user = await User.findOne({email: email});
-        const responseError = new UnauthorizedError("Login error");
+        const responseError = new UnauthorizedError(
+            "Login error",
+            undefined,
+            ErrorTypes.LOGIN_ERROR
+        );
         if (user === null || user === undefined) {
-            return next(responseError); 
+            return next(responseError);
         }
 
         user.comparePassword(password, async function(error, isMatch) {
@@ -83,7 +87,13 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
 
     const user = await User.findOne({email: email});
     if(user === null || user === undefined) {
-        return next(new NotFoundError("The specified email doesn't belong to any users"));
+        return next(
+            new NotFoundError(
+                "The specified email doesn't belong to any users",
+                undefined,
+                ErrorTypes.VALIDATION_ERROR
+            )
+        );
     }
 
     const tokenRecord = await Jwt.findOne({refreshToken: refreshToken});
@@ -91,7 +101,13 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
         try {
             const tokenResponse: any = await tokenRecord.validateRefreshToken();
             if(tokenResponse.sub.email != email) {
-                return next(new UnauthorizedError("The submitted token doesn't belong to the specified user"));
+                return next(
+                    new UnauthorizedError(
+                        "The submitted token doesn't belong to the specified user",
+                        undefined,
+                        ErrorTypes.JWT_ERROR
+                    )
+                );
             }
             const newTokens = await Jwt.createTokenPair(user);
 
@@ -105,7 +121,13 @@ export async function refreshToken(req: Request, res: Response, next: NextFuncti
             return next(error);
         }
     } else {
-        return next(new NotFoundError("Can't find the requested token"));
+        return next(
+            new NotFoundError(
+                "Can't find the requested token",
+                undefined,
+                ErrorTypes.JWT_ERROR
+            )
+        );
     }
 
     return next();

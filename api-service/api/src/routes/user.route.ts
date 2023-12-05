@@ -38,25 +38,46 @@ userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  * @openapi
  *
  * paths:
- *   /users/{userEmail}:
+ *   /users/{email}:
  *      get:
- *          summary: Return a specific user
+ *          summary: Return the profile of the user with the given email
  *          parameters:
- *              - name: userEmail
+ *              - name: email
  *                in: path
- *                description: The email of the user to get the info from.
+ *                description: The email of the user profile.
  *                required: false
  *                schema:
  *                  type: string
  *          responses:
  *              '200':
- *                  description: Request accepted successfully.
-*               '400':
- *                  description: Bad request
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 userRouter.get(
@@ -66,8 +87,6 @@ userRouter.get(
         param("email").exists().isEmail()
     ]),
     getProfile);
-
-userRouter.get("/", authenticationHandler, getProfile);
 
 /**
  * @openapi
@@ -83,15 +102,53 @@ userRouter.get("/", authenticationHandler, getProfile);
  *                required: false
  *                schema:
  *                  type: string
+ *              - name: data
+ *                in: body
+ *                description: The data to update the user with.
+ *                required: true
+ *                schema:
+ *                  type: object
+ *                  properties:
+ *                      firstName:
+ *                          type: string
+ *                          description: The first name of the user.
+ *                          example: "Jean"
+ *                          required: false
+ *                      secondName:
+ *                          type: string
+ *                          description: The second name of the user.
+ *                          example: "Paù"
+ *                          required: false
  *          responses:
  *              '200':
- *                  description: Request accepted successfully.
-*               '400':
- *                  description: Bad request
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 userRouter.put(
@@ -111,7 +168,7 @@ userRouter.put(
         body("data.email").not().exists(),
     ]),
     editProfile);
-userRouter.put("/", authenticationHandler, editProfile);
+
 
 /**
  * @openapi
@@ -119,34 +176,53 @@ userRouter.put("/", authenticationHandler, editProfile);
  * paths:
  *   /users/{userEmail}:
  *      delete:
- *          summary: Delete a specific user
+ *          summary: Update a specific user
  *          parameters:
- *              - name: userEmail
- *                in: path
+ *              - name: email
+ *                in: body
  *                description: The email of the user to delete.
- *                required: false
+ *                required: true
  *                schema:
  *                  type: string
  *          responses:
  *              '200':
- *                  description: Request accepted successfully.
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
  *              '400':
- *                  description: Bad request
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 userRouter.delete(
-    "/:email",
+    "/",
     authenticationHandler,
     validationHandler([
-        param("email").exists().isEmail()
+        body("email").exists().isEmail()
     ]),
     deleteProfile);
-
-userRouter.delete("/", authenticationHandler, deleteProfile);
 
 /**
  * @openapi
@@ -175,14 +251,35 @@ userRouter.delete("/", authenticationHandler, deleteProfile);
  *                                  type: string
  *                                  description: The second name of the user.
  *          responses:
- *              '201':
- *                  description: The new user is created.
-*               '400':
- *                  description: Bad request
+ *              '200':
+ *                  description: Ok
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
  *              '429':
- *                  description: Limit of requests reached for this endpoint.
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
  *              '500':
  *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
  *
  */
 userRouter.post(
