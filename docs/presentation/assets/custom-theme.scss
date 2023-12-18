@@ -1,0 +1,261 @@
+@import "reveal-js/dist/theme/template/mixins";
+@import "reveal-js/dist/theme/template/settings";
+
+// Include theme-specific fonts
+@import url('https://fonts.googleapis.com/css2?family=Signika+Negative');
+// Serif
+@import url('https://fonts.googleapis.com/css2?family=Cinzel');
+// Handwriting
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script');
+// Monospace
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono');
+
+$backgroundColor: #fff;
+
+$mainColor: #000;
+$headingColor: #3457D5;
+
+$mainFontSize: 1.6em;
+$mainFont: 'Signika Negative';
+$headingFont: 'Signika Negative';
+
+$headingLetterSpacing: normal;
+$headingFontWeight: 600;
+$linkColor: #2690e7;
+$linkColorHover: lighten( $linkColor, 20% );
+$selectionBackgroundColor: lighten( $linkColor, 20% );
+
+$heading1Size: 2.5em;
+$heading2Size: 1.7em;
+$heading3Size: 1.4em;
+$heading4Size: 1.0em;
+
+@import "reveal-js/dist/theme/template/theme";
+
+section.has-light-background {
+	&, h1, h2, h3, h4, h5, h6 {
+		color: #222;
+	}
+}
+
+.reveal a:hover {
+	opacity: 0.5;
+	transition: 0.3s;
+}
+
+.reveal strong,
+.reveal b {
+	font-weight: bold;
+	color: crimson;
+}
+
+.reveal em {
+	font-style: italic;
+	color: forestgreen;
+}
+
+.reveal section img {
+	border: 0em;
+	box-shadow: none;
+    max-width: 100%;
+    max-height: 730px;
+    height: auto;
+	object-fit: contain;
+}
+
+.reveal section img {
+	border: 0em;
+	box-shadow: none;
+}
+
+.reveal div .gist .hljs-ln {
+	color: black;
+	font-size: 60%;
+	line-height: 100%;
+}
+
+.reveal h2 {
+	text-transform: none;
+}
+
+.reveal h3 {
+	margin: 0.3em 0;
+	text-transform: none;
+}
+
+.reveal h4 {
+	margin: .5em 0px 0px 0px;
+}
+
+.reveal p {
+	margin: .2em 0 0 .2em;
+}
+
+.reveal ul {
+	display: block;
+	margin: 0px 0px .5em 2vw;
+}
+
+.reveal ol {
+	display: block;
+	margin: 0px 0px .5em 2vw;
+}
+
+.gist-it-gist .gist-file .gist-data pre, .gister-gist .gist-file .gist-data pre {
+	box-shadow: none !important;
+}
+
+.reveal code {
+	color: deeppink;
+	line-height: 100%;
+	font-weight: bold;
+	font-size: 100%;
+	font-family: "Inconsolata";
+}
+
+.reveal pre {
+	width: min-content;
+	max-width: 113%;
+	margin: 0em;
+	padding: 0em;
+	border-radius: .65em;
+	padding-left: .25em;
+	padding-right: .25em;
+	border: #000;
+	border-width: .5em;
+	box-shadow: 0.25em 0.25em 0.5em .01em #888888;
+}
+
+.reveal pre code {
+	max-width: 100%;
+	line-height: 100%;
+	font-size: .96em;
+	color: black;
+	max-height: none;
+	font-family: 'Inconsolata';
+	font-weight: normal;
+	margin: .1em;
+	padding-left: .3vw;
+	padding-right: .3vw;
+	padding-top: .25vw;
+	padding-bottom: .25vw;
+	border: #000000AA;
+	border-style: solid;
+	border-width: .1vw;
+	border-radius: .50vw;
+}
+
+.reveal div.highlight {
+	max-width: 1440px;
+	overflow-x: visible;
+	display: flex;
+	align-content: center;
+	justify-content: center;
+	margin: .3vw 0 .5vw 0;
+}
+
+.hljs {
+	background: rgba(255, 255, 255, 0.08) !important;
+	box-shadow: 0 0 3em 0.6em rgba(255, 255, 255, 0.2);
+}
+
+
+// Nice blockquote and cite
+.reveal blockquote {
+	width:90%;
+	margin:0.3em auto;
+	font-family: 'Dancing Script';
+	font-style: normal;
+	font-size: 1.2em;
+	color: #333333;
+	padding:0.1em 0.1em 0.1em 0.1em;
+	border-color: #039418;
+	border-style: solid;
+	border-width: 0.1em;
+	border-radius: 1em;
+	border-left:0.7em solid #039418 ;
+	line-height: 1.2em;
+	position: relative;
+	background:#FAFAFA;
+	text-align: center;
+}
+
+.reveal blockquote::before{
+	font-family: Arial;
+	content: "\201C";
+	color:#039418;
+	font-size: 4em;
+	position: absolute;
+	left: 0.05em;
+	top: 0.25em;
+}
+
+.reveal blockquote p::before{
+	content: "";
+	padding-left: 2em;
+}
+
+.reveal blockquote::after{
+	font-family: Arial;
+	content: "\201D";
+	color:#039418;
+	font-size: 4em;
+	position: absolute;
+	bottom: -0.2em;
+	right: 0.1em;
+}
+
+.reveal cite::before {
+	content: "— ";
+}
+
+.reveal cite {
+	display: block;
+	text-align: right;
+	padding-right: 10%;
+	padding-top: 0.5em;
+	font-weight: bolder;
+	font-family: 'Cinzel';
+	font-size: 0.7em;
+}
+
+// Mermaid graph resizing
+.mermaid svg {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: auto;
+    width: 95%;
+    transition: transform 0.3s ease;
+    border-width: 0.1em;
+    border-style: none;
+}
+
+.reveal section.side-by-side h1 {
+	position: absolute;
+}
+
+.reveal section.side-by-side h1:first-of-type {
+	left: 25%;
+}
+
+.reveal section.side-by-side h1:nth-of-type(2) {
+	right: 25%;
+}
+
+.container {
+    display: flex;
+}
+
+.col {
+	text-align: center;
+	align-self: center;
+}
+
+div.medium {
+	font-size: 90%;
+}
+
+div.smaller {
+	font-size: 75%;
+}

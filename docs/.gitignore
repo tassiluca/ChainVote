@@ -279,3 +279,6 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+# Hugo presentation
+*.lock

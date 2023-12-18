@@ -19,13 +19,40 @@ jobs:
       (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: danysk/action-checkout@0.2.14
 
       - name: Setup java
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: 17
+
+      - name: Compute the version of Hugo
+        id: hugo
+        shell: bash
+        run: |
+          # Idea: the regex matcher of Renovate keeps this string up to date automatically
+          # The version is extracted and used to access the correct version of the scripts
+          USES=$(cat <<TRICK_RENOVATE
+          - uses: gohugoio/hugo@v0.104.2
+          TRICK_RENOVATE
+          )
+          echo "Scripts update line: \"$USES\""
+          echo "Computed version: \"${USES#*@v}\""
+          echo "::set-output name=version::${USES#*@v}"
+
+      - name: Download Hugo
+        run: |
+          HUGO_VERSION="${{ steps.hugo.outputs.version }}"
+          URL="https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          wget --retry-connrefused --waitretry=1 --read-timeout=20 "$URL" --output-document=hugo.deb
+
+      - name: Install Hugo
+        run: |
+          sudo dpkg -i hugo.deb
+          hugo version
+          rm hugo.deb
 
       - name: Geneate Javadoc smart contracts
         run : |
@@ -47,9 +74,18 @@ jobs:
           output: ./public/swagger-ui-auth
           spec-file: ./api-service/auth/swagger.json
 
+      - name: Build slides with hugo
+        run: |
+          pushd docs/presentation
+          ls -la
+          hugo
+          popd
+          mkdir -p ./public/presentation && cp -r ./docs/presentation/public/* ./public/presentation/
+
       - name: ls
         run: |
           ls -la ./public
+          ls -la ./public/presentation
           ls -la ./public/smart-contracts/
           ls -la ./public/swagger-ui-api
           ls -la ./public/swagger-ui-auth

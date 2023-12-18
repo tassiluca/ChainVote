@@ -1,0 +1,50 @@
+baseURL = "https://tassiLuca.github.io/ChainVote/presentation"
+languageCode = "en-us"
+title = "ChainVote final project presentation"
+disableKinds = ["sitemap", "RSS"]
+theme = "reveal-hugo"
+publishDir = "public"
+ignoreFiles = ['.*generator.md$']
+
+# uncomment for browsing at file:///
+# relativeURLs = true
+# uglyURLs = true
+
+[author]
+name = "Luca Tassinari, Giovanni Antonioni, Luca Rubboli"
+
+# currently only the unsafe mode for goldmark is supported
+[markup.goldmark.renderer]
+unsafe = true
+
+# choose between Hugo compile-time or Highlight.js
+# syntax highlighting for code inside of code fences
+[markup.highlight]
+#codeFences = false  # use highlight.js 
+codeFences = true  # use hugo highlighting at compile time
+style = "xcode"  # set a style for hugo highlighting
+
+[outputFormats.Reveal]
+baseName = "index"
+mediaType = "text/html"
+isHTML = true
+
+[params.reveal_hugo]
+history = true
+theme = "white"
+highlight_theme = "default"
+slide_number = true
+transition = "slide"
+transition_speed = "medium"
+custom_theme = "custom-theme.scss"
+custom_theme_compile = true
+
+[params.reveal_hugo.custom_theme_options]
+targetPath = "css/custom-theme.css"
+enableSourceMap = true
+
+[[params.reveal_hugo.mermaid]]
+startOnLoad = false
+# theme = "default"
+# fontFamily = "Inconsolata"
+#useMaxWidth = true
