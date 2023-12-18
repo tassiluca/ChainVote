@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta name="generator" content="Hugo 0.104.2" />
+    <meta charset="utf-8">
+<title>My presentation</title>
+
+<meta name="author" content="Luca Tassinari, Giovanni Antonioni, Luca Rubboli">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/chainvote/presentation/reveal-js/dist/reset.css">
+<link rel="stylesheet" href="/chainvote/presentation/reveal-js/dist/reveal.css">
+  <link rel="stylesheet" href="/chainvote/presentation/css/custom-theme.min.3b40d95766b5b6ccb4d15d1b57254976d2af39876614bb4b80fe9468fb513d94.css" id="theme"><link rel="stylesheet" href="/chainvote/presentation/highlight-js/default.min.css">
+<link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
+<link href='https://fonts.googleapis.com/css?family=Oxygen Mono' rel='stylesheet'>
+<link href='https://fonts.googleapis.com/css?family=Ubuntu Mono' rel='stylesheet'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+  </head>
+  <body>
+    
+    <div class="reveal">
+      <div class="slides">
+  
+
+    
+<section data-noprocess data-shortcode-slide
+      data-background=""
+      id="hello"
+      data-transition="zoom"
+      data-transition-speed="fast">
+  
+<h1 id="chainvote"><code>ChainVote</code></h1>
+<h3 id="final-project-for-distributed-systems-course">Final Project for Distributed Systems Course</h3>
+<h4 id="isi--unibo">ISI @ UniBo</h4>
+<div class="smaller">
+<p>Authors: <a href="https://github.com/tassiLuca">Luca Tassinari</a>, <a href="https://github.com/giovaz94">Giovanni Antonioni</a>, <a href="https://github.com/Luca1313">Luca Rubboli</a></p>
+</div>
+</section>
+
+<section data-noprocess data-shortcode-slide
+      data-background="#000"
+      id="hello"
+      data-transition="zoom"
+      data-transition-speed="fast">
+  
+<h1 id="hello-world">Hello, world!</h1>
+</section><section>
+<p>An example with three fragments&hellip;</p>
+<p>
+
+<span class='fragment ' >One</span>
+
+
+
+
+<span class='fragment ' >Two</span>
+
+
+
+
+<span class='fragment ' >Three</span>
+
+</p>
+</section><section>
+<p>You can embedd code:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="nohighlight" data-noescape><span style="display:flex;"><span><span style="color:#a90d91">public</span> <span style="color:#a90d91">class</span> <span style="color:#3f6e75">HelloWorld</span> <span style="color:#000">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a90d91">public</span> <span style="color:#a90d91">static</span> <span style="color:#a90d91">void</span> <span style="color:#000">main</span><span style="color:#000">(</span><span style="color:#000">String</span><span style="color:#000">...</span> <span style="color:#000">args</span><span style="color:#000">)</span> <span style="color:#000">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">System</span><span style="color:#000">.</span><span style="color:#836c28">out</span><span style="color:#000">.</span><span style="color:#836c28">println</span><span style="color:#000">(</span><span style="color:#c41a16">&#34;Hello World :)!&#34;</span><span style="color:#000">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">}</span>
+</span></span></code></pre></div></section>
+
+  
+
+
+</div>
+      
+
+    </div>
+<script type="text/javascript" src=/chainvote/presentation/reveal-hugo/object-assign.js></script>
+
+
+<script src="/chainvote/presentation/reveal-js/dist/reveal.js"></script>
+
+
+  <script type="text/javascript" src="/chainvote/presentation/reveal-js/plugin/markdown/markdown.js"></script>
+  
+  <script type="text/javascript" src="/chainvote/presentation/reveal-js/plugin/highlight/highlight.js"></script>
+  
+  <script type="text/javascript" src="/chainvote/presentation/reveal-js/plugin/zoom/zoom.js"></script>
+  
+  <script type="text/javascript" src="/chainvote/presentation/reveal-js/plugin/notes/notes.js"></script>
+  
+<script type="text/javascript">
+  
+  
+  function camelize(map) {
+    if (map) {
+      Object.keys(map).forEach(function(k) {
+        newK = k.replace(/(\_\w)/g, function(m) { return m[1].toUpperCase() });
+        if (newK != k) {
+          map[newK] = map[k];
+          delete map[k];
+        }
+      });
+    }
+    return map;
+  }
+
+  var revealHugoDefaults = { center: true, controls: true, history: true, progress: true, transition: "slide" };
+  var revealHugoSiteParams = {"custom_theme":"custom-theme.scss","custom_theme_compile":true,"custom_theme_options":{"enablesourcemap":true,"targetpath":"css/custom-theme.css"},"highlight_theme":"default","history":true,"mermaid":[{"startOnLoad":false}],"slide_number":true,"theme":"white","transition":"slide","transition_speed":"medium"};
+  var revealHugoPageParams = {};
+
+  var revealHugoPlugins = {
+    
+    plugins: [RevealMarkdown,RevealHighlight,RevealZoom,RevealNotes]
+  };
+
+  
+  var options = Object.assign({},
+    camelize(revealHugoDefaults),
+    camelize(revealHugoSiteParams),
+    camelize(revealHugoPageParams),
+    camelize(revealHugoPlugins));
+
+  Reveal.initialize(options);
+</script>
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+
+
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+</script>
+
+<script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+<script>
+  if (/.*?(\?|&)print-pdf/.test(window.location.toString())) {
+      var ytVideos = document.getElementsByTagName("iframe")
+      for (let i = 0; i < ytVideos.length; i++) {
+          var videoFrame = ytVideos[i]
+          var isYouTube = /^https?:\/\/(www.)youtube\.com\/.*/.test(videoFrame.src)
+          if (isYouTube) {
+              console.log(`Removing ${videoFrame.src}`)
+              var parent = videoFrame.parentElement
+              videoFrame.remove()
+              var p = document.createElement('p')
+              p.append(
+                  document.createTextNode(
+                      "There was an embedded video here, but it is disabled in the printed version of the slides."
+                  )
+              )
+              p.append(document.createElement('br'))
+              p.append(
+                  document.createTextNode(
+                      `Visit instead ${
+                          videoFrame.src
+                      } or ${
+                          videoFrame.src.replace(
+                              /(^https?:\/\/(www.)youtube\.com)\/(embed\/)(\w+).*/,
+                              "https://www.youtube.com/watch?v=$4"
+                          )
+                      }`
+                  )
+              )
+              parent.appendChild(p)
+          }
+      }
+  }
+</script>
+
+    
+  </body>
+</html>
