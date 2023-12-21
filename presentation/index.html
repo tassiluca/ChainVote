@@ -38,10 +38,11 @@
 </div>
 </section><section>
 <div class="smaller">
-<p>Outline:</p>
+<h3 id="outline">Outline:</h3>
 <ol>
-<li>Goals</li>
+<li>Intro</li>
 <li>Use cases</li>
+<li>Non-functional properties</li>
 <li>System Architecture</li>
 <li>Blockchain Architecture</li>
 <li>Video Demo</li>
@@ -49,7 +50,14 @@
 </div>
 </section><section>
 <h4 id="intro">Intro</h4>
-<p>The project consists of the implementation of a <strong>small-scale</strong> distributed electronic voting system based on <em>blockchain technology</em>. Specifically, the goal is to create a distributed architecture that exposes a uniform API allowing users to interact with the system using a web application</p>
+<ul>
+<li><strong>Small-scale</strong> distributed electronic voting system</li>
+<li><em>Blockchain technology</em></li>
+<li>Uniform API to interact with the system by means of a web application</li>
+</ul>
+<!--
+The project consists of the implementation of a **small-scale** distributed electronic voting system based on _blockchain technology_. Specifically, the goal is to create a distributed architecture that exposes a uniform API allowing users to interact with the system using a web application
+-->
 </section><section>
 <h4 id="use-cases">Use cases</h4>
 <figure><img src="./use-cases.svg" width="75%"/>
@@ -57,55 +65,82 @@
 
 </section><section>
 <h3 id="non-functional-properties-i">Non-functional properties (I)</h3>
+<style>
+ul ul li {
+    font-size: 25px;
+}
+</style>
+<p><strong>Thanks to <em>blockchain technology</em> we achieve:</strong></p>
 <ul>
-<li><strong>Thanks to <em>blockchain technology</em> we achieve:</strong>
-<ul>
-<li>Operational integrity of the system:
-<ul>
-<li>Correctness of the operations performed by the system;</li>
-</ul>
-</li>
-<li>Accountability:
-<ul>
-<li><em>Node Peers</em> logs the actions performed;</li>
-</ul>
-</li>
-<li>Confidentiality:
-<ul>
-<li>We use a <em>Permissioned</em> blockchain that restrict access to data;</li>
-</ul>
-</li>
-<li>Verifiability:</li>
-<li>Availability:
-<ul>
-<li>System will continue to serve requests even if some peers are down;</li>
-</ul>
-</li>
-</ul>
-</li>
+    <li>
+    Operational integrity of the system:
+    <ul>
+        <li>
+        Correctness of the operations performed by the system;
+        </li>
+    </ul>
+    </li>
+    <li>
+    Accountability:
+    <ul>
+        <li>
+        Node Peers logs the actions performed;
+        </li>
+    </ul>
+    </li>
+    <li>
+    Confidentiality:
+    <ul>
+        <li>
+        We used a <b>Permissioned blockchain</b> that restrict access to data;
+        </li>
+    </ul>
+    </li>
+    <li>
+    Verifiability:
+    <ul>
+        <li>
+        Blockchain keep <b>tracks of all the transactions</b> executed to obtain final results;
+        </li>
+    </ul>
+    </li>
+    <li>
+    Availability:
+    <ul>
+        <li>
+        System will continue to serve requests even if some peers are down;
+        </li>
+    </ul>
+    </li>
 </ul>
 </section><section>
 <h3 id="non-functional-properties-ii">Non-functional properties (II)</h3>
+<p><strong>We also designed the system to achieve:</strong></p>
 <ul>
-<li><strong>We also managed to achieve:</strong>
-<ul>
-<li>Anonimity:
-<ul>
-<li><em>Voters</em> are not identifiable <em>during the voting process</em>;</li>
-</ul>
-</li>
-<li>Voter authenticity:
-<ul>
-<li>Authentication of a <em>voters</em> provided by the API layer;</li>
-</ul>
-</li>
-<li>Non-coercibility:
-<ul>
-<li>Can&rsquo;t <em>reconstruct</em> the vote of a <em>user</em> from the blockchain;</li>
-</ul>
-</li>
-</ul>
-</li>
+    <li>
+    Anonimity:
+    <ul>
+        <li>
+        <b>Voters are not identifiable</b> during the voting process;
+        </li>
+    </ul>
+    </li>
+    <li>
+    Voter authenticity:
+    <ul>
+        <li>
+        Voters authentication provided by the API layer;
+        </li>
+    </ul>
+    </li>
+    <li>
+    Non-coercibility:
+    <ul>
+        <li>
+        <b>Can't reconstruct the vote</b> of a user from the blockchain;
+        </li>
+    </ul>
+    </li>
 </ul>
 </section><section>
 <h4 id="system-architecture">System Architecture</h4>
@@ -115,16 +150,12 @@
 </section><section>
 <h4 id="blockchain-network">Blockchain network</h4>
 <p><img src="network-architecture.svg" alt="network architecture"></p>
-</section><section>
-<h2 id="demo">Demo</h2>
 </section>
-<!--
-https://www.youtube.com/watch?v=yN0lqKVyrPA
--->
 
 <section data-noprocess data-shortcode-slide
       data-background-color="#000">
   
+<h4 id="demo">Demo</h4>
 <div class="stretch">
     <iframe name="report" width="150%" height="100%" allow="fullscreen;"
         src="https://www.youtube.com/embed/yN0lqKVyrPA?autoplay=1&mute=1">
