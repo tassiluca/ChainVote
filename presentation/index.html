@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/ChainVote/presentation/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/ChainVote/presentation/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/ChainVote/presentation/css/custom-theme.min.3b40d95766b5b6ccb4d15d1b57254976d2af39876614bb4b80fe9468fb513d94.css" id="theme"><link rel="stylesheet" href="/ChainVote/presentation/highlight-js/default.min.css">
+  <link rel="stylesheet" href="/ChainVote/presentation/css/custom-theme.min.564dd58d92b99cbeb13063bbd17219012793fa0bad476a9dfb4258003012c9d1.css" id="theme"><link rel="stylesheet" href="/ChainVote/presentation/highlight-js/default.min.css">
 <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
 <link href='https://fonts.googleapis.com/css?family=Oxygen Mono' rel='stylesheet'>
 <link href='https://fonts.googleapis.com/css?family=Ubuntu Mono' rel='stylesheet'>
@@ -31,25 +31,21 @@
       data-transition-speed="fast">
   
 <h1 id="chainvote"><code>ChainVote</code></h1>
-<h3 id="project-for-distributed-systems-course">Project for Distributed Systems Course</h3>
-<h4 id="isi--unibo">ISI @ UniBo</h4>
-<div class="smaller">
+<h2 id="project-for-distributed-systems-course">Project for Distributed Systems Course</h2>
+<h3 id="isi--unibo">ISI @ UniBo</h3>
 <p>Authors: <a href="https://github.com/tassiLuca">Luca Tassinari</a>, <a href="https://github.com/giovaz94">Giovanni Antonioni</a>, <a href="https://github.com/Luca1313">Luca Rubboli</a></p>
-</div>
 </section><section>
-<div class="smaller">
-<h3 id="outline">Outline:</h3>
+<h2 id="outline">Outline</h2>
 <ol>
-<li>Intro</li>
+<li>Project&rsquo;s Goals</li>
 <li>Use cases</li>
 <li>Non-functional properties</li>
 <li>System Architecture</li>
 <li>Blockchain Architecture</li>
 <li>Video Demo</li>
 </ol>
-</div>
 </section><section>
-<h4 id="intro">Intro</h4>
+<h3 id="projects-goals">Project&rsquo;s Goals</h3>
 <ul>
 <li><strong>Small-scale</strong> distributed electronic voting system</li>
 <li><em>Blockchain technology</em></li>
@@ -59,103 +55,91 @@
 The project consists of the implementation of a **small-scale** distributed electronic voting system based on _blockchain technology_. Specifically, the goal is to create a distributed architecture that exposes a uniform API allowing users to interact with the system using a web application
 -->
 </section><section>
-<h4 id="use-cases">Use cases</h4>
-<figure><img src="./use-cases.svg" width="75%"/>
-</figure>
 
+<div class="multiCol">
+    <div class='col  '>
+    <h3 id="use-cases">Use cases</h3>
+</div>
+<div class='col  '>
+    <figure><img src="./use-cases.svg" width="75%"/>
+</figure>
+</div>
+
+</div>
 </section><section>
 <h3 id="non-functional-properties-i">Non-functional properties (I)</h3>
-<style>
-ul ul li {
-    font-size: 25px;
-}
-</style>
 <p><strong>Thanks to <em>blockchain technology</em> we achieve:</strong></p>
 <ul>
-    <li>
-    Operational integrity of the system:
-    <ul>
-        <li>
-        Correctness of the operations performed by the system;
-        </li>
-    </ul>
-    </li>
-    <li>
-    Accountability:
-    <ul>
-        <li>
-        Node Peers logs the actions performed;
-        </li>
-    </ul>
-    </li>
-    <li>
-    Confidentiality:
-    <ul>
-        <li>
-        We used a <b>Permissioned blockchain</b> that restrict access to data;
-        </li>
-    </ul>
-    </li>
-    <li>
-    Verifiability:
-    <ul>
-        <li>
-        Blockchain keep <b>tracks of all the transactions</b> executed to obtain final results;
-        </li>
-    </ul>
-    </li>
-    <li>
-    Availability:
-    <ul>
-        <li>
-        System will continue to serve requests even if some peers are down;
-        </li>
-    </ul>
-    </li>
+<li>Operational integrity of the system:
+<ul>
+<li>Correctness of the operations performed by the system</li>
+</ul>
+</li>
+<li>Accountability:
+<ul>
+<li>Node Peers logs the actions performed</li>
+</ul>
+</li>
+<li>Confidentiality:
+<ul>
+<li>We used a <strong>Permissioned blockchain</strong> that restrict access to data;</li>
+</ul>
+</li>
+<li>Verifiability
+<ul>
+<li>Blockchain keep <strong>tracks of all the transactions</strong> executed to obtain final results;</li>
+</ul>
+</li>
+<li>Availability
+<ul>
+<li>System will continue to serve requests even if some peers are down;</li>
+</ul>
+</li>
 </ul>
 </section><section>
 <h3 id="non-functional-properties-ii">Non-functional properties (II)</h3>
 <p><strong>We also designed the system to achieve:</strong></p>
 <ul>
-    <li>
-    Anonimity:
-    <ul>
-        <li>
-        <b>Voters are not identifiable</b> during the voting process;
-        </li>
-    </ul>
-    </li>
-    <li>
-    Voter authenticity:
-    <ul>
-        <li>
-        Voters authentication provided by the API layer;
-        </li>
-    </ul>
-    </li>
-    <li>
-    Non-coercibility:
-    <ul>
-        <li>
-        <b>Can't reconstruct the vote</b> of a user from the blockchain;
-        </li>
-    </ul>
-    </li>
+<li>Anonimity
+<ul>
+<li><strong>Voters are not identifiable</strong> during the voting process</li>
+</ul>
+</li>
+<li>Voter authenticity
+<ul>
+<li>Voters authentication provided by the API layer</li>
+</ul>
+</li>
+<li>Non-coercibility
+<ul>
+<li>Can&rsquo;t reconstruct the vote of a user from the blockchain</li>
+</ul>
+</li>
 </ul>
 </section><section>
-<h4 id="system-architecture">System Architecture</h4>
+<h3 id="technologies">Technologies</h3>
+<ul>
+<li><a href="">Hyperledger Fabric</a> as the blockchain technology
+<ul>
+<li>Java as a language for smart contracts</li>
+</ul>
+</li>
+<li>&hellip;</li>
+</ul>
+</section><section>
+<h3 id="system-architecture">System Architecture</h3>
 <figure><img src="./system-architecture.svg" width="90%"/>
 </figure>
 
 </section><section>
-<h4 id="blockchain-network">Blockchain network</h4>
+<h3 id="blockchain-network">Blockchain network</h3>
 <p><img src="network-architecture.svg" alt="network architecture"></p>
 </section>
 
 <section data-noprocess data-shortcode-slide
       data-background-color="#000">
   
-<h4 id="demo">Demo</h4>
+<h3 id="demo">Demo</h3>
 <div class="stretch">
     <iframe name="report" width="150%" height="100%" allow="fullscreen;"
         src="https://www.youtube.com/embed/yN0lqKVyrPA?autoplay=1&mute=1">
