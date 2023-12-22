@@ -40,6 +40,7 @@
 <li>Project&rsquo;s Goals</li>
 <li>Use cases</li>
 <li>Non-functional properties</li>
+<li>Technologies</li>
 <li>System Architecture</li>
 <li>Blockchain Architecture</li>
 <li>Video Demo</li>
@@ -55,16 +56,13 @@
 The project consists of the implementation of a **small-scale** distributed electronic voting system based on _blockchain technology_. Specifically, the goal is to create a distributed architecture that exposes a uniform API allowing users to interact with the system using a web application
 -->
 </section><section>
-
 <div class="multiCol">
-    <div class='col  '>
-    <h3 id="use-cases">Use cases</h3>
-</div>
 <div class='col  '>
+    <h3 id="use-cases">Use cases</h3>
+</div><div class='col  '>
     <figure><img src="./use-cases.svg" width="75%"/>
 </figure>
 </div>
-
 </div>
 </section><section>
 <h3 id="non-functional-properties-i">Non-functional properties (I)</h3>
@@ -82,17 +80,17 @@ The project consists of the implementation of a **small-scale** distributed elec
 </li>
 <li>Confidentiality:
 <ul>
-<li>We used a <strong>Permissioned blockchain</strong> that restrict access to data;</li>
+<li>We used a <strong>Permissioned blockchain</strong> that restrict access to data</li>
 </ul>
 </li>
-<li>Verifiability
+<li>Verifiability:
 <ul>
-<li>Blockchain keep <strong>tracks of all the transactions</strong> executed to obtain final results;</li>
+<li>Blockchain keep <strong>tracks of all the transactions</strong> executed to obtain final results</li>
 </ul>
 </li>
-<li>Availability
+<li>Availability:
 <ul>
-<li>System will continue to serve requests even if some peers are down;</li>
+<li>System will continue to serve requests even if some peers are down</li>
 </ul>
 </li>
 </ul>
@@ -100,17 +98,17 @@ The project consists of the implementation of a **small-scale** distributed elec
 <h3 id="non-functional-properties-ii">Non-functional properties (II)</h3>
 <p><strong>We also designed the system to achieve:</strong></p>
 <ul>
-<li>Anonimity
+<li>Anonimity:
 <ul>
-<li><strong>Voters are not identifiable</strong> during the voting process</li>
+<li><strong>Voters are not identifiable</strong> during the voting process $\Rightarrow$ one time codes</li>
 </ul>
 </li>
-<li>Voter authenticity
+<li>Voter authenticity:
 <ul>
 <li>Voters authentication provided by the API layer</li>
 </ul>
 </li>
-<li>Non-coercibility
+<li>Non-coercibility:
 <ul>
 <li>Can&rsquo;t reconstruct the vote of a user from the blockchain</li>
 </ul>
@@ -119,12 +117,16 @@ The project consists of the implementation of a **small-scale** distributed elec
 </section><section>
 <h3 id="technologies">Technologies</h3>
 <ul>
-<li><a href="">Hyperledger Fabric</a> as the blockchain technology
+<li><a href="https://github.com/hyperledger/fabric">Hyperledger Fabric</a> as the blockchain infrastructure technology
 <ul>
-<li>Java as a language for smart contracts</li>
+<li><em>Java</em> as a language for smart contracts</li>
 </ul>
 </li>
-<li>&hellip;</li>
+<li>ReSTful API
+<ul>
+<li><em>Typescript</em> &hellip;</li>
+</ul>
+</li>
 </ul>
 </section><section>
 <h3 id="system-architecture">System Architecture</h3>
@@ -146,8 +148,8 @@ The project consists of the implementation of a **small-scale** distributed elec
     </iframe>
 </div>
 </section><section>
-<p>That&rsquo;s all, thank you for your attention!</p>
-<p>😊</p>
+<h3 id="thats-all-thank-you-for-your-attention">That&rsquo;s all, thank you for your attention!</h3>
+<h3 id="heading">😊</h3>
 </section>
 
   
