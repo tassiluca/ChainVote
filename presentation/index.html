@@ -98,19 +98,14 @@ The project consists of the implementation of a **small-scale** distributed elec
 <h3 id="non-functional-properties-ii">Non-functional properties (II)</h3>
 <p><strong>We also designed the system to achieve:</strong></p>
 <ul>
-<li>Anonimity:
+<li>Non-coercibility:
 <ul>
 <li><strong>Voters are not identifiable</strong> during the voting process $\Rightarrow$ one time codes</li>
 </ul>
 </li>
-<li>Voter authenticity:
+<li>Voter Authentication:
 <ul>
 <li>Voters authentication provided by the API layer</li>
-</ul>
-</li>
-<li>Non-coercibility:
-<ul>
-<li>Can&rsquo;t reconstruct the vote of a user from the blockchain</li>
 </ul>
 </li>
 </ul>
@@ -127,12 +122,12 @@ The project consists of the implementation of a **small-scale** distributed elec
 <li>offers mechanisms raising the bar of confidentiality and higher fine-grained control over ledger access (e.g. channels and private data)</li>
 </ul>
 </li>
+<li><em>Docker</em> for deployment</li>
 <li>ReSTful API
 <ul>
 <li><em>Nodejs + Express</em> for the API layer</li>
 </ul>
 </li>
-<li><em>Docker</em> for the deployment</li>
 </ul>
 </section><section>
 <h3 id="system-architecture">System Architecture</h3>
