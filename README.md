@@ -62,7 +62,8 @@ For more details have a look at the project documentation.
 
 ## Documentation
 
-- [Here](https://github.com/tassiLuca/ds-project-antonioni-rubboli-tassinari-ay2223/releases/latest) you can find the last release of the report.
+- [Here](https://github.com/tassiLuca/ds-project-antonioni-rubboli-tassinari-ay2223/releases/latest) you can find the last release of the Distributed Systems report.
+- [Here](https://tassiluca.github.io/ChainVote/presentation/) is the presentation for the Distributed System exam.
 
 - **Smart Contracts** Javadoc
   - [`chaincode-elections`](https://tassiluca.github.io/ChainVote/smart-contracts/javadoc/chaincode-elections/)
