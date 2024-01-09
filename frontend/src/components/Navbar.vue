@@ -45,7 +45,7 @@ import { faEnvelope, faBars } from "@fortawesome/free-solid-svg-icons";
 library.add(faEnvelope, faBars);
 
 export default {
-  name: "NavBar",
+  name: "NavbarComponent",
 };
 </script>
 
