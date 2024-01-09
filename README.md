@@ -24,6 +24,20 @@
 - Node.js 18 or higher
 - `npm`
 
+## Develop
+
+To clone the project:
+
+```bash
+git clone --recurse-submodules <URL> <DESTINATION>
+```
+
+If the repository has been cloned plainly, then submodules can be initialized manually:
+
+```bash
+git submodule update --init --recursive
+```
+
 ## Startup
 
 To bring up the blockchain network, deploy the smart contracts on top of the peers, start the API services and the frontend web app you can use the `services.sh` script on the root of the project.
