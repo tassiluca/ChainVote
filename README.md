@@ -1,17 +1,10 @@
 <div align="center">
 
-**Distributed Systems Final Project**
+**Distributed Systems + Applications and Web Services Final Project @ UniBo**
 
-```
- ██████╗██╗  ██╗ █████╗ ██╗███╗   ██╗██╗   ██╗ ██████╗ ████████╗███████╗
-██╔════╝██║  ██║██╔══██╗██║████╗  ██║██║   ██║██╔═══██╗╚══██╔══╝██╔════╝
-██║     ███████║███████║██║██╔██╗ ██║██║   ██║██║   ██║   ██║   █████╗  
-██║     ██╔══██║██╔══██║██║██║╚██╗██║╚██╗ ██╔╝██║   ██║   ██║   ██╔══╝  
-╚██████╗██║  ██║██║  ██║██║██║ ╚████║ ╚████╔╝ ╚██████╔╝   ██║   ███████╗
- ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝  ╚═══╝   ╚═════╝    ╚═╝   ╚══════╝
-```
+<img src="./frontend/src/assets/logo.svg" width="180px" />
 
-[Requirements](#requirements) | [Startup](#startup) | [Documentation](#documentation) | [Troubleshooting](#troubleshooting) | [Authors](#authors)
+[Requirements](#requirements) | [Develop](#develop) | [Startup](#startup) | [Docs](#documentation) | [Troubleshooting](#troubleshooting) | [Authors](#authors)
 
 </div>
 

@@ -31,11 +31,7 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: "FooterComponent",
-};
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
 #footer {

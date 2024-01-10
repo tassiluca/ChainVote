@@ -1,5 +1,9 @@
 import { makeRequest } from '@/assets/utils'
-import {createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
+import LoginView from '@/views/LoginView.vue'
+import NotificationsView from '@/views/NotificationsView.vue'
+import VotingDetails from '@/views/VotingDetails.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +36,21 @@ const router = createRouter({
         }
       },
       component: () => import('@/views/VoteView.vue'),
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/user/notifications',
+      name: 'notifications',
+      component: NotificationsView
+    },
+    {
+      path: '/voting/details',
+      name: 'voting-details',
+      component: VotingDetails
     },
     {
       path: '/about',
