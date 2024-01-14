@@ -13,16 +13,28 @@
 </script>
 
 <template>
-    
-    <h1> Prova </h1>
-    <form @submit.prevent="submitForm" method="POST">
-        <input type="text" v-model.lazy="voteCode" />
-        <VoteOption v-for="option in voteOptions" 
+    <div class="container">
+        <header class="mb-2">
+            <h1> Prova </h1>
+        </header>
+        <form @submit.prevent="submitForm" method="POST">
+            <div class="row mb-3">
+                <label for="voteCode" class="form-label">Vote Code</label>
+                <input type="text" class="form-control" id="voteCode" aria-describedby="voteCodeDescription" v-model.lazy="voteCode">
+                <div id="voteCodeDescription" class="form-text">Paste here the code generated for this election.</div>
+            </div>
+            <div class="row mb-3">
+                <h2>Vote Options</h2>
+                <VoteOption v-for="option in voteOptions" 
                     :key="option.id" 
                     :optId="option.id.toString()" 
                     :name="option.name" 
                     v-model="choosedOption"/>
-            
-        <button type="submit">Submit</button>
-    </form>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 </template>
+
+<style scoped>
+</style>

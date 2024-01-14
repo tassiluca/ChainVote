@@ -8,8 +8,11 @@ const model = defineModel()
 </script>
 
 <template>
-    <input type="radio" :id="optId" :name="name" :value="name" v-model="model" />
-    <label :for="optId">{{name}}</label>
+
+    <div class="form-check">
+        <input class="form-check-input" type="radio" :name="name" :id="optId" :value="name" v-model="model">
+        <label class="form-check-label" :for="optId">{{name}}</label>
+    </div>
 </template>
 
 

@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import './assets/main.scss'
 import 'bootstrap/dist/css/bootstrap.css'
+import './assets/main.scss'
 import * as bootstrap from 'bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
