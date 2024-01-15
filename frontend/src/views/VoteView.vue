@@ -1,21 +1,36 @@
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { onBeforeMount, ref } from "vue";
+    import { useRoute } from 'vue-router';
     import VoteOption from "@/components/vote/VoteOption.vue";
 
-    const voteOptions = [{ id: 1, name: "Option 1" }, { id: 2, name: "Option 2" }];
+    const voteOptions: object[] = [];
     const voteCode = ref("");
     const choosedOption = ref("");
+
+    const route = useRoute();
+    const data: any = route.meta.data;
+    const goal = data.goal as string;
+
 
     function submitForm(): void {
         alert(choosedOption.value);
     }
+
+
+    onBeforeMount(() => {
+        data.choices.forEach((elem: any, idx: number) => {
+            console.log(elem.choice.toString());
+            voteOptions.push({id: idx, name: elem.choice.toString()});
+
+        })
+    });
     
 </script>
 
 <template>
     <div class="container">
         <header class="mb-2">
-            <h1> Prova </h1>
+            <h1> {{ data.goal }} </h1>
         </header>
         <form @submit.prevent="submitForm" method="POST">
             <div class="row mb-3">
