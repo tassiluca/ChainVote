@@ -11,11 +11,9 @@
     const data: any = route.meta.data;
     const goal = data.goal as string;
 
-
     function submitForm(): void {
         alert(choosedOption.value);
     }
-
 
     onBeforeMount(() => {
         data.choices.forEach((elem: any, idx: number) => {
@@ -24,13 +22,14 @@
 
         })
     });
+
     
 </script>
 
 <template>
     <div class="container">
         <header class="mb-2">
-            <h1> {{ data.goal }} </h1>
+            <h1> {{ goal }} </h1>
         </header>
         <form @submit.prevent="submitForm" method="POST">
             <div class="row mb-3">
