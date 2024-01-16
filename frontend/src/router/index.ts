@@ -16,7 +16,7 @@ const router = createRouter({
       name: 'vote',
       beforeEnter: (to, from, next) => {
         try {
-          const jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjVhNWM0NDE2YTNmN2ZhMTUzYzU0ZjY0IiwiZW1haWwiOiJnaW9yaS5wcm92YUB0ZXN0Lml0IiwicGFzc3dvcmQiOiIkMmIkMTAkYTBOQVRNRjdiaDBIbXlZL0Vrd1lTT0ZkZU12dFZ1RmZYV2VTcGtOdW1JaWxXN2pNL0I5TzIiLCJmaXJzdE5hbWUiOiJHaW9wYWluIiwic2Vjb25kTmFtZSI6Ik5vR2FpbiIsInJvbGUiOiJ1c2VyIiwiX192IjowfSwiaWF0IjoxNzA1MzY1Mzg5LCJleHAiOjE3MDUzNjYyODksImF1ZCI6Imh0dHBzOi8vd3d3LmNoYWludm90ZS5jb20iLCJpc3MiOiJDaGFpblZvdGUifQ.nJBJN0th7SBUmzNc5ET6f-DJ6EoRwpyUEoQXQyeqoWlzePhL20NWW8tdN4fBkrLCljIm__8IzBb6-AcxkMd2Gu0LVjkDP-elcATY2oPYJEp51lWL8Qo9Bi2JKzwUvZU-z3zknptAxP4VlDdO4Lu7Po8hRynn-r5i17yH3Ubw0xzrs29dfQ3ws6qrW4Gha76ZoLI0W4XXGCsUmVXuyQ1kdBwS-fH1FE-lfjPomOz8rUSB8m13n47Com7X20ZUU62nxIuK-ksf6PjoqHwtBDtO-6bsAlDBBVxgqNSup_490wrLuMxx6_QfTOw0G2N36OQfU4aEG8XjnC_WtpUnYh1S8Ozwr4XBPbaas7gkpo_ERDdhnfl2c9oKlPThrIkShWFwbSa9Ncs34sZawu-ztYA3QGLsG1KKnX3DTpK1_iKnq_dwiKmqqv_pJuVGKsyy6xomjGPXS6K1On5vA-7MdlYFT5NI6Cg3g8LakrPYk31__vPpX2ga8R14EFyhHuCaw6kSlYyWG3e-6uzgnBNRaMGs6OLV48SJeid6UC5HFyjaP5BQyYGzzeSUnRqkXCATfgNAQAXYOhCLWcWCrm_2xjdQ3b7zGEFZOLgA9OmNp2MRzyOxB8TsjHM52YJVbKEFc0J9Jj2YRzgbRzL4PEycdPaLJLkn_VbCCEN9VYPGYZc3mFw";
+          const jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjVhNWM0NDE2YTNmN2ZhMTUzYzU0ZjY0IiwiZW1haWwiOiJnaW9yaS5wcm92YUB0ZXN0Lml0IiwicGFzc3dvcmQiOiIkMmIkMTAkYTBOQVRNRjdiaDBIbXlZL0Vrd1lTT0ZkZU12dFZ1RmZYV2VTcGtOdW1JaWxXN2pNL0I5TzIiLCJmaXJzdE5hbWUiOiJHaW9wYWluIiwic2Vjb25kTmFtZSI6Ik5vR2FpbiIsInJvbGUiOiJ1c2VyIiwiX192IjowfSwiaWF0IjoxNzA1NDQyNzcwLCJleHAiOjE3MDU0NDM2NzAsImF1ZCI6Imh0dHBzOi8vd3d3LmNoYWludm90ZS5jb20iLCJpc3MiOiJDaGFpblZvdGUifQ.PUwOiTQFE6la7Vw1fpqerl6gQRKDj2yPTsp01ED3UhpdXxvzDDQ4Ul07pFvuL2-p3Lmd3MvpxyqMIOGnMSlLc84yKNleEgfd7uIpuRAgQ5wi-bAF-XXeEMfHgP9wdw3V_a9ufQTMLrZ2wq3ieyxMrJaRBTThVbJx5NuSUYzTnybMu7p6zcuomSsWzMGs4L4tchkbLhqPKgYdX1jb39wUX3SIxwW-FWShTHO34iKy-BM_ixHkj8ry-_cCt2KZ4eoT1SvYyym-gvK_g0wULy7gLJ66MKiZB5jcgtg77Tan3EnVTvdf__LmMbVIjP55vwKzpj9vzCK3gsznCgINuTaHLlbrDMPJrxcyEOYytwTp6DcuDOFe1-8kKwnwQPy6Sm-A3IZaOG4J6sYyk4NOwzxQI0v2HVwWyT5ON5TCyS_PU2ghlaTbrQnVL0lhwOmtr09V9aaBYNhZvGUs7LEq8N4NHxWcUqsxVivqqAefO-7uY4q10-SlEGUgGCPu1YLT6A2KcpEOejeiRS--hJOiO1LnzuX_prsAhE8NiIRij23zpqxe8XWPwJRX2YnHt-8frDZtTpSnu8sDlXcBu-7CI6EctmuwP3TPyJCyqHfIS5yT_qGT-gEGOr5zZkCR12oT-hXg5JvlbAPgooj8chHZI0IUXBreKG_zZQ3pD5iXZnAHR-E";
           makeRequest(`http://localhost:8080/election/info/detail/${to.params.id}`, "GET", jwtToken)
             .then((response) => {
               const data = response.data.data;
@@ -25,6 +25,7 @@ const router = createRouter({
             });
         } catch (error) {
           console.log(error);
+          // next({ name: 'not-found' });
         }
          
       },
