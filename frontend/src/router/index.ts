@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import VoteView from '@/views/VoteView.vue'
+import Dashboard from '@/views/Dashboard.vue'
 import { makeRequest } from '@/assets/utils'
 
 const router = createRouter({
@@ -8,6 +9,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'dashboard',
+      component: Dashboard
+    },
+    {
+      path: '/home',
       name: 'home',
       component: HomeView
     },
@@ -37,7 +43,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('@/views/AboutView.vue')
     }
   ]
 })
