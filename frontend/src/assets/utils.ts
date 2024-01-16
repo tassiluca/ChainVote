@@ -13,9 +13,9 @@ export function makeRequest(url: string, method: Method, jwtToken: any = null, d
     }
 
     return axios({
-        method,
-        url,
-        data,
-        headers,
+        method: method,
+        url: url,
+        data: data,
+        headers: headers,
     });
 }
