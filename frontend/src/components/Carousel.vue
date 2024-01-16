@@ -1,6 +1,36 @@
-<script lang="ts">
+<template>
+  <carousel v-bind="settings" :breakpoints="breakpoints">
+    <slide v-for="election in elections" :key="election.id">
+      <election-card-component :election="election" />
+    </slide>
+    <template #pagination="{ pagesCount, currentPage, setCurrentPage }">
+      <div class="pagination">
+        <button
+          v-for="page in pagesCount"
+          :key="page"
+          :class="{ active: page === currentPage }"
+          @click="setCurrentPage(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+    </template>
+    <template #addons="{ slidesCount }">
+      <navigation v-if="slidesCount > 1" />
+    </template>
+  </carousel>
+</template>
 
-import {defineComponent, withDefaults, defineProps, toRefs} from 'vue'
+<script setup lang="ts">
+import {defineProps} from "vue";
+
+defineProps<{
+  elections: Election[]
+}>()
+</script>
+
+<script lang="ts">
+import {defineComponent} from 'vue'
 import { Carousel, Navigation, Slide } from 'vue3-carousel'
 import ElectionCardComponent from "@/components/ElectionCard.vue";
 import 'vue3-carousel/dist/carousel.css'
@@ -12,14 +42,6 @@ interface Election {
   end: Date,
   affluence: number,
 }
-
-const electionsProva: Election[] = [{id: 'prova', name: 'prova1', start: new Date('01/03/23'), end: new Date('01/03/23'), affluence: 22,}]
-
-const props = defineProps<{
-  elections: Election[]
-}>()
-
-const { elections } = toRefs(props);
 
 export default defineComponent({
   name: 'CarouselComponent',
@@ -43,49 +65,25 @@ export default defineComponent({
       768: {
         itemsToShow: 2,
         snapAlign: 'center',
-        itemsToScroll: 2
+        itemsToScroll: 2,
       },
       // 1024 and up
       992: {
         itemsToShow: 3,
         snapAlign: 'start',
-        itemsToScroll: 3
+        itemsToScroll: 3,
       },
       1200: {
         itemsToShow: 4,
-        itemsToScroll: 4
+        snapAlign: 'start',
+        itemsToScroll: 4,
       },
     },
-    elections: electionsProva
   })
 })
 </script>
 
-<template>
-  <carousel v-bind="settings" :breakpoints="breakpoints">
-    <slide v-for="election in elections" :key="election.id">
-      <election-card-component election="election" />
-    </slide>
-    <template #pagination="{ pagesCount, currentPage, setCurrentPage }">
-      <div class="pagination">
-        <button
-            v-for="page in pagesCount"
-            :key="page"
-            :class="{ active: page === currentPage }"
-            @click="setCurrentPage(page)"
-        >
-          {{ page }}
-        </button>
-      </div>
-    </template>
-    <template #addons="{ slidesCount }">
-      <navigation v-if="slidesCount > 1" />
-    </template>
-  </carousel>
-</template>
-
 <style>
-
 .carousel__item {
   min-height: 200px;
   width: 100%;
@@ -105,11 +103,7 @@ export default defineComponent({
 .carousel__prev,
 .carousel__next {
   box-sizing: content-box;
-  border: 5px solid white;
-}
-
-.carousel__prev, .carousel__next {
-  color: red;
+  color: #007bff;
   border: none;
 }
 </style>
