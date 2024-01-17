@@ -1,7 +1,9 @@
 <template>
   <carousel v-bind="settings" :breakpoints="breakpoints">
     <slide v-for="election in elections" :key="election.id">
-      <election-card-component :election="election" />
+      <election-card-component
+          :election="election"
+      />
     </slide>
     <template #pagination="{ pagesCount, currentPage, setCurrentPage }">
       <div class="pagination">
@@ -22,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps} from "vue";
 
 defineProps<{
   elections: Election[]
@@ -40,7 +41,7 @@ interface Election {
   name: string,
   start: Date,
   end: Date,
-  affluence: number,
+  affluence: string,
 }
 
 export default defineComponent({

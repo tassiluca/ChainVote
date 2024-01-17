@@ -4,10 +4,10 @@
       <h5 class="card-title">{{ election.name }}</h5>
       <ul class="election-props">
         <li>
-          <strong>Start:</strong> {{ election.start }}
+          <strong>Start:</strong> {{ election.start.getDay() }}/{{ election.start.getMonth() }}/{{ election.start.getFullYear() }} {{ election.start.getHours() }}:{{ election.start.getMinutes() }}
         </li>
         <li>
-          <strong>End:</strong> {{ election.end }}
+          <strong>End:</strong> {{ election.end.getDay() }}/{{ election.end.getMonth() }}/{{ election.end.getFullYear() }} {{ election.end.getHours() }}:{{ election.end.getMinutes() }}
         </li>
         <li>
           <strong>Affluence:</strong> {{ election.affluence }}
@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps} from "vue";
 
 defineProps<{
   election: Election,
@@ -39,7 +38,7 @@ interface Election {
   name: string,
   start: Date,
   end: Date,
-  affluence: number,
+  affluence: string,
 }
 
 export default {
@@ -48,14 +47,18 @@ export default {
 </script>
 
 <style>
-
-  !important a {
-    color: black;
+  a {
+    color: #007bff;
+    text-decoration: none;
   }
 
   .card {
     border-radius: 15px;
     padding: 2%;
+  }
+
+  .card-title {
+    font-weight: bold;
   }
 
   .election-props {
