@@ -1,8 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import VoteView from '@/views/VoteView.vue'
-import Dashboard from '@/views/Dashboard.vue'
 import { makeRequest } from '@/assets/utils'
+import {createRouter, createWebHistory} from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,12 +7,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'dashboard',
-      component: Dashboard
+      component: () => import('@/views/Dashboard.vue'),
     },
     {
       path: '/home',
       name: 'home',
-      component: HomeView
+      component: () => import('@/views/HomeView.vue'),
     },
     {
       path: '/vote/:id',
@@ -35,7 +32,7 @@ const router = createRouter({
         }
          
       },
-      component: VoteView
+      component: () => import('@/views/VoteView.vue'),
     },
     {
       path: '/about',
@@ -43,8 +40,18 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/AboutView.vue')
-    }
+      component: () => import('@/views/AboutView.vue'),
+    },
+    {
+      path: '/user/:id',
+      name: 'user-area',
+      component: () => import('@/views/UserArea.vue'),
+      props(to) {
+        return {
+          id: to.params.id,
+        }
+      },
+    },
   ]
 })
 
