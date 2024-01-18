@@ -2,7 +2,7 @@ import axios from "axios";
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 
-export function makeRequest(url: string, method: Method, jwtToken: any = null, data: any = null) {
+export function makeRequest(url: string, method: Method, data: any = null, jwtToken: any = null) {
 
     const headers: any = {
         "Content-Type": "application/json",
