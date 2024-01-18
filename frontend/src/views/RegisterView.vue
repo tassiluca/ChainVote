@@ -42,29 +42,29 @@ const onSubmit = handleSubmit((values) => {
         <form @submit.prevent="onSubmit">
 
             <div class="row mb-3">
-                <label for="voteCode" class="form-label">Email</label>
+                <label for="registration-email" class="form-label">Email</label>
                 <input v-model="email" type="email" class="form-control" id="registration-email" placeholder="user.email@email.it">
                 <span>{{ errors.email }}</span>
             </div>
             
             <div class="row mb-3">
-                <label for="voteCode" class="form-label">Password</label>
+                <label for="registration-password" class="form-label">Password</label>
                 <input v-model="password" type="password" class="form-control" id="registration-password">
                 <span>{{ errors.password }}</span>
 
-                <label for="voteCode" class="form-label">Repeat password</label>
+                <label for="registration-confirm-password" class="form-label">Repeat password</label>
                 <input  v-model="confirmPassword" type="password" class="form-control" id="registration-confirm-password">
                 <span>{{ errors.confirmPassword }}</span>
             </div>
 
             <div class="row mb-3">
-                <label for="voteCode" class="form-label">Name</label>
+                <label for="registration-name" class="form-label">Name</label>
                 <input v-model="firstName" type="text" class="form-control" id="registration-name">
                 <span>{{ errors.name }}</span>
             </div>
 
             <div class="row mb-3">
-                <label for="voteCode" class="form-label">Surname</label>
+                <label for="registration-surname" class="form-label">Surname</label>
                 <input v-model="secondName" type="text" class="form-control" id="registration-surname">
                 <span>{{ errors.surname }}</span>
             </div>
