@@ -4,10 +4,10 @@
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <font-awesome-icon icon="bars" size="2x" />
       </button>
-      <a class="navbar-brand d-md-none" href="#">
+      <a class="navbar-brand d-md-none" href="/">
         <img alt="ChainVote logo" class="logo" src="@/assets/logo.svg" width="100" height="100" />
       </a>
-      <a class="navbar-brand d-md-none" href="#">
+      <a class="navbar-brand d-md-none" href="/notes">
         <!-- TODO: to customize according to user logged in or not -->
         <!-- <font-awesome-icon :icon="['fas', 'envelope-open-text']" /> -->
         <font-awesome-icon icon="fa-solid fa-envelope" size="2x" />
@@ -16,18 +16,18 @@
         <ul class="navbar-nav mx-auto">
           <!-- TODO: to customize according to user role -->
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="/home">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">User Area</a>
+            <a class="nav-link" href="/user">User Area</a>
           </li>
-          <a class="navbar-brand d-none d-md-block" href="#">
+          <a class="navbar-brand d-none d-md-block" href="/">
             <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
           </a>
           <li class="nav-item">
-            <a class="nav-link" href="#">Dashboard</a>
+            <a class="nav-link" href="/">Dashboard</a>
           </li>
-          <a class="navbar-brand d-none d-md-block" href="#">
+          <a class="navbar-brand d-none d-md-block" href="/notes">
             <!-- TODO: to customize according to user logged in or not -->
             <!-- <font-awesome-icon :icon="['fas', 'envelope-open-text']" /> -->
             <font-awesome-icon icon="fa-solid fa-envelope" size="2x" />
