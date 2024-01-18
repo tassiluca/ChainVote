@@ -25,7 +25,7 @@ const [secondName, secondNameAttrs] = defineField('secondName');
 const onSubmit = handleSubmit((values) => {
     delete values.confirmPassword;
 
-    makeRequest("http://localhost:8080/users/", "POST", "", values).then((response) => {
+    makeRequest("http://localhost:8080/users/", "POST", values, '').then((response) => {
         alert(response.data.data);
     }).catch((error) => {
         alert(error);
