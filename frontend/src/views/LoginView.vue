@@ -4,13 +4,22 @@ import PageTitle from '@/components/PageTitleComponent.vue'
 import FormSwitcher from '@/components/forms/FormSwitcherComponent.vue'
 import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
-import { useAuthStore } from '@/stores/auth'
+import {Role, useAuthStore} from '@/stores/auth'
+import {ref} from "vue";
+
+const response = ref({})
+const username = ref("")
+const password = ref("")
+const role = ref(Role.User)
 
 async function onUserFormSubmit() {
   const authStore = useAuthStore();
-  await authStore.login("email.prova@test.it", "Password1!1");
+  try {
+    await authStore.login(role.value, username.value, password.value);
+  } catch (e: any) {
+    response.value = {success: false, msg: `${e.response.data.error.message} ${e.response.data.error.name}`};
+  }
 }
-
 </script>
 
 <template>
@@ -20,25 +29,13 @@ async function onUserFormSubmit() {
     <FormSwitcher left="User" right="Admin">
       <!-- USER LOGIN FORM -->
       <template v-slot:left>
-        <Form @submit.prevent="onUserFormSubmit" submit-btn-name="Login">
+        <Form @submit="onUserFormSubmit" submit-btn-name="Login" :response="response">
           <template v-slot:body>
-            <FormInput helper="Enter your username" input-id="username" label="Username">
-              <div class="col-auto">
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">@</div>
-                  </div>
-                  <input type="email" class="form-control" placeholder="mario.rossi@gmail.com ༝༚༝༚" required />
-                </div>
-              </div>
+            <FormInput helper="Enter your username" input-id="username" label="Username" pre="@">
+              <input v-model="username" type="email" class="form-control" placeholder="mario.rossi@gmail.com ༝༚༝༚" required autocomplete="username"/>
             </FormInput>
-            <FormInput helper="Enter your password" input-id="password" label="Password">
-              <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">ꗃ</div>
-                </div>
-                <input type="password" class="form-control" placeholder="Your super secure password •ᴗ•" required />
-              </div>
+            <FormInput helper="Enter your password" input-id="password" label="Password" pre="ꗃ">
+              <input v-model="password" type="password" class="form-control" placeholder="Your super secure password •ᴗ•" required autocomplete="current-password"/>
             </FormInput>
           </template>
           <template v-slot:footer>
@@ -55,23 +52,11 @@ async function onUserFormSubmit() {
       <template v-slot:right>
         <Form submit-btn-name="Login">
           <template v-slot:body>
-            <FormInput helper="Enter your username" input-id="username" label="Username">
-              <div class="col-auto">
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">@</div>
-                  </div>
-                  <input type="email" class="form-control" placeholder="mario.rossi@gmail.com ༝༚༝༚" required />
-                </div>
-              </div>
+            <FormInput helper="Enter your username" input-id="username" label="Username" pre="@">
+              <input v-model="username" type="email" class="form-control" placeholder="mario.rossi@gmail.com ༝༚༝༚" required autocomplete="username"/>
             </FormInput>
-            <FormInput helper="Enter your password" input-id="password" label="Password">
-              <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">ꗃ</div>
-                </div>
-                <input type="password" class="form-control" placeholder="Your super secure password •ᴗ•" required />
-              </div>
+            <FormInput helper="Enter your password" input-id="password" label="Password" pre="ꗃ">
+              <input v-model="password" type="password" class="form-control" placeholder="Your super secure password •ᴗ•" required autocomplete="current-password"/>
             </FormInput>
           </template>
         </Form>

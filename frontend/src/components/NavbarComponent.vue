@@ -1,3 +1,20 @@
+<script setup lang="ts">
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket} from "@fortawesome/free-solid-svg-icons";
+import { useAuthStore } from "@/stores/auth";
+import { onMounted, ref } from "vue";
+
+library.add(faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket);
+
+const authStore = useAuthStore();
+
+const logged = ref(false)
+
+onMounted(() => {
+  logged.value = authStore.isLogged();
+});
+</script>
+
 <template>
   <nav class="navbar navbar-expand-md navbar-dark bg-primary">
     <div class="container-fluid">
@@ -7,11 +24,9 @@
       <a class="navbar-brand d-md-none" href="/">
         <img alt="ChainVote logo" class="logo" src="@/assets/logo.svg" width="100" height="100" />
       </a>
-      <a class="navbar-brand d-md-none" href="/login">
-        <!-- TODO: to customize according to user logged in or not / message not yet read or not -->
-        <font-awesome-icon icon="fa-solid fa-user" size="2x"/>
-        <!-- <font-awesome-icon :icon="['fas', 'envelope-open-text']" /> -->
-        <!-- <font-awesome-icon icon="fa-solid fa-envelope" size="2x" /> -->
+      <a class="navbar-brand d-md-none" href="/login" @click="logged ? authStore.logout() : null">
+        <font-awesome-icon v-if="!logged" icon="right-to-bracket" size="2x" />
+        <font-awesome-icon v-if="logged" icon="right-from-bracket" size="2x" />
       </a>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
@@ -29,23 +44,14 @@
             <a class="nav-link" href="/">Dashboard</a>
           </li>
           <a class="navbar-brand d-none d-md-block" href="/login">
-            <!-- TODO: to customize according to user logged in or not / message not yet read or not-->
-            <font-awesome-icon icon="fa-solid fa-user" size="2x"/>
-            <!-- <font-awesome-icon :icon="['fas', 'envelope-open-text']" /> -->
-            <!-- <font-awesome-icon icon="fa-solid fa-envelope" size="2x" /> -->
+            <font-awesome-icon v-if="!logged" icon="right-to-bracket" size="2x" />
+            <font-awesome-icon v-if="logged" icon="right-from-bracket" size="2x" />
           </a>
         </ul>
       </div>
     </div>
   </nav>
 </template>
-
-<script setup lang="ts">
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faEnvelope, faBars, faUser } from "@fortawesome/free-solid-svg-icons";
-
-library.add(faEnvelope, faBars, faUser);
-</script>
 
 <style scoped>
 nav {

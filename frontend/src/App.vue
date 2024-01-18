@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import NavBar from '@/components/NavbarComponent.vue'
 import Footer from '@/components/FooterComponent.vue'
+import {useAuthStore} from "./stores/auth";
+
+const authStore = useAuthStore();
 </script>
 
 <template>
-  <NavBar />
+  <NavBar :key="$route.fullPath" />
   <main>
     <RouterView />
   </main>
