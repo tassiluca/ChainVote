@@ -1,6 +1,6 @@
 <template>
   <form :id="`form-${property}`" method="post">
-    <label :for="`input-${property}`">{{ capitalizeFirstLetter(property) }}</label>
+    <label :for="`input-${property}`">{{ capitalizeFirstLetter(property)}}</label>
     <p :id="`old-value-${property}`" class="hidden">Old value: <strong>{{ value }}</strong></p>
     <input :type="hide ? 'password' : 'text'" :id="`input-${property}`" class="form-control" :readonly="isReadOnly" :value="value" :name="property">
     <div v-if="mutable">
@@ -21,26 +21,25 @@
 </template>
 
 <script setup lang="ts">
-
-  import {makeAjaxPostRequest} from "@/utils";
+  import {makeRequest} from "@/assets/utils";
+  import {ref} from "vue";
 
   const props = defineProps<{
     property: string,
     value: string,
     hide: boolean,
     mutable: boolean,
-    id: string,
     isValidValue: (val: string) => boolean,
     help: string,
   }>()
+
+  const isReadOnly = ref(true);
 
   function capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   function onSubmitChangeButton(property: string, oldValue: string) {
-
-    const urlToSubmit = '/user/' + props.id + '/change';
     const spinner = document.getElementById('spinner-' + property)!
     const error = document.getElementById('error-' + property)!
     const success = document.getElementById('success-' + property)!
@@ -61,28 +60,23 @@
         'property': property,
         'value': input.value,
       };
-      makeAjaxPostRequest(urlToSubmit, data,
-          (res: {success: boolean, message: string}) => {
-            if (res.success) {
-              success.innerHTML = res.message;
-              showElem(success);
-              hideElem(error);
-              setTimeout(() => {
-                hideElem(success);
-              }, 2000);
-              refresh();
-            } else {
-              error.innerHTML = res.message;
-              showElem(error);
+      // TODO correct url
+      makeRequest('/user/change', 'PUT', data)
+          .then((response) => {
+            success.innerHTML = response.data.message;
+            showElem(success);
+            hideElem(error);
+            setTimeout(() => {
               hideElem(success);
-            }
-          },
-          (err: {status: string, responseJSON: { message: string }}) => {
-            error.innerHTML = 'Error ' + err.status + ': ' + err.responseJSON.message;
+            }, 2000);
+            refresh();
+          })
+          .catch((err) => {
+            console.log(err)
+            error.innerHTML = 'Error ' + err.response.status + ': ' + err.message;
             showElem(error);
             hideElem(success);
-          }
-      );
+          });
     } else {
       showElem(success);
       success.innerText = 'Nothing to change';
@@ -101,13 +95,6 @@
   function refresh() {
     window.location.reload();
   }
-
-</script>
-
-<script lang="ts">
-  import {ref} from "vue";
-
-  const isReadOnly = ref(true);
 
   function onChangeButton(property: string) {
     isReadOnly.value = false;
