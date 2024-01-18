@@ -17,10 +17,10 @@
     const goal = data.goal as string;
 
     function submitForm(): void {
-        makeRequest(`http://localhost:8080/election/vote/${electionId}`, "PUT", jwtToken, {
+        makeRequest(`http://localhost:8080/election/vote/${electionId}`, "PUT", {
             code: voteCode.value,
             choice: choosedOption.value
-        }).then((response) => {
+        }, jwtToken).then((response) => {
             alert(response.data.data);
         }).catch((error) => {
             alert(error);
@@ -28,10 +28,10 @@
     }
 
     function checkVoteCode(code: string) {
-        makeRequest("http://localhost:8080/code/check", "POST", jwtToken, {
+        makeRequest("http://localhost:8080/code/check", "POST", {
             electionId: electionId,
             code: code
-        }).then((response) => {
+        }, jwtToken).then((response) => {
             console.log(response);
             isValidVoteCode.value = response.data.data;
         });
