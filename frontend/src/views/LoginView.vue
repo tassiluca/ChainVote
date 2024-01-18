@@ -12,8 +12,9 @@ const username = ref("")
 const password = ref("")
 const role = ref(Role.User)
 
-async function onUserFormSubmit() {
+async function onFormSubmit() {
   const authStore = useAuthStore();
+  console.log(role.value, username.value, password.value)
   try {
     await authStore.login(role.value, username.value, password.value);
   } catch (e: any) {
@@ -26,10 +27,10 @@ async function onUserFormSubmit() {
   <Breadcrumb :paths="[{name: 'Login', link: '/login'}]" />
   <div class="container-sm col-md-6 text-center">
     <PageTitle title="Login" />
-    <FormSwitcher left="User" right="Admin">
+    <FormSwitcher left="User" right="Admin" :on-right-click="() => { role = Role.Admin }" :on-left-click="() => { role = Role.User }">
       <!-- USER LOGIN FORM -->
       <template v-slot:left>
-        <Form @submit="onUserFormSubmit" submit-btn-name="Login" :response="response">
+        <Form @submit="onFormSubmit" :response="response" submit-btn-name="Login">
           <template v-slot:body>
             <FormInput helper="Enter your username" input-id="username" label="Username" pre="@">
               <input v-model="username" type="email" class="form-control" placeholder="mario.rossi@gmail.com ༝༚༝༚" required autocomplete="username"/>
@@ -50,7 +51,7 @@ async function onUserFormSubmit() {
       </template>
       <!-- ADMIN LOGIN FORM -->
       <template v-slot:right>
-        <Form submit-btn-name="Login">
+        <Form @submit="onFormSubmit" :response="response" submit-btn-name="Login">
           <template v-slot:body>
             <FormInput helper="Enter your username" input-id="username" label="Username" pre="@">
               <input v-model="username" type="email" class="form-control" placeholder="mario.rossi@gmail.com ༝༚༝༚" required autocomplete="username"/>

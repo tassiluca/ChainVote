@@ -1,15 +1,25 @@
 <script setup lang="ts">
 
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps({
   left: {
     type: String,
     required: true
   },
+  onLeftClick: {
+    type: Function,
+    required: false,
+    default: () => {}
+  },
   right: {
     type: String,
     required: true
+  },
+  onRightClick: {
+    type: Function,
+    required: false,
+    default: () => {}
   }
 })
 
@@ -20,10 +30,10 @@ const leftFormIsActive = ref(true)
 <template>
   <div id="switcher" class="row">
     <div class="col-sm" :class="{'active': leftFormIsActive}">
-      <h2><a @click="leftFormIsActive = true" href="#">{{ props.left }}</a></h2>
+      <h2><a @click="leftFormIsActive = true; onLeftClick()" href="#">{{ props.left }}</a></h2>
     </div>
     <div class="col-sm" :class="{'active': !leftFormIsActive}">
-      <h2><a @click="leftFormIsActive = false" href="#">{{ props.right }}</a></h2>
+      <h2><a @click="leftFormIsActive = false; onRightClick()" href="#">{{ props.right }}</a></h2>
     </div>
   </div>
   <div class="row form-container" :class="{ 'd-none': !leftFormIsActive }">
