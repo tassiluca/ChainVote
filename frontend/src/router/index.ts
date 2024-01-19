@@ -68,6 +68,11 @@ const router = createRouter({
       component: () => import('@/views/DashboardView.vue'),
     },
     {
+      path: '/elections',
+      name: 'elections',
+      component: () => import('@/views/ElectionsTestView.vue'),
+    },
+    {
       path: '/vote/:id',
       name: 'vote',
       beforeEnter: (to, from, next) => {
