@@ -2,9 +2,6 @@
 import { RouterView } from 'vue-router'
 import NavBar from '@/components/NavbarComponent.vue'
 import Footer from '@/components/FooterComponent.vue'
-import {useAuthStore} from "./stores/auth";
-
-const authStore = useAuthStore();
 </script>
 
 <template>

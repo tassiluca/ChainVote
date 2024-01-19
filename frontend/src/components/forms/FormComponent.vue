@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {defineProps, type PropType, ref, watch} from 'vue';
+import {type PropType, ref, watch} from 'vue';
 
 const props = defineProps({
   /** The name of the submit button */

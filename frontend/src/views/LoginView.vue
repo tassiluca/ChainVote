@@ -6,6 +6,9 @@ import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
 import {Role, useAuthStore} from '@/stores/auth'
 import {ref} from "vue";
+import {AxiosError} from "axios";
+
+const authStore = useAuthStore();
 
 const response = ref({})
 const username = ref("")
@@ -13,12 +16,18 @@ const password = ref("")
 const role = ref(Role.User)
 
 async function onFormSubmit() {
-  const authStore = useAuthStore();
-  console.log(role.value, username.value, password.value)
   try {
     await authStore.login(role.value, username.value, password.value);
   } catch (e: any) {
-    response.value = {success: false, msg: `${e.response.data.error.message} ${e.response.data.error.name}`};
+    const genericErrorMsg = "Type the correct username and password, and try again.";
+    if (e instanceof AxiosError) {
+      response.value = {
+        success: false,
+        msg: `${e.response!.data.error.message}: ${e.response!.data.error.name}. ${genericErrorMsg}`
+      };
+    } else {
+      response.value = {success: false, msg: `${e.message}. ${genericErrorMsg}`};
+    }
   }
 }
 </script>

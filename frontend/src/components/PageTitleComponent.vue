@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps({
+defineProps({
   title: {
     type: String,
     required: true
@@ -10,7 +10,7 @@ const props = defineProps({
 <template>
   <div class="row">
     <div class="col-12">
-      <h1 class="text-primary">{{ props.title }}</h1>
+      <h1 class="text-primary">{{ title }}</h1>
     </div>
   </div>
 </template>
