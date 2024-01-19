@@ -11,12 +11,11 @@ on:
       - 'README.md'
       - 'CHANGELOG.md'
       - 'LICENSE'
+  pull_request:
   workflow_dispatch:
 
 jobs:
   generate-doc:
-    if: >-
-      (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -90,7 +89,8 @@ jobs:
           ls -la ./public/swagger-ui-api
           ls -la ./public/swagger-ui-auth
       
-      - name: Deploy auth docs to GitHub Pageg
+      - name: Deploy auth docs to GitHub Pages
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
