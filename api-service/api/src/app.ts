@@ -1,9 +1,11 @@
 import ServerConfig from "./configs/server.config"
+import fs from "fs";
 
 const app = ServerConfig();
 const PORT = process.env.PORT || 8080;
 
-function printInformation() {
+
+function printInformations() {
     console.log(`
     __  __ __   ____  ____  ____   __ __   ___   ______    ___       ____  ____  ____ 
    /  ]|  T  T /    Tl    j|    \\ |  T  | /   \\ |      T  /  _]     /    T|    \\l    j
@@ -17,5 +19,19 @@ function printInformation() {
     console.log("DS + AWS Project - 2022/2023");
     console.log("Authors: Giovanni Antonioni, Luca Tassinari, Luca Rubboli");
     console.log("Server Running on Port " + PORT);
+
+    const path = "/run/secrets/google_api_secret";
+
+    fs.readFile(path, 'utf8', (err, data) => {
+        if (err) {
+            console.error(`Error reading secret file: ${err.message}`);
+            process.exit(1);
+        }
+
+        const secretValue = data.trim();
+        console.log(`Secret value: ${secretValue}`);
+
+        // Use the secret value in your application
+    });
 }
-app.listen(PORT, printInformation);
+app.listen(PORT, printInformations);

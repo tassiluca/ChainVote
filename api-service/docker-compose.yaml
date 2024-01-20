@@ -7,8 +7,12 @@ services:
         - INTERNAL_GATEWAY=${INTERNAL_GATEWAY}
     ports:
       - 8080:8080
+    secrets:
+      - google_api_secret
     environment:
       - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT&directConnection=true
+      - MAIL_USER=antonioni.giovanni9@gmail.com
+      - API_PASSWORD=pass
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - CERTS_DIR=/tmp/hyperledger
@@ -97,3 +101,6 @@ networks:
     external: true
   backend:
 
+secrets:
+  google_api_secret:
+    file: ~/secrets/api-pass.txt
