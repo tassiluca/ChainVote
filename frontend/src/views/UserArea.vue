@@ -1,15 +1,15 @@
 <template>
   <div class="card col-8 mx-auto bg-primary">
     <ul>
-      <li v-for="property in properties" :key="property">
+      <li v-for="property in Object.keys(newValueRules)" :key="property">
         <div class="card col-10 mx-auto">
           <user-property
               :property="property"
-              :value="userRef[property]"
-              :hide="propertiesToHide.includes(property)"
-              :mutable="propertiesMutable.includes(property)"
-              :isValidValue="propertiesMutable.includes(property) ? newValueRules[property].isValid : (_: string) => false"
-              :help="propertiesMutable.includes(property) ? newValueRules[property].help : 'Immutable value'"
+              :value="userRef[property as keyof typeof user]"
+              :hide="newValueRules[property].hide"
+              :mutable="newValueRules[property].mutable"
+              :isValidValue="newValueRules[property].isValid"
+              :help="newValueRules[property].help"
           />
         </div>
       </li>
@@ -41,20 +41,8 @@
     role: "",
   };
 
-  let property: keyof typeof user;
-
-  type UserProps = keyof User;
-
-  const properties: UserProps[] = [
-      "name",
-      "surname",
-      "email",
-      "password",
-      "role",
-    ]
-
-  for (property in data as User) {
-    user[property] = data[property];
+  for (let prop in user) {
+    user[prop as keyof User] = data[prop as keyof User];
   }
 
   const userRef = ref(user);
@@ -62,6 +50,8 @@
   interface Rule {
     isValid: (val: string) => boolean,
     help: string,
+    mutable: boolean,
+    hide: boolean,
   }
 
   const newValueRules: {
@@ -72,12 +62,16 @@
       return value.trim().length > 0
       },
       'help': 'Name must be at least 1 character long',
+      'mutable': true,
+      'hide': false,
     },
     'surname': {
       'isValid': (value: string) => {
         return value.trim().length > 0
       },
       'help': 'Surname must be at least 1 character long',
+      'mutable': true,
+      'hide': false,
     },
     'email': {
       'isValid': (value: string) => {
@@ -85,6 +79,8 @@
         return reg.test(value)
       },
       'help': 'Email must contain @ and .',
+      'mutable': true,
+      'hide': false,
     },
     'password': {
       'isValid': (value: string) => {
@@ -92,19 +88,18 @@
         return reg.test(value);
       },
       'help': 'Password must be at least 8 characters long and contain at least one number, one uppercase letter, one lowercase letter and one special character',
+      'mutable': true,
+      'hide': true,
+    },
+    'role': {
+      'isValid': (_: string) => {
+        return false;
+      },
+      'help': 'Immutable value',
+      'mutable': false,
+      'hide': false,
     }
   };
-
-  const propertiesToHide: UserProps[] = [
-    "password",
-  ]
-
-  const propertiesMutable: UserProps[] = [
-    "name",
-    "surname",
-    "email",
-    "password",
-  ]
 </script>
 
 <style>
