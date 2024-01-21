@@ -8,12 +8,12 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/dashboard',
+      path: '/',
       name: 'dashboard',
       component: () => import('@/views/Dashboard.vue'),
     },
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: () => import('@/views/HomeView.vue'),
     },
@@ -106,7 +106,12 @@ const router = createRouter({
       path: '/register', 
       name: 'register',
       component: () => import('@/views/RegisterView.vue'),
-    }
+    },
+    {
+      path: '/elections/create',
+      name: 'create-election',
+      component: () => import('@/views/CreateElectionView.vue'),
+    },
   ]
 })
 

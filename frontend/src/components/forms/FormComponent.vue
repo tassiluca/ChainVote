@@ -55,14 +55,16 @@ function onFormSubmitted() {
   <form @submit.prevent="onFormSubmitted">
     <div class="col-sm">
       <slot name="body"/>
-      <button type="submit" class="btn btn-primary mt-3 mb-3">
-        {{ submitBtnName }}
-        <span v-if="submitting" class="spinner-border spinner-border-sm text-light"></span>
-      </button>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary mt-3 mb-3">
+          {{ submitBtnName }}
+          <span v-if="submitting" class="spinner-border spinner-border-sm text-light"></span>
+        </button>
+      </div>
     </div>
     <slot name="footer"/>
     <div v-if="response.hasOwnProperty('success')"
-         class="alert mt-3 mb-3"
+         class="alert mt-3 mb-3 text-center col-10 mx-auto"
          :class="{ 'alert-danger': !response.success, 'alert-success': response.success }"
          role="alert"
     ><strong>{{ response.msg }}</strong></div>

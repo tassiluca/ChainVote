@@ -2,7 +2,7 @@
   <form :id="`form-${property}`" method="post">
     <label :for="`input-${property}`">{{ capitalizeFirstLetter(property)}}</label>
     <p :id="`old-value-${property}`" class="hidden">Old value: <strong>{{ value }}</strong></p>
-    <input :type="hide ? 'password' : 'text'" :id="`input-${property}`" class="form-control" :readonly="isReadOnly" :value="value" :name="property">
+    <input :type="hide ? 'password' : 'text'" :id="`input-${property}`" class="form-control" :readonly="isReadOnly" v-model="refValue" :name="property">
     <div v-if="mutable">
       <button class="btn btn-sm btn-primary btn-block" :id="`change-${property}`" @click.prevent="onChangeButton(property)">
         Change
@@ -34,6 +34,7 @@
   }>()
 
   const isReadOnly = ref(true);
+  const refValue = ref(props.value);
 
   function capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -43,12 +44,11 @@
     const spinner = document.getElementById('spinner-' + property)!
     const error = document.getElementById('error-' + property)!
     const success = document.getElementById('success-' + property)!
-    const input = document.getElementById('input-' + property) as HTMLInputElement;
     const restore = document.getElementById('restore-change-' + property) as HTMLButtonElement;
     showElem(spinner);
 
-    if (input.value !== oldValue) {
-      if (!props.isValidValue(input.value)) {
+    if (refValue.value !== oldValue) {
+      if (!props.isValidValue(refValue.value)) {
         error.innerHTML = props.help;
         showElem(error);
         hideElem(success);
@@ -58,7 +58,7 @@
       hideElem(restore)
       const data = {
         'property': property,
-        'value': input.value,
+        'value': refValue.value,
       };
       // TODO correct url
       makeRequest('/user/change', 'PUT', data)
@@ -72,6 +72,7 @@
             refresh();
           })
           .catch((err) => {
+            refValue.value = props.value;
             console.log(err)
             error.innerHTML = 'Error ' + err.response.status + ': ' + err.message;
             showElem(error);
@@ -80,6 +81,7 @@
     } else {
       showElem(success);
       success.innerText = 'Nothing to change';
+      refValue.value = props.value;
       setTimeout(() => {
         hideElem(success);
       }, 2000);
@@ -98,6 +100,7 @@
 
   function onChangeButton(property: string) {
     isReadOnly.value = false;
+    refValue.value = "";
     hideElem(document.getElementById(`change-${property}`)!);
     hideElem(document.getElementById(`error-${property}`)!);
     hideElem(document.getElementById(`success-${property}`)!);
@@ -108,6 +111,7 @@
 
   function onRestoreButton(property: string) {
     isReadOnly.value = true;
+    refValue.value = props.value;
     showElem(document.getElementById(`change-${property}`)!);
     hideElem(document.getElementById(`error-${property}`)!);
     hideElem(document.getElementById(`success-${property}`)!);
