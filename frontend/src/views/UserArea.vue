@@ -1,7 +1,10 @@
 <template>
-  <div class="card col-8 mx-auto bg-primary">
-    <ul>
-      <li v-for="property in Object.keys(newValueRules)" :key="property">
+  <div class="text-center my-5">
+    <h2>User area</h2>
+  </div>
+  <div class="row gy-5 row-cols-md-2 row-cols-1 mx-auto">
+    <div class="col" v-for="property in Object.keys(newValueRules)" :key="property">
+      <div class="p-2 border bg-light">
         <div class="card col-10 mx-auto">
           <user-property
               :property="property"
@@ -12,8 +15,8 @@
               :help="newValueRules[property].help"
           />
         </div>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -107,6 +110,10 @@
     border-radius: 15px;
     padding: 2%;
     margin: 3% 0;
+  }
+
+  div .border {
+    border-radius: 15px;
   }
 
   ul {

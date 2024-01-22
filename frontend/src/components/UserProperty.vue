@@ -1,6 +1,7 @@
 <template>
   <form :id="`form-${property}`" method="post">
     <label :for="`input-${property}`">{{ capitalizeFirstLetter(property)}}</label>
+    <hr :id="`old-value-${property}-separator`" class="hidden solid">
     <p :id="`old-value-${property}`" class="hidden">Old value: <strong>{{ value }}</strong></p>
     <input :type="hide ? 'password' : 'text'" :id="`input-${property}`" class="form-control" :readonly="isReadOnly" v-model="refValue" :name="property">
     <div v-if="mutable">
@@ -90,6 +91,7 @@
     isReadOnly.value = true;
     showElem(document.getElementById(`change-${property}`)!);
     hideElem(document.getElementById(`old-value-${property}`)!);
+    hideElem(document.getElementById(`old-value-${property}-separator`)!);
     hideElem(document.getElementById(`submit-change-${property}`)!);
     hideElem(document.getElementById(`restore-change-${property}`)!);
   }
@@ -105,6 +107,7 @@
     hideElem(document.getElementById(`error-${property}`)!);
     hideElem(document.getElementById(`success-${property}`)!);
     showElem(document.getElementById(`old-value-${property}`)!);
+    showElem(document.getElementById(`old-value-${property}-separator`)!);
     showElem(document.getElementById(`submit-change-${property}`)!);
     showElem(document.getElementById(`restore-change-${property}`)!);
   }
@@ -116,6 +119,7 @@
     hideElem(document.getElementById(`error-${property}`)!);
     hideElem(document.getElementById(`success-${property}`)!);
     hideElem(document.getElementById(`old-value-${property}`)!);
+    hideElem(document.getElementById(`old-value-${property}-separator`)!);
     hideElem(document.getElementById(`submit-change-${property}`)!);
     hideElem(document.getElementById(`restore-change-${property}`)!);
   }
