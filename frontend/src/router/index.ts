@@ -3,6 +3,10 @@ import {createRouter, createWebHistory} from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
 import NotificationsView from '@/views/NotificationsView.vue'
 import VotingDetails from '@/views/VotingDetails.vue'
+import HomeView from "@/views/HomeView.vue";
+import Dashboard from "@/views/Dashboard.vue";
+import NotFound from "@/views/NotFound.vue";
+import Test from "@/views/Test.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -166,7 +170,7 @@ const router = createRouter({
       component: NotificationsView
     },
     {
-      path: '/voting/details',
+      path: '/voting/details/:id',
       name: 'voting-details',
       component: VotingDetails
     },
@@ -237,7 +241,7 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
-      component: () => import('@/views/NotFoundView.vue'),
+      component: NotFound,
     },
   ]
 })

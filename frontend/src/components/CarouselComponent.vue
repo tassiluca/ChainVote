@@ -63,7 +63,7 @@ const breakpoints = {
 }
 </script>
 
-<style>
+<style scoped>
 .carousel__item {
   min-height: 200px;
   width: 100%;

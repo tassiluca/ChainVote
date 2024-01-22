@@ -5,8 +5,8 @@ import FormSwitcher from '@/components/forms/FormSwitcherComponent.vue'
 import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
 import {Role, useAuthStore} from '@/stores/auth'
-import {ref} from "vue";
-import {AxiosError} from "axios";
+import {onMounted, ref} from "vue";
+import router from "@/router";
 
 const authStore = useAuthStore();
 
@@ -15,15 +15,21 @@ const username = ref("")
 const password = ref("")
 const role = ref(Role.User)
 
+// onMounted(() => {
+//   if (authStore.isLogged()) {
+//     router.push("/dashboard");
+//   }
+// })
+
 async function onFormSubmit() {
   try {
     await authStore.login(role.value, username.value, password.value);
   } catch (e: any) {
     const genericErrorMsg = "Type the correct username and password, and try again.";
-    if (e instanceof AxiosError) {
+    if ('response' in e) {
       response.value = {
         success: false,
-        msg: `${e.response!.data.error.message}: ${e.response!.data.error.name}. ${genericErrorMsg}`
+        msg: `${e.response.data.error.message}: ${e.response.data.error.name}. ${genericErrorMsg}`
       };
     } else {
       response.value = {success: false, msg: `${e.message}. ${genericErrorMsg}`};

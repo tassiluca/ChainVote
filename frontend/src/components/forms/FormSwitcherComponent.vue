@@ -37,7 +37,7 @@ const leftFormIsActive = ref(true)
     </div>
   </div>
   <div class="row form-container" :class="{ 'd-none': !leftFormIsActive }">
-    <slot name="left" id="form-left" />
+    <slot name="left" />
   </div>
   <div class="row form-container" :class="{ 'd-none': leftFormIsActive }">
     <slot name="right"/>
@@ -86,5 +86,4 @@ div.form-container {
   border-radius: 0 0 15px 15px;
   box-shadow: 2px 5px 15px rgba(200, 200, 200, 0.82);
 }
-
 </style>

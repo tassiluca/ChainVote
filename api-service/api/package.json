@@ -24,7 +24,8 @@
     "http-status-codes": "^2.2.0",
     "luxon": "^3.4.4",
     "mongoose": "^7.4.3",
-    "redis": "^4.6.8"
+    "redis": "^4.6.8",
+    "socket.io": "^4.7.4"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",

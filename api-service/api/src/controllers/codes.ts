@@ -22,7 +22,7 @@ const utf8Decoder = new TextDecoder();
  * @param next
  */
 export async function isValid(req: Request, res: Response, next: NextFunction) {
-    if(!ac.can(res.locals.user.role).readAny('code').granted) {
+    if (!ac.can(res.locals.user.role).readAny('code').granted) {
         next(
             new UnauthorizedError(
                 "Can't access to the resource",
@@ -51,11 +51,9 @@ export async function isValid(req: Request, res: Response, next: NextFunction) {
         const result = utf8Decoder.decode(codeRequest);
         res.locals.code = StatusCodes.OK;
         res.locals.data = JSON.parse(result).result;
-
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
-
     return next();
 }
 
@@ -66,7 +64,7 @@ export async function isValid(req: Request, res: Response, next: NextFunction) {
  * @param next
  */
 export async function verifyCodeOwner(req: Request, res: Response, next: NextFunction) {
-    if(!ac.can(res.locals.user.role).readAny('code').granted) {
+    if (!ac.can(res.locals.user.role).readAny('code').granted) {
         next(
             new UnauthorizedError(
                 "Can't access to the resource",
@@ -94,7 +92,6 @@ export async function verifyCodeOwner(req: Request, res: Response, next: NextFun
         const result = utf8Decoder.decode(codeRequest);
         res.locals.code = StatusCodes.OK;
         res.locals.data = JSON.parse(result).result;
-
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -109,7 +106,7 @@ export async function verifyCodeOwner(req: Request, res: Response, next: NextFun
  * @param next
  */
 export async function generateCodeFor(req: Request, res: Response, next: NextFunction) {
-    if(!ac.can(res.locals.user.role).createAny('code').granted) {
+    if (!ac.can(res.locals.user.role).createAny('code').granted) {
         next(
             new UnauthorizedError(
                 "Can't access to the resource",

@@ -31,5 +31,3 @@ export default class RedisLimiterStorage implements ApiLimiterStorage {
         return redisClient.expire(clientId, seconds);
     }
 }
-
-

@@ -18,7 +18,7 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
     let user = res.locals.user;
     const email = req.body.email;
     
-    if(email && email !== user.email) {
+    if (email && email !== user.email) {
         try {
             if(!isAllowed) {
                 next(
@@ -42,7 +42,6 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
             throw error; 
         }
     }
-    
     return user;
 }
 
@@ -78,7 +77,6 @@ export async function createUser(req: Request, res: Response, next: NextFunction
             )
         );
     }
-
     return next();
 }
 
@@ -124,7 +122,7 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
     }
 
     const data = req.body.data;
-    if(data === null || data === undefined) {
+    if (data === null || data === undefined) {
         return next(
             new BadRequestError(
                 "Request need to have a \"data\" field",

@@ -1,7 +1,7 @@
 import {StatusCodes} from "http-status-codes";
 import request from "supertest";
 import {Jwt, JwtHandler, User} from "core-components";
-import ExpressConfig from "../src/configs/express.config";
+import ServerConfig from "../src/configs/server.config";
 import {resolve} from "path";
 
 let app;
@@ -14,7 +14,7 @@ JwtHandler.config({
 });
 
 beforeAll(async () => {
-    app = ExpressConfig();
+    app = ServerConfig();
 
     user = await new User({
         email: "fake.email@email.it",

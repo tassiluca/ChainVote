@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth',  () => {
     sessionStorage.setItem('refreshToken', response.data.data.refreshToken);
     sessionStorage.setItem('role', role);
     startRefreshTokenTimer();
-    await router.push(returnUrl); // router.push(returnUrl); does not work here since does not reload the navbar!
+    await router.push(returnUrl);
   }
 
   async function verifyRole(username: String, role: Role, accessToken: string) {
@@ -41,11 +41,12 @@ export const useAuthStore = defineStore('auth',  () => {
     const expires = new Date(jwtPayload.exp * 1000);
     console.debug(expires);
     const timeout = expires.getTime() - Date.now() - (60 * 1000);
-    refreshTokenTimeout = setTimeout(regenerateAccessToken, timeout);
+    console.debug(timeout);
+    refreshTokenTimeout = setTimeout(refreshAccessToken, timeout);
   }
 
-  async function regenerateAccessToken() {
-    console.debug('Regenerating access token...');
+  async function refreshAccessToken() {
+    console.debug('Refreshing access token...');
     const url = `${apiEndpoints.AUTH_SERVER}/auth/refresh`;
     try {
       const response= await axios.post(url, { email: username(), refreshToken: refreshToken() });

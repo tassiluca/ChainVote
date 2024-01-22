@@ -15,7 +15,6 @@ const channelName = "ch1";
 const contractName = "chaincode-elections";
 const utf8Decoder = new TextDecoder();
 
-
 /**
  * Return all the generated data of election info.
  *
@@ -24,7 +23,7 @@ const utf8Decoder = new TextDecoder();
  * @param next next function
  */
 export async function getAllElectionInfo(req: Request, res: Response, next: NextFunction) {
-    if(!ac.can(res.locals.user.role).readAny('electionInfo').granted) {
+    if (!ac.can(res.locals.user.role).readAny('electionInfo').granted) {
         next(
             new UnauthorizedError(
                 "Can't access to the resource",
@@ -33,7 +32,6 @@ export async function getAllElectionInfo(req: Request, res: Response, next: Next
             )
         );
     }
-
     try {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
@@ -48,12 +46,9 @@ export async function getAllElectionInfo(req: Request, res: Response, next: Next
 
         res.locals.code = StatusCodes.OK;
         res.locals.data = invocationResults.result;
-
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
-
-
     return next();
 }
 
@@ -65,7 +60,7 @@ export async function getAllElectionInfo(req: Request, res: Response, next: Next
  * @param next
  */
 export async function readElectionInfo(req: Request, res: Response, next: NextFunction){
-    if(!ac.can(res.locals.user.role).readAny('electionInfo').granted) {
+    if (!ac.can(res.locals.user.role).readAny('electionInfo').granted) {
         next(
             new UnauthorizedError(
                 "Can't access to the resource",
@@ -89,7 +84,6 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
 
         res.locals.code = StatusCodes.OK;
         res.locals.data = invocationResult;
-
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -104,7 +98,7 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
  * @param next next function
  */
 export async function createElectionInfo(req: Request, res: Response, next: NextFunction){
-    if(!ac.can(res.locals.user.role).createAny('electionInfo').granted) {
+    if (!ac.can(res.locals.user.role).createAny('electionInfo').granted) {
         next(
             new UnauthorizedError(
                 "Can't access to the resource",
@@ -136,7 +130,6 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         const resultJson = JSON.parse(utf8Decoder.decode(submission));
         res.locals.code = StatusCodes.CREATED;
         res.locals.data = resultJson.result;
-
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
@@ -151,7 +144,7 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
  * @param next
  */
 export async function deleteElectionInfo(req: Request, res: Response, next: NextFunction) {
-    if(!ac.can(res.locals.user.role).deleteAny('electionInfo').granted) {
+    if (!ac.can(res.locals.user.role).deleteAny('electionInfo').granted) {
         next(
             new UnauthorizedError(
                 "Can't access to the resource",

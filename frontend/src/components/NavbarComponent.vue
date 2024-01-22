@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { library } from "@fortawesome/fontawesome-svg-core";
-import {faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket} from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useAuthStore } from "@/stores/auth";
 import { onMounted, ref } from "vue";
 

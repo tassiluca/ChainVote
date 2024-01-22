@@ -1,11 +1,9 @@
-import ExpressConfig from "./configs/express.config.js"
+import ServerConfig from "./configs/server.config"
 
-
-
-const app = ExpressConfig();
+const app = ServerConfig();
 const PORT = process.env.PORT || 8080;
 
-function printInformations() {
+function printInformation() {
     console.log(`
     __  __ __   ____  ____  ____   __ __   ___   ______    ___       ____  ____  ____ 
    /  ]|  T  T /    Tl    j|    \\ |  T  | /   \\ |      T  /  _]     /    T|    \\l    j
@@ -16,8 +14,8 @@ function printInformations() {
  \\____jl__j__jl__j__j|____jl__j__j  \\_/   \\___/   l__j  l_____j    l__j__jl__j  |____j
                                                                                                    
     `);
-    console.log("DS Project - 2022/2023");
+    console.log("DS + AWS Project - 2022/2023");
     console.log("Authors: Giovanni Antonioni, Luca Tassinari, Luca Rubboli");
     console.log("Server Running on Port " + PORT);
 }
-app.listen(PORT, printInformations);
+app.listen(PORT, printInformation);

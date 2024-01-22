@@ -117,7 +117,6 @@ startup() {
   fi
   launch_container redis
 
-
   sleep 5
   echo "STEP 4: Launching api and auth containers"
   launch_container api-server
@@ -139,9 +138,3 @@ elif [ "$1" == "down" ]; then
 else
     print_help
 fi
-
-
-
-
-
-

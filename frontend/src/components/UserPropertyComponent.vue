@@ -149,7 +149,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   form label {
     display: block;
     text-align: center;

@@ -2,8 +2,9 @@ import {DateTime} from "luxon";
 import {StatusCodes} from "http-status-codes";
 import request from "supertest";
 import {Application} from "express";
+import {Server} from "node:http";
 
-export async function createElectionInfo(app: Application, accessToken: string) {
+export async function createElectionInfo(app: Server, accessToken: string) {
     const startDate = DateTime.now()
         .set({millisecond: 0})
         .minus({hour: 1})
@@ -43,7 +44,7 @@ export async function createElectionInfo(app: Application, accessToken: string) 
     return createResponse.body.data.electionId;
 }
 
-export async function createElection(app: Application, accessToken: string ) {
+export async function createElection(app: Server, accessToken: string ) {
     const electionId = await createElectionInfo(app, accessToken);
     const createResponse = await request(app).post("/election")
         .set("Authorization", `Bearer ${accessToken}`)

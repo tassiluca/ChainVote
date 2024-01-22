@@ -78,7 +78,7 @@ services:
     networks:
       - backend
 
-# Redis service, used for api rate limiting
+  # Redis service, used for api rate limiting
   redis:
     image: redis:6.2-alpine
     restart: always

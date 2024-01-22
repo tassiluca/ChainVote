@@ -1,4 +1,4 @@
-import ExpressConfig from "../src/configs/express.config";
+import ServerConfig from "../src/configs/server.config";
 import {createCodeForElection, createElection} from "./common/utils";
 import {StatusCodes} from "http-status-codes";
 import request from "supertest";
@@ -17,7 +17,7 @@ JwtHandler.config({
 });
 
 beforeAll(async () => {
-    app = ExpressConfig();
+    app = ServerConfig();
 
     user = await new User({
         email: "fake.email2@email.it",

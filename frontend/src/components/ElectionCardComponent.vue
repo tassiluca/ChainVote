@@ -52,7 +52,7 @@ function isOpen(election: Election): boolean {
 }
 </script>
 
-<style>
+<style scoped>
 
   li {
     margin: 2% 0;

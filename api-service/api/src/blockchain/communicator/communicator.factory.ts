@@ -73,5 +73,4 @@ export class CommunicatorFactory {
             .mspId(ORG3_MSP_ID)
             .build();
     }
-
 }
