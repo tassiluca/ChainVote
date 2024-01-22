@@ -19,20 +19,14 @@ const endDateValue = new Date(startDateValue.getTime() + 24 * 60 * 60 * 1000);
 startDateValue.setHours(10, 0);
 endDateValue.setHours(10, 0);
 
-const election: Election = {
-  goal: "",
-  voters: 0,
-  startDate: startDateValue.toISOString().slice(0,16),
-  endDate: endDateValue.toISOString().slice(0,16),
-  choices: ["", ""],
-}
-
 const references: {
-  [prop: string]: any
-} = {}
-
-for (const prop in election) {
-  references[prop] = ref(election[prop as keyof Election]);
+   [prop: string]: any
+} = {
+  goal: ref(""),
+  voters: ref("0"),
+  startDate: ref(startDateValue.toISOString().slice(0,16)),
+  endDate: ref(endDateValue.toISOString().slice(0,16)),
+  choices: ref([ref(""), ref("")]),
 }
 
 interface Rule {
@@ -100,7 +94,7 @@ const copyWithoutElement = (original: { [key: string]: any }, elementToRemove: s
 };
 
 const addElection = () => {
-  references['choices'].value.push("");
+  references['choices'].value.push(ref(""));
 }
 
 const removeElection = () => {
@@ -111,10 +105,16 @@ const removeElection = () => {
 
 async function onFormSubmit() {
   // TODO link to backend
-  console.log('Election ');
-  console.log(election);
-  console.log('References ');
-  console.log(references);
+  for (const prop in references) {
+    console.log(prop);
+    console.log(references[prop].value);
+    if (Array.isArray(references[prop].value)) {
+      for (const choice in references[prop].value) {
+        console.log(choice);
+        console.log(references[prop].value[choice].value);
+      }
+    }
+  }
   response.value = {success: true, msg: "Successfully created election"};
   // try {
   //   await authStore.login(role.value, username.value, password.value);
@@ -134,75 +134,42 @@ async function onFormSubmit() {
 
 <template>
   <Breadcrumb :paths="[{name: 'Create election', link: '/elections/create'}]" />
-<!--  TODO choose 2 options -->
-<!--  <Form @submit="onFormSubmit" :response="response" submit-btn-name="Create election">-->
-<!--    <template v-slot:body>-->
-<!--      <ul>-->
-<!--        <li v-for="prop in Object.keys(copyWithoutElement(properties, 'choice'))" :key="prop">-->
-<!--          <FormInput :helper="properties[prop]['help']"-->
-<!--                     :input-id="`input-${prop}`"-->
-<!--                     :label="properties[prop]['label']"-->
-<!--                     :pre="properties[prop]['pre']">-->
-<!--            <input v-model="references[prop].value"-->
-<!--                   :type="properties[prop]['type']" class="form-control"-->
-<!--                   :placeholder="properties[prop]['placeholder']" required-->
-<!--                   :autocomplete="properties[prop]['autocomplete']"/>-->
-<!--          </FormInput>-->
-<!--        </li>-->
-<!--        <li v-for="idx of Array(references['choices'].value.length).keys()" :key="`choice-${idx}`">-->
-<!--          <FormInput :helper="properties['choice']['help']"-->
-<!--                     :input-id="`choice-input-${idx}`"-->
-<!--                     :label="`${properties['choice']['label']} ${idx}`"-->
-<!--                     :pre="properties['choice']['pre']">-->
-<!--            <input v-model="references['choices'].value[idx]"-->
-<!--                   :type="properties['choice']['type']" class="form-control"-->
-<!--                   :placeholder="properties['choice']['placeholder']" required-->
-<!--                   :autocomplete="`${properties['choice']['autocomplete']} ${idx}`"/>-->
-<!--          </FormInput>-->
-<!--        </li>-->
-<!--        <li>-->
-<!--          <button id="addElection" class="btn btn-xs btn-primary" @click.prevent="addElection" type="button">+</button>-->
-<!--          <button id="removeElection" v-if="Object.keys(references['choices'].value).length > 2" class="btn btn-xs btn-primary" @click.prevent="removeElection" type="button">-</button>-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--    </template>-->
-<!--  </Form>-->
-
-
-
-
   <div class="text-center my-5">
     <h2>Create Election</h2>
   </div>
   <Form @submit="onFormSubmit" :response="response" submit-btn-name="Create election">
     <template v-slot:body>
-      <div class="row gy-5 mx-auto">
-        <div class="col-6" v-for="prop in Object.keys(copyWithoutElement(properties, 'choice'))" :key="prop">
+      <div class="row gy-5 row-cols-lg-2 row-cols-1 mx-auto">
+        <div class="col" v-for="prop in Object.keys(copyWithoutElement(properties, 'choice'))" :key="prop">
           <div class="p-3 border bg-light">
             <FormInput :helper="properties[prop]['help']"
                        :input-id="`input-${prop}`"
                        :label="properties[prop]['label']"
                        :pre="properties[prop]['pre']">
-              <input v-model="references[prop]"
+              <input v-model="references[prop].value"
                      :type="properties[prop]['type']" class="form-control"
                      :placeholder="properties[prop]['placeholder']" required
                      :autocomplete="properties[prop]['autocomplete']"/>
             </FormInput>
           </div>
         </div>
-        <div class="col-4" v-for="idx of Array(references['choices'].value.length).keys()" :key="`choice-${idx}`">
+      </div>
+      <div class="row gy-5 row-cols-lg-3 row-cols-2 mx-auto my-2">
+        <div class="col" v-for="idx of Array(references['choices'].value.length).keys()" :key="`choice-${idx}`">
           <div class="p-3 border bg-light">
             <FormInput :helper="properties['choice']['help']"
                        :input-id="`choice-input-${idx}`"
                        :label="`${properties['choice']['label']} ${idx}`"
                        :pre="properties['choice']['pre']">
-              <input v-model="references['choices'].value[idx]"
+              <input v-model="references['choices'].value[idx].value"
                      :type="properties['choice']['type']" class="form-control"
                      :placeholder="`${properties['choice']['placeholder']} ${idx}`" required
                      :autocomplete="`${properties['choice']['autocomplete']} ${idx}`"/>
             </FormInput>
           </div>
         </div>
+      </div>
+      <div class="my-5">
         <ul>
           <li>
             <button id="addElection" class="btn btn-xs btn-primary" @click.prevent="addElection" type="button">+</button>
