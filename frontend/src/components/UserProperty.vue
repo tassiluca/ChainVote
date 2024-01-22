@@ -1,7 +1,7 @@
 <template>
   <form :id="`form-${property}`" method="post">
     <label :for="`input-${property}`">{{ capitalizeFirstLetter(property)}}</label>
-    <hr :id="`old-value-${property}-separator`" class="hidden solid">
+    <hr :id="`old-value-${property}-separator`" class="hidden solid"/>
     <p :id="`old-value-${property}`" class="hidden">Old value: <strong>{{ value }}</strong></p>
     <input :type="hide ? 'password' : 'text'" :id="`input-${property}`" class="form-control" :readonly="isReadOnly" v-model="refValue" :name="property">
     <div v-if="mutable">

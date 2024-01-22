@@ -1,18 +1,18 @@
 <template>
   <div class="elections">
-    <div class="col-10 center mx-auto election election-open bg-primary">
+    <div class="col-10 center mx-auto election election-open bg-light">
       <a href="#" class="election-link">Open Elections</a>
       <carousel :elections="elections"/>
     </div>
   </div>
   <div class="elections">
-    <div class="col-10 center mx-auto election election-closed bg-primary">
+    <div class="col-10 center mx-auto election election-closed bg-light">
       <a href="#" class="election-link">Closed Elections</a>
       <carousel :elections="elections"/>
     </div>
   </div>
   <div class="elections">
-    <div class="col-10 center mx-auto election election-soon bg-primary">
+    <div class="col-10 center mx-auto election election-soon bg-light">
       <a href="#" class="election-link">Elections soon</a>
       <carousel :elections="elections"/>
     </div>
@@ -23,7 +23,7 @@
 import Carousel from "@/components/Carousel.vue";
 
 const elections = [
-  {id: 'prova1', name: 'prova1', start: new Date('01/03/23'), end: new Date('03/03/23'), affluence: "20%",},
+  {id: 'prova1', name: 'Elezione di prova presidente consiglio dei ministri', start: new Date(2023, 3, 1, 12, 0).toISOString().slice(0,16), end: new Date('03/03/23'), affluence: "20%",},
   {id: 'prova2', name: 'prova2', start: new Date('02/03/23'), end: new Date('04/03/23'), affluence: "20%",},
   {id: 'prova3', name: 'prova3', start: new Date('03/03/23'), end: new Date('05/03/23'), affluence: "20%",},
   {id: 'prova4', name: 'prova4', start: new Date('03/03/23'), end: new Date('05/03/23'), affluence: "20%",},
@@ -34,13 +34,12 @@ const elections = [
 
 <style>
   .election-link {
-    color: white;
+    color: black;
     font-weight: bold;
     text-decoration: none;
   }
 
   .election-link:hover {
-    color: white;
     text-decoration: none;
   }
 
@@ -54,7 +53,7 @@ const elections = [
     box-shadow: 1px 3px 10px rgba(200, 200, 200, 0.82);
     padding: 2%;
     button {
-      color: white;
+      color: black;
     }
   }
 </style>

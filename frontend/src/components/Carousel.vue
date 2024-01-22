@@ -104,7 +104,8 @@ export default defineComponent({
 .carousel__prev,
 .carousel__next {
   box-sizing: content-box;
-  color: #007bff;
+  margin-left: 0;
+  margin-right: 0;
   border: none;
 }
 </style>
