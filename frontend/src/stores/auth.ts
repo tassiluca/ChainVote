@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from "@/router";
-import {URL_API_SERVER, URL_AUTH_SERVER} from "@/main";
+import { apiEndpoints } from "@/commons/globals";
 
 export enum Role { User = 'user', Admin = 'admin' }
 
@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth',  () => {
 
   /** Attempts to log in the user with the given credentials, throwing an exception if the request fails. */
   async function login(role: Role, username: string, password: string) {
-    const url = `${URL_AUTH_SERVER}/auth/login`;
+    const url = `${apiEndpoints.AUTH_SERVER}/auth/login`;
     const response= await axios.post(url, { email: username, password: password });
     await verifyRole(username, role, response.data.data.accessToken);
     sessionStorage.setItem('username', username);
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore('auth',  () => {
 
   async function verifyRole(username: String, role: Role, accessToken: string) {
     const roleVerification = await axios.get(
-        `${URL_API_SERVER}/users/${username}`,
+        `${apiEndpoints.API_SERVER}/users/${username}`,
         { headers: { Authorization: `Bearer ${accessToken}` } }
     )
     if (roleVerification.data.data.role !== role) {
@@ -46,7 +46,7 @@ export const useAuthStore = defineStore('auth',  () => {
 
   async function regenerateAccessToken() {
     console.debug('Regenerating access token...');
-    const url = `${URL_AUTH_SERVER}/auth/refresh`;
+    const url = `${apiEndpoints.AUTH_SERVER}/auth/refresh`;
     try {
       const response= await axios.post(url, { email: username(), refreshToken: refreshToken() });
       sessionStorage.setItem('accessToken', response.data.data.accessToken);

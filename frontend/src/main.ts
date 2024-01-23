@@ -6,12 +6,15 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import App from './App.vue'
 import router from './router'
 
-/** The endpoint of the API server. */
-export const URL_API_SERVER = 'http://localhost:8080'; // process.env.API_SERVER_URL ||
-/** The endpoint of the authentication server. */
-export const URL_AUTH_SERVER = "http://localhost:8180"; // process.env.AUTH_SERVER_URL ||
-
 const app = createApp(App)
+
+/*
+ * TODO: if we need api endpoints to be globally available, we can do it in two ways
+ *  (see [https://stackoverflow.com/questions/63100658/add-global-variable-in-vue-js-3]):
+ *  - app.config.globalProperties.$apiEndpoints = apiEndpoints
+ *  - app.provide('apiEndpoints', apiEndpoints)
+ */
+
 app.use(createPinia())
 app.use(router)
 app.component('font-awesome-icon', FontAwesomeIcon)
