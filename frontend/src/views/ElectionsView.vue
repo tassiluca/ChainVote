@@ -3,90 +3,149 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
 import {useRoute} from "vue-router";
+import {computed, ref} from "vue";
+import ElectionComponent from "@/components/ElectionComponent.vue";
 
 // read meta parameters from the router
 const route = useRoute();
 const data: any = route.meta.data;
-const qualifier = route.params.qualifier;
-console.log(JSON.stringify(data))
-;
+
+const qualifier: string = route.meta.qualifier as string;
+
+function capitalizeFirstLetter(str: string) {
+  if (str === '') {
+    return str;
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+interface Election {
+  id: string,
+  name: string,
+  start: Date,
+  end: Date,
+  affluence: string,
+  choices: [string]
+}
+
+function isOpen(election: Election): boolean {
+  const now = new Date();
+  return now >= election.start && now < election.end;
+}
+
+function isClosed(election: Election): boolean {
+  const now = new Date();
+  return now >= election.end;
+}
+
+function isSoon(election: Election): boolean {
+  const now = new Date();
+  return now < election.start;
+}
+
+const getAll = computed(() => {
+  return Object.assign([], data);
+});
+
+const getOpen = computed(() => {
+  return Object.assign([], data).filter((election: Election) => isOpen(election));
+});
+
+const getClosed = computed(() => {
+  return Object.assign([], data).filter((election: Election) => isClosed(election));
+});
+
+const getSoon = computed(() => {
+  return Object.assign([], data).filter((election: Election) => isSoon(election));
+});
+
+const query: string[] = ["all", "open", "closed", "soon"]
+
+const picked = ref(qualifier);
+
+const getData = computed(() => {
+  switch (picked.value) {
+    case 'all':
+      return getAll.value;
+    case 'open':
+      return getOpen.value;
+    case 'closed':
+      return getClosed.value;
+    case 'soon':
+      return getSoon.value;
+    default:
+      return getAll.value;
+  }
+});
+
+const itemsPerPage = 10; // Set your desired number of items per page
+const currentPage = ref(1);
+const totalPages = computed(() => {
+  return Math.ceil(getData.value.length / itemsPerPage);
+})
+
+const displayedElections = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return getData.value.slice(start, end);
+});
+
+function nextPage() {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+}
+
+function prevPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+}
+
+function resetPage() {
+  currentPage.value = 1;
+}
 
 </script>
 
 <template>
-  <Breadcrumb :paths="[{name: 'Elections', link: '/'}, {name: 'Elections ' + qualifier, link: '/elections/' + qualifier}]" />
-  <div class="container-sm col-md-7 text-center">
-    <PageTitle :title="`Elections ${qualifier}`"  />
-
-    <div class="row notification">
-      <div class="col-1 d-flex flex-column align-items-center justify-content-center">
-        <img alt="New notification" src="@/assets/notifications/circle-new-notification.svg" width="30" height="30" />
+  <Breadcrumb :paths="[{name: 'Elections', link: '/elections'}]" />
+  <PageTitle title="Elections"/>
+  <div class="radio-button my-3">
+    <ul class="list-group list-group-horizontal">
+      <li v-for="item in query" :key="`li-${item}`" class="list-group-item">
+        <input type="radio" :id="item" :value="item" :aria-selected="`${picked===item}`" @click="resetPage" v-model="picked" />
+        <label :for="item" class="px-2">{{capitalizeFirstLetter(item)}}</label>
+      </li>
+    </ul>
+  </div>
+  <div class="container-sm col-10 col-md-8 text-center">
+    <div v-if="displayedElections.length > 0">
+      <div v-for="election in displayedElections" :key="election.id" class="row election">
+        <ElectionComponent :election="election"/>
       </div>
-      <div class="date col-3 d-flex flex-column justify-content-center" aria-label="05 January 2024">
-        <span>05</span>
-        <span>GEN 24</span>
-      </div>
-      <div class="msg col d-flex flex-column justify-content-center">
-        <p>CLOSING ELECTION</p>
-        <p>The `KITTEN OR PUPPY` election will close at 6:00 pm. If you have not already voted, please do so as soon as possible.</p>
+      <div class="pagination-buttons" v-if="totalPages>2">
+        <button @click="prevPage" class="btn btn-primary" :disabled="currentPage === 1">&lt;</button>
+        <button @click="nextPage" class="btn btn-primary" :disabled="currentPage === totalPages">&gt;</button>
+        <br/>
+        <p>{{currentPage}} / {{totalPages}}</p>
       </div>
     </div>
-
-    <div class="row notification">
-      <div class="col-1 d-flex flex-column align-items-center justify-content-center">
-      </div>
-      <div class="date col-3 d-flex flex-column justify-content-center" aria-label="05 January 2024">
-        <span>05</span>
-        <span>GEN 24</span>
-      </div>
-      <div class="msg col d-flex flex-column justify-content-center">
-        <p>CLOSING ELECTION</p>
-        <p>The `KITTEN OR PUPPY` election will close at 6:00 pm. If you have not already voted, please do so as soon as possible.</p>
-      </div>
+    <div v-else>
+      <p class="no-election">No {{picked}} elections found.</p>
     </div>
   </div>
 </template>
 
 <style scoped>
-
-div.notification {
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 15px;
-  box-shadow: 2px 5px 15px rgba(200, 200, 200, 0.82);
+div.radio-button {
+  display: flex;
+  justify-content: center;
 }
-
-div.notification:nth-child(even) {
-  background-color: rgba(0, 115, 230, 0.2);
+.pagination-buttons {
+  margin-top: 10px;
 }
-
-div.notification:nth-child(odd) {
-  background-color: rgba(217, 217, 217, 0.4);
+.no-election {
+  font-weight: bold;
 }
-
-div.date {
-  color: #0d6efd;
-  span:first-of-type {
-    font-weight: bold;
-    font-size: 2.5em;
-  }
-  span:nth-of-type(2) {
-    font-weight: bold;
-    font-size: 1.1em;
-  }
-}
-
-div.msg {
-  p:first-of-type {
-    font-weight: bold;
-    font-size: 1.1em;
-    color: #e6308a;
-    margin: 10px 0;
-  }
-  p:nth-of-type(2) {
-    margin: 0 0 10px 0;
-    text-align: left !important;
-  }
-}
-
 </style>
