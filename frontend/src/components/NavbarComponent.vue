@@ -32,7 +32,7 @@ onMounted(() => {
         <ul class="navbar-nav mx-auto">
           <!-- TODO: to customize according to user role -->
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/home">Home</a>
+            <a class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/user">User Area</a>
@@ -41,7 +41,7 @@ onMounted(() => {
             <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
           </a>
           <li class="nav-item">
-            <a class="nav-link" href="/">Dashboard</a>
+            <a class="nav-link" href="/dashboard">Dashboard</a>
           </li>
           <a class="navbar-brand d-none d-md-block" href="/login">
             <font-awesome-icon v-if="!logged" icon="right-to-bracket" size="2x" />
