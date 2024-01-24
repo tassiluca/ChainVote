@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="row">
+  <div class="row text-center">
     <div class="col-12">
       <h1 class="text-primary">{{ title }}</h1>
     </div>
