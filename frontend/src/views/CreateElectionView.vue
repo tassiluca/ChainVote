@@ -3,6 +3,7 @@ import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
 import {ref} from "vue";
+import PageTitle from "@/components/PageTitleComponent.vue";
 
 interface Election {
   goal: string
@@ -133,13 +134,11 @@ async function onFormSubmit() {
 </script>
 
 <template>
-  <Breadcrumb :paths="[{name: 'Create election', link: '/elections/create'}]" />
-  <div class="text-center my-5">
-    <h2>Create Election</h2>
-  </div>
+  <Breadcrumb :paths="[{name: 'Elections', link: '/elections'}, {name: 'Create', link: '/elections/create'}]" />
+  <PageTitle title="Create Election" />
   <Form @submit="onFormSubmit" :response="response" submit-btn-name="Create election">
     <template v-slot:body>
-      <div class="row gy-5 row-cols-lg-2 row-cols-1 mx-auto">
+      <div class="row gy-5 row-cols-lg-2 row-cols-1 mx-auto mt-3">
         <div class="col" v-for="prop in Object.keys(copyWithoutElement(properties, 'choice'))" :key="prop">
           <div class="p-3 border bg-light">
             <FormInput :helper="properties[prop]['help']"
@@ -153,6 +152,10 @@ async function onFormSubmit() {
             </FormInput>
           </div>
         </div>
+      </div>
+      <div class="col-10 mx-auto mt-3 text-center">
+        <hr/>
+        <h2 class="text-primary">Election choices:</h2>
       </div>
       <div class="row gy-5 row-cols-lg-3 row-cols-2 mx-auto my-2">
         <div class="col" v-for="idx of Array(references['choices'].value.length).keys()" :key="`choice-${idx}`">

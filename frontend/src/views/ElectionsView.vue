@@ -10,7 +10,11 @@ import ElectionComponent from "@/components/ElectionComponent.vue";
 const route = useRoute();
 const data: any = route.meta.data;
 
-const qualifier: string = route.meta.qualifier as string;
+const qualifier: string = route.query.qualifier as string;
+const picked = ref('all');
+if (qualifier && qualifier in ['all', 'open', 'closed', 'soon']) {
+  picked.value = qualifier;
+}
 
 function capitalizeFirstLetter(str: string) {
   if (str === '') {
@@ -60,8 +64,6 @@ const getSoon = computed(() => {
 });
 
 const query: string[] = ["all", "open", "closed", "soon"]
-
-const picked = ref(qualifier);
 
 const getData = computed(() => {
   switch (picked.value) {
