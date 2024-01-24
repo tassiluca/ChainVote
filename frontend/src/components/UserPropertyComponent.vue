@@ -2,17 +2,33 @@
   <form :id="`form-${property}`" method="post">
     <label :for="`input-${property}`">{{ capitalizeFirstLetter(property)}}</label>
     <hr :id="`old-value-${property}-separator`" class="hidden solid"/>
-    <p :id="`old-value-${property}`" class="hidden">Old value: <strong>{{ value }}</strong></p>
-    <input :type="hide ? 'password' : 'text'" :id="`input-${property}`" class="form-control" :readonly="isReadOnly" v-model="refValue" :name="property">
+    <p :id="`old-value-${property}`"
+       class="hidden">Old value: <strong>{{ value }}</strong></p>
+    <input :type="hide ? 'password' : 'text'"
+           :id="`input-${property}`"
+           class="form-control"
+           :readonly="isReadOnly"
+           v-model="refValue"
+           :name="property">
     <div v-if="mutable">
-      <button class="btn btn-sm btn-primary btn-block" :id="`change-${property}`" @click.prevent="onChangeButton(property)">
+      <button class="btn btn-sm btn-primary btn-block"
+              :id="`change-${property}`"
+              @click.prevent="onChangeButton(property)">
         Change
       </button>
-      <button class="btn btn-sm btn-primary btn-block hidden" :id="`submit-change-${property}`" type="submit" @click.prevent="onSubmitChangeButton(property, value)">
+      <button class="btn btn-sm btn-primary btn-block hidden"
+              :id="`submit-change-${property}`"
+              type="submit"
+              @click.prevent="onSubmitChangeButton(property, value)">
         Submit change
-        <span :id="`spinner-${property}`" class="spinner-border spinner-border-sm hidden" role="status" aria-hidden="true"></span>
+        <span :id="`spinner-${property}`"
+              class="spinner-border spinner-border-sm hidden"
+              role="status"
+              aria-hidden="true"></span>
       </button>
-      <button class="btn btn-sm btn-primary btn-block hidden" :id="`restore-change-${property}`" type="submit" @click.prevent="onRestoreButton(property)">
+      <button class="btn btn-sm btn-primary btn-block hidden"
+              :id="`restore-change-${property}`"
+              type="submit" @click.prevent="onRestoreButton(property)">
         Restore
       </button>
       <p :id="`error-${property}`" class="alert alert-danger hidden" role="alert"></p>

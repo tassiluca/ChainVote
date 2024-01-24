@@ -1,10 +1,8 @@
 <template>
-  <carousel v-bind="settings" :breakpoints="breakpoints">
-    <slide v-for="election in elections" :key="election.id">
-      <election-card-component
-          :election="election"
-      />
-    </slide>
+  <Carousel v-bind="settings" :breakpoints="breakpoints">
+    <Slide v-for="election in elections" :key="election.id">
+      <ElectionCard :election="election"/>
+    </Slide>
     <template #pagination="{ pagesCount, currentPage, setCurrentPage }">
       <div class="pagination">
         <button
@@ -18,22 +16,14 @@
       </div>
     </template>
     <template #addons="{ slidesCount }">
-      <navigation v-if="slidesCount > 1" />
+      <Navigation v-if="slidesCount > 1" />
     </template>
-  </carousel>
+  </Carousel>
 </template>
 
 <script setup lang="ts">
-
-defineProps<{
-  elections: Election[]
-}>()
-</script>
-
-<script lang="ts">
-import {defineComponent} from 'vue'
+import ElectionCard from "@/components/ElectionCardComponent.vue";
 import { Carousel, Navigation, Slide } from 'vue3-carousel'
-import ElectionCardComponent from "@/components/ElectionCard.vue";
 import 'vue3-carousel/dist/carousel.css'
 
 interface Election {
@@ -44,44 +34,33 @@ interface Election {
   affluence: string,
 }
 
-export default defineComponent({
-  name: 'CarouselComponent',
-  components: {
-    ElectionCardComponent,
-    Carousel,
-    Slide,
-    Navigation,
-  },
-  data: () => ({
-    // carousel settings
-    settings: {
-      itemsToShow: 1,
-      snapAlign: 'center',
-      itemsToScroll: 1,
-    },
-    // breakpoints are mobile first
-    // any settings not specified will fallback to the carousel settings
-    breakpoints: {
-      // 700px and up
-      768: {
-        itemsToShow: 2,
+defineProps<{
+  elections: [Election]
+}>()
+
+const settings = {
+  itemsToShow: 1,
+  snapAlign: 'center',
+  itemsToScroll: 1,
+}
+
+const breakpoints = {
+  768: {
+    itemsToShow: 2,
         snapAlign: 'center',
         itemsToScroll: 2,
-      },
-      // 1024 and up
-      992: {
-        itemsToShow: 3,
+  },
+  992: {
+    itemsToShow: 3,
         snapAlign: 'start',
         itemsToScroll: 3,
-      },
-      1200: {
-        itemsToShow: 4,
+  },
+  1200: {
+    itemsToShow: 4,
         snapAlign: 'start',
         itemsToScroll: 4,
-      },
-    },
-  })
-})
+  },
+}
 </script>
 
 <style>

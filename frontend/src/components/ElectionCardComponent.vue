@@ -5,11 +5,11 @@
       <hr class="solid"/>
       <ul class="election-props">
         <li>
-          <strong>Start:</strong> {{ election.start }}
+          <strong>Start:</strong> {{ ("0" + election.start.getDay()).slice(-2) }} {{ election.start.toLocaleString('default', { month: 'short' }) }} {{election.start.getFullYear() }} {{ election.start.getHours() }}:{{ ("0" + election.start.getMinutes()).slice(-2) }}
 <!--          <strong>Start:</strong> {{ election.start.getDay() }}/{{ election.start.getMonth() }}/{{ election.start.getFullYear() }} {{ election.start.getHours() }}:{{ election.start.getMinutes() }}-->
         </li>
         <li>
-          <strong>End:</strong> {{ election.end.getDay() }}/{{ election.end.getMonth() }}/{{ election.end.getFullYear() }} {{ election.end.getHours() }}:{{ election.end.getMinutes() }}
+          <strong>End:</strong> {{ ("0" + election.end.getDay()).slice(-2) }} {{ election.end.toLocaleString('default', { month: 'short' }) }} {{election.start.getFullYear() }} {{ election.end.getHours() }}:{{ ("0" + election.end.getMinutes()).slice(-2) }}
         </li>
         <li>
           <strong>Affluence:</strong> {{ election.affluence }}
@@ -20,7 +20,7 @@
               <li>
                 <a :href="`/election/details/${election.id}`">See details</a>
               </li>
-              <li>
+              <li v-if="isOpen(election)">
                 <a :href="`/vote/${election.id}`">Cast a vote</a>
               </li>
             </ul>
@@ -36,10 +36,6 @@
 defineProps<{
   election: Election,
 }>()
-</script>
-
-
-<script lang="ts">
 
 interface Election {
   id: string,
@@ -47,11 +43,13 @@ interface Election {
   start: Date,
   end: Date,
   affluence: string,
+  choices: [string]
 }
 
-export default {
-  name: "ElectionCardComponent",
-};
+function isOpen(election: Election): boolean {
+  const now = new Date();
+  return now >= election.start && now < election.end;
+}
 </script>
 
 <style>

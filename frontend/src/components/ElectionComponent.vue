@@ -27,12 +27,6 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  election: Election,
-}>()
-</script>
-
-<script lang="ts">
 interface Election {
   id: string,
   name: string,
@@ -42,14 +36,13 @@ interface Election {
   choices: [string]
 }
 
-export default {
-  name: "ElectionComponent",
-};
-
 function isOpen(election: Election): boolean {
   const now = new Date();
   return now >= election.start && now < election.end;
 }
+defineProps<{
+  election: Election,
+}>()
 </script>
 
 <style scoped>

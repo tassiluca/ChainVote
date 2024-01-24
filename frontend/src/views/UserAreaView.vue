@@ -1,12 +1,11 @@
 <template>
-  <div class="text-center my-5">
-    <h2>User area</h2>
-  </div>
-  <div class="row gy-5 row-cols-md-2 row-cols-1 mx-auto">
+  <Breadcrumb :paths="[{name: 'User-area', link: '/user'}]" />
+  <PageTitle title="User area"/>
+  <div class="row gy-5 row-cols-md-2 row-cols-1 mx-auto my-2">
     <div class="col" v-for="property in Object.keys(newValueRules)" :key="property">
       <div class="p-2 border bg-light">
         <div class="card col-10 mx-auto">
-          <user-property
+          <UserProperty
               :property="property"
               :value="userRef[property as keyof typeof user]"
               :hide="newValueRules[property].hide"
@@ -21,9 +20,11 @@
 </template>
 
 <script setup lang="ts">
-  import UserProperty from "@/components/UserProperty.vue";
+  import UserProperty from "@/components/UserPropertyComponent.vue";
   import {useRoute} from "vue-router";
   import {ref} from "vue";
+  import PageTitle from "@/components/PageTitleComponent.vue";
+  import Breadcrumb from "@/components/BreadcrumbComponent.vue";
 
   interface User {
     name: string,

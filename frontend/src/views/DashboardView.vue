@@ -1,19 +1,21 @@
 <template>
+  <Breadcrumb :paths="[{name: 'Dashboard', link: '/dashboard'}]" />
+  <PageTitle title="Dashboard" />
   <div class="elections">
     <div class="col-10 center mx-auto election election-open bg-light">
-      <a href="/elections/open" class="election-link">Open Elections</a>
+      <a href="/elections?qualifier=open" class="election-link">Open Elections</a>
       <carousel :elections="elections"/>
     </div>
   </div>
   <div class="elections">
     <div class="col-10 center mx-auto election election-closed bg-light">
-      <a href="/elections/closed" class="election-link">Closed Elections</a>
+      <a href="/elections?qualifier=closed" class="election-link">Closed Elections</a>
       <carousel :elections="elections"/>
     </div>
   </div>
   <div class="elections">
     <div class="col-10 center mx-auto election election-soon bg-light">
-      <a href="/elections/soon" class="election-link">Elections soon</a>
+      <a href="/elections?qualifier=soon" class="election-link">Elections soon</a>
       <carousel :elections="elections"/>
     </div>
   </div>
@@ -21,6 +23,8 @@
 
 <script setup lang="ts">
 import Carousel from "@/components/Carousel.vue";
+import PageTitle from "@/components/PageTitleComponent.vue";
+import Breadcrumb from "@/components/BreadcrumbComponent.vue";
 
 const elections = [
   {id: 'prova1', name: 'Elezione di prova presidente consiglio dei ministri', start: new Date(2023, 3, 1, 12, 0).toISOString().slice(0,16), end: new Date('03/03/23'), affluence: "20%",},
