@@ -1,19 +1,19 @@
 <template>
   <div class="elections">
     <div class="col-10 center mx-auto election election-open bg-light">
-      <a href="#" class="election-link">Open Elections</a>
+      <a href="/elections/open" class="election-link">Open Elections</a>
       <carousel :elections="elections"/>
     </div>
   </div>
   <div class="elections">
     <div class="col-10 center mx-auto election election-closed bg-light">
-      <a href="#" class="election-link">Closed Elections</a>
+      <a href="/elections/closed" class="election-link">Closed Elections</a>
       <carousel :elections="elections"/>
     </div>
   </div>
   <div class="elections">
     <div class="col-10 center mx-auto election election-soon bg-light">
-      <a href="#" class="election-link">Elections soon</a>
+      <a href="/elections/soon" class="election-link">Elections soon</a>
       <carousel :elections="elections"/>
     </div>
   </div>
