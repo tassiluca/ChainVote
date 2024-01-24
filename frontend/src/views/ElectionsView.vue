@@ -12,7 +12,8 @@ const data: any = route.meta.data;
 
 const qualifier: string = route.query.qualifier as string;
 const picked = ref('all');
-if (qualifier && qualifier in ['all', 'open', 'closed', 'soon']) {
+
+if (qualifier && ['all', 'open', 'closed', 'soon'].includes(qualifier)) {
   picked.value = qualifier;
 }
 
