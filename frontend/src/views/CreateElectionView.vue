@@ -138,7 +138,7 @@ async function onFormSubmit() {
   <PageTitle title="Create Election" />
   <Form @submit="onFormSubmit" :response="response" submit-btn-name="Create election">
     <template v-slot:body>
-      <div class="row gy-5 row-cols-lg-2 row-cols-1 mx-auto mt-3">
+      <div class="row gy-5 row-cols-lg-2 row-cols-1 mx-auto mt-1">
         <div class="col" v-for="prop in Object.keys(copyWithoutElement(properties, 'choice'))" :key="prop">
           <div class="p-3 border bg-light">
             <FormInput :helper="properties[prop]['help']"
@@ -153,9 +153,8 @@ async function onFormSubmit() {
           </div>
         </div>
       </div>
-      <div class="col-10 mx-auto mt-3 text-center">
-        <hr/>
-        <h2 class="text-primary">Election choices:</h2>
+      <div class="col-10 mx-auto mt-5 text-center">
+        <h2 class="text-primary">Election choices</h2>
       </div>
       <div class="row gy-5 row-cols-lg-3 row-cols-2 mx-auto my-2">
         <div class="col" v-for="idx of Array(references['choices'].value.length).keys()" :key="`choice-${idx}`">
