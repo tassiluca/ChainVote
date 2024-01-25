@@ -1,12 +1,12 @@
 <template>
-  <form :id="`form-${property}`" method="post">
+  <form :id="`form-${property}`" @submit.prevent="onSubmit">
     <label :for="`input-${property}`">{{ capitalizeFirstLetter(property)}}</label>
     <hr :id="`old-value-${property}-separator`" class="hidden solid"/>
     <p :id="`old-value-${property}`"
        class="hidden">Old value: <strong>{{ value }}</strong></p>
     <input :type="hide ? 'password' : 'text'"
            :id="`input-${property}`"
-           class="form-control"
+           class="form-control my-3"
            :readonly="isReadOnly"
            v-model="refValue"
            :name="property">
@@ -16,10 +16,13 @@
               @click.prevent="onChangeButton(property)">
         Change
       </button>
+      <div class="my-2 hidden" :id="`div-error-${property}`">
+        <span>{{ errors.refValue }}</span>
+      </div>
       <button class="btn btn-sm btn-primary btn-block hidden"
               :id="`submit-change-${property}`"
               type="submit"
-              @click.prevent="onSubmitChangeButton(property, value)">
+              :disabled="!meta.valid">
         Submit change
         <span :id="`spinner-${property}`"
               class="spinner-border spinner-border-sm hidden"
@@ -28,7 +31,7 @@
       </button>
       <button class="btn btn-sm btn-primary btn-block hidden"
               :id="`restore-change-${property}`"
-              type="submit" @click.prevent="onRestoreButton(property)">
+              @click.prevent="onRestoreButton(property)">
         Restore
       </button>
       <p :id="`error-${property}`" class="alert alert-danger hidden" role="alert"></p>
@@ -40,77 +43,73 @@
 <script setup lang="ts">
   import {makeRequest} from "@/assets/utils";
   import {ref} from "vue";
+  import {useForm} from "vee-validate";
+  import * as yup from "yup";
+  import {apiEndpoints} from "@/commons/globals";
 
   const props = defineProps<{
     property: string,
     value: string,
     hide: boolean,
     mutable: boolean,
-    isValidValue: (val: string) => boolean,
-    help: string,
+    validation: any,
   }>()
 
   const isReadOnly = ref(true);
-  const refValue = ref(props.value);
 
   function capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  function onSubmitChangeButton(property: string, oldValue: string) {
-    const spinner = document.getElementById('spinner-' + property)!
-    const error = document.getElementById('error-' + property)!
-    const success = document.getElementById('success-' + property)!
-    const restore = document.getElementById('restore-change-' + property) as HTMLButtonElement;
-    showElem(spinner);
+  const {meta, errors, handleSubmit, defineField } = useForm({
+    validationSchema: yup.object({
+      refValue: props.validation,
+    }),
+  });
 
-    if (refValue.value !== oldValue) {
-      if (!props.isValidValue(refValue.value)) {
-        error.innerHTML = props.help;
-        showElem(error);
-        hideElem(success);
-        hideElem(spinner);
-        return;
-      }
-      hideElem(restore)
-      const data = {
-        'property': property,
-        'value': refValue.value,
-      };
-      // TODO correct url
-      makeRequest('/user/change', 'PUT', data)
-          .then((response) => {
-            success.innerHTML = response.data.message;
-            showElem(success);
-            hideElem(error);
-            setTimeout(() => {
-              hideElem(success);
-            }, 2000);
-            refresh();
-          })
-          .catch((err) => {
-            refValue.value = props.value;
-            console.log(err)
-            error.innerHTML = 'Error ' + err.response.status + ': ' + err.message;
-            showElem(error);
-            hideElem(success);
-          });
-    } else {
+  const [refValue, _] = defineField('refValue');
+  refValue.value = props.value;
+
+  const onSubmit = handleSubmit((values) => {
+    isReadOnly.value = true;
+    const spinner = document.getElementById('spinner-' + props.property)!;
+    const err = document.getElementById('error-' + props.property)!;
+    const success = document.getElementById('success-' + props.property)!;
+    const restore = document.getElementById('restore-change-' + props.property) as HTMLButtonElement;
+    const oldValue = document.getElementById(`old-value-${props.property}`)!;
+    const change = document.getElementById(`change-${props.property}`)!;
+    const submit = document.getElementById(`submit-change-${props.property}`)!;
+    showElem(spinner);
+    hideElem(err);
+    hideElem(success);
+    hideElem(oldValue);
+    hideElem(document.getElementById(`div-error-${props.property}`)!);
+    hideElem(document.getElementById(`old-value-${props.property}-separator`)!);
+    // TODO bind backend url
+
+    makeRequest(`${apiEndpoints.API_SERVER}/users/change-property`, "POST", values).then((response) => {
+      success.innerHTML = response.data.message;
       showElem(success);
-      success.innerText = 'Nothing to change';
-      refValue.value = props.value;
+      hideElem(err);
       setTimeout(() => {
         hideElem(success);
       }, 2000);
-    }
-    hideElem(spinner);
-    isReadOnly.value = true;
-    showElem(document.getElementById(`change-${property}`)!);
-    hideElem(document.getElementById(`old-value-${property}`)!);
-    hideElem(document.getElementById(`old-value-${property}-separator`)!);
-    hideElem(document.getElementById(`submit-change-${property}`)!);
-    hideElem(document.getElementById(`restore-change-${property}`)!);
-  }
+      hideElem(spinner);
+      refresh();
+    }).catch((error) => {
+      hideElem(spinner);
+      refValue.value = props.value;
+      err.innerHTML = 'Error ' + error.code + ': ' + error.message;
+      showElem(err);
+      hideElem(success);
+      setTimeout(() => {
+        hideElem(err);
+      }, 2000);
+    });
+    showElem(change);
+    hideElem(submit);
+    hideElem(restore);
+  })
 
   function refresh() {
     window.location.reload();
@@ -123,6 +122,7 @@
     hideElem(document.getElementById(`error-${property}`)!);
     hideElem(document.getElementById(`success-${property}`)!);
     showElem(document.getElementById(`old-value-${property}`)!);
+    showElem(document.getElementById(`div-error-${property}`)!);
     showElem(document.getElementById(`old-value-${property}-separator`)!);
     showElem(document.getElementById(`submit-change-${property}`)!);
     showElem(document.getElementById(`restore-change-${property}`)!);
@@ -135,6 +135,7 @@
     hideElem(document.getElementById(`error-${property}`)!);
     hideElem(document.getElementById(`success-${property}`)!);
     hideElem(document.getElementById(`old-value-${property}`)!);
+    hideElem(document.getElementById(`div-error-${property}`)!);
     hideElem(document.getElementById(`old-value-${property}-separator`)!);
     hideElem(document.getElementById(`submit-change-${property}`)!);
     hideElem(document.getElementById(`restore-change-${property}`)!);
@@ -157,9 +158,6 @@
   }
   .hidden {
     display: none;
-  }
-  input {
-    margin: 2% 0;
   }
   p.alert {
     margin: 2% 0;

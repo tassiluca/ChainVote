@@ -1,5 +1,5 @@
 <template>
-  <Breadcrumb :paths="[{name: 'User-area', link: '/user'}]" />
+  <Breadcrumb :paths="[{name: 'User area', link: '/user'}]" />
   <PageTitle title="User area"/>
   <div class="row gy-5 row-cols-md-2 row-cols-1 mx-auto my-2">
     <div class="col" v-for="property in Object.keys(newValueRules)" :key="property">
@@ -10,8 +10,7 @@
               :value="userRef[property as keyof typeof user]"
               :hide="newValueRules[property].hide"
               :mutable="newValueRules[property].mutable"
-              :isValidValue="newValueRules[property].isValid"
-              :help="newValueRules[property].help"
+              :validation="newValueRules[property].validation"
           />
         </div>
       </div>
@@ -25,6 +24,7 @@
   import {ref} from "vue";
   import PageTitle from "@/components/PageTitleComponent.vue";
   import Breadcrumb from "@/components/BreadcrumbComponent.vue";
+  import * as yup from 'yup'
 
   interface User {
     name: string,
@@ -52,8 +52,7 @@
   const userRef = ref(user);
 
   interface Rule {
-    isValid: (val: string) => boolean,
-    help: string,
+    validation: any,
     mutable: boolean,
     hide: boolean,
   }
@@ -62,44 +61,30 @@
     [up: string]: Rule
   } = {
     'name': {
-      'isValid': (value: string) => {
-      return value.trim().length > 0
-      },
-      'help': 'Name must be at least 1 character long',
+      'validation': yup.string().required('Name must be at least 1 character long'),
       'mutable': true,
       'hide': false,
     },
     'surname': {
-      'isValid': (value: string) => {
-        return value.trim().length > 0
-      },
-      'help': 'Surname must be at least 1 character long',
+      'validation': yup.string().required('Surname must be at least 1 character long'),
       'mutable': true,
       'hide': false,
     },
     'email': {
-      'isValid': (value: string) => {
-        const reg = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-        return reg.test(value)
-      },
-      'help': 'Email must contain @ and .',
+      'validation': yup.string().email('Email must contain @ and following chars').required('Email is required'),
       'mutable': true,
       'hide': false,
     },
     'password': {
-      'isValid': (value: string) => {
-        const reg = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[~`!@#$%^&*()--+={}[\]|\\:;"'<>,.?/_])[a-zA-Z0-9~`!@#$%^&*()--+={}[\]|\\:;"'<>,.?/_]{8,16}$/
-        return reg.test(value);
-      },
-      'help': 'Password must be at least 8 characters long and contain at least one number, one uppercase letter, one lowercase letter and one special character',
+      'validation': yup.string().min(8, 'Password must be at least 8 characters long').required('Password is required').matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+          'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
+      ),
       'mutable': true,
       'hide': true,
     },
     'role': {
-      'isValid': (_: string) => {
-        return false;
-      },
-      'help': 'Immutable value',
+      'validation': undefined,
       'mutable': false,
       'hide': false,
     }
