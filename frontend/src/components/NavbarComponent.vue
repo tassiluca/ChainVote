@@ -2,17 +2,10 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useAuthStore } from "@/stores/auth";
-import { onMounted, ref } from "vue";
-
-library.add(faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket);
 
 const authStore = useAuthStore();
 
-const logged = ref(false)
-
-onMounted(() => {
-  logged.value = authStore.isLogged();
-});
+library.add(faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket);
 </script>
 
 <template>
@@ -24,9 +17,9 @@ onMounted(() => {
       <a class="navbar-brand d-md-none" href="/">
         <img alt="ChainVote logo" class="logo" src="@/assets/logo.svg" width="100" height="100" />
       </a>
-      <a class="navbar-brand d-md-none" href="/login" @click="logged ? authStore.logout() : null">
-        <font-awesome-icon v-if="!logged" icon="right-to-bracket" size="2x" />
-        <font-awesome-icon v-if="logged" icon="right-from-bracket" size="2x" />
+      <a class="navbar-brand d-md-none" href="/login" @click="authStore.isLogged ? authStore.logout() : null">
+        <font-awesome-icon v-if="!authStore.isLogged" icon="right-to-bracket" size="2x" />
+        <font-awesome-icon v-if="authStore.isLogged" icon="right-from-bracket" size="2x" />
       </a>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
@@ -44,8 +37,8 @@ onMounted(() => {
             <a class="nav-link" href="/dashboard">Dashboard</a>
           </li>
           <a class="navbar-brand d-none d-md-block" href="/login">
-            <font-awesome-icon v-if="!logged" icon="right-to-bracket" size="2x" />
-            <font-awesome-icon v-if="logged" icon="right-from-bracket" size="2x" />
+            <font-awesome-icon v-if="!authStore.isLogged" icon="right-to-bracket" size="2x" />
+            <font-awesome-icon v-if="authStore.isLogged" icon="right-from-bracket" size="2x" />
           </a>
         </ul>
       </div>

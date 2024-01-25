@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { makeRequest } from '@/assets/utils';
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
+import axios from "axios";
 
 const {meta, errors, handleSubmit, defineField } = useForm({
   validationSchema: yup.object({
@@ -24,8 +24,7 @@ const [secondName, secondNameAttrs] = defineField('secondName');
 
 const onSubmit = handleSubmit((values) => {
     delete values.confirmPassword;
-
-    makeRequest("http://localhost:8080/users/", "POST", values).then((response) => {
+    axios.post("http://localhost:8080/users/", values).then((response) => {
         alert(response.data.data);
     }).catch((error) => {
         alert(error);

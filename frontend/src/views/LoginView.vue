@@ -15,11 +15,11 @@ const username = ref("")
 const password = ref("")
 const role = ref(Role.User)
 
-// onMounted(() => {
-//   if (authStore.isLogged()) {
-//     router.push("/dashboard");
-//   }
-// })
+onMounted(() => {
+  if (authStore.isLogged) {
+    router.push("/dashboard");
+  }
+})
 
 async function onFormSubmit() {
   try {

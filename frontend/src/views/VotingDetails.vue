@@ -4,7 +4,7 @@ import PageTitle from '@/components/PageTitleComponent.vue'
 import Tile from '@/components/tiles/TileComponent.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleInfo, faSquarePollHorizontal } from '@fortawesome/free-solid-svg-icons'
-import {onMounted, onUnmounted, type Ref, ref} from "vue";
+import {onMounted, onUnmounted, type Ref, ref, watch} from "vue";
 import { useVotingStore, type Voting} from "@/stores/voting";
 import { useAuthStore } from "@/stores/auth";
 import router from "@/router";
@@ -22,17 +22,19 @@ const route = useRoute();
 
 library.add(faCircleInfo, faSquarePollHorizontal);
 
-onMounted(async () => {
-  if (!authStore.isLogged()) {
-    await router.push("/login");
-  } else {
-    await getVotingDetails(route.params.id.toString());
-    socket.emit("joinRoom", "election-" + voting.value?.id);
-    socket.on("updateTurnout", (turnout: any) => {
-      console.log(turnout);
-    });
+watch(authStore, async (auth) => {
+  if (!auth.isLogged) {
+    await router.push({name: "login"});
   }
-})
+});
+
+onMounted(async () => {
+  await getVotingDetails(route.params.id.toString());
+  socket.emit("joinRoom", "election-" + voting.value?.id);
+  socket.on("updateTurnout", (turnout: any) => {
+    console.log(turnout);
+  });
+});
 
 onUnmounted(() => {
   socket.disconnect();

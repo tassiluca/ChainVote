@@ -1,21 +1,16 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import './assets/main.scss'
-
+import * as bootstrap from 'bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import App from './App.vue'
 import router from './router'
+import axiosSetup from "@/commons/axios";
 
 const app = createApp(App)
-
-/*
- * TODO: if we need api endpoints to be globally available, we can do it in two ways
- *  (see [https://stackoverflow.com/questions/63100658/add-global-variable-in-vue-js-3]):
- *  - app.config.globalProperties.$apiEndpoints = apiEndpoints
- *  - app.provide('apiEndpoints', apiEndpoints)
- */
-
 app.use(createPinia())
 app.use(router)
 app.component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app')
+
+axiosSetup(); // This needs to be called after app.use(pinia)!

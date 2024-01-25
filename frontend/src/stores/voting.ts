@@ -27,11 +27,11 @@ export const useVotingStore = defineStore('voting', () => {
     const urlDetails = `${apiEndpoints.API_SERVER}/election/detail/${id}`;
     const electionDetailsResponse = await axios.get(
       urlDetails,
-      { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+      { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
     );
     const electionInfosResponse = await axios.get(
       urlInfos,
-      { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+      { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
     );
     return toVoting(electionInfosResponse, electionDetailsResponse);
   }
