@@ -7,7 +7,6 @@ import {Org2Peer} from "../blockchain/peer.enum";
 import mailer from "../configs/mailer.config";
 import transformHyperledgerError from "../blockchain/errors/error.handling";
 
-
 /**
  * Set the user identity to work with. This function should be used when, in an API control method, an admin entity
  * wants to access to the data of another user. In this case, the request should specify the email of the user
@@ -21,10 +20,9 @@ import transformHyperledgerError from "../blockchain/errors/error.handling";
 async function setWorkData(req: Request, res: Response, next:NextFunction, isAllowed:boolean) {
     let user = res.locals.user;
     const email = req.body.email;
-    
     if (email && email !== user.email) {
         try {
-            if(!isAllowed) {
+            if (!isAllowed) {
                 next(
                     new UnauthorizedError(
                         "Can't access to the resource",
@@ -34,13 +32,12 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
                 );
             }
             user = await User.findOne({email: email});
-            if(user == undefined) {
+            if (user == undefined) {
                 next(new NotFoundError(
                     "Can't find the user",
                     undefined,
                     ErrorTypes.AUTHENTICATION_ERROR
-                )
-            );
+                ));
             }
         } catch(error) {
             throw error; 

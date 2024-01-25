@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket, faEnvelopeOpen, faEnvelopeOpenText } from "@fortawesome/free-solid-svg-icons";
 import { useAuthStore } from "@/stores/auth";
+import { useNotificationsStore } from '@/stores/notificationsStore'
+import { onMounted } from 'vue'
 
 const authStore = useAuthStore();
+const notificationsStore = useNotificationsStore();
 
-library.add(faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket);
+// onMounted(async () => {
+//   if (authStore.isLogged) {
+//     await notificationsStore.getAllNotifications();
+//   }
+// });
+
+library.add(faEnvelope, faEnvelopeOpen, faEnvelopeOpenText, faBars, faUser, faRightToBracket, faRightFromBracket);
 </script>
 
 <template>
@@ -17,28 +26,50 @@ library.add(faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket);
       <a class="navbar-brand d-md-none" href="/">
         <img alt="ChainVote logo" class="logo" src="@/assets/logo.svg" width="100" height="100" />
       </a>
-      <a class="navbar-brand d-md-none" href="/login" @click="authStore.isLogged ? authStore.logout() : null">
-        <font-awesome-icon v-if="!authStore.isLogged" icon="right-to-bracket" size="2x" />
-        <font-awesome-icon v-if="authStore.isLogged" icon="right-from-bracket" size="2x" />
+      <a v-if="!authStore.isLogged" class="navbar-brand d-md-none" href="/login">
+        <font-awesome-icon icon="right-to-bracket" size="2x" />
+      </a>
+      <a v-else class="navbar-brand d-md-none position-relative" href="/user/notifications">
+        <font-awesome-icon v-if="notificationsStore.unreadNotifications === 0" icon="fa-solid fa-envelope-open" size="2x" />
+        <div v-else>
+          <font-awesome-icon icon="fa-solid fa-envelope-open-text" size="2x" />
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" >
+            {{ notificationsStore.unreadNotifications }}
+            <span class="visually-hidden">unread messages</span>
+          </span>
+        </div>
       </a>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
-          <!-- TODO: to customize according to user role -->
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/user">User Area</a>
+          <li v-if="authStore.isLogged" class="nav-item">
+            <a class="nav-link" href="/dashboard">Dashboard</a>
           </li>
           <a class="navbar-brand d-none d-md-block" href="/">
             <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
           </a>
-          <li class="nav-item">
-            <a class="nav-link" href="/dashboard">Dashboard</a>
+          <li v-if="authStore.isLogged" class="nav-item">
+            <a class="nav-link" href="/user">User Area</a>
           </li>
-          <a class="navbar-brand d-none d-md-block" href="/login" @click="authStore.isLogged ? authStore.logout() : null">
-            <font-awesome-icon v-if="!authStore.isLogged" icon="right-to-bracket" size="2x" />
-            <font-awesome-icon v-if="authStore.isLogged" icon="right-from-bracket" size="2x" />
+          <li v-if="authStore.isLogged" class="nav-item">
+            <a class="nav-link" href="/login" @click="authStore.logout()">
+              <font-awesome-icon icon="right-from-bracket" size="2x" />
+            </a>
+          </li>
+          <a v-if="!authStore.isLogged" class="nav-link d-none d-md-block" href="/login">
+            <font-awesome-icon icon="right-to-bracket" size="2x" />
+          </a>
+          <a v-else class="nav-link d-none d-md-block position-relative" href="/user/notifications">
+            <font-awesome-icon v-if="notificationsStore.unreadNotifications === 0" icon="fa-solid fa-envelope-open" size="2x" />
+            <div v-else>
+              <font-awesome-icon icon="fa-solid fa-envelope-open-text" size="2x" />
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" >
+                {{ notificationsStore.unreadNotifications }}
+                <span class="visually-hidden">unread messages</span>
+              </span>
+            </div>
           </a>
         </ul>
       </div>

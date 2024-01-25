@@ -34,6 +34,10 @@
 <script setup lang="ts"></script>
 
 <style scoped>
+.row {
+  margin: 0;
+}
+
 #footer {
   color: white;
   text-align: center;

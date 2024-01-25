@@ -9,6 +9,7 @@ import codesRoute from "../routes/codes.route";
 import {resolve} from "path";
 import {createServer, Server} from "node:http";
 import SocketIoConfig from "./socket.config";
+import notificationsRoute from '../routes/notifications.route'
 
 const ServerConfig = (): Server => {
     JwtHandler.config({
@@ -37,6 +38,7 @@ const ServerConfig = (): Server => {
     app.use("/election", electionRouter(io));
     app.use("/election/info", electionInfoRouter);
     app.use("/code", codesRoute);
+    app.use("/notifications", notificationsRoute);
 
     // Use custom response handler.
     app.use(defaultResponseHandler);

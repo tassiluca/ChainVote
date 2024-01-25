@@ -4,10 +4,9 @@ import {Jwt} from "../models/jwt/jwt";
 import {User} from "../models/users/users";
 import {ErrorTypes} from "../errors/error.types";
 
-
 export async function authenticationHandler (req: Request, res: Response, next: NextFunction) {
     const authorizationHeader = req.headers["authorization"];
-    if(authorizationHeader == undefined) {
+    if (authorizationHeader == undefined) {
         return next(
             new BadRequestError(
                 "Authorization header not found in the request",
@@ -16,12 +15,10 @@ export async function authenticationHandler (req: Request, res: Response, next: 
             )
         );
     }
-    
     const accessToken = authorizationHeader.split(" ")[1];
     try {
-
         const jwtRecord = await Jwt.findOne({accessToken: accessToken});
-        if(jwtRecord == null) {
+        if (jwtRecord == null) {
             return next(
                 new NotFoundError(
                     "The submitted jwt token doesn't exists",
@@ -32,8 +29,7 @@ export async function authenticationHandler (req: Request, res: Response, next: 
         }
         const validationResponse:any = await jwtRecord.validateAccessToken();
         const user = await User.findOne({email: validationResponse.sub.email});
-
-        if(user == null) {
+        if (user == null) {
             return next(
                 new NotFoundError(
                     "User not found",
@@ -43,11 +39,8 @@ export async function authenticationHandler (req: Request, res: Response, next: 
             );
         }
         res.locals.user= user;
-
     } catch(error) {
         return next(error);
     }
-    
     next();
 }
-

@@ -38,12 +38,10 @@ export async function getAllElectionInfo(req: Request, res: Response, next: Next
         const contract: Contract = network.getContract(contractName);
         const allAssets: Uint8Array = await contract.evaluate('ElectionInfoContract:getAllElectionInfo');
         const invocationResults = JSON.parse(utf8Decoder.decode(allAssets));
-
         invocationResults.result.forEach((element: any) => {
             element.startDate = convertToISO(element.startDate);
             element.endDate = convertToISO(element.endDate);
         });
-
         res.locals.code = StatusCodes.OK;
         res.locals.data = invocationResults.result;
     } catch (error) {
@@ -70,24 +68,25 @@ export async function readElectionInfo(req: Request, res: Response, next: NextFu
         );
     }
     try {
-        const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
-        const network: Network = gatewayOrg1.getNetwork(channelName);
-        const contract: Contract = network.getContract(contractName);
-        const electionId: string = req.params.electionId
-        const submission: Uint8Array = await contract.evaluateTransaction('ElectionInfoContract:readElectionInfo', electionId);
-        const results = utf8Decoder.decode(submission);
-
-        const invocationResult = JSON.parse(results).result;
-
-        invocationResult.startDate = convertToISO(invocationResult.startDate);
-        invocationResult.endDate = convertToISO(invocationResult.endDate);
-
+        const invocationResult = await getElectionInfo(req.params.electionId);
         res.locals.code = StatusCodes.OK;
         res.locals.data = invocationResult;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
     return next();
+}
+
+export async function getElectionInfo(electionId: string) {
+    const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
+    const network: Network = gatewayOrg1.getNetwork(channelName);
+    const contract: Contract = network.getContract(contractName);
+    const submission: Uint8Array = await contract.evaluateTransaction('ElectionInfoContract:readElectionInfo', electionId);
+    const results = utf8Decoder.decode(submission);
+    const invocationResult = JSON.parse(results).result;
+    invocationResult.startDate = convertToISO(invocationResult.startDate);
+    invocationResult.endDate = convertToISO(invocationResult.endDate);
+    return invocationResult;
 }
 
 /**

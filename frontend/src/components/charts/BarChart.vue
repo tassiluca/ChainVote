@@ -19,8 +19,13 @@ const chartData = {
   labels: props.labels,
   datasets: props.values
 }
+
+const options = {
+  responsive: true,
+  maintainAspectRatio: true
+}
 </script>
 
 <template>
-  <Bar :data="chartData" />
+  <Bar :data="chartData" :options="options" />
 </template>

@@ -1,4 +1,3 @@
-
 import { Request, Response, NextFunction } from "express";
 import { HttpBaseError } from "../errors/errors";
 import {StatusCodes} from "http-status-codes";
@@ -11,7 +10,6 @@ export async function defaultErrorHandler(
     res: Response, 
     next: NextFunction
 ) {
-
     const response: ErrorResponse = {
         success: false,
         date: new Date(),
@@ -22,15 +20,12 @@ export async function defaultErrorHandler(
             message: err.message
         }
     }
-
-    if(err instanceof HttpBaseError) {
+    if (err instanceof HttpBaseError) {
         response.code = err.code;
         response.error.name = err.name;
         response.error.message = err.message;
         response.error.type = err.type;
     }
-
     res.status(response.code);
     return res.send(response);
 }
-
