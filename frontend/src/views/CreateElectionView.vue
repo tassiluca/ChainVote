@@ -2,8 +2,10 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
-import {ref} from "vue";
+import {type Ref, ref} from "vue";
 import PageTitle from "@/components/PageTitleComponent.vue";
+import {makeRequest} from "@/assets/utils";
+import {apiEndpoints} from "@/commons/globals";
 
 interface Election {
   goal: string
@@ -24,7 +26,7 @@ const references: {
    [prop: string]: any
 } = {
   goal: ref(""),
-  voters: ref("0"),
+  voters: ref("2"),
   startDate: ref(startDateValue.toISOString().slice(0,16)),
   endDate: ref(endDateValue.toISOString().slice(0,16)),
   choices: ref([ref(""), ref("")]),
@@ -32,6 +34,7 @@ const references: {
 
 interface Rule {
   help: string,
+  validValue: any,
   label: string,
   type: string,
   placeholder: string,
@@ -44,6 +47,7 @@ const properties: {
 } = {
   'goal': {
     'help': 'Goal must be at least 1 character long',
+    'validValue': (value: string) => value.trim().length > 0,
     'label': 'Goal',
     'type': 'string',
     'placeholder': 'Enter goal',
@@ -52,6 +56,7 @@ const properties: {
   },
   'voters': {
     'help': 'Voters must be at least 2',
+    'validValue': (value: number) => value > 1,
     'label': 'Voters',
     'type': 'number',
     'placeholder': 'Enter voters',
@@ -60,6 +65,7 @@ const properties: {
   },
   'startDate': {
     'help': 'Start date must be a valid date',
+    'validValue': (_: any) => true,
     'label': 'Start date',
     'type': 'datetime-local',
     'placeholder': 'Enter start date',
@@ -67,21 +73,35 @@ const properties: {
     'autocomplete': 'start date',
   },
   'endDate': {
-    'help': 'End date must be a valid and non-elapsed date, which follows the start date',
+    'help': 'End date must be a valid and non-elapsed date, which comes after the start date',
+    'validValue': (value: any, sD: any) => new Date(value).getTime() > new Date(sD).getTime() && new Date(value).getTime() > new Date().getTime(),
     'label': 'End date',
     'type': 'datetime-local',
     'placeholder': 'Enter end date',
     'pre': '🗓️',
     'autocomplete': 'end date',
   },
-  'choice': {
+  'choices': {
     'help': 'Choice must be at least 1 character long and different from each others',
+    'validValue': (value: [Ref<string>]) => isValidList(value.map((item: Ref<string>) => item.value as string)),
     'label': 'Choice',
     'type': 'string',
     'placeholder': 'Enter choice',
     'pre': '☑',
     'autocomplete': 'choice',
   },
+}
+
+function isValidList(strings: string[]) {
+  // Check for empty elements
+  const hasEmpty = strings.some(str => str.trim() === '');
+  if (hasEmpty) {
+    return false;
+  }
+
+  // Check for duplicates
+  const set = new Set(strings.map((item: string) => item.trim()));
+  return set.size === strings.length;
 }
 
 const copyWithoutElement = (original: { [key: string]: any }, elementToRemove: string) => {
@@ -105,31 +125,37 @@ const removeElection = () => {
 }
 
 async function onFormSubmit() {
-  // TODO link to backend
-  for (const prop in references) {
-    console.log(prop);
-    console.log(references[prop].value);
-    if (Array.isArray(references[prop].value)) {
-      for (const choice in references[prop].value) {
-        console.log(choice);
-        console.log(references[prop].value[choice].value);
-      }
+
+  const errors = [];
+
+  const values: Election = {
+    goal: references['goal'].value,
+    voters: references['voters'].value,
+    startDate: references['startDate'].value,
+    endDate: references['endDate'].value,
+    choices: references['choices'].value.map((item: any) => item.value),
+  }
+
+  for (const prop in copyWithoutElement(references, 'endDate')) {
+    if (!properties[prop].validValue(references[prop].value)) {
+      errors.push(properties[prop].help);
     }
   }
-  response.value = {success: true, msg: "Successfully created election"};
-  // try {
-  //   await authStore.login(role.value, username.value, password.value);
-  // } catch (e: any) {
-  //   const genericErrorMsg = "Type the correct username and password, and try again.";
-  //   if (e instanceof AxiosError) {
-  //     response.value = {
-  //       success: false,
-  //       msg: `${e.response!.data.error.message}: ${e.response!.data.error.name}. ${genericErrorMsg}`
-  //     };
-  //   } else {
-  //     response.value = {success: false, msg: `${e.message}. ${genericErrorMsg}`};
-  //   }
-  // }
+  if (!properties['endDate'].validValue(references['endDate'].value, references['startDate'].value)) {
+    errors.push(properties['endDate'].help);
+  }
+
+  if (errors.length > 0) {
+    response.value = {success: false, msg: errors.join('\n')};
+    return;
+  }
+
+  // TODO bind backend url
+  makeRequest(`${apiEndpoints.API_SERVER}/elections/create`, "POST", values).then((res) => {
+    response.value = {success: true, msg: res};
+  }).catch((error) => {
+    response.value = {success: false, msg: error.message};
+  });
 }
 </script>
 
@@ -139,7 +165,7 @@ async function onFormSubmit() {
   <Form @submit="onFormSubmit" :response="response" submit-btn-name="Create election">
     <template v-slot:body>
       <div class="row gy-5 row-cols-lg-2 row-cols-1 mx-auto mt-1">
-        <div class="col" v-for="prop in Object.keys(copyWithoutElement(properties, 'choice'))" :key="prop">
+        <div class="col" v-for="prop in Object.keys(copyWithoutElement(properties, 'choices'))" :key="prop">
           <div class="p-3 border bg-light">
             <FormInput :helper="properties[prop]['help']"
                        :input-id="`input-${prop}`"
@@ -159,14 +185,14 @@ async function onFormSubmit() {
       <div class="row gy-5 row-cols-lg-3 row-cols-2 mx-auto my-2">
         <div class="col" v-for="idx of Array(references['choices'].value.length).keys()" :key="`choice-${idx}`">
           <div class="p-3 border bg-light">
-            <FormInput :helper="properties['choice']['help']"
-                       :input-id="`choice-input-${idx}`"
-                       :label="`${properties['choice']['label']} ${idx}`"
-                       :pre="properties['choice']['pre']">
+            <FormInput :helper="properties['choices']['help']"
+                       :input-id="`choices-input-${idx}`"
+                       :label="`${properties['choices']['label']} ${idx}`"
+                       :pre="properties['choices']['pre']">
               <input v-model="references['choices'].value[idx].value"
-                     :type="properties['choice']['type']" class="form-control"
-                     :placeholder="`${properties['choice']['placeholder']} ${idx}`" required
-                     :autocomplete="`${properties['choice']['autocomplete']} ${idx}`"/>
+                     :type="properties['choices']['type']" class="form-control"
+                     :placeholder="`${properties['choices']['placeholder']} ${idx}`" required
+                     :autocomplete="`${properties['choices']['autocomplete']} ${idx}`"/>
             </FormInput>
           </div>
         </div>
@@ -182,7 +208,6 @@ async function onFormSubmit() {
     </template>
   </Form>
 </template>
-
 
 <style scoped>
 ul {
