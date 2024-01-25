@@ -9,9 +9,9 @@
     const validationMessage = ref("")
 
     const electionName = "Test election"
-    //const uid = "65ab091c11f72779fb454ff7"
-    //const electionId = "2027020788"
-    //const jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjVhYjA5MWMxMWY3Mjc3OWZiNDU0ZmY3IiwiZW1haWwiOiJnaW9yaTIucHJvdmFAdGVzdC5pdCIsInBhc3N3b3JkIjoiJDJiJDEwJDQ5bFUvMzc1Y0RwWVpaNi8ueGdRdi5HL3BuaW1PUUQvN2pRTjlvbjk4RG1WVXlXUkx1bjdhIiwiZmlyc3ROYW1lIjoiR2lvcGFpbiIsInNlY29uZE5hbWUiOiJOb0dhaW4iLCJyb2xlIjoidXNlciIsIl9fdiI6MH0sImlhdCI6MTcwNTcwNzgxNiwiZXhwIjoxNzA1NzA4NzE2LCJhdWQiOiJodHRwczovL3d3dy5jaGFpbnZvdGUuY29tIiwiaXNzIjoiQ2hhaW5Wb3RlIn0.i19AzPc-jMaJ_B6BjHXrfNUREN13pu6vkgmmKnuCW_tzLgMx5SeUOFivBtw5ok8D2u5cj1toBfPC8tBwL4tLNam1yWb-QQUo4oQm51TiTD5vJsSURFo7Bvk85ko3uxVuATQNRnYbVfqb57Ws2cuGtKt_WVb_S_NCf9o91mCIrzDuV6xRTfK12on6CbnpLWew4UY6Nq5HKvk4I88sHLI89kN0kWBhSuOGTfD6cJ45iF0htDrSDNV_JCsNLGLEkzwGFmxZKOIBwSIIrm8qSa5HOZ0qesxunJb_7CYMyXp9UpXCV4Hj7764BbFLyRghtrS5_4M3234kS2_vlVZdDTXqxQAUfzi-VKSOLeX8bxCn99IF2v_8oC4Uhw7riIB1TIvz839vbzzFDPRimxsLDDusWRUsNEFppeOLz3__bzj0ra29hczjcx3haq0qzwmVMl26Q5UfkXn2nPXHCD8EWP4HnMuGdH9c4idRNgy4qKrMaymSitWyip9EjUwFwHS89wn1hBZavNKWZh-jRiUZ1Kbt_V0JkIU5LAQLR8xsHGR3KO4U6nE7161ZeG5E-oprWGE05ywbtXocn5u3zKSlfjw2DzFZ34CJZqSXD-P4AzkE-is0nW7B472aWzUkOrdRwzi4zOrvRiugDqq_OIAc0aElBaNOS6dJwccOF9U6jU3aUyM";
+    const uid = "65ab091c11f72779fb454ff7"
+    const electionId = "2027020788"
+    const jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiX2lkIjoiNjVhYjA5MWMxMWY3Mjc3OWZiNDU0ZmY3IiwiZW1haWwiOiJnaW9yaTIucHJvdmFAdGVzdC5pdCIsInBhc3N3b3JkIjoiJDJiJDEwJDQ5bFUvMzc1Y0RwWVpaNi8ueGdRdi5HL3BuaW1PUUQvN2pRTjlvbjk4RG1WVXlXUkx1bjdhIiwiZmlyc3ROYW1lIjoiR2lvcGFpbiIsInNlY29uZE5hbWUiOiJOb0dhaW4iLCJyb2xlIjoidXNlciIsIl9fdiI6MH0sImlhdCI6MTcwNTk1MjAzNywiZXhwIjoxNzA1OTUyOTM3LCJhdWQiOiJodHRwczovL3d3dy5jaGFpbnZvdGUuY29tIiwiaXNzIjoiQ2hhaW5Wb3RlIn0.xKYQsgBGYlXUSYQguoXoKsnRMtZrYCXnjf6vx6E84NlmmofcLbzui2Bxi-NoE9PxxQr8VpF89KNXtaDWYtRF9k6FDlkfPuO6yiDpFaeyLo44aNVZcRMvQQSj_TPIf0xB0D8rqxyF8aH4sFAZUxrOlGjP_pwKYZXvmsEQSnGR5Oc3lg_-bv_kpeV5PWPzep8FkI0-YhirzSPERXY7PoFnay1Y6boZbZmcWQQQV6MXxutRpCBumIO31MbHwoc6VVryKPJ2egM80i5UqX57puJ0hPA_MbS89R3UkS3csAFS8PwxLTxmIXmL03vqi72ZNlbV3qn4K4MPu8cfB--4ABzmSt-urDP5AIB5AAno_0O8NDLX5kuvq4kKbnXBSPbeA6jLKxvjwlIFLAN_znhfSuWoGhqQAusXyLPyXWjtEkfVvGMNHoWVEPZYjILI9p6xB9timHwvDtDUxT9B80mVy0T4sbSV9AknB163gVy1YFYfOjr-EZyyc3Z9IM3lrvSJNR5xF-8vDQy50g6R0pM5vngwVnsXIQH2z0fasfsLSAcemFYjgvMNxbWrmPualcQ-BiMtmQDo8jPj4BZmR-aH0_hWH_WEWquE-1To93RUeQISlqm7WuhwUSiH80s3Fp_kE70lF8HZyn2hX4rFovAfglkXY43ZyPrm1dmgH-b4Ved17nM";
      
     const code = ref("")
     onMounted(() => {
@@ -81,7 +81,10 @@
                             </div>
                             <div class="row mb-2" v-if="codeRequest">
                                 <p v-if="requestError" class="fail"> Error while generating code: "{{ validationMessage }}"</p>
-                                <p v-else class="success"> Code successfully validated </p>
+                                <p v-else class="success"> 
+                                    The code was successfully generated for the following election.
+                                    The first part is showed above and the second part will be sent to the email address associated with the following account.
+                                </p>
                             </div>
                         </div>
                     </div>

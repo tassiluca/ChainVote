@@ -1,6 +1,4 @@
 import ServerConfig from "./configs/server.config"
-import fs from "fs";
-
 const app = ServerConfig();
 const PORT = process.env.PORT || 8080;
 
@@ -20,18 +18,6 @@ function printInformations() {
     console.log("Authors: Giovanni Antonioni, Luca Tassinari, Luca Rubboli");
     console.log("Server Running on Port " + PORT);
 
-    const path = "/run/secrets/google_api_secret";
 
-    fs.readFile(path, 'utf8', (err, data) => {
-        if (err) {
-            console.error(`Error reading secret file: ${err.message}`);
-            process.exit(1);
-        }
-
-        const secretValue = data.trim();
-        console.log(`Secret value: ${secretValue}`);
-
-        // Use the secret value in your application
-    });
 }
 app.listen(PORT, printInformations);

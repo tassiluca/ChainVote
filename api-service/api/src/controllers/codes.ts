@@ -9,6 +9,9 @@ import {StatusCodes} from "http-status-codes";
 import transformHyperledgerError from "../blockchain/errors/error.handling";
 import {ac} from "../configs/accesscontrol.config";
 import {ErrorTypes, UnauthorizedError} from "core-components";
+import mailer from "../configs/mailer.config";
+
+
 
 const channelName = "ch2";
 const contractName = "chaincode-votes";
@@ -132,8 +135,38 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
         });
 
         const result = utf8Decoder.decode(codeRequest);
+        const code = JSON.parse(result).result;
+
+        // Divide the code in two parts
+        const firstPart = code.substring(0, code.length/2);
+        const secondPart = code.substring(code.length/2, code.length);
+
+
         res.locals.code = StatusCodes.CREATED;
-        res.locals.data = JSON.parse(result).result;
+        res.locals.data = firstPart;
+
+        const message = {
+            from: 'ChainVote',
+            to: 'giovanni.antonioni2@studio.unibo.it',
+            subject: 'The other part of your code is here',
+            html: `
+                Hello ${res.locals.user.firstName} ${res.locals.user.secondName},<br>
+                This is the other part of your code: <b>${secondPart}</b>
+            `
+        };
+
+        mailer.sendMail(message).then((info) => {
+            return res.status(201).json(
+                {
+                    msg: "Email sent",
+                    info: info.messageId
+                }
+            )
+        }).catch((err) => {
+                return res.status(500).json({ msg: err });
+            }
+        );
+
     } catch (error) {
         return next(transformHyperledgerError(error));
     }
