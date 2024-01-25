@@ -36,7 +36,7 @@ library.add(faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket);
           <li class="nav-item">
             <a class="nav-link" href="/dashboard">Dashboard</a>
           </li>
-          <a class="navbar-brand d-none d-md-block" href="/login">
+          <a class="navbar-brand d-none d-md-block" href="/login" @click="authStore.isLogged ? authStore.logout() : null">
             <font-awesome-icon v-if="!authStore.isLogged" icon="right-to-bracket" size="2x" />
             <font-awesome-icon v-if="authStore.isLogged" icon="right-from-bracket" size="2x" />
           </a>

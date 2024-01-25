@@ -33,10 +33,10 @@ library.add(faCirclePlus, faCircleXmark);
     <span v-if="medium" id="medium">{{medium}}</span>
     <span><slot /></span>
     <span v-if="smaller" id="smaller">{{smaller}}</span>
-    <button v-if="$slots.details" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-      <font-awesome-icon class="text-primary" icon="circle-plus" />
+    <button v-if="$slots.details" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#detailsModal" aria-label="More details">
+      <font-awesome-icon class="text-primary" icon="circle-plus" size="2x" />
     </button>
-    <div v-if="$slots.details" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div v-if="$slots.details" class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
           <div class="row">

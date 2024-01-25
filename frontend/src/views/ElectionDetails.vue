@@ -1,18 +1,19 @@
 <script setup lang="ts">
+import router from "@/router";
+import io from "socket.io-client";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCircleInfo, faSquarePollHorizontal } from '@fortawesome/free-solid-svg-icons'
+import { onMounted, onUnmounted, type Ref, ref } from "vue";
+import { useVotingStore, type Voting} from "@/stores/voting";
+import { useAuthStore } from "@/stores/auth";
+import { useRoute } from "vue-router";
+import { formatDate, formatTime, highestOf } from "@/commons/utils";
+import { apiEndpoints } from "@/commons/globals";
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
 import Tile from '@/components/tiles/TileComponent.vue'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCircleInfo, faSquarePollHorizontal } from '@fortawesome/free-solid-svg-icons'
-import {onMounted, onUnmounted, type Ref, ref} from "vue";
-import { useVotingStore, type Voting} from "@/stores/voting";
-import { useAuthStore } from "@/stores/auth";
-import router from "@/router";
-import { useRoute } from "vue-router";
 import BarChart from "@/components/charts/BarChart.vue";
 import PieChart from "@/components/charts/PieChart.vue";
-import io from "socket.io-client";
-import {apiEndpoints} from "@/commons/globals";
 
 const socket = io(apiEndpoints.API_SERVER)
 const votingStore = useVotingStore();
@@ -28,8 +29,13 @@ onMounted(async () => {
   } else {
     await getVotingDetails(route.params.id.toString());
     socket.emit("joinRoom", "election-" + voting.value?.id);
-    socket.on("updateTurnout", (turnout: any) => {
-      console.log(turnout);
+    socket.on("updateTurnout", (turnout: string) => {
+      if (voting.value) {
+        voting.value = {
+          ...voting.value, // Shallow copy of the original object
+          turnout: turnout,
+        };
+      }
     });
   }
 });
@@ -45,36 +51,6 @@ async function getVotingDetails(id: string) {
     console.error(e);
     await router.push({name: "not-found"})
   }
-}
-
-function formatDate(date: Date) {
-  const options: Intl.DateTimeFormatOptions = {
-    day: '2-digit',
-    month: 'short',
-    year: '2-digit',
-  };
-  return new Intl.DateTimeFormat('it-IT', options).format(date).toString();
-}
-
-function formatTime(date: Date) {
-  const options: Intl.DateTimeFormatOptions = {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true, // Use 12-hour clock with AM/PM
-  };
-  return new Intl.DateTimeFormat('it-IT', options).format(date).toString();
-}
-
-function getHighest(data: Record<string, number>): { key: string, value: number } {
-  let maxKey: string = '';
-  let maxValue: number = 0;
-  for (const [key, value] of Object.entries(data)) {
-    if (value > maxValue) {
-      maxKey = key;
-      maxValue = value;
-    }
-  }
-  return { key: maxKey, value: maxValue as number };
 }
 </script>
 
@@ -109,14 +85,34 @@ function getHighest(data: Record<string, number>): { key: string, value: number 
         <Tile title="Results">
           <template #default>
             <p v-if="Object.keys(voting.results).length !== 0">
-              The option '<strong>{{ getHighest(voting.results)!.key }}</strong>' has collected the highest number of votes.
+              The option '<strong>{{ highestOf(voting.results).key }}</strong>' has collected the highest number of votes.
             </p>
             <p v-else>Voting is still open, results will be made available after closing date.</p>
           </template>
-          <template #details>
-            <p>Results are here presented: </p>
-            <BarChart />
-            <PieChart />
+          <template #details v-if="Object.keys(voting.results).length !== 0">
+            <p class="text-black">Results are here presented: </p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Choice</th>
+                  <th>Number of Votes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(votes, choice) in voting.results" :key="choice">
+                  <td>{{ choice }}</td>
+                  <td>{{ votes }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <BarChart
+                :labels="Object.keys(voting.results)"
+                :values="[{ 'title': 'Number of votes', 'label': 'votes no.', 'data': Object.values(voting.results) }]"
+            />
+            <PieChart
+                :labels="Object.keys(voting.results)"
+                :values="Object.values(voting.results)"
+            />
           </template>
         </Tile>
       </div>

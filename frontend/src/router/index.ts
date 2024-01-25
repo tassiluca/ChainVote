@@ -1,10 +1,14 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import axios from "axios";
 import LoginView from '@/views/LoginView.vue'
 import NotificationsView from '@/views/NotificationsView.vue'
-import VotingDetails from '@/views/VotingDetails.vue'
 import NotFound from "@/views/NotFound.vue";
-import Test from "@/views/Test.vue";
-import axios from "axios";
+import HomeView from "@/views/HomeView.vue";
+import DashboardView from "@/views/DashboardView.vue";
+import CreateElectionView from "@/views/CreateElectionView.vue";
+import RegisterView from "@/views/RegisterView.vue";
+import UserAreaView from "@/views/UserAreaView.vue";
+import ElectionDetails from "@/views/ElectionDetails.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,22 +16,27 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/HomeView.vue'),
+      component: HomeView,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
     },
     {
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('@/views/DashboardView.vue'),
     },
-    // {
-    //   path: '/elections',
-    //   name: 'elections',
-    //   component: () => import('@/views/ElectionsTestView.vue'),
-    // },
     {
       path: '/vote/:id',
       name: 'vote',
-      beforeEnter: (to, from, next) => {
+      beforeEnter: (to, from, next) => { // TODO: move to component / store ?
         try {
           axios.get(`http://localhost:8080/election/info/detail/${to.params.id}`)
             .then((response) => {
@@ -48,19 +57,31 @@ const router = createRouter({
       component: () => import('@/views/ElectionsView.vue'),
     },
     {
-      path: '/login',
-      name: 'login',
-      component: LoginView
+      path: '/elections/create',
+      name: 'create-election',
+      component: CreateElectionView,
+    },
+    { // TODO: rename in elections/vote/:id ?
+      path: '/vote/:id',
+      name: 'vote',
+      beforeEnter: (to, from, next) => { // TODO: move to component / store ?
+        try {
+          axios.get(`http://localhost:8080/election/info/detail/${to.params.id}`)
+            .then((response) => {
+              to.meta.data = response.data.data;
+              next();
+            });
+        } catch (error) {
+          console.log(error);
+          // next({ name: 'not-found' });
+        }
+      },
+      component: () => import('@/views/VoteView.vue'),
     },
     {
-      path: '/user/notifications',
-      name: 'notifications',
-      component: NotificationsView
-    },
-    {
-      path: '/voting/details/:id',
-      name: 'voting-details',
-      component: VotingDetails
+      path: '/elections/:id',
+      name: 'election-details',
+      component: ElectionDetails
     },
     {
       path: '/user',
@@ -68,19 +89,9 @@ const router = createRouter({
       component: () => import('@/views/UserAreaView.vue'),
     },
     {
-      path: '/register', 
-      name: 'register',
-      component: () => import('@/views/RegisterView.vue'),
-    },
-    {
-      path: '/elections/create',
-      name: 'create-election',
-      component: () => import('@/views/CreateElectionView.vue'),
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: Test,
+      path: '/user/notifications',
+      name: 'notifications',
+      component: NotificationsView
     },
     {
       // TODO: change path

@@ -4,8 +4,6 @@ import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
 import {onMounted, type Ref, ref} from "vue";
 import PageTitle from "@/components/PageTitleComponent.vue";
-import {makeRequest} from "@/assets/utils";
-import {apiEndpoints} from "@/commons/globals";
 import {Role, useAuthStore} from "@/stores/auth";
 import router from "@/router";
 import {useVotingStore, type VotingCreation} from "@/stores/voting";
@@ -14,10 +12,10 @@ const authStore = useAuthStore();
 const votingStore = useVotingStore();
 
 onMounted(() => {
-  if (!authStore.isLogged()) {
+  if (!authStore.isLogged) {
     router.push("/login");
   } else {
-    if (authStore.role() !== Role.Admin) {
+    if (authStore.userRole !== Role.Admin) {
       router.push({name: "error", params: {code: 403, msg: "You are not authorized to access this page."}});
     }
   }
