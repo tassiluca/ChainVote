@@ -146,7 +146,7 @@ const router = createRouter({
                   ]
                 }
               ]
-              next({ name: 'error' });
+              // next({ name: 'error' });
               next();
             });
         } catch (error) {
