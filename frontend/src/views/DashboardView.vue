@@ -3,6 +3,7 @@
   <PageTitle title="Dashboard" />
   <div v-for="qualifier in qualifiers" :class="`elections col-10 center mx-auto election election-${qualifier} bg-light`" :key="`div-${qualifier}`">
     <a :href="`/elections?qualifier=${qualifier}`" class="election-link">{{ capitalizeFirstLetter(qualifier) }} Elections</a>
+    <hr v-if="getData(qualifier).length > 0"/>
     <Carousel :elections="getData(qualifier)"/>
   </div>
 </template>
@@ -86,6 +87,11 @@ function getData(qualifier: string) {
 
   .election-link:hover {
     text-decoration: none;
+  }
+
+  hr {
+    border: solid;
+    border-color: inherit;
   }
 
   .elections {
