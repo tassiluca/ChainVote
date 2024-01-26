@@ -1,5 +1,6 @@
 import {destroyConnection, dropCollectionsInDb, setupConnection} from "../../utils/local.db";
-import {ScheduledNotification, EventType} from "./scheduled.notification";
+import {ScheduledNotification} from "./scheduled.notification";
+import {EventType} from "../notification/notification";
 
 beforeAll(async () => {
     await setupConnection();

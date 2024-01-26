@@ -1,9 +1,6 @@
-import mongoose, {Model, Schema, Types} from "mongoose"
+import mongoose, {Model, Schema} from "mongoose"
+import {EventType} from "../notification/notification";
 
-export enum EventType {
-    OPENING_ELECTION = "opening-election",
-    CLOSING_ELECTION = "closing-election",
-}
 
 export interface IScheduledNotification{
     when: Date,
@@ -11,8 +8,8 @@ export interface IScheduledNotification{
     data?: Schema.Types.Mixed
 }
 
-type PendingNotificationDocumentType = Model<IScheduledNotification>
-const ScheduledNotification = new Schema<IScheduledNotification, PendingNotificationDocumentType>({
+type ScheduledNotificationDocumentType = Model<IScheduledNotification>
+const ScheduledNotification = new Schema<IScheduledNotification, ScheduledNotificationDocumentType>({
     when: {
         type: Date,
         required: true,
