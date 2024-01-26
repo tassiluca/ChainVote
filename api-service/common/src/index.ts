@@ -14,8 +14,15 @@ export {
 } from "./models/scheduled-notification/scheduled.notification";
 
 export {
-    EventType
+    EventType,
+    Notification
 } from "./models/notification/notification";
+
+export {
+    ReadNotification
+} from "./models/read-notification/read.notification";
+
+
 
 /**
  * Exporting errors
