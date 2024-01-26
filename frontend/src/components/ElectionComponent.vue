@@ -17,9 +17,9 @@
     </div>
     <div class="vl col-1 d-flex flex-column"></div>
     <div class="msg col d-flex flex-column text-center">
-      <p><a :href="`/election/${election.id}`" class="name">{{ election.name }}</a></p>
-      <p>{{ election.name }} has actually <span class="attribute">{{ election.affluence }}</span> affluence.
-        <br/>Admissible choices are: <span class="attribute">{{election.choices.join(', ')}}</span>.
+      <p><a :href="`/election/${election.id}`" class="name">{{ election.goal }}</a></p>
+      <p>{{ election.goal }} has actually <span class="attribute">{{ election.turnout }}%</span> affluence.
+        <br/>Admissible choices are: <span class="attribute">{{election.choices.map((choice: Choice) => choice.name).join(', ')}}</span>.
       </p>
       <p>
         <a :href="`/election/${election.id}`" class="useful-link">Details</a>
@@ -30,21 +30,14 @@
 </template>
 
 <script setup lang="ts">
-interface Election {
-  id: string,
-  name: string,
-  start: Date,
-  end: Date,
-  affluence: string,
-  choices: [string]
-}
+import type {Choice, Voting} from "@/stores/voting";
 
-function isOpen(election: Election): boolean {
+function isOpen(election: Voting): boolean {
   const now = new Date();
   return now >= election.start && now < election.end;
 }
 defineProps<{
-  election: Election,
+  election: Voting
 }>()
 </script>
 
