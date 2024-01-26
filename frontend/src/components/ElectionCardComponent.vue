@@ -1,18 +1,18 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title"><a :href="`/election/details/${election.id}`">{{ election.name }}</a></h5>
+      <h5 class="card-title"><a :href="`/election/details/${election.id}`">{{ election.goal }}</a></h5>
       <hr class="solid"/>
       <ul class="election-props">
         <li>
-          <strong>Start:</strong> {{ ("0" + election.start.getDay()).slice(-2) }} {{ election.start.toLocaleString('default', { month: 'short' }) }} {{election.start.getFullYear() }} {{ election.start.getHours() }}:{{ ("0" + election.start.getMinutes()).slice(-2) }}
+          <strong>Start:</strong> {{ ("0" + election.start.getUTCDate()).slice(-2) }} {{ election.start.toLocaleString('default', { month: 'short' }) }} {{election.start.getFullYear() }} {{ election.start.getHours() }}:{{ ("0" + election.start.getMinutes()).slice(-2) }}
 <!--          <strong>Start:</strong> {{ election.start.getDay() }}/{{ election.start.getMonth() }}/{{ election.start.getFullYear() }} {{ election.start.getHours() }}:{{ election.start.getMinutes() }}-->
         </li>
         <li>
-          <strong>End:</strong> {{ ("0" + election.end.getDay()).slice(-2) }} {{ election.end.toLocaleString('default', { month: 'short' }) }} {{election.start.getFullYear() }} {{ election.end.getHours() }}:{{ ("0" + election.end.getMinutes()).slice(-2) }}
+          <strong>End:</strong> {{ ("0" + election.end.getUTCDate()).slice(-2) }} {{ election.end.toLocaleString('default', { month: 'short' }) }} {{election.end.getFullYear() }} {{ election.end.getHours() }}:{{ ("0" + election.end.getMinutes()).slice(-2) }}
         </li>
         <li>
-          <strong>Affluence:</strong> {{ election.affluence }}
+          <strong>Affluence:</strong> {{ election.turnout }}%
         </li>
         <li>
           <div class="card links mx-auto">
@@ -33,20 +33,16 @@
 
 <script setup lang="ts">
 
+import type {Voting} from "@/stores/voting";
+
 defineProps<{
-  election: Election,
+  election: {
+    type: Voting,
+    required: true
+  },
 }>()
 
-interface Election {
-  id: string,
-  name: string,
-  start: Date,
-  end: Date,
-  affluence: string,
-  choices: [string]
-}
-
-function isOpen(election: Election): boolean {
+function isOpen(election: Voting): boolean {
   const now = new Date();
   return now >= election.start && now < election.end;
 }

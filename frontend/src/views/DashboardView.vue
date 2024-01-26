@@ -12,11 +12,64 @@
 import Carousel from "@/components/CarouselComponent.vue";
 import PageTitle from "@/components/PageTitleComponent.vue";
 import Breadcrumb from "@/components/BreadcrumbComponent.vue";
-import {computed} from "vue";
-import {useRoute} from "vue-router";
+import {computed, onMounted, ref, type Ref} from "vue";
+import router from "@/router";
+import {useVotingStore, type Voting} from "@/stores/voting";
+import {useAuthStore} from "@/stores/auth";
 
-const route = useRoute();
-const data: any = route.meta.data;
+const votingStore = useVotingStore();
+const authStore = useAuthStore();
+const data: Ref<Voting[] | null> = ref(null);
+
+onMounted(async () => {
+  if (!authStore.isLogged()) {
+    await router.push("/login");
+  } else {
+    await getVotings();
+  }
+});
+  // data.value = [{
+  //     id: 1,
+  //     goal: "Elezione del presidente del consiglio dei ministri prova 1",
+  //     start: new Date("2021-10-04T10:00"),
+  //     end: new Date("2026-11-04T10:00"),
+  //     turnout: "20",
+  //     choices: [
+  //       {name: "choice 0"},
+  //       {name: "choice 1"},
+  //     ],
+  //     voters: 10,
+  //     results: {
+  //       first: 5,
+  //       second: 3,
+  //     }
+  //   },
+  //   {
+  //     id: 2,
+  //     goal: "Elezione del presidente del consiglio dei ministri prova 2",
+  //     start: new Date("2021-10-04T10:00"),
+  //     end: new Date("2026-11-04T10:00"),
+  //     turnout: "20",
+  //     choices: [
+  //       {name: "choice 0"},
+  //       {name: "choice 1"},
+  //     ],
+  //     voters: 10,
+  //     results: {
+  //       first: 5,
+  //       second: 3,
+  //     },
+  //   },
+  // ]
+
+async function getVotings() {
+  try {
+    data.value = await votingStore.getVotings();
+  } catch (e: any) {
+    console.error(e);
+    await router.push({name: "not-found"})
+  }
+}
 
 function capitalizeFirstLetter(str: string) {
   if (str === '') {
@@ -25,26 +78,21 @@ function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-interface Election {
-  id: string,
-  name: string,
-  start: Date,
-  end: Date,
-  affluence: string,
-  choices: [string]
+function sortElectionsByDate(elections: Voting[], prop: keyof Voting = 'start'): Voting[] {
+  return elections.sort((a: Voting, b: Voting) => a[prop as keyof typeof a] - b[prop as keyof typeof b]);
 }
 
-function isOpen(election: Election): boolean {
+function isOpen(election: Voting): boolean {
   const now = new Date();
   return now >= election.start && now < election.end;
 }
 
-function isClosed(election: Election): boolean {
+function isClosed(election: Voting): boolean {
   const now = new Date();
   return now >= election.end;
 }
 
-function isSoon(election: Election): boolean {
+function isSoon(election: Voting): boolean {
   const now = new Date();
   return now < election.start;
 }
@@ -52,15 +100,15 @@ function isSoon(election: Election): boolean {
 const qualifiers = ['open', 'closed', 'soon'];
 
 const getOpen = computed(() => {
-  return Object.assign([], data).filter((election: Election) => isOpen(election));
+  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isOpen(election)));
 });
 
 const getClosed = computed(() => {
-  return Object.assign([], data).filter((election: Election) => isClosed(election));
+  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isClosed(election)));
 });
 
 const getSoon = computed(() => {
-  return Object.assign([], data).filter((election: Election) => isSoon(election));
+  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isSoon(election)));
 });
 
 function getData(qualifier: string) {

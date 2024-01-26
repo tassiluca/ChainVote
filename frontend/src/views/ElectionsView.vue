@@ -3,13 +3,67 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
 import {useRoute} from "vue-router";
-import {computed, ref} from "vue";
+import {computed, onMounted, type Ref, ref} from "vue";
 import ElectionComponent from "@/components/ElectionComponent.vue";
+import {useVotingStore, type Voting} from "@/stores/voting";
+import {useAuthStore} from "@/stores/auth";
+import router from "@/router";
 
+const votingStore = useVotingStore();
+const authStore = useAuthStore();
+const data: Ref<Voting[] | null> = ref(null);
+
+onMounted(async () => {
+  if (!authStore.isLogged()) {
+    await router.push("/login");
+  } else {
+    await getVotings();
+  }
+})
+  // data.value = [{
+  //     id: 1,
+  //     goal: "Elezione del presidente del consiglio dei ministri prova 1",
+  //     start: new Date("2021-10-04T10:00"),
+  //     end: new Date("2026-11-04T10:00"),
+  //     turnout: "20",
+  //     choices: [
+  //       {name: "choice 0"},
+  //       {name: "choice 1"},
+  //     ],
+  //     voters: 10,
+  //     results: {
+  //       first: 5,
+  //       second: 3,
+  //     }
+  //   },
+  //   {
+  //     id: 2,
+  //     goal: "Elezione del presidente del consiglio dei ministri prova 2",
+  //     start: new Date("2021-10-04T10:00"),
+  //     end: new Date("2026-11-04T10:00"),
+  //     turnout: "20",
+  //     choices: [
+  //       {name: "choice 0"},
+  //       {name: "choice 1"},
+  //     ],
+  //     voters: 10,
+  //     results: {
+  //       first: 5,
+  //       second: 3,
+  //     },
+  //   },
+  // ]
+
+async function getVotings() {
+  try {
+    data.value = await votingStore.getVotings();
+  } catch (e: any) {
+    console.error(e);
+    await router.push({name: "not-found"})
+  }
+}
 // read meta parameters from the router
 const route = useRoute();
-const data: any = route.meta.data;
-
 const qualifier: string = route.query.qualifier as string;
 const picked = ref('all');
 
@@ -24,44 +78,39 @@ function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-interface Election {
-  id: string,
-  name: string,
-  start: Date,
-  end: Date,
-  affluence: string,
-  choices: [string]
+function sortElectionsByDate(elections: Voting[], prop: keyof Voting = 'start'): Voting[] {
+  return elections.sort((a: Voting, b: Voting) => a[prop as keyof typeof a] - b[prop as keyof typeof b]);
 }
 
-function isOpen(election: Election): boolean {
+function isOpen(election: Voting): boolean {
   const now = new Date();
   return now >= election.start && now < election.end;
 }
 
-function isClosed(election: Election): boolean {
+function isClosed(election: Voting): boolean {
   const now = new Date();
   return now >= election.end;
 }
 
-function isSoon(election: Election): boolean {
+function isSoon(election: Voting): boolean {
   const now = new Date();
   return now < election.start;
 }
 
 const getAll = computed(() => {
-  return Object.assign([], data);
+  return sortElectionsByDate(Object.assign([], data.value));
 });
 
 const getOpen = computed(() => {
-  return Object.assign([], data).filter((election: Election) => isOpen(election));
+  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isOpen(election)));
 });
 
 const getClosed = computed(() => {
-  return Object.assign([], data).filter((election: Election) => isClosed(election));
+  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isClosed(election)));
 });
 
 const getSoon = computed(() => {
-  return Object.assign([], data).filter((election: Election) => isSoon(election));
+  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isSoon(election)));
 });
 
 const query: string[] = ["all", "open", "closed", "soon"]
@@ -124,7 +173,7 @@ function resetPage() {
   </div>
   <div class="container-sm col-10 col-md-8 text-center">
     <div v-if="displayedElections.length > 0">
-      <div v-for="election in displayedElections" :key="election.id" class="row election">
+      <div v-for="election in displayedElections" :key="String(election.id)" class="row election">
         <ElectionComponent :election="election"/>
       </div>
       <div class="pagination-buttons" v-if="totalPages>2">

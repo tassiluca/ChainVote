@@ -41,11 +41,11 @@
 </template>
 
 <script setup lang="ts">
-  import {makeRequest} from "@/assets/utils";
   import {ref} from "vue";
   import {useForm} from "vee-validate";
   import * as yup from "yup";
   import {apiEndpoints} from "@/commons/globals";
+  import axios from "axios";
 
   const props = defineProps<{
     property: string,
@@ -87,7 +87,7 @@
     hideElem(document.getElementById(`old-value-${props.property}-separator`)!);
     // TODO bind backend url
 
-    makeRequest(`${apiEndpoints.API_SERVER}/users/change-property`, "POST", values).then((response) => {
+    axios.post(`${apiEndpoints.API_SERVER}/users/change-property`, values).then((response) => {
       success.innerHTML = response.data.message;
       showElem(success);
       hideElem(err);

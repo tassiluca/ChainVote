@@ -1,27 +1,41 @@
 import { defineStore } from 'pinia'
+import { computed, ref } from "vue";
 import axios from 'axios'
 import router from "@/router";
 import { apiEndpoints } from "@/commons/globals";
 
 export enum Role { User = 'user', Admin = 'admin' }
 
+export interface User {
+  name: string,
+  surname: string,
+  email: string,
+  password: string,
+  role: Role,
+}
+
 export const useAuthStore = defineStore('auth',  () => {
 
   /** The url to which redirect the client after a successful login. */
   const returnUrl = '/dashboard';
-  /** The timeout for the refresh token. */
-  let refreshTokenTimeout: number;
+  /** The user JWT access token or null if not logged. */
+  const accessToken = ref(sessionStorage.getItem("accessToken"));
+  /** The username of the logged user or null if not logged. */
+  const user = ref(sessionStorage.getItem("username"));
+  /** The role of the logged user or null if not logged. */
+  const userRole = ref(sessionStorage.getItem("role"));
+  /** True if the user is logged, false otherwise. */
+  const isLogged = computed(() => accessToken.value !== null)
 
   /** Attempts to log in the user with the given credentials, throwing an exception if the request fails. */
   async function login(role: Role, username: string, password: string) {
     const url = `${apiEndpoints.AUTH_SERVER}/auth/login`;
     const response= await axios.post(url, { email: username, password: password });
     await verifyRole(username, role, response.data.data.accessToken);
-    sessionStorage.setItem('username', username);
-    sessionStorage.setItem('accessToken', response.data.data.accessToken);
-    sessionStorage.setItem('refreshToken', response.data.data.refreshToken);
-    sessionStorage.setItem('role', role);
-    startRefreshTokenTimer();
+    setUser(username);
+    setUserRole(role);
+    setAccessToken(response.data.data.accessToken);
+    setRefreshToken(response.data.data.refreshToken);
     await router.push(returnUrl);
   }
 
@@ -35,59 +49,69 @@ export const useAuthStore = defineStore('auth',  () => {
     }
   }
 
-  function startRefreshTokenTimer() {
-    const jwtBase64 = accessToken()!.split('.')[1];
-    const jwtPayload = JSON.parse(atob(jwtBase64));
-    const expires = new Date(jwtPayload.exp * 1000);
-    console.debug(expires);
-    const timeout = expires.getTime() - Date.now() - (60 * 1000);
-    console.debug(timeout);
-    refreshTokenTimeout = setTimeout(refreshAccessToken, timeout);
-  }
-
   async function refreshAccessToken() {
     console.debug('Refreshing access token...');
     const url = `${apiEndpoints.AUTH_SERVER}/auth/refresh`;
-    try {
-      const response= await axios.post(url, { email: username(), refreshToken: refreshToken() });
-      sessionStorage.setItem('accessToken', response.data.data.accessToken);
-      sessionStorage.setItem('refreshToken', response.data.data.refreshToken);
-      startRefreshTokenTimer();
-    } catch (error) {
-      console.error(error);
-      await logout();
-    }
+    const response= await axios.post(url, {
+      email: sessionStorage.getItem("username"),
+      refreshToken: sessionStorage.getItem("refreshToken")
+    });
+    setAccessToken(response.data.data.accessToken);
+    setRefreshToken(response.data.data.refreshToken);
   }
 
   /** Logout the user. */
   async function logout() {
-    stopRefreshTokenTimer();
+    accessToken.value = null;
+    user.value = null;
+    userRole.value = null;
     sessionStorage.removeItem('username');
     sessionStorage.removeItem('accessToken');
     sessionStorage.removeItem('refreshToken');
     sessionStorage.removeItem('role');
-    console.info("Logged out!");
-    await router.push('/login');
+    console.debug("Logged out!");
+    // router.push('/login') does not interrupt the execution of the request that triggered the logout
+    // causing the caller to not be redirected to the login page.
+    window.location.href = '/login';
+  }
+
+  function setAccessToken(token: string) {
+    accessToken.value = token;
+    sessionStorage.setItem('accessToken', token);
+    console.debug(`Expiration access token: ${new Date(1000 * JSON.parse(atob(token.split('.')[1])).exp)}`);
+  }
+
+  async function getUserInfo(): Promise<User> {
+    const url = `${apiEndpoints.API_SERVER}/users`;
+    const response = await axios.get(url, { headers: { Authorization: `Bearer ${accessToken()}` } });
+    return response.data.data;
+  }
+
+  async function updateUserInfo(property: Record<string, string>): Promise<User> {
+    const url = `${apiEndpoints.API_SERVER}/users`;
+    const response = await axios.put(url, property, { headers: { Authorization: `Bearer ${accessToken()}` } });
+    return response.data.data;
   }
 
   function stopRefreshTokenTimer() {
     clearTimeout(refreshTokenTimeout);
   }
 
-  /** Returns true if the user is logged in, false otherwise. */
-  function isLogged(): boolean {
-    return accessToken() !== null;
+  function setRefreshToken(token: string) {
+    sessionStorage.setItem('refreshToken', token);
+    console.debug(`Expiration refresh token: ${new Date(1000 * JSON.parse(atob(token.split('.')[1])).exp)}`);
   }
 
-  /** Returns the username of the logged user, or null if the user is not logged in. */
-  function username(): string | null {
-    return sessionStorage.getItem('username');
+  function setUser(username: string) {
+    user.value = username;
+    sessionStorage.setItem('username', username);
   }
 
-  /** Returns the access token of the logged user, or null if the user is not logged in. */
-  function accessToken(): string | null {
-    return sessionStorage.getItem('accessToken');
+  function setUserRole(role: Role) {
+    userRole.value = role;
+    sessionStorage.setItem('role', role);
   }
+
 
   /** Returns the refresh token of the logged user, or null if the user is not logged in. */
   function refreshToken(): string | null {
@@ -99,5 +123,6 @@ export const useAuthStore = defineStore('auth',  () => {
     return sessionStorage.getItem('role') as Role;
   }
 
-  return { returnUrl, role, username, accessToken, login, logout, isLogged }
+  return { returnUrl, role, username, accessToken, login, logout, isLogged, getUserInfo, updateUserInfo }
+
 });
