@@ -2,18 +2,26 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
-import {type Ref, ref} from "vue";
+import {onMounted, type Ref, ref} from "vue";
 import PageTitle from "@/components/PageTitleComponent.vue";
 import {makeRequest} from "@/assets/utils";
 import {apiEndpoints} from "@/commons/globals";
+import {Role, useAuthStore} from "@/stores/auth";
+import router from "@/router";
+import {useVotingStore, type VotingCreation} from "@/stores/voting";
 
-interface Election {
-  goal: string
-  voters: number
-  startDate: string | Date
-  endDate: string | Date
-  choices: string[]
-}
+const authStore = useAuthStore();
+const votingStore = useVotingStore();
+
+onMounted(() => {
+  if (!authStore.isLogged()) {
+    router.push("/login");
+  } else {
+    if (authStore.role() !== Role.Admin) {
+      router.push({name: "error", params: {code: 403, msg: "You are not authorized to access this page."}});
+    }
+  }
+})
 
 const response = ref({})
 
@@ -43,6 +51,7 @@ const copyWithoutElement = (original: { [key: string]: any }, elementToRemove: s
 
   return copy;
 };
+
 
 function resetValues() {
   for (const prop in copyWithoutElement(startValues, 'choices')) {
@@ -139,7 +148,7 @@ async function onFormSubmit() {
 
   const errors = [];
 
-  const values: Election = {
+  const values: VotingCreation = {
     goal: references['goal'].value,
     voters: references['voters'].value,
     startDate: references['startDate'].value,
@@ -161,13 +170,12 @@ async function onFormSubmit() {
     return;
   }
 
-  // TODO bind backend url
-  makeRequest(`${apiEndpoints.API_SERVER}/elections/create`, "POST", values).then((res) => {
-    response.value = {success: true, msg: res};
-    resetValues();
-  }).catch((error) => {
-    response.value = {success: false, msg: error.message};
-  });
+  votingStore.createVoting(values).then((res) => {
+    response.value = {success: res.success, msg: res.msg};
+    if (res.success) {
+      resetValues();
+    }
+  })
 }
 </script>
 
