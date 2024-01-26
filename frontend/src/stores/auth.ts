@@ -5,6 +5,14 @@ import { apiEndpoints } from "@/commons/globals";
 
 export enum Role { User = 'user', Admin = 'admin' }
 
+export interface User {
+  name: string,
+  surname: string,
+  email: string,
+  password: string,
+  role: Role,
+}
+
 export const useAuthStore = defineStore('auth',  () => {
 
   /** The url to which redirect the client after a successful login. */
@@ -70,6 +78,18 @@ export const useAuthStore = defineStore('auth',  () => {
     await router.push('/login');
   }
 
+  async function getUserInfo(): Promise<User> {
+    const url = `${apiEndpoints.API_SERVER}/users`;
+    const response = await axios.get(url, { headers: { Authorization: `Bearer ${accessToken()}` } });
+    return response.data.data;
+  }
+
+  async function updateUserInfo(property: Record<string, string>): Promise<User> {
+    const url = `${apiEndpoints.API_SERVER}/users`;
+    const response = await axios.put(url, property, { headers: { Authorization: `Bearer ${accessToken()}` } });
+    return response.data.data;
+  }
+
   function stopRefreshTokenTimer() {
     clearTimeout(refreshTokenTimeout);
   }
@@ -99,5 +119,5 @@ export const useAuthStore = defineStore('auth',  () => {
     return sessionStorage.getItem('role') as Role;
   }
 
-  return { returnUrl, role, username, accessToken, login, logout, isLogged }
+  return { returnUrl, role, username, accessToken, login, logout, isLogged, getUserInfo, updateUserInfo }
 });
