@@ -1,8 +1,14 @@
 <script setup lang="ts">
 
 defineProps<{
-    optId: string;
-    name: string;
+    optId: {
+      type: string,
+      required: true
+    },
+    name: {
+      type: string,
+      required: true
+    },
 }>()
 
 
