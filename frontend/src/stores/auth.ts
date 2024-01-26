@@ -3,8 +3,7 @@ import { computed, ref } from "vue";
 import axios from 'axios'
 import router from "@/router";
 import { apiEndpoints } from "@/commons/globals";
-
-export enum Role { User = 'user', Admin = 'admin' }
+import {type Role, toRole} from "@/commons/utils";
 
 export interface User {
   name: string,
@@ -23,7 +22,7 @@ export const useAuthStore = defineStore('auth',  () => {
   /** The username of the logged user or null if not logged. */
   const user = ref(sessionStorage.getItem("username"));
   /** The role of the logged user or null if not logged. */
-  const userRole = ref(sessionStorage.getItem("role"));
+  const userRole = ref(toRole(sessionStorage.getItem("role")));
   /** True if the user is logged, false otherwise. */
   const isLogged = computed(() => accessToken.value !== null)
 

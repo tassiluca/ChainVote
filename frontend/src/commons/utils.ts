@@ -1,3 +1,19 @@
+/**
+ * Contains utility functions used by multiple components.
+ */
+
+/** An enum representing the possible roles of a user. */
+export enum Role { User = 'user', Admin = 'admin' }
+
+/**
+ * Converts the given role string to the corresponding Role enum value or undefined if the string is not a valid role.
+ * @param roleString the role string to convert
+ */
+export function toRole(roleString: string | null): Role | null {
+  console.log(`toRole(${roleString})`);
+  const possiblyRole = roleString?.toLowerCase() as Role;
+  return (possiblyRole && Object.values(Role).includes(possiblyRole)) ? possiblyRole : null;
+}
 
 /**
  * Formats the given date as a string with the format "dd MMM yy" w.r.t. italian timezone (e.g. "01 Jan 21")

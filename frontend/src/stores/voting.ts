@@ -49,11 +49,11 @@ export const useVotingStore = defineStore('voting', () => {
     const urlDetails = `${apiEndpoints.API_SERVER}/election/all`;
     const electionDetailsResponse = await axios.get(
         urlDetails,
-        { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+        { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
     );
     const electionInfosResponse = await axios.get(
         urlInfos,
-        { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+        { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
     );
 
     const votings: Voting[] = [];
@@ -85,7 +85,7 @@ export const useVotingStore = defineStore('voting', () => {
     const responseInfo = await axios.post(
         urlInfo,
         voting,
-        { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+        { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
     );
     if (responseInfo.status !== 200) {
         return {success: false, msg: responseInfo.data.message};
@@ -94,7 +94,7 @@ export const useVotingStore = defineStore('voting', () => {
       const responseVoting = await axios.post(
           urlVoting,
           responseInfo.data.data,
-          { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+          { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
       );
       if (responseVoting.status !== 200) {
         // Something went wrong with creating election, delete the info

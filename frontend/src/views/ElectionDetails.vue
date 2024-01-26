@@ -5,7 +5,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleInfo, faSquarePollHorizontal } from '@fortawesome/free-solid-svg-icons'
 import { onMounted, onUnmounted, type Ref, ref } from "vue";
 import { useVotingStore, type Voting} from "@/stores/voting";
-import { useAuthStore } from "@/stores/auth";
 import { useRoute } from "vue-router";
 import { formatDate, formatTime, highestOf } from "@/commons/utils";
 import { apiEndpoints } from "@/commons/globals";
@@ -17,27 +16,22 @@ import PieChart from "@/components/charts/PieChart.vue";
 
 const socket = io(apiEndpoints.API_SERVER)
 const votingStore = useVotingStore();
-const authStore = useAuthStore();
 const voting: Ref<Voting | null> = ref(null);
 const route = useRoute();
 
 library.add(faCircleInfo, faSquarePollHorizontal);
 
 onMounted(async () => {
-  if (!authStore.isLogged) {
-    await router.push({name: "login"});
-  } else {
-    await getVotingDetails(route.params.id.toString());
-    socket.emit("joinRoom", "election-" + voting.value?.id);
-    socket.on("updateTurnout", (turnout: string) => {
-      if (voting.value) {
-        voting.value = {
-          ...voting.value, // Shallow copy of the original object
-          turnout: turnout,
-        };
-      }
-    });
-  }
+  await getVotingDetails(route.params.id.toString());
+  socket.emit("joinRoom", "election-" + voting.value?.id);
+  socket.on("updateTurnout", (turnout: string) => {
+    if (voting.value) {
+      voting.value = {
+        ...voting.value, // Shallow copy of the original object
+        turnout: turnout,
+      };
+    }
+  });
 });
 
 onUnmounted(() => {

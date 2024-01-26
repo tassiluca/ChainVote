@@ -4,9 +4,10 @@ import PageTitle from '@/components/PageTitleComponent.vue'
 import FormSwitcher from '@/components/forms/FormSwitcherComponent.vue'
 import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
-import {Role, useAuthStore} from '@/stores/auth'
+import {useAuthStore} from '@/stores/auth'
 import {onMounted, ref} from "vue";
 import router from "@/router";
+import {Role} from "@/commons/utils";
 
 const authStore = useAuthStore();
 

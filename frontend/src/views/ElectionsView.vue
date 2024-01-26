@@ -3,23 +3,14 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
 import {useRoute} from "vue-router";
-import {computed, onMounted, type Ref, ref} from "vue";
+import {computed, type Ref, ref} from "vue";
 import ElectionComponent from "@/components/ElectionComponent.vue";
 import {useVotingStore, type Voting} from "@/stores/voting";
-import {useAuthStore} from "@/stores/auth";
 import router from "@/router";
 
 const votingStore = useVotingStore();
-const authStore = useAuthStore();
 const data: Ref<Voting[] | null> = ref(null);
 
-onMounted(async () => {
-  if (!authStore.isLogged()) {
-    await router.push("/login");
-  } else {
-    await getVotings();
-  }
-})
   // data.value = [{
   //     id: 1,
   //     goal: "Elezione del presidente del consiglio dei ministri prova 1",
