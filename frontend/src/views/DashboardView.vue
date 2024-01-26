@@ -15,18 +15,12 @@ import Breadcrumb from "@/components/BreadcrumbComponent.vue";
 import {computed, onMounted, ref, type Ref} from "vue";
 import router from "@/router";
 import {useVotingStore, type Voting} from "@/stores/voting";
-import {useAuthStore} from "@/stores/auth";
 
 const votingStore = useVotingStore();
-const authStore = useAuthStore();
 const data: Ref<Voting[] | null> = ref(null);
 
 onMounted(async () => {
-  if (!authStore.isLogged()) {
-    await router.push("/login");
-  } else {
-    await getVotings();
-  }
+  await getVotings();
 });
   // data.value = [{
   //     id: 1,

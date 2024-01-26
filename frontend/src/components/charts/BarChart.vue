@@ -4,20 +4,20 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, Colors)
 
+const props = defineProps({
+  labels: {
+    type: Array<String>,
+    required: true
+  },
+  values: {
+    type: Array<{ "title": string, "label": string, "data": number[] }>,
+    required: true
+  }
+})
+
 const chartData = {
-  labels: [ 'January', 'February', 'March' ],
-  datasets: [
-    {
-      title: 'Data',
-      label: 'Data',
-      data: [40, 20, 12],
-    },
-    {
-      title: 'Data 2',
-      label: 'Data 2',
-      data: [10, 30, 22],
-    }
-  ]
+  labels: props.labels,
+  datasets: props.values
 }
 </script>
 

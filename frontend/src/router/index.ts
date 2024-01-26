@@ -1,10 +1,29 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import axios from "axios";
 import LoginView from '@/views/LoginView.vue'
 import NotificationsView from '@/views/NotificationsView.vue'
-import VotingDetails from '@/views/VotingDetails.vue'
 import NotFound from "@/views/NotFound.vue";
-import Test from "@/views/Test.vue";
-import axios from "axios";
+import HomeView from "@/views/HomeView.vue";
+import DashboardView from "@/views/DashboardView.vue";
+import CreateElectionView from "@/views/CreateElectionView.vue";
+import RegisterView from "@/views/RegisterView.vue";
+import UserAreaView from "@/views/UserAreaView.vue";
+import ElectionDetails from "@/views/ElectionDetails.vue";
+import VoteView from "@/views/VoteView.vue";
+import ElectionsView from "@/views/ElectionsView.vue";
+import {useAuthStore} from "@/stores/auth";
+import ErrorView from "@/views/ErrorView.vue";
+import NoPermissionView from "@/views/NoPermissionView.vue";
+import {Role} from "@/commons/utils";
+import 'vue-router'
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    // must be declared by every route
+    allowed: Role[];
+  }
+}
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,22 +31,30 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/HomeView.vue'),
+      component: HomeView,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
     },
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('@/views/DashboardView.vue'),
+      component: DashboardView,
+      meta: {
+        allowed: [Role.User, Role.Admin]
+      }
     },
-    // {
-    //   path: '/elections',
-    //   name: 'elections',
-    //   component: () => import('@/views/ElectionsTestView.vue'),
-    // },
     {
       path: '/vote/:id',
       name: 'vote',
-      beforeEnter: (to, from, next) => {
+      beforeEnter: (to, from, next) => { // TODO: move to component / store ?
         try {
           axios.get(`http://localhost:8080/election/info/detail/${to.params.id}`)
             .then((response) => {
@@ -39,60 +66,63 @@ const router = createRouter({
           // next({ name: 'not-found' });
         }
       },
-      component: () => import('@/views/VoteView.vue'),
+      component: VoteView,
+      meta: {
+        allowed: [Role.User]
+      }
     },
     {
       path: '/elections',
       name: 'elections',
       props: route => ({ qualifier: route.query.qualifier }),
-      component: () => import('@/views/ElectionsView.vue'),
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: LoginView
-    },
-    {
-      path: '/user/notifications',
-      name: 'notifications',
-      component: NotificationsView
-    },
-    {
-      path: '/voting/details/:id',
-      name: 'voting-details',
-      component: VotingDetails
-    },
-    {
-      path: '/user',
-      name: 'user-area',
-      component: () => import('@/views/UserAreaView.vue'),
-    },
-    {
-      path: '/register', 
-      name: 'register',
-      component: () => import('@/views/RegisterView.vue'),
+      component: ElectionsView,
+      meta: {
+        allowed: [Role.User, Role.Admin]
+      }
     },
     {
       path: '/elections/create',
       name: 'create-election',
-      component: () => import('@/views/CreateElectionView.vue'),
+      component: CreateElectionView,
+      meta: {
+        allowed: [Role.Admin]
+      }
     },
     {
-      path: '/test',
-      name: 'test',
-      component: Test,
+      path: '/elections/:id',
+      name: 'election-details',
+      component: ElectionDetails,
+      meta: {
+        allowed: [Role.User, Role.Admin]
+      }
+    },
+    {
+      path: '/user',
+      name: 'user-area',
+      component: UserAreaView,
+      meta: {
+        allowed: [Role.User, Role.Admin]
+      }
+    },
+    {
+      path: '/user/notifications',
+      name: 'notifications',
+      component: NotificationsView,
+      meta: {
+        allowed: [Role.User, Role.Admin]
+      }
     },
     {
       // TODO: change path
       path: '/error',
       name: 'error',
-      component: () => import('@/views/ErrorView.vue'),
+      component: ErrorView,
     },
     {
       // TODO: change path
       path: '/no-permission',
       name: 'no-permission',
-      component: () => import('@/views/NoPermissionView.vue'),
+      component: NoPermissionView,
     },
     {
       path: '/:pathMatch(.*)*',
@@ -100,6 +130,20 @@ const router = createRouter({
       component: NotFound,
     },
   ]
+})
+
+router.beforeEach((to) => {
+  const authStore = useAuthStore();
+  if (to.meta.allowed) {
+    console.log("to.meta.allowed: " + to.meta.allowed);
+    console.log("authStore.userRole: " + authStore.userRole);
+    if (!authStore.isLogged || !to.meta.allowed.includes(authStore.userRole!)) {
+      return {
+        path: '/login',
+        query: { redirect: to.fullPath }
+      }
+    }
+  }
 })
 
 export default router

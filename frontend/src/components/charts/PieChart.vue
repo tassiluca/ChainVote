@@ -4,11 +4,22 @@ import { Chart as ChartJS, ArcElement, Tooltip, Title, Legend, Colors } from 'ch
 
 ChartJS.register(ArcElement, Tooltip, Title, Legend, Colors)
 
+const props = defineProps({
+  labels: {
+    type: Array<String>,
+    required: true
+  },
+  values: {
+    type: Array<Number>,
+    required: true
+  }
+})
+
 const data = {
-  labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
+  labels: props.labels,
   datasets: [
     {
-      data: [40, 20, 80, 10]
+      data: props.values
     }
   ]
 }
@@ -20,16 +31,7 @@ const options = {
 </script>
 
 <template>
-  <div class="container d-flex align-items-center justify-content-center">
-    <div class="content">
-      <Pie :data="data" :options="options" />
-    </div>
-  </div>
+  <Pie :data="data" :options="options" />
 </template>
 
-<style scoped>
-.content {
-  position: relative;
-  width: 100%;
-}
-</style>
+<style scoped></style>

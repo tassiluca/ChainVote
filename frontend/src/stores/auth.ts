@@ -3,8 +3,7 @@ import { computed, ref } from "vue";
 import axios from 'axios'
 import router from "@/router";
 import { apiEndpoints } from "@/commons/globals";
-
-export enum Role { User = 'user', Admin = 'admin' }
+import {type Role, toRole} from "@/commons/utils";
 
 export interface User {
   name: string,
@@ -23,7 +22,7 @@ export const useAuthStore = defineStore('auth',  () => {
   /** The username of the logged user or null if not logged. */
   const user = ref(sessionStorage.getItem("username"));
   /** The role of the logged user or null if not logged. */
-  const userRole = ref(sessionStorage.getItem("role"));
+  const userRole = ref(toRole(sessionStorage.getItem("role")));
   /** True if the user is logged, false otherwise. */
   const isLogged = computed(() => accessToken.value !== null)
 
@@ -81,22 +80,6 @@ export const useAuthStore = defineStore('auth',  () => {
     console.debug(`Expiration access token: ${new Date(1000 * JSON.parse(atob(token.split('.')[1])).exp)}`);
   }
 
-  async function getUserInfo(): Promise<User> {
-    const url = `${apiEndpoints.API_SERVER}/users`;
-    const response = await axios.get(url, { headers: { Authorization: `Bearer ${accessToken()}` } });
-    return response.data.data;
-  }
-
-  async function updateUserInfo(property: Record<string, string>): Promise<User> {
-    const url = `${apiEndpoints.API_SERVER}/users`;
-    const response = await axios.put(url, property, { headers: { Authorization: `Bearer ${accessToken()}` } });
-    return response.data.data;
-  }
-
-  function stopRefreshTokenTimer() {
-    clearTimeout(refreshTokenTimeout);
-  }
-
   function setRefreshToken(token: string) {
     sessionStorage.setItem('refreshToken', token);
     console.debug(`Expiration refresh token: ${new Date(1000 * JSON.parse(atob(token.split('.')[1])).exp)}`);
@@ -112,17 +95,17 @@ export const useAuthStore = defineStore('auth',  () => {
     sessionStorage.setItem('role', role);
   }
 
-
-  /** Returns the refresh token of the logged user, or null if the user is not logged in. */
-  function refreshToken(): string | null {
-    return sessionStorage.getItem('refreshToken');
+  async function getUserInfo(): Promise<User> {
+    const url = `${apiEndpoints.API_SERVER}/users`;
+    const response = await axios.get(url);
+    return response.data.data;
   }
 
-  /** Returns the role of the logged user, or null if the user is not logged in. */
-  function role(): Role | null {
-    return sessionStorage.getItem('role') as Role;
+  async function updateUserInfo(property: Record<string, string>): Promise<User> {
+    const url = `${apiEndpoints.API_SERVER}/users`;
+    const response = await axios.put(url, property);
+    return response.data.data;
   }
 
-  return { returnUrl, role, username, accessToken, login, logout, isLogged, getUserInfo, updateUserInfo }
-
+  return { returnUrl, accessToken, user, userRole, login, logout, isLogged, refreshAccessToken, getUserInfo, updateUserInfo }
 });
