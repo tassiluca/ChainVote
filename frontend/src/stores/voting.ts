@@ -18,6 +18,15 @@ export interface Voting {
   results: Record<string, number>;
 }
 
+
+export interface VotingCreation {
+  goal: string
+  voters: number
+  startDate: string
+  endDate: string
+  choices: string[]
+}
+
 export const useVotingStore = defineStore('voting', () => {
 
   const authStore = useAuthStore();
@@ -36,6 +45,28 @@ export const useVotingStore = defineStore('voting', () => {
     return toVoting(electionInfosResponse, electionDetailsResponse);
   }
 
+  async function getVotings(): Promise<Voting[]> {
+    const urlInfos = `${apiEndpoints.API_SERVER}/election/info/all`;
+    const urlDetails = `${apiEndpoints.API_SERVER}/election/all`;
+    const electionDetailsResponse = await axios.get(
+        urlDetails,
+        { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+    );
+    const electionInfosResponse = await axios.get(
+        urlInfos,
+        { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+    );
+
+    const votings: Voting[] = [];
+
+    for (const election of electionInfosResponse.data.data) {
+      election.details = electionDetailsResponse.data.data.find((i: any) => i.electionId === election.electionId);
+      votings.push(toVoting(election, election.details));
+    }
+
+    return votings;
+  }
+
   function toVoting(electionInfos: any, electionDetails: any): Voting {
     return {
       id: electionInfos.data.data.electionId,
@@ -49,5 +80,5 @@ export const useVotingStore = defineStore('voting', () => {
     }
   }
 
-  return { getVotingBy };
+  return { getVotingBy, getVotings };
 });
