@@ -18,7 +18,6 @@ export interface Voting {
   results: Record<string, number>;
 }
 
-
 export interface VotingCreation {
   goal: string
   voters: number
@@ -80,5 +79,40 @@ export const useVotingStore = defineStore('voting', () => {
     }
   }
 
-  return { getVotingBy, getVotings };
+  async function createVoting(voting: VotingCreation): Promise<{ success: boolean, msg: string }> {
+    const urlInfo = `${apiEndpoints.API_SERVER}/election/info`;
+    const urlVoting = `${apiEndpoints.API_SERVER}/election`;
+    const responseInfo = await axios.post(
+        urlInfo,
+        voting,
+        { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+    );
+    if (responseInfo.status !== 200) {
+        return {success: false, msg: responseInfo.data.message};
+    } else {
+      // Election info created, now create the election
+      const responseVoting = await axios.post(
+          urlVoting,
+          responseInfo.data.data,
+          { headers : { 'Authorization': `Bearer ${authStore.accessToken()}` }}
+      );
+      if (responseVoting.status !== 200) {
+        // Something went wrong with creating election, delete the info
+        const responseDelete = await axios.delete(
+            urlInfo,
+            responseInfo.data.data,
+        );
+        if (responseDelete.status !== 200) {
+          // Something went wrong with deleting the info
+          return {success: false, msg: 'Something went wrong. Please contact assistance.'};
+        } else {
+          // Successfully deleted the info
+          return {success: false, msg: 'Something went wrong. Please try again.'};
+        }
+      }
+        return {success: true, msg: responseInfo.data.message};
+      }
+    }
+
+  return { getVotingBy, getVotings, createVoting };
 });
