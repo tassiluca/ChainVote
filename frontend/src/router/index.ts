@@ -16,55 +16,6 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
-      beforeEnter: (to, from, next) => {
-        try {
-          makeRequest(`http://localhost:8080/elections`, "GET")
-            .then((response) => {
-              to.meta.data = response.data.data;
-              next();
-            })
-            .catch((error) => {
-              console.log(error);
-              to.meta.data = [{
-                id: "id1",
-                name: "Elezione del presidente del consiglio dei ministri prova 1",
-                start: new Date("2021-10-04T10:00"),
-                end: new Date("2026-11-04T10:00"),
-                affluence: "20%",
-                choices: [
-                  "choice 0",
-                  "choice 1",
-                ]
-              },
-                {
-                  id: "id2",
-                  name: "Election 2",
-                  start: new Date("2021-10-04T10:00"),
-                  end: new Date("2025-11-04T10:00"),
-                  affluence: "20%",
-                  choices: [
-                    "choice 0",
-                    "choice 1",
-                  ]
-                },
-                {
-                  id: "id3",
-                  name: "Election 3",
-                  start: new Date("2027-10-04T10:00"),
-                  end: new Date("2028-11-04T10:00"),
-                  affluence: "20%",
-                  choices: [
-                    "choice 0",
-                    "choice 1",
-                  ]
-                }
-              ]
-              next();
-            });
-        } catch (error) {
-          console.log(error);
-        }
-      },
       component: () => import('@/views/DashboardView.vue'),
     },
     {
@@ -89,71 +40,6 @@ const router = createRouter({
       path: '/elections',
       name: 'elections',
       props: route => ({ qualifier: route.query.qualifier }),
-      beforeEnter: (to, from, next) => {
-        try {
-          makeRequest(`http://localhost:8080/elections`, "GET")
-            .then((response) => {
-              to.meta.data = response.data.data;
-              next();
-            })
-            .catch((error) => {
-              // TODO: handle error here
-              console.log(error);
-              to.meta.data = [{
-                  id: "id1",
-                  name: "Elezione del presidente del consiglio dei ministri prova 1",
-                  start: new Date("October 13, 2022 10:00"),
-                  end: new Date("October 13, 2025 10:00"),
-                  status: "open",
-                  affluence: "20%",
-                  choices: [
-                    "choice 0",
-                    "choice 1",
-                  ]
-                },
-                {
-                  id: "id2",
-                  name: "Election 2",
-                  start: new Date("2021-10-04T10:00"),
-                  end: new Date("2025-11-04T10:00"),
-                  status: "closed",
-                  affluence: "20%",
-                  choices: [
-                    "choice 0",
-                    "choice 1",
-                    "choice 0",
-                    "choice 1",
-                    "choice 0",
-                    "choice 1",
-                    "choice 0",
-                    "choice 1",
-                    "choice 0",
-                    "choice 1",
-                    "choice 0",
-                    "choice 1",
-                  ]
-                },
-                {
-                  id: "id3",
-                  name: "Election 3",
-                  start: new Date("2021-10-04T10:00"),
-                  end: new Date("2021-11-04T10:00"),
-                  status: "soon",
-                  affluence: "20%",
-                  choices: [
-                    "choice 0",
-                    "choice 1",
-                  ]
-                }
-              ]
-              // next({ name: 'error' });
-              next();
-            });
-        } catch (error) {
-          console.log(error);
-          next({ name: 'error' });
-        }
-      },
       component: () => import('@/views/ElectionsView.vue'),
     },
     {
@@ -174,43 +60,6 @@ const router = createRouter({
     {
       path: '/user',
       name: 'user-area',
-      beforeEnter: (to, from, next) => {
-        try {
-          // TODO: correct url
-          makeRequest(`http://localhost:8080/users/info`, "GET")
-              .then((response) => {
-                to.meta.data = response.data.data;
-                next();
-              })
-              .catch((error) => {
-                // TODO: handle error here
-                console.log('setting default user')
-                console.log(error);
-                to.meta.data = {
-                  name: "Test User",
-                  surname: "test surname",
-                  password: "password",
-                  email: "prova@unibo.it",
-                  role: "user",
-                }
-                next();
-              });
-        } catch (error) {
-          // TODO: handle error
-          // console.log(error);
-          // next({ err: 'user-not-found' });
-          to.meta.data = {
-            user: {
-              name: "Test User",
-              surname: "test surname",
-              password: "password",
-              email: "prova@unibo.it",
-              role: "user",
-            },
-          }
-          next();
-        }
-      },
       component: () => import('@/views/UserAreaView.vue'),
     },
     {
