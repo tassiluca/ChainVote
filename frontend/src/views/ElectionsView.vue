@@ -33,6 +33,10 @@ interface Election {
   choices: [string]
 }
 
+function sortElectionsByDate(elections: Election[], prop: keyof Election = 'start'): Election[] {
+  return elections.sort((a: Election, b: Election) => a[prop as keyof typeof a] - b[prop as keyof typeof b]);
+}
+
 function isOpen(election: Election): boolean {
   const now = new Date();
   return now >= election.start && now < election.end;
@@ -49,19 +53,19 @@ function isSoon(election: Election): boolean {
 }
 
 const getAll = computed(() => {
-  return Object.assign([], data);
+  return sortElectionsByDate(Object.assign([], data));
 });
 
 const getOpen = computed(() => {
-  return Object.assign([], data).filter((election: Election) => isOpen(election));
+  return sortElectionsByDate(Object.assign([], data).filter((election: Election) => isOpen(election)));
 });
 
 const getClosed = computed(() => {
-  return Object.assign([], data).filter((election: Election) => isClosed(election));
+  return sortElectionsByDate(Object.assign([], data).filter((election: Election) => isClosed(election)));
 });
 
 const getSoon = computed(() => {
-  return Object.assign([], data).filter((election: Election) => isSoon(election));
+  return sortElectionsByDate(Object.assign([], data).filter((election: Election) => isSoon(election)));
 });
 
 const query: string[] = ["all", "open", "closed", "soon"]

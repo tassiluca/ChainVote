@@ -22,15 +22,36 @@ const endDateValue = new Date(startDateValue.getTime() + 24 * 60 * 60 * 1000);
 startDateValue.setHours(10, 0);
 endDateValue.setHours(10, 0);
 
+const startValues = {
+  goal: "",
+  voters: 2,
+  startDate: startDateValue.toISOString().slice(0,16),
+  endDate: endDateValue.toISOString().slice(0,16),
+  choices: ["", ""],
+}
+
 const references: {
    [prop: string]: any
-} = {
-  goal: ref(""),
-  voters: ref("2"),
-  startDate: ref(startDateValue.toISOString().slice(0,16)),
-  endDate: ref(endDateValue.toISOString().slice(0,16)),
-  choices: ref([ref(""), ref("")]),
+} = {};
+
+const copyWithoutElement = (original: { [key: string]: any }, elementToRemove: string) => {
+  // Using object spread syntax to create a shallow copy
+  const copy = { ...original };
+
+  // Removing the specified element from the copy
+  delete copy[elementToRemove];
+
+  return copy;
+};
+
+function resetValues() {
+  for (const prop in copyWithoutElement(startValues, 'choices')) {
+    references[prop] = ref(startValues[prop as keyof typeof startValues]);
+  }
+  references['choices'] = ref(startValues['choices'].map((item: string) => ref(item)));
 }
+
+resetValues();
 
 interface Rule {
   help: string,
@@ -104,16 +125,6 @@ function isValidList(strings: string[]) {
   return set.size === strings.length;
 }
 
-const copyWithoutElement = (original: { [key: string]: any }, elementToRemove: string) => {
-  // Using object spread syntax to create a shallow copy
-  const copy = { ...original };
-
-  // Removing the specified element from the copy
-  delete copy[elementToRemove];
-
-  return copy;
-};
-
 const addElection = () => {
   references['choices'].value.push(ref(""));
 }
@@ -153,6 +164,7 @@ async function onFormSubmit() {
   // TODO bind backend url
   makeRequest(`${apiEndpoints.API_SERVER}/elections/create`, "POST", values).then((res) => {
     response.value = {success: true, msg: res};
+    resetValues();
   }).catch((error) => {
     response.value = {success: false, msg: error.message};
   });
