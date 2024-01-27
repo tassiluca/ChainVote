@@ -2,9 +2,25 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
-import {type Ref, ref} from "vue";
+import {onMounted, type Ref, ref} from "vue";
 import PageTitle from "@/components/PageTitleComponent.vue";
 import {useVotingStore, type VotingCreation} from "@/stores/voting";
+import {useAuthStore} from "@/stores/auth";
+import router from "@/router";
+import {Role} from "@/commons/utils";
+
+const authStore = useAuthStore();
+
+onMounted(async () => {
+  if (!authStore.isLogged) {
+    await router.push("/login");
+  } else {
+    if (authStore.userRole === Role.User) {
+      // TODO: redirect to error page (if it's the right place to do it)
+      await router.push("/no-permission");
+    }
+  }
+});
 
 const votingStore = useVotingStore();
 
