@@ -1,9 +1,9 @@
-<script setup>
+<script setup lang="ts">
     import * as bootstrap from 'bootstrap'
     import { ref, onMounted } from 'vue'
     import axios from "axios";
 
-    const modal = ref(null)
+    const modal = ref()
     const codeRequest = ref(false)
     const requestError = ref(false)
     const validationMessage = ref("")

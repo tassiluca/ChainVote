@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import {ref, type Ref} from "vue";
+import PageTitle from "@/components/PageTitleComponent.vue";
+import Form from '@/components/forms/FormComponent.vue'
+import FormInput from '@/components/forms/FormInputComponent.vue'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
-import axios from "axios";
+import {type UserCreation, useRegisterStore} from "@/stores/user";
 
-const {meta, errors, handleSubmit, defineField } = useForm({
+const response = ref({})
+
+const {errors, defineField} = useForm({
   validationSchema: yup.object({
     firstName: yup.string().required(),
     secondName: yup.string().required(),
@@ -16,60 +22,102 @@ const {meta, errors, handleSubmit, defineField } = useForm({
   }),
 });
 
-const [email, emailAttrs] = defineField('email');
-const [password, passwordAttrs] = defineField('password');
-const [confirmPassword, confirmPasswordAttrs] = defineField('confirmPassword');
-const [firstName, firstNameAttrs] = defineField('firstName');
-const [secondName, secondNameAttrs] = defineField('secondName');
+const email = defineField('email')[0];
+const password = defineField('password')[0];
+const confirmPassword = defineField('confirmPassword')[0];
+const firstName = defineField('firstName')[0];
+const secondName = defineField('secondName')[0];
 
-const onSubmit = handleSubmit((values) => {
-    delete values.confirmPassword;
-    axios.post("http://localhost:8080/users/", values).then((response) => {
-        alert(response.data.data);
-    }).catch((error) => {
-        alert(error);
-    });
-})
+function onSubmit() {
+  const data: UserCreation = {
+    email: email.value,
+    password: password.value,
+    firstName: firstName.value,
+    secondName: secondName.value,
+  }
 
+  useRegisterStore().registration(data)
+    .then(() => { response.value = {success: true, msg: "User created successfully"}})
+    .catch((e) => { response.value = {success: false, msg: "Can't create user"}; });
+}
+interface Rule {
+  help: string,
+  label: string,
+  type: string,
+  placeholder: string,
+  autocomplete: string,
+  ref: Ref<any>
+}
+
+const properties: {
+  [prop: string]: Rule
+} = {
+  'email': {
+    'help': 'Insert a valid email address',
+    'label': 'Email',
+    'type': 'email',
+    'placeholder': 'example@email.it',
+    'autocomplete': '',
+    'ref': email
+  },
+  'firstName': {
+    'help': 'First name must be at least 1 character long',
+    'label': 'First name',
+    'type': 'string',
+    'placeholder': 'Enter first name',
+    'autocomplete': '',
+    'ref': firstName
+  },
+ 'secondName': {
+    'help': 'Second name must be at least 1 character long',
+    'label': 'Second name',
+    'type': 'string',
+    'placeholder': 'Enter second name',
+    'autocomplete': '',
+    'ref': secondName
+  },
+  'password': {
+    'help': 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
+    'label': 'Password',
+    'type': 'password',
+    'placeholder': '',
+    'autocomplete': '',
+    'ref': password
+  },
+  'confirmPassword': {
+    'help': 'Confirm password must be equal to password',
+    'label': 'Confirm password',
+    'type': 'password',
+    'placeholder': '',
+    'autocomplete': '',
+    'ref': confirmPassword
+  },
+}
 </script>
 
 <template>
     <div class="container">
-        <header class="mb-2">
-            <h1> Register a new user </h1>
-        </header>
-        <form @submit.prevent="onSubmit">
-
-            <div class="row mb-3">
-                <label for="registration-email" class="form-label">Email</label>
-                <input v-model="email" type="email" class="form-control" id="registration-email" placeholder="user.email@email.it">
-                <span>{{ errors.email }}</span>
-            </div>
-            
-            <div class="row mb-3">
-                <label for="registration-password" class="form-label">Password</label>
-                <input v-model="password" type="password" class="form-control" id="registration-password">
-                <span>{{ errors.password }}</span>
-
-                <label for="registration-confirm-password" class="form-label">Repeat password</label>
-                <input  v-model="confirmPassword" type="password" class="form-control" id="registration-confirm-password">
-                <span>{{ errors.confirmPassword }}</span>
-            </div>
-
-            <div class="row mb-3">
-                <label for="registration-name" class="form-label">Name</label>
-                <input v-model="firstName" type="text" class="form-control" id="registration-name">
-                <span>{{ errors.name }}</span>
-            </div>
-
-            <div class="row mb-3">
-                <label for="registration-surname" class="form-label">Surname</label>
-                <input v-model="secondName" type="text" class="form-control" id="registration-surname">
-                <span>{{ errors.surname }}</span>
-            </div>
-
-            <button type="submit" class="btn btn-primary" :disabled="!meta.valid">Register a new user</button>
-        </form>
+        <PageTitle title="Create Election" />
+        <Form @submit="onSubmit" :response="response" submit-btn-name="Create an user">
+            <template v-slot:body>
+                <div class="col" v-for="prop in Object.keys(properties)" :key="prop">
+                    <div class="row gy-5 mx-auto mt-1">
+                        <div class="p-3 border bg-light">
+                            <FormInput :helper="properties[prop]['help']"
+                                    :input-id="`input-${prop}`"
+                                    :label="properties[prop]['label']">
+                                <input v-model="properties[prop].ref.value" 
+                                    class="form-control"
+                                    :type="properties[prop]['type']" 
+                                    :autocomplete="properties[prop]['autocomplete']"
+                                    :placeholder="properties[prop]['placeholder']">
+                            </FormInput>
+                            <span>{{ errors[prop] }}</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </Form>
     </div>
 </template>
 

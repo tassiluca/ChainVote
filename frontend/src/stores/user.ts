@@ -12,6 +12,13 @@ export interface User {
     role: Role,
 }
 
+export interface UserCreation {
+    email: string
+    firstName: number
+    secondName: string
+    password: string
+}
+
 export const useUserStore = defineStore('user',  () => {
 
     const authStore = useAuthStore();
@@ -36,5 +43,15 @@ export const useUserStore = defineStore('user',  () => {
         return response.data.data;
     }
 
-    return { getUserInfo, updateUserInfo, passwordResetRequest }
+    async function registration(user: UserCreation): Promise<{ success: boolean, msg: string }> {
+        const urlCreation = `${apiEndpoints.API_SERVER}/users`;
+        const responseResult = await axios.post(urlCreation, user);
+
+        if (responseResult.status !== 201) {
+            return { success: false, msg: "Error during registration"};
+        }
+        return { success: true, msg: "Registration successful"};
+    }
+
+    return { getUserInfo, updateUserInfo, passwordResetRequest, registration }
 });
