@@ -5,14 +5,6 @@ import router from "@/router";
 import { apiEndpoints } from "@/commons/globals";
 import {type Role, toRole} from "@/commons/utils";
 
-export interface User {
-  name: string,
-  surname: string,
-  email: string,
-  password: string,
-  role: Role,
-}
-
 export const useAuthStore = defineStore('auth',  () => {
 
   /** The url to which redirect the client after a successful login. */
@@ -95,17 +87,5 @@ export const useAuthStore = defineStore('auth',  () => {
     sessionStorage.setItem('role', role);
   }
 
-  async function getUserInfo(): Promise<User> {
-    const url = `${apiEndpoints.API_SERVER}/users`;
-    const response = await axios.get(url);
-    return response.data.data;
-  }
-
-  async function updateUserInfo(property: Record<string, string>): Promise<User> {
-    const url = `${apiEndpoints.API_SERVER}/users`;
-    const response = await axios.put(url, property);
-    return response.data.data;
-  }
-
-  return { returnUrl, accessToken, user, userRole, login, logout, isLogged, refreshAccessToken, getUserInfo, updateUserInfo }
+  return { returnUrl, accessToken, user, userRole, login, logout, isLogged, refreshAccessToken }
 });

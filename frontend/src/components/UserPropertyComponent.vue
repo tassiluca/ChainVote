@@ -44,8 +44,8 @@
   import {ref} from "vue";
   import {useForm} from "vee-validate";
   import * as yup from "yup";
-  import {apiEndpoints} from "@/commons/globals";
-  import axios from "axios";
+  import {type User, useUserStore} from "@/stores/user";
+  import router from "@/router";
 
   const props = defineProps<{
     property: string,
@@ -54,6 +54,8 @@
     mutable: boolean,
     validation: any,
   }>()
+
+  const userStore = useUserStore();
 
   const isReadOnly = ref(true);
 
@@ -70,25 +72,23 @@
   const [refValue, _] = defineField('refValue');
   refValue.value = props.value;
 
-  const onSubmit = handleSubmit((values) => {
-    isReadOnly.value = true;
+  const onSubmit = handleSubmit(async (values) => {
     const spinner = document.getElementById('spinner-' + props.property)!;
     const err = document.getElementById('error-' + props.property)!;
     const success = document.getElementById('success-' + props.property)!;
-    const restore = document.getElementById('restore-change-' + props.property) as HTMLButtonElement;
     const oldValue = document.getElementById(`old-value-${props.property}`)!;
-    const change = document.getElementById(`change-${props.property}`)!;
-    const submit = document.getElementById(`submit-change-${props.property}`)!;
+
     showElem(spinner);
     hideElem(err);
     hideElem(success);
     hideElem(oldValue);
     hideElem(document.getElementById(`div-error-${props.property}`)!);
     hideElem(document.getElementById(`old-value-${props.property}-separator`)!);
-    // TODO bind backend url
 
-    axios.post(`${apiEndpoints.API_SERVER}/users/change-property`, values).then((response) => {
-      success.innerHTML = response.data.message;
+    try {
+      const newUser = await userStore.updateUserInfo(props.property, values)
+      success.innerHTML = 'Successfully modified ' + props.property + ' in ' + newUser[props.property as keyof User];
+      isReadOnly.value = true;
       showElem(success);
       hideElem(err);
       setTimeout(() => {
@@ -96,19 +96,17 @@
       }, 2000);
       hideElem(spinner);
       refresh();
-    }).catch((error) => {
+    } catch (e: any) {
+      console.log(e)
       hideElem(spinner);
       refValue.value = props.value;
-      err.innerHTML = 'Error ' + error.code + ': ' + error.message;
+      err.innerHTML = 'Error ' + e.code + ': ' + e.message;
       showElem(err);
       hideElem(success);
       setTimeout(() => {
         hideElem(err);
       }, 2000);
-    });
-    showElem(change);
-    hideElem(submit);
-    hideElem(restore);
+    }
   })
 
   function refresh() {

@@ -5,9 +5,10 @@
     <div class="col" v-for="property in Object.keys(newValueRules)" :key="property">
       <div class="p-2 border bg-light">
         <div class="card col-10 mx-auto">
+          {{data![property as keyof User]}}
           <UserProperty
               :property="property"
-              :value="userRef[property as keyof typeof user]"
+              :value="data![property as keyof User]"
               :hide="newValueRules[property].hide"
               :mutable="newValueRules[property].mutable"
               :validation="newValueRules[property].validation"
@@ -20,36 +21,43 @@
 
 <script setup lang="ts">
   import UserProperty from "@/components/UserPropertyComponent.vue";
-  import {useRoute} from "vue-router";
-  import {ref} from "vue";
+  import {onMounted, type Ref, ref} from "vue";
   import PageTitle from "@/components/PageTitleComponent.vue";
   import Breadcrumb from "@/components/BreadcrumbComponent.vue";
   import * as yup from 'yup'
+  import {Role} from "@/commons/utils";
+  import {useAuthStore} from "@/stores/auth";
+  import router from "@/router";
+  import {type User, useUserStore} from "@/stores/user";
 
-  interface User {
-    name: string,
-    surname: string,
-    email: string,
-    password: string,
-    role: string,
+  const authStore = useAuthStore();
+  const userStore = useUserStore();
+  const data: Ref<User | null> = ref(null);
+
+  onMounted(async () => {
+    if (!authStore.isLogged) {
+      await router.push("/login");
+    } else {
+      await getUser();
+    }
+  });
+
+  async function getUser() {
+    try {
+      data.value = await userStore.getUserInfo();
+    } catch (e: any) {
+      console.error(e);
+      await router.push({name: "not-found"})
+    }
   }
 
-  const route = useRoute();
-  const data: any = route.meta.data;
-
-  let user: User = {
-    name: "",
-    surname: "",
-    email: "",
-    password: "",
-    role: "",
-  };
-
-  for (let prop in user) {
-    user[prop as keyof User] = data[prop as keyof User];
+  data.value = {
+    name: "Test User",
+    surname: "test surname",
+    password: "password",
+    email: "prova@unibo.it",
+    role: Role.User,
   }
-
-  const userRef = ref(user);
 
   interface Rule {
     validation: any,
