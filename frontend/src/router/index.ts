@@ -11,9 +11,11 @@ import RegisterView from "@/views/RegisterView.vue";
 import UserAreaView from "@/views/UserAreaView.vue";
 import ElectionDetails from "@/views/ElectionDetails.vue";
 import ElectionsTestView from '@/views/ElectionsTestView.vue';
+import CodeInsertionView from '@/views/CodeInsertionView.vue';
 import VoteView from "@/views/VoteView.vue";
 import ElectionsView from "@/views/ElectionsView.vue";
 import {useAuthStore} from "@/stores/auth";
+import { useVotingStore } from '@/stores/voting'
 import ErrorView from "@/views/ErrorView.vue";
 import NoPermissionView from "@/views/NoPermissionView.vue";
 import {Role} from "@/commons/utils";
@@ -63,6 +65,10 @@ const router = createRouter({
       name: 'vote',
       beforeEnter: (to, from, next) => { // TODO: move to component / store ?
         try {
+          if (useVotingStore().getOtpInUse() === '') {
+            next({ name: 'not-found' });
+          }
+
           axios.get(`http://localhost:8080/election/info/detail/${to.params.id}`)
             .then((response) => {
               to.meta.data = response.data.data;
@@ -91,6 +97,14 @@ const router = createRouter({
       path: '/test-modal',
       name: 'test-modal',
       component: ElectionsTestView
+    },
+    {
+      path: '/insert-code/:id',
+      name: 'insert-code',
+      component: CodeInsertionView,
+      meta: {
+        allowed: [Role.User]
+      }
     },
     {
       path: '/elections/create',

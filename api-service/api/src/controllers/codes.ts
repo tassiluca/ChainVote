@@ -130,7 +130,7 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
         res.locals.data = firstPart;
         const message = {
             from: 'ChainVote',
-            to: 'giovanni.antonioni2@studio.unibo.it',
+            to: res.locals.user.email,
             subject: 'The other part of your code is here',
             html: `
                 Hello ${res.locals.user.firstName} ${res.locals.user.secondName},<br>

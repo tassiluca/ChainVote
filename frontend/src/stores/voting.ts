@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {useAuthStore} from "@/stores/auth";
 import {apiEndpoints} from "@/commons/globals";
 import axios from "axios";
+import { ref } from 'vue'
 
 export interface Choice {
   name: string;
@@ -29,6 +30,8 @@ export interface VotingCreation {
 export const useVotingStore = defineStore('voting', () => {
 
   const authStore = useAuthStore();
+
+  const otpInUse = ref('');
 
   async function getVotingBy(id: string): Promise<Voting> {
     const urlInfos = `${apiEndpoints.API_SERVER}/election/info/detail/${id}`;
@@ -100,5 +103,13 @@ export const useVotingStore = defineStore('voting', () => {
     }
   }
 
-  return { getVotingBy, getVotings, createVoting };
+  function setOtpInUse(otp: string) {
+    otpInUse.value = otp;
+  }
+
+  function getOtpInUse(): string {
+    return otpInUse.value;
+  }
+
+  return { getVotingBy, getVotings, createVoting, setOtpInUse, getOtpInUse };
 });
