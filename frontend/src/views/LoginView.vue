@@ -8,8 +8,10 @@ import {useAuthStore} from '@/stores/auth'
 import {onMounted, ref} from "vue";
 import router from "@/router";
 import {Role} from "@/commons/utils";
+import {useUserStore} from "@/stores/user";
 
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
 const response = ref({})
 const username = ref("")
@@ -21,6 +23,18 @@ onMounted(() => {
     router.push("/dashboard");
   }
 })
+
+
+// Bind the POST request to a link click event
+const link = document.getElementById('password-forgot');
+if (link) {
+  link.addEventListener('click', async (event) => {
+    event.preventDefault();
+    // TODO create a new view for e-mail only?
+    const response = await userStore.passwordResetRequest('email');
+    console.log(response);
+  });
+}
 
 async function onFormSubmit() {
   try {
@@ -58,8 +72,8 @@ async function onFormSubmit() {
           <template v-slot:footer>
             <div class="col-sm">
               <ul>
-                <li><a href="#">I forgot the password</a></li>
-                <li><a href="#">Register</a></li>
+                <li><a href="/password-forgotten">I forgot the password</a></li>
+                <li><a href="/register">Register</a></li>
               </ul>
             </div>
           </template>
