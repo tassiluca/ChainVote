@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('auth',  () => {
   /** The role of the logged user or null if not logged. */
   const userRole = ref(toRole(sessionStorage.getItem("role")));
   /** True if the user is logged, false otherwise. */
-  const isLogged = computed(() => accessToken.value !== null)
+  const isLogged = computed(() => accessToken.value !== null);
 
   /** Attempts to log in the user with the given credentials, throwing an exception if the request fails. */
   async function login(role: Role, username: string, password: string) {

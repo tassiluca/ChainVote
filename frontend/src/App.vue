@@ -48,7 +48,7 @@ function displayNotification(body: string) {
 
 <template>
   <NavBar :key="$route.fullPath" />
-  <main class="text-center">
+  <main>
     <RouterView />
   </main>
   <Footer />
