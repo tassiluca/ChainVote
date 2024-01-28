@@ -2,6 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import {BadRequestError, ErrorTypes, NotFoundError, UnauthorizedError, User} from "core-components";
 import { ac } from "../configs/accesscontrol.config";
+import GrpcClientPool from "../blockchain/grpc.client.pool";
+import {Org2Peer} from "../blockchain/peer.enum";
+import mailer from "../configs/mailer.config";
+import transformHyperledgerError from "../blockchain/errors/error.handling";
 
 
 /**
@@ -160,5 +164,70 @@ export async function deleteProfile(req: Request, res: Response, next: NextFunct
     } catch (error) {
         return next(error);
     }
+    return next();
+}
+
+function generateRandomPassword(regexPattern: RegExp, length: number): string {
+    const validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    let password = '';
+
+    for (let i = 0; i < length; i++) {
+        let randomChar = validChars.charAt(Math.floor(Math.random() * validChars.length));
+        password += randomChar;
+    }
+
+    return password;
+}
+
+function getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// TODO check if works
+/**
+ * Send user a new password via mail
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+export async function passwordForgotten(req: Request, res: Response, next: NextFunction) {
+    const regexPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/; // Example pattern: Alphanumeric characters only
+    const passwordLength = getRandomNumber(10, 16);
+    let password = '';
+    while (!regexPattern.test(password)) {
+        password = generateRandomPassword(regexPattern, passwordLength);
+    }
+
+    const data = {'password': password}
+
+    try {
+        await User.updateOne({ email: req.body.email }, data);
+        res.locals.code = StatusCodes.OK;
+        res.locals.data = true;
+    } catch(error) {
+        return next(error);
+    }
+
+    const message = {
+        from: 'ChainVote',
+        to: req.body.email,
+        subject: 'Your new password has been created.',
+        html: `
+                Hello ${res.locals.user.firstName} ${res.locals.user.secondName},<br>
+                This is the new password: <b>${password}</b>
+            `
+    };
+
+    mailer.sendMail(message).then((info) => {
+        res.locals.code = 201
+        res.locals.data = {
+            msg: "Email sent",
+            info: info.messageId
+        }
+    }).catch((err) => {
+            return next(err);
+        }
+    );
     return next();
 }
