@@ -1,17 +1,10 @@
 <div align="center">
 
-**Distributed Systems Final Project**
+**Distributed Systems + Applications and Web Services Final Project @ UniBo**
 
-```
- ██████╗██╗  ██╗ █████╗ ██╗███╗   ██╗██╗   ██╗ ██████╗ ████████╗███████╗
-██╔════╝██║  ██║██╔══██╗██║████╗  ██║██║   ██║██╔═══██╗╚══██╔══╝██╔════╝
-██║     ███████║███████║██║██╔██╗ ██║██║   ██║██║   ██║   ██║   █████╗  
-██║     ██╔══██║██╔══██║██║██║╚██╗██║╚██╗ ██╔╝██║   ██║   ██║   ██╔══╝  
-╚██████╗██║  ██║██║  ██║██║██║ ╚████║ ╚████╔╝ ╚██████╔╝   ██║   ███████╗
- ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝  ╚═══╝   ╚═════╝    ╚═╝   ╚══════╝
-```
+<img src="./frontend/src/assets/logo.svg" width="180px" />
 
-[Requirements](#requirements) | [Startup](#startup) | [Documentation](#documentation) | [Troubleshooting](#troubleshooting) | [Authors](#authors)
+[Requirements](#requirements) | [Develop](#develop) | [Startup](#startup) | [Docs](#documentation) | [Troubleshooting](#troubleshooting) | [Authors](#authors)
 
 </div>
 
@@ -58,7 +51,7 @@ We've preconfigured some default credentials for this purpose; these should be u
 
 :warning: During the startup phase of the API layer, the script will require the sudo privileges in order to ensure that the `verdaccio`, `cache` and `dbdata` folders have write and read permissions, which are needed on Linux environment.
 
-The full working system consists of 33 containers (Figure 19): one for each peer and chaincode deployed on it, five containers for the API services and one for the frontend web app.
+The full working system consists of 33 containers: one for each peer and chaincode deployed on it, five containers for the API services and one for the frontend web app.
 
 To bring them down without cleaning the blockchain artifacts (it will speed up the creation of the network next times):
 

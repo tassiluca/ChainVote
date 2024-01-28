@@ -9,6 +9,21 @@ export {
     Jwt
 } from  "./models/jwt/jwt";
 
+export {
+    ScheduledNotification
+} from "./models/scheduled-notification/scheduled.notification";
+
+export {
+    EventType,
+    Notification
+} from "./models/notification/notification";
+
+export {
+    ReadNotification
+} from "./models/read-notification/read.notification";
+
+
+
 /**
  * Exporting errors
  */

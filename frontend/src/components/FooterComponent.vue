@@ -19,8 +19,8 @@
         <strong>Useful links</strong>
         <ul>
           <!-- TODO: to adjust -->
-          <li><a href="">Homepage</a></li>
-          <li><a href="">User Area</a></li>
+          <li><a href="/">Homepage</a></li>
+          <li><a href="/user">User Area</a></li>
         </ul>
       </div>
     </div>
@@ -31,11 +31,7 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: "FooterComponent",
-};
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
 #footer {

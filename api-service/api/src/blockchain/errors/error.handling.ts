@@ -6,7 +6,7 @@ import {BadRequestError, ErrorTypes} from "core-components";
  */
 export default function transformHyperledgerError(error: Error) {
     let message;
-    if("details" in error) {
+    if ("details" in error) {
         // @ts-ignore
         message = error.details[0].message;
     } else {

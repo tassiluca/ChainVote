@@ -1,6 +1,6 @@
 import {Jwt, JwtHandler, User} from "core-components";
 import {StatusCodes} from "http-status-codes";
-import ExpressConfig from "../src/configs/express.config";
+import ServerConfig from "../src/configs/server.config";
 import request from "supertest";
 import {createCodeForElection, createElection} from "./common/utils";
 import {resolve} from "path";
@@ -17,7 +17,7 @@ JwtHandler.config({
 });
 
 beforeAll(async () => {
-    app = ExpressConfig();
+    app = ServerConfig();
 });
 
 beforeEach(async () => {

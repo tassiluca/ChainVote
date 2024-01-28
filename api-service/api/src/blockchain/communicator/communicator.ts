@@ -11,7 +11,7 @@ export interface CommunicatorInterface {
     createSigner(): Promise<Signer>
 }
 
- export class Communicator implements CommunicatorInterface {
+export class Communicator implements CommunicatorInterface {
 
     private _keyPath: string;
     private _certPath: string;
@@ -36,9 +36,9 @@ export interface CommunicatorInterface {
         this._mspId = mspId;
     }
 
-     /**
-      * Create a grpc client to interact with the blockchain
-      */
+    /**
+    * Create a grpc client to interact with the blockchain
+    */
     async createGrpcClient(): Promise<grpc.Client> {
         const tlsRootCert = await fs.readFile(this._peerTlsPath);
         const tlsCredentials = grpc.credentials.createSsl(tlsRootCert);
@@ -47,23 +47,23 @@ export interface CommunicatorInterface {
         });
     }
 
-     /**
-      * Create the identity object that represent the identity that will interact with the blockchain.
-      */
+    /**
+    * Create the identity object that represent the identity that will interact with the blockchain.
+    */
     async createIdentity(): Promise<Identity> {
         const credentials: Buffer = await fs.readFile(this._certPath);
         const mspId: string = this._mspId;
         return { mspId, credentials };
     }
 
-     /**
-      * Create the signer object that will endorse the transactions.
-      */
+    /**
+    * Create the signer object that will endorse the transactions.
+    */
     async createSigner(): Promise<Signer> {
         const files = await fs.readdir(this._keyPath);
         const keyPath = path.resolve(this._keyPath, files[0]);
         const privateKeyPem = await fs.readFile(keyPath);
         const privateKey = crypto.createPrivateKey(privateKeyPem);
         return signers.newPrivateKeySigner(privateKey);
-    }   
+    }
 }

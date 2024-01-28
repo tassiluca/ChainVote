@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import NavBar from '@/components/Navbar.vue'
-import Footer from '@/components/Footer.vue'
+import { RouterView } from 'vue-router'
+import NavBar from '@/components/NavbarComponent.vue'
+import Footer from '@/components/FooterComponent.vue'
 </script>
 
 <template>
-  <NavBar />
-  <RouterView />
+  <NavBar :key="$route.fullPath" />
+  <main class="text-center">
+    <RouterView />
+  </main>
   <Footer />
 </template>
 
-<style scoped></style>
+<style scoped>
+main {
+  margin: 25px 0;
+}
+</style>

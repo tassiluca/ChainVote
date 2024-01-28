@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, getProfile, editProfile, deleteProfile } from "../controllers/users";
+import {createUser, getProfile, editProfile, deleteProfile, passwordForgotten} from "../controllers/users";
 import { authenticationHandler } from "core-components";
 import { validationHandler } from "core-components";
 import {body, param} from "express-validator";
@@ -291,5 +291,13 @@ userRouter.post(
         body("secondName").exists().isAlpha(),
     ]),
     createUser);
+
+userRouter.put(
+    "/password-forgotten",
+    validationHandler([
+        body("email").exists().isEmail(),
+    ]),
+    passwordForgotten
+);
 
 export default userRouter;
