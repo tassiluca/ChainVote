@@ -26,5 +26,12 @@ export const useUserStore = defineStore('user',  () => {
         return response.data.data;
     }
 
-    return { getUserInfo, updateUserInfo }
+    async function passwordResetRequest(email: string) {
+        const url = `${apiEndpoints.API_SERVER}/users/password-forgotten`;
+        const data = {email: email};
+        const response = await axios.post(url, data);
+        return response.data.data;
+    }
+
+    return { getUserInfo, updateUserInfo, passwordResetRequest }
 });
