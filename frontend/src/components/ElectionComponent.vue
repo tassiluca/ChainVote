@@ -22,7 +22,7 @@
         <br/>Admissible choices are: <span class="attribute">{{election.choices.map((choice: Choice) => choice.name).join(', ')}}</span>.
       </p>
       <p>
-        <a :href="`/election/${election.id}`" class="useful-link">Details</a>
+        <a :href="`/elections/${election.id}`" class="useful-link">Details</a>
         <a :href="`/vote/${election.id}`" class="useful-link" v-if="isOpen(election)">Vote</a>
       </p>
     </div>

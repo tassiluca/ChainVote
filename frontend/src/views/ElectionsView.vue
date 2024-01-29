@@ -3,7 +3,7 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
 import {useRoute} from "vue-router";
-import {computed, type Ref, ref} from "vue";
+import { computed, onMounted, type Ref, ref } from 'vue'
 import ElectionComponent from "@/components/ElectionComponent.vue";
 import {useVotingStore, type Voting} from "@/stores/voting";
 import router from "@/router";
@@ -11,39 +11,9 @@ import router from "@/router";
 const votingStore = useVotingStore();
 const data: Ref<Voting[] | null> = ref(null);
 
-  // data.value = [{
-  //     id: 1,
-  //     goal: "Elezione del presidente del consiglio dei ministri prova 1",
-  //     start: new Date("2021-10-04T10:00"),
-  //     end: new Date("2026-11-04T10:00"),
-  //     turnout: "20",
-  //     choices: [
-  //       {name: "choice 0"},
-  //       {name: "choice 1"},
-  //     ],
-  //     voters: 10,
-  //     results: {
-  //       first: 5,
-  //       second: 3,
-  //     }
-  //   },
-  //   {
-  //     id: 2,
-  //     goal: "Elezione del presidente del consiglio dei ministri prova 2",
-  //     start: new Date("2021-10-04T10:00"),
-  //     end: new Date("2026-11-04T10:00"),
-  //     turnout: "20",
-  //     choices: [
-  //       {name: "choice 0"},
-  //       {name: "choice 1"},
-  //     ],
-  //     voters: 10,
-  //     results: {
-  //       first: 5,
-  //       second: 3,
-  //     },
-  //   },
-  // ]
+onMounted(async () => {
+  await getVotings();
+})
 
 async function getVotings() {
   try {

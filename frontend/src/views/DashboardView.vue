@@ -22,39 +22,6 @@ const data: Ref<Voting[] | null> = ref(null);
 onMounted(async () => {
   await getVotings();
 });
-  // data.value = [{
-  //     id: 1,
-  //     goal: "Elezione del presidente del consiglio dei ministri prova 1",
-  //     start: new Date("2021-10-04T10:00"),
-  //     end: new Date("2026-11-04T10:00"),
-  //     turnout: "20",
-  //     choices: [
-  //       {name: "choice 0"},
-  //       {name: "choice 1"},
-  //     ],
-  //     voters: 10,
-  //     results: {
-  //       first: 5,
-  //       second: 3,
-  //     }
-  //   },
-  //   {
-  //     id: 2,
-  //     goal: "Elezione del presidente del consiglio dei ministri prova 2",
-  //     start: new Date("2021-10-04T10:00"),
-  //     end: new Date("2026-11-04T10:00"),
-  //     turnout: "20",
-  //     choices: [
-  //       {name: "choice 0"},
-  //       {name: "choice 1"},
-  //     ],
-  //     voters: 10,
-  //     results: {
-  //       first: 5,
-  //       second: 3,
-  //     },
-  //   },
-  // ]
 
 async function getVotings() {
   try {

@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title"><a :href="`/election/details/${election.id}`">{{ election.goal }}</a></h5>
+      <h5 class="card-title"><a :href="`/elections/${election.id}`">{{ election.goal }}</a></h5>
       <hr class="solid"/>
       <ul class="election-props">
         <li>
@@ -18,7 +18,7 @@
           <div class="card links mx-auto">
             <ul>
               <li>
-                <a :href="`/election/details/${election.id}`">See details</a>
+                <a :href="`/elections/${election.id}`">See details</a>
               </li>
               <li v-if="isOpen(election)">
                 <a :href="`/vote/${election.id}`">Cast a vote</a>
