@@ -20,7 +20,7 @@ export interface Voting {
 
 export interface VotingCreation {
   goal: string
-  voters: number
+  voters: string
   startDate: string
   endDate: string
   choices: string[]
@@ -73,7 +73,7 @@ export const useVotingStore = defineStore('voting', () => {
         voting,
         {headers: {'Authorization': `Bearer ${authStore.accessToken}`}}
     );
-    if (responseInfo.status !== 200) {
+    if (responseInfo.status !== 201) {
       return {success: false, msg: responseInfo.data.message};
     } else {
       // Election info created, now create the election
@@ -96,7 +96,7 @@ export const useVotingStore = defineStore('voting', () => {
           return {success: false, msg: 'Something went wrong. Please try again.'};
         }
       } else {
-        return {success: true, msg: responseInfo.data.message};
+        return {success: true, msg: `Election ${responseInfo.data.data.electionId} created successfully!`};
       }
     }
   }

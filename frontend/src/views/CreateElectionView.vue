@@ -151,12 +151,11 @@ async function onFormSubmit() {
 
   const values: VotingCreation = {
     goal: references['goal'].value,
-    voters: references['voters'].value,
+    voters: String(references['voters'].value),
     startDate: references['startDate'].value,
     endDate: references['endDate'].value,
     choices: references['choices'].value.map((item: any) => item.value),
   }
-
   for (const prop in copyWithoutElement(references, 'endDate')) {
     if (!properties[prop].validValue(references[prop].value)) {
       errors.push(properties[prop].help);
@@ -172,11 +171,11 @@ async function onFormSubmit() {
   }
 
   votingStore.createVoting(values).then((res) => {
-    response.value = {success: res.success, msg: res.msg};
+    response.value = res;
     if (res.success) {
       resetValues();
     }
-  })
+  });
 }
 </script>
 
