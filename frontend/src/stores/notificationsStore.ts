@@ -25,16 +25,12 @@ export const useNotificationsStore = defineStore('notifications', () => {
       body: n.text,
       new: !n.isRead
     }));
-    console.debug(notifications.value);
     unreadNotifications.value = notifications.value!.filter((n: any) => n.new).length;
   }
 
   async function readNotifications() {
-    console.debug(notifications.value)
     const newNotifications = notifications.value?.filter((n: Notification) => n.new);
-    console.debug(newNotifications)
     for (const n1 of newNotifications) {
-      console.debug(`Marking notification ${n1.id} as read...`)
       await axios.put(`${apiEndpoints.API_SERVER}/notifications/${n1.id}`)
         .then(() => unreadNotifications.value--)
         .catch((error) => console.error(error));
