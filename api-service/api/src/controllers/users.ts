@@ -2,10 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import {BadRequestError, ErrorTypes, NotFoundError, UnauthorizedError, User} from "core-components";
 import { ac } from "../configs/accesscontrol.config";
-import GrpcClientPool from "../blockchain/grpc.client.pool";
-import {Org2Peer} from "../blockchain/peer.enum";
 import mailer from "../configs/mailer.config";
-import transformHyperledgerError from "../blockchain/errors/error.handling";
 
 /**
  * Set the user identity to work with. This function should be used when, in an API control method, an admin entity

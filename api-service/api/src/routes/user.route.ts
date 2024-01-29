@@ -86,7 +86,8 @@ userRouter.get(
     validationHandler([
         param("email").exists().isEmail()
     ]),
-    getProfile);
+    getProfile
+);
 
 /**
  * @openapi
@@ -152,23 +153,18 @@ userRouter.get(
  *
  */
 userRouter.put(
-    "/:email",
+    "/",
     authenticationHandler,
     validationHandler([
-        // Param validation
-        param("email").exists().isEmail(),
-
         // Body validation
         body("data").isObject().notEmpty(),
         body("data.firstName").optional().isAlpha(),
         body("data.secondName").optional().isAlpha(),
-
         // Check that the user is not trying to change the email or the password
-        body("data.password").not().exists(),
         body("data.email").not().exists(),
     ]),
-    editProfile);
-
+    editProfile
+);
 
 /**
  * @openapi
@@ -222,7 +218,8 @@ userRouter.delete(
     validationHandler([
         body("email").exists().isEmail()
     ]),
-    deleteProfile);
+    deleteProfile
+);
 
 /**
  * @openapi
@@ -290,7 +287,8 @@ userRouter.post(
         body("firstName").exists().isAlpha(),
         body("secondName").exists().isAlpha(),
     ]),
-    createUser);
+    createUser
+);
 
 userRouter.put(
     "/password-forgotten",
