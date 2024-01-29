@@ -118,7 +118,6 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
     } catch (error) {
         return next(error);
     }
-
     const data = req.body.data;
     if (data === null || data === undefined) {
         return next(
@@ -164,12 +163,10 @@ export async function deleteProfile(req: Request, res: Response, next: NextFunct
 function generateRandomPassword(regexPattern: RegExp, length: number): string {
     const validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
     let password = '';
-
     for (let i = 0; i < length; i++) {
         let randomChar = validChars.charAt(Math.floor(Math.random() * validChars.length));
         password += randomChar;
     }
-
     return password;
 }
 
@@ -192,9 +189,7 @@ export async function passwordForgotten(req: Request, res: Response, next: NextF
     while (!regexPattern.test(password)) {
         password = generateRandomPassword(regexPattern, passwordLength);
     }
-
     const data = {'password': password}
-
     try {
         await User.updateOne({ email: req.body.email }, data);
         res.locals.code = StatusCodes.OK;
@@ -202,7 +197,6 @@ export async function passwordForgotten(req: Request, res: Response, next: NextF
     } catch(error) {
         return next(error);
     }
-
     const message = {
         from: 'ChainVote',
         to: req.body.email,
@@ -212,16 +206,12 @@ export async function passwordForgotten(req: Request, res: Response, next: NextF
                 This is the new password: <b>${password}</b>
             `
     };
-
     mailer.sendMail(message).then((info) => {
         res.locals.code = 201
         res.locals.data = {
             msg: "Email sent",
             info: info.messageId
         }
-    }).catch((err) => {
-            return next(err);
-        }
-    );
+    }).catch((err) => next(err));
     return next();
 }

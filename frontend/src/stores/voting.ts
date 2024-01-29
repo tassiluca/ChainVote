@@ -52,7 +52,6 @@ export const useVotingStore = defineStore('voting', () => {
   }
 
   function toVoting(electionInfos: any, electionDetails: any): Voting {
-    console.log(electionInfos);
     return {
       id: electionInfos.electionId,
       goal: electionInfos.goal,

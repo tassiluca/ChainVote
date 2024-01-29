@@ -10,7 +10,6 @@ export default function axiosSetup() {
       config.headers["Content-Type"] = "application/json";
       const token = authStore.accessToken;
       if (token) {
-        console.log("Setting authorization header");
         config.headers.Authorization = `Bearer ${token}`
       }
       return config

@@ -3,20 +3,9 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket, faEnvelopeOpen, faEnvelopeOpenText } from "@fortawesome/free-solid-svg-icons";
 import { useAuthStore } from "@/stores/auth";
 import { useNotificationsStore } from '@/stores/notificationsStore'
-import { onMounted } from 'vue'
 
 const authStore = useAuthStore();
 const notificationsStore = useNotificationsStore();
-
-onMounted(async () => {
-  if (authStore.isLogged) {
-    try {
-      await notificationsStore.getAllNotifications();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-});
 
 library.add(faEnvelope, faEnvelopeOpen, faEnvelopeOpenText, faBars, faUser, faRightToBracket, faRightFromBracket);
 </script>

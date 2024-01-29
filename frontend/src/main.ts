@@ -9,11 +9,13 @@ import router from './router'
 import axiosSetup from "@/commons/axios";
 import ToastPlugin from 'vue-toast-notification'
 
-createApp(App)
-  .use(createPinia())
-  .use(router)
-  .use(ToastPlugin)
-  .component('font-awesome-icon', FontAwesomeIcon)
-  .mount('#app')
-
-axiosSetup(); // This needs to be called after app.use(pinia)!
+const app = createApp(App)
+app.use(createPinia())
+// This needs to be called after app.use(pinia) but before mounting the root container
+// otherwise may happen that the axios configuration is loaded after some components, on mounts,
+// make requests, leading to errors in authentication requests or response not correctly handled.
+axiosSetup()
+app.use(router)
+app.use(ToastPlugin)
+app.component('font-awesome-icon', FontAwesomeIcon)
+app.mount('#app')

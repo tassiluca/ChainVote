@@ -17,7 +17,6 @@ const utf8Decoder = new TextDecoder();
 
 /**
  * Return all the generated data of election info.
- *
  * @param req request object
  * @param res response object
  * @param next next function
@@ -110,11 +109,9 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org1Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-
         const choices: string= JSON.stringify(convertToChoiceList(req.body.choices));
         const convertedStartDate = convertToUTC(req.body.startDate);
         const convertedEndDate = convertToUTC(req.body.endDate);
-
         const data = [
             req.body.goal,
             req.body.voters,
@@ -125,7 +122,6 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
         const submission: Uint8Array = await contract.submit('ElectionInfoContract:createElectionInfo', {
             arguments: data
         });
-
         const resultJson = JSON.parse(utf8Decoder.decode(submission));
         res.locals.code = StatusCodes.CREATED;
         res.locals.data = resultJson.result;
@@ -137,7 +133,6 @@ export async function createElectionInfo(req: Request, res: Response, next: Next
 
 /**
  * Delete an election info with a specific id
- *
  * @param req
  * @param res
  * @param next

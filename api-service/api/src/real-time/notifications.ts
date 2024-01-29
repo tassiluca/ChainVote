@@ -33,7 +33,6 @@ export async function setClosingElectionNotification(io: Server, at: Date, elect
 }
 
 export async function setOpeningElectionNotification(io: Server, at: Date, electionId: string, goal: string) {
-  console.debug(at)
   const openingNotification = new ScheduledNotification({
     when: at,
     type: EventType.OPENING_ELECTION,

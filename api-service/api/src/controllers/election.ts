@@ -10,7 +10,7 @@ import {ErrorTypes, InternalServerError, UnauthorizedError} from "core-component
 import {convertToISO} from "../utils/date.utils";
 import { Server } from "socket.io";
 import {getElectionInfo} from "./election.info";
-import {setClosingElectionNotification, setOpeningElectionNotification} from "../real-time/scheduledNotifications";
+import {setClosingElectionNotification, setOpeningElectionNotification} from "../real-time/notifications";
 
 const channelName = "ch2";
 const contractName = "chaincode-votes";
@@ -123,7 +123,6 @@ export async function createElection(req: Request, res: Response, next: NextFunc
     }
     return next();
 }
-
 
 /**
  * Cast a vote for a specific election.

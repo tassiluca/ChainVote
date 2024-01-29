@@ -1,24 +1,24 @@
 <script setup lang="ts">
 import { formatTime } from '@/commons/utils'
-import { onMounted, type Ref, ref, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useNotificationsStore } from '@/stores/notificationsStore'
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
-import type { Notification } from '@/stores/notificationsStore'
 
 const notificationsStore = useNotificationsStore();
 
-onMounted(async () => viewAllNotifications());
+onMounted(async () => await viewAllNotifications());
 
 /* When the user is in this view and a notification pops up, the page is updated with the new one. */
-// watch(() => notificationsStore.unreadNotifications, async () => {
-//   if (notificationsStore.unreadNotifications > 0) {
-//     await viewAllNotifications()
-//   }
-// });
+watch(() => notificationsStore.unreadNotifications, async (newNotifications) => {
+  if (newNotifications > 0) {
+    await viewAllNotifications()
+  }
+});
 
 async function viewAllNotifications() {
-  notificationsStore.unreadNotifications = 0;
+  await notificationsStore.getAllNotifications();
+  await notificationsStore.readNotifications();
 }
 </script>
 
@@ -26,6 +26,9 @@ async function viewAllNotifications() {
   <Breadcrumb :paths="[{name: 'User Area', link: '/user'}, {name: 'Notifications', link: '/user/notifications'}]" />
   <div class="container-sm col-md-7 text-center">
     <PageTitle title="Notifications" />
+    <div v-if="notificationsStore.notifications.length == 0">
+      <p>You don't have notifications, yet.</p>
+    </div>
     <div v-for="notification in notificationsStore.notifications" :key="notification.date.toString()" class="row notification">
       <div class="col-1 d-flex flex-column align-items-center justify-content-center">
         <img v-if="notification.new"

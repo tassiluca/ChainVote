@@ -2,7 +2,6 @@ import nodemailer from 'nodemailer';
 
 let secretValue = "";
 
-
 secretValue= "vmck idvj ewbi etzk";
 
 const config = {

@@ -10,7 +10,6 @@ export enum Role { User = 'user', Admin = 'admin' }
  * @param roleString the role string to convert
  */
 export function toRole(roleString: string | null): Role | null {
-  console.log(`toRole(${roleString})`);
   const possiblyRole = roleString?.toLowerCase() as Role;
   return (possiblyRole && Object.values(Role).includes(possiblyRole)) ? possiblyRole : null;
 }
