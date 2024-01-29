@@ -32,9 +32,9 @@ export const useNotificationsStore = defineStore('notifications', () => {
     const newNotifications = notifications.value?.filter((n: Notification) => n.new);
     for (const n1 of newNotifications) {
       await axios.put(`${apiEndpoints.API_SERVER}/notifications/${n1.id}`)
-        .then(() => unreadNotifications.value--)
         .catch((error) => console.error(error));
     }
+    unreadNotifications.value = 0;
   }
 
   return { notifications, unreadNotifications, getAllNotifications, readNotifications };
