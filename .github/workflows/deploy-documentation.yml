@@ -11,6 +11,7 @@ on:
       - 'README.md'
       - 'CHANGELOG.md'
       - 'LICENSE'
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -82,7 +83,6 @@ jobs:
 
       - name: ls
         run: |
-          echo ${github.ref}
           ls -la ./public
           ls -la ./public/presentation
           ls -la ./public/smart-contracts/
