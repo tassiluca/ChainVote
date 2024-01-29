@@ -8,11 +8,15 @@ import { onMounted } from 'vue'
 const authStore = useAuthStore();
 const notificationsStore = useNotificationsStore();
 
-// onMounted(async () => {
-//   if (authStore.isLogged) {
-//     await notificationsStore.getAllNotifications();
-//   }
-// });
+onMounted(async () => {
+  if (authStore.isLogged) {
+    try {
+      await notificationsStore.getAllNotifications();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+});
 
 library.add(faEnvelope, faEnvelopeOpen, faEnvelopeOpenText, faBars, faUser, faRightToBracket, faRightFromBracket);
 </script>

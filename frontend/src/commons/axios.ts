@@ -10,6 +10,7 @@ export default function axiosSetup() {
       config.headers["Content-Type"] = "application/json";
       const token = authStore.accessToken;
       if (token) {
+        console.log("Setting authorization header");
         config.headers.Authorization = `Bearer ${token}`
       }
       return config
@@ -23,7 +24,7 @@ export default function axiosSetup() {
     async function (error) {
       console.debug(error);
       const originalRequest = error.config;
-      if (error.response.data.code === 401 || (error.response.data.code === 400 && originalRequest.url.includes("/auth/refresh"))) {
+      if (error.response.data.code === 400 && originalRequest.url.includes("/auth/refresh")) {
         await authStore.logout();
       } else if (error.response.data.code === 400 && error.response.data.error.message === "jwt expired") {
         await authStore.refreshAccessToken();

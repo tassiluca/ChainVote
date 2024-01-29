@@ -141,8 +141,6 @@ const router = createRouter({
 router.beforeEach((to) => {
   const authStore = useAuthStore();
   if (to.meta.allowed) {
-    console.log("to.meta.allowed: " + to.meta.allowed);
-    console.log("authStore.userRole: " + authStore.userRole);
     if (!authStore.isLogged || !to.meta.allowed.includes(authStore.userRole!)) {
       return {
         path: '/login',

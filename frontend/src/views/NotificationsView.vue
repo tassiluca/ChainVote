@@ -7,20 +7,18 @@ import PageTitle from '@/components/PageTitleComponent.vue'
 import type { Notification } from '@/stores/notificationsStore'
 
 const notificationsStore = useNotificationsStore();
-const notifications: Ref<Notification[]> = ref([]);
 
 onMounted(async () => viewAllNotifications());
 
 /* When the user is in this view and a notification pops up, the page is updated with the new one. */
-watch(() => notificationsStore.unreadNotifications, async () => viewAllNotifications());
+// watch(() => notificationsStore.unreadNotifications, async () => {
+//   if (notificationsStore.unreadNotifications > 0) {
+//     await viewAllNotifications()
+//   }
+// });
 
 async function viewAllNotifications() {
-  try {
-    notifications.value = await notificationsStore.getAllNotifications();
-    notificationsStore.unreadNotifications = 0;
-  } catch (e: any) {
-    console.error(e); // TODO handle appropriately
-  }
+  notificationsStore.unreadNotifications = 0;
 }
 </script>
 
@@ -28,7 +26,7 @@ async function viewAllNotifications() {
   <Breadcrumb :paths="[{name: 'User Area', link: '/user'}, {name: 'Notifications', link: '/user/notifications'}]" />
   <div class="container-sm col-md-7 text-center">
     <PageTitle title="Notifications" />
-    <div v-for="notification in notifications" :key="notification.date.toString()" class="row notification">
+    <div v-for="notification in notificationsStore.notifications" :key="notification.date.toString()" class="row notification">
       <div class="col-1 d-flex flex-column align-items-center justify-content-center">
         <img v-if="notification.new"
              alt="Not read notification, yet."

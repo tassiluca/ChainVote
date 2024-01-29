@@ -19,7 +19,6 @@ onMounted(() => {
     socket.on("new-notification", (body: string) => {
       notificationsStore.unreadNotifications++;
       displayNotification(body)
-      console.log(notificationsStore.unreadNotifications);
     });
     // TODO: user specific notifications
     // socket.join("user-" + authStore.user.id);

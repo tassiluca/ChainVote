@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { type Ref, ref } from 'vue'
 import { apiEndpoints } from '@/commons/globals'
 import axios from 'axios'
 
@@ -12,18 +12,19 @@ export interface Notification {
 
 export const useNotificationsStore = defineStore('notifications', () => {
 
+  const notifications: Ref<Notification[] | null> = ref(null);
   const unreadNotifications = ref(0);
 
-  async function getAllNotifications(): Promise<Notification[]> {
+  async function getAllNotifications() {
     const response = await axios.get(`${apiEndpoints.API_SERVER}/notifications/all`);
-    unreadNotifications.value = response.data.data.filter((n: any) => !n.isRead).length;
-    return response.data.data.map((n: any) => ({
+    notifications.value = response.data.data.map((n: any) => ({
       date: new Date(n.date),
       type: n.type,
       body: n.text,
       new: !n.read
     }));
+    unreadNotifications.value = notifications.value!.filter((n: any) => n.new).length;
   }
 
-  return { unreadNotifications, getAllNotifications };
+  return { notifications, unreadNotifications, getAllNotifications };
 });
