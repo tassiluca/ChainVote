@@ -83,6 +83,7 @@ jobs:
 
       - name: ls
         run: |
+          echo ${github.ref}
           ls -la ./public
           ls -la ./public/presentation
           ls -la ./public/smart-contracts/
