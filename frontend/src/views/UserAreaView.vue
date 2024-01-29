@@ -1,11 +1,10 @@
 <template>
   <Breadcrumb :paths="[{name: 'User area', link: '/user'}]" />
   <PageTitle title="User area"/>
-  <div class="row gy-5 row-cols-md-2 row-cols-1 mx-auto my-2">
+  <div v-if="data" class="row gy-5 row-cols-md-2 row-cols-1 mx-auto my-2">
     <div class="col" v-for="property in Object.keys(newValueRules)" :key="property">
       <div class="p-2 border bg-light">
         <div class="card col-10 mx-auto">
-          {{data![property as keyof User]}}
           <UserProperty
               :property="property"
               :value="data![property as keyof User]"
@@ -25,38 +24,24 @@
   import PageTitle from "@/components/PageTitleComponent.vue";
   import Breadcrumb from "@/components/BreadcrumbComponent.vue";
   import * as yup from 'yup'
-  import {Role} from "@/commons/utils";
-  import {useAuthStore} from "@/stores/auth";
   import router from "@/router";
   import {type User, useUserStore} from "@/stores/user";
 
-  const authStore = useAuthStore();
   const userStore = useUserStore();
   const data: Ref<User | null> = ref(null);
 
   onMounted(async () => {
-    if (!authStore.isLogged) {
-      await router.push("/login");
-    } else {
-      await getUser();
-    }
+    await getUser();
   });
 
   async function getUser() {
     try {
       data.value = await userStore.getUserInfo();
+      console.log(data.value);
     } catch (e: any) {
       console.error(e);
       await router.push({name: "not-found"})
     }
-  }
-
-  data.value = {
-    name: "Test User",
-    surname: "test surname",
-    password: "password",
-    email: "prova@unibo.it",
-    role: Role.User,
   }
 
   interface Rule {
@@ -68,12 +53,12 @@
   const newValueRules: {
     [up: string]: Rule
   } = {
-    'name': {
+    'firstName': {
       'validation': yup.string().required('Name must be at least 1 character long'),
       'mutable': true,
       'hide': false,
     },
-    'surname': {
+    'secondName': {
       'validation': yup.string().required('Surname must be at least 1 character long'),
       'mutable': true,
       'hide': false,

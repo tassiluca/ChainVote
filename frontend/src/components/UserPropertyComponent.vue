@@ -86,7 +86,7 @@
     hideElem(document.getElementById(`old-value-${props.property}-separator`)!);
 
     try {
-      const newUser = await userStore.updateUserInfo(props.property, values)
+      const newUser = await userStore.updateUserInfo(props.property, values.refValue);
       success.innerHTML = 'Successfully modified ' + props.property + ' in ' + newUser[props.property as keyof User];
       isReadOnly.value = true;
       showElem(success);
