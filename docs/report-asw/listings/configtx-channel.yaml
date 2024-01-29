@@ -1,0 +1,18 @@
+Channel: &ChannelDefaults
+  # Canonical policy path:
+  #   /Channel/<PolicyName>
+  Policies:
+      # Who may invoke the 'Deliver' API
+      Readers:
+          Type: ImplicitMeta
+          Rule: "ANY Readers"
+      # Who may invoke the 'Broadcast' API
+      Writers:
+          Type: ImplicitMeta
+          Rule: "ANY Writers"
+      # By default, who may modify elements at this config level
+      Admins:
+          Type: ImplicitMeta
+          Rule: "MAJORITY Admins"
+  Capabilities:
+      <<: *ChannelCapabilities

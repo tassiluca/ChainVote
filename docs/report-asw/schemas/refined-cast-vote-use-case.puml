@@ -1,0 +1,20 @@
+@startuml refined-cast-vote-use-case
+left to right direction
+
+actor User
+
+rectangle ChainVote {
+    usecase "Cast a vote for an election" as UC1
+    usecase "Request a one-time code \nfor a given election" as UC2
+    usecase "Check election is open" as UC3
+    usecase "Check the given one-time code is valid" as UC4
+    usecase "Check a code for the given election \nhas not already been generated" as UC5
+    UC2 ..> UC5 : <<include>>
+    UC1 ..> UC3 : <<include>>
+    UC1 ..> UC4 : <<include>>
+}
+
+User -- UC1
+User -- UC2
+
+@enduml

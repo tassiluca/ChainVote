@@ -1,0 +1,28 @@
+@startuml smart-contract-architecture
+
+skinparam component {
+    BackgroundColor<<external>> White
+    BackgroundColor<<executable>> LightGreen
+}
+
+component ":smart-contracts" {
+    [:core] as C
+
+    [:presentation] as P
+    [com.owlike:genson] as GNS <<external>>
+
+    [:chaincode-commons] as CH
+    [:chaincode-elections] as CH1 <<executable>>
+    [:chaincode-votes] as CH2 <<executable>>
+    [org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim] as FABRIC <<external>>
+
+    P -up-|> C
+    CH -up-|> P
+    CH1 -up-|> CH 
+    CH2 -up-|> CH
+
+    GNS -|> P
+    FABRIC -|> CH
+}
+
+@enduml
