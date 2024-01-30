@@ -44,6 +44,7 @@ function submitCode(code: string) {
   };
 
   axios.post(urlCheck, data).then((response) => {
+    console.log(response.data.data);
     if (response.data.data) {
       useVotingStore().setOtpInUse(code);
       router.push(`/vote/${route.params.id}`);

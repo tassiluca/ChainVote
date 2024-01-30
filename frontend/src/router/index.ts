@@ -65,9 +65,7 @@ const router = createRouter({
       name: 'vote',
       beforeEnter: (to, from, next) => { // TODO: move to component / store ?
         try {
-          if (useVotingStore().getOtpInUse() === '') {
-            next({ name: 'not-found' });
-          }
+
 
           axios.get(`http://localhost:8080/election/info/detail/${to.params.id}`)
             .then((response) => {
