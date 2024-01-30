@@ -2,7 +2,7 @@
   <Breadcrumb :paths="[{name: 'Login', link: '/login'}, {name: 'Password forgotten', link: '/password-retrieval'}]" />
   <div class="container-sm col-md-6 text-center">
     <PageTitle title="Password forgotten" />
-        <Form @submit="onFormSubmit" :response="response" submit-btn-name="Login">
+        <Form @submit="onFormSubmit" :response="response" submit-btn-name="Request password">
           <template v-slot:body>
             <FormInput helper="Enter your e-mail" input-id="username" label="Mail" pre="@">
               <input v-model="username" type="email" class="form-control" placeholder="mario.rossi@gmail.com ༝༚༝༚" required autocomplete="e-mail"/>
