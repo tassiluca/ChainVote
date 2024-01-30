@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {useAuthStore} from "@/stores/auth";
 import {apiEndpoints} from "@/commons/globals";
 import axios from "axios";
+import type {Ref} from "vue";
 
 export interface Choice {
   name: string;
@@ -16,6 +17,10 @@ export interface Voting {
   choices: Choice[];
   turnout: string;
   results: Record<string, number>;
+}
+
+export interface VotingWithStatus extends Voting {
+  status?: string
 }
 
 export interface VotingCreation {
