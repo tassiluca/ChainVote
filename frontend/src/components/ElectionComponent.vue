@@ -4,7 +4,7 @@
       <td>
         <div class="msg text-center">
           <div class="row">
-            <p class="name"><a :href="`/election/${election.id}`" class="name">{{ election.goal }}</a></p>
+            <p class="name"><a :href="`/elections/${election.id}`" class="name">{{ election.goal }}</a></p>
           </div>
           <div class="row">
             <p class="links-container">

@@ -16,8 +16,6 @@ import VoteView from "@/views/VoteView.vue";
 import ElectionsView from "@/views/ElectionsView.vue";
 import {useAuthStore} from "@/stores/auth";
 import { useVotingStore } from '@/stores/voting'
-import ErrorView from "@/views/ErrorView.vue";
-import NoPermissionView from "@/views/NoPermissionView.vue";
 import {Role} from "@/commons/utils";
 import 'vue-router'
 import {useNotificationsStore} from "@/stores/notificationsStore";
@@ -138,18 +136,6 @@ const router = createRouter({
       meta: {
         allowed: [Role.User, Role.Admin]
       }
-    },
-    {
-      // TODO: change path
-      path: '/error',
-      name: 'error',
-      component: ErrorView,
-    },
-    {
-      // TODO: change path
-      path: '/no-permission',
-      name: 'no-permission',
-      component: NoPermissionView,
     },
     {
       path: '/:pathMatch(.*)*',
