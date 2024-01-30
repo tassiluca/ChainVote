@@ -58,6 +58,7 @@ async function getVotingDetails(id: string) {
       <h2>
         {{ election.goal }}
         <span v-if="Object.keys(election.results).length === 0" class="badge bg-success small-badge">Open</span>
+        <span v-else-if="Date.now() < election.start.getTime()" class="badge bg-primary">Soon</span>
         <span v-else class="badge bg-dark">Closed</span>
       </h2>
       <p>Voting id: {{ election.id }}</p>
