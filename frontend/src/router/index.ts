@@ -134,10 +134,7 @@ const router = createRouter({
       path: '/user/notifications',
       name: 'notifications',
       component: NotificationsView,
-      beforeEnter: async (to, from) => {
-        const notificationsStore = useNotificationsStore();
-        await notificationsStore.getAllNotifications();
-      },
+      beforeEnter: async () => await useNotificationsStore().getAllNotifications(),
       meta: {
         allowed: [Role.User, Role.Admin]
       }
