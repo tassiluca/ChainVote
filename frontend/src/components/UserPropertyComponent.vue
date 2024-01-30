@@ -3,9 +3,8 @@
     <label :for="`input-${property}`">{{ capitalizeFirstLetter(property)}}</label>
     <hr :id="`old-value-${property}-separator`" class="hidden solid"/>
     <p :id="`old-value-${property}`"
-       class="hidden">Old value: <strong>{{ hide ? 'hidden' : oldValue }}</strong></p>
-    <input :type="hide ? 'password' : 'text'"
-           :id="`input-${property}`"
+       class="hidden">Old value: <strong>{{oldValue }}</strong></p>
+    <input :id="`input-${property}`"
            class="form-control my-3"
            :readonly="isReadOnly"
            v-model="refValue"
@@ -49,7 +48,6 @@
   const props = defineProps<{
     property: string,
     value: string,
-    hide: boolean,
     mutable: boolean,
     validation: any,
   }>()
@@ -95,11 +93,7 @@
         hideElem(success);
       }, 2000);
       hideElem(spinner);
-      if (props.hide) {
-        refValue.value = '';
-      } else {
-        oldValue.value = values.refValue;
-      }
+      oldValue.value = values.refValue;
       hideElem(oldValueElem);
       hideElem(document.getElementById(`old-value-${props.property}-separator`)!);
       showElem(document.getElementById(`change-${props.property}`)!);
@@ -108,11 +102,7 @@
     } catch (e: any) {
       console.log(e)
       hideElem(spinner);
-      if (props.hide) {
-        refValue.value = '';
-      } else {
-        refValue.value = oldValue.value;
-      }
+      refValue.value = oldValue.value;
       err.innerHTML = 'Error ' + e.code + ': ' + e.message;
       showElem(err);
       hideElem(success);
@@ -137,11 +127,7 @@
 
   function onRestoreButton() {
     isReadOnly.value = true;
-    if (props.hide) {
-      refValue.value = '';
-    } else {
-      refValue.value = oldValue.value;
-    }
+    refValue.value = oldValue.value;
     showElem(document.getElementById(`change-${props.property}`)!);
     hideElem(document.getElementById(`error-${props.property}`)!);
     hideElem(document.getElementById(`success-${props.property}`)!);

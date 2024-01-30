@@ -8,7 +8,6 @@
           <UserProperty
               :property="property"
               :value="data![property as keyof User]"
-              :hide="newValueRules[property].hide"
               :mutable="newValueRules[property].mutable"
               :validation="newValueRules[property].validation"
           />
@@ -19,16 +18,16 @@
 </template>
 
 <script setup lang="ts">
-import UserProperty from "@/components/UserPropertyComponent.vue";
-import {onMounted, type Ref, ref} from "vue";
-import PageTitle from "@/components/PageTitleComponent.vue";
-import Breadcrumb from "@/components/BreadcrumbComponent.vue";
-import * as yup from 'yup'
-import router from "@/router";
-import {type User} from "@/stores/user";
-import {Role} from "@/commons/utils";
+  import UserProperty from "@/components/UserPropertyComponent.vue";
+  import {onMounted, type Ref, ref} from "vue";
+  import PageTitle from "@/components/PageTitleComponent.vue";
+  import Breadcrumb from "@/components/BreadcrumbComponent.vue";
+  import * as yup from 'yup'
+  import router from "@/router";
+  import {type User, useUserStore} from "@/stores/user";
 
   const data: Ref<User | null> = ref(null);
+  const userStore = useUserStore();
 
   onMounted(async () => {
     await getUser();
@@ -36,21 +35,8 @@ import {Role} from "@/commons/utils";
 
   async function getUser() {
     try {
-      data.value = {
-        firstName: 'gianni',
-        secondName: 'giannini',
-        email: 'hs@ka.if',
-        role: Role.User,
-      }
-      // data.value = await userStore.getUserInfo();
-      for (const property of copyWithoutElement(Object.keys(newValueRules), 'role')) {
-        if (!(property in data.value)) {
-          data.value[property] = '';
-        }
-      }
-      console.log(data.value);
+      data.value = await userStore.getUserInfo();
     } catch (e: any) {
-      console.error(e);
       await router.push({name: "not-found"})
     }
   }
@@ -58,7 +44,6 @@ import {Role} from "@/commons/utils";
   interface Rule {
     validation: any,
     mutable: boolean,
-    hide: boolean,
   }
 
   const newValueRules: {
@@ -67,44 +52,20 @@ import {Role} from "@/commons/utils";
     'firstName': {
       'validation': yup.string().required('Name must be at least 1 character long'),
       'mutable': true,
-      'hide': false,
     },
     'secondName': {
       'validation': yup.string().required('Surname must be at least 1 character long'),
       'mutable': true,
-      'hide': false,
     },
     'email': {
       'validation': undefined,
       'mutable': false,
-      'hide': false,
-    },
-    'password': {
-      'validation': yup.string().min(8, 'Password must be at least 8 characters long').required('Password is required').matches(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
-          'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
-      ),
-      'mutable': true,
-      'hide': true,
     },
     'role': {
       'validation': undefined,
       'mutable': false,
-      'hide': false,
     }
   };
-
-const copyWithoutElement = (original: string[], elementToRemove: string) => {
-
-  let indexToRemove: number = original.indexOf(elementToRemove);
-  let newArray: string[] = original;
-
-  if (indexToRemove !== -1) {
-    newArray = original.slice(0, indexToRemove).concat(original.slice(indexToRemove + 1));
-  }
-
-  return newArray;
-};
 </script>
 
 <style>
