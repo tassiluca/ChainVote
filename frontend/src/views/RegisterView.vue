@@ -5,7 +5,7 @@ import Form from '@/components/forms/FormComponent.vue'
 import FormInput from '@/components/forms/FormInputComponent.vue'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
-import {type UserCreation, useRegisterStore} from "@/stores/user";
+import {type UserCreation, useUserStore} from "@/stores/user";
 
 const response = ref({})
 
@@ -36,7 +36,7 @@ function onSubmit() {
     secondName: secondName.value,
   }
 
-  useRegisterStore().registration(data)
+  useUserStore().registration(data)
     .then(() => { response.value = {success: true, msg: "User created successfully"}})
     .catch((e) => { response.value = {success: false, msg: "Can't create user"}; });
 }
@@ -97,7 +97,7 @@ const properties: {
 
 <template>
     <div class="container">
-        <PageTitle title="Create Election" />
+        <PageTitle title="User registration" />
         <Form @submit="onSubmit" :response="response" submit-btn-name="Create an user">
             <template v-slot:body>
                 <div class="col" v-for="prop in Object.keys(properties)" :key="prop">
