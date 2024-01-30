@@ -1,5 +1,5 @@
 [versions]
-junit = "5.9.3"
+junit = "5.10.1"
 log4j = "2.20.0"
 
 [libraries]
