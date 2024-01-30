@@ -20,6 +20,7 @@
         }).then((response) => {
             alert(response.data.data);
             useVotingStore().setOtpInUse("");
+            useVotingStore().setOtpInUseElectionId("");
         }).catch((error) => {
             alert(error);
         });
@@ -28,7 +29,7 @@
     const goal = ref("");
     onBeforeMount(async () => {
         console.log(useVotingStore().getOtpInUse());
-        if (!useVotingStore().getOtpInUse()) {
+        if (!useVotingStore().getOtpInUse() || useVotingStore().getOtpInUseElectionId() !== electionId) {
           await router.push({ name: 'not-found' });
         }
 

@@ -6,9 +6,7 @@ import { useRoute } from 'vue-router'
 import router from '@/router'
 import axios from 'axios'
 
-const {digitNumber} = defineProps<{
-  digitNumber: number
-}>();
+const {digitNumber} = defineProps<{ digitNumber: number }>();
 
 const route = useRoute();
 
@@ -44,9 +42,9 @@ function submitCode(code: string) {
   };
 
   axios.post(urlCheck, data).then((response) => {
-    console.log(response.data.data);
     if (response.data.data) {
       useVotingStore().setOtpInUse(code);
+      useVotingStore().setOtpInUseElectionId(route.params.id as string)
       router.push(`/vote/${route.params.id}`);
     } else {
       error.value = true;

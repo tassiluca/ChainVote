@@ -36,6 +36,7 @@ export const useVotingStore = defineStore('voting', () => {
   const authStore = useAuthStore();
 
   const otpInUse = ref(sessionStorage.getItem("otpInUse"));
+  const otpInUseElectionId = ref(sessionStorage.getItem("otpInUseElectionId"));
 
   async function getVotingBy(id: string): Promise<Voting> {
     const urlInfos = `${apiEndpoints.API_SERVER}/election/info/detail/${id}`;
@@ -122,9 +123,17 @@ export const useVotingStore = defineStore('voting', () => {
     sessionStorage.setItem("otpInUse", otp);
   }
 
+  function setOtpInUseElectionId(electionId: string) {
+    sessionStorage.setItem("otpInUseElectionId", electionId);
+  }
+
   function getOtpInUse(): string | null {
     return otpInUse.value;
   }
 
-  return { getVotingBy, getVotings, createVoting, setOtpInUse, getOtpInUse, getElectionInfo };
+  function getOtpInUseElectionId(): string | null {
+    return otpInUseElectionId.value;
+  }
+
+  return { getVotingBy, getVotings, createVoting, setOtpInUse, getOtpInUse, getElectionInfo, setOtpInUseElectionId, getOtpInUseElectionId }
 });
