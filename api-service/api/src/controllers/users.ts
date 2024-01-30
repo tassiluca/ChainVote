@@ -8,7 +8,6 @@ import mailer from "../configs/mailer.config";
  * Set the user identity to work with. This function should be used when, in an API control method, an admin entity
  * wants to access to the data of another user. In this case, the request should specify the email of the user
  * to control.
- *
  * @param req
  * @param res
  * @param next
@@ -45,7 +44,6 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
 
 /**
  * Create a new user
- *
  * @param req
  * @param res
  * @param next
@@ -80,7 +78,6 @@ export async function createUser(req: Request, res: Response, next: NextFunction
 
 /**
  * Get the profile of the user
- *
  * @param req
  * @param res
  * @param next
@@ -106,7 +103,6 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
 
 /**
  * Edit the profile of the user
- *
  * @param req
  * @param res
  * @param next
@@ -129,7 +125,6 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
             )
         );
     }
-
     try {
         await User.updateOne({ email: user.email }, data);
         res.locals.code = StatusCodes.OK;
@@ -142,7 +137,6 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
 
 /**
  * Delete the profile of the user
- *
  * @param req
  * @param res
  * @param next
@@ -175,10 +169,8 @@ function getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// TODO check if works
 /**
  * Send user a new password via mail
- *
  * @param req
  * @param res
  * @param next
@@ -203,9 +195,9 @@ export async function passwordForgotten(req: Request, res: Response, next: NextF
         to: req.body.email,
         subject: 'Your new password has been created.',
         html: `
-                Hello ${res.locals.user.firstName} ${res.locals.user.secondName},<br>
-                This is the new password: <b>${password}</b>
-            `
+            Hello from ChainVote team &#128075;,<br>
+            This is the new password: <b>${password}</b>
+        `
     };
     mailer.sendMail(message).then((info) => {
         res.locals.code = 201

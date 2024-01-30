@@ -32,7 +32,7 @@ export const useAuthStore = defineStore('auth',  () => {
 
   async function verifyRole(username: String, role: Role, accessToken: string) {
     const roleVerification = await axios.get(
-        `${apiEndpoints.API_SERVER}/users/${username}`,
+        `${apiEndpoints.API_SERVER}/users/`,
         { headers: { Authorization: `Bearer ${accessToken}` } }
     )
     if (roleVerification.data.data.role !== role) {
