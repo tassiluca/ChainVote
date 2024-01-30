@@ -5,10 +5,10 @@ import {defineStore} from "pinia";
 import { useAuthStore } from '@/stores/auth'
 
 export interface User {
-    name: string,
-    surname: string,
+    firstName: string,
+    secondName: string,
     email: string,
-    password: string,
+    password?: string,
     role: Role,
 }
 
@@ -17,7 +17,6 @@ export const useUserStore = defineStore('user',  () => {
     const authStore = useAuthStore();
 
     async function getUserInfo(): Promise<User> {
-        console.debug(authStore.user);
         const url = `${apiEndpoints.API_SERVER}/users/${authStore.user}`;
         const response = await axios.get(url);
         return response.data.data;
