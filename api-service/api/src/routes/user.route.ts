@@ -2,7 +2,7 @@ import { Router } from "express";
 import {createUser, getProfile, editProfile, deleteProfile, passwordForgotten} from "../controllers/users";
 import { authenticationHandler } from "core-components";
 import { validationHandler } from "core-components";
-import {body, param} from "express-validator";
+import {body} from "express-validator";
 import {ApiLimiterEntry,apiLimiter} from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
 
@@ -81,11 +81,8 @@ userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *
  */
 userRouter.get(
-    "/:email",
+    "/",
     authenticationHandler,
-    validationHandler([
-        param("email").exists().isEmail()
-    ]),
     getProfile
 );
 
