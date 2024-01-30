@@ -19,15 +19,15 @@
 </template>
 
 <script setup lang="ts">
-  import UserProperty from "@/components/UserPropertyComponent.vue";
-  import {onMounted, type Ref, ref} from "vue";
-  import PageTitle from "@/components/PageTitleComponent.vue";
-  import Breadcrumb from "@/components/BreadcrumbComponent.vue";
-  import * as yup from 'yup'
-  import router from "@/router";
-  import {type User, useUserStore} from "@/stores/user";
+import UserProperty from "@/components/UserPropertyComponent.vue";
+import {onMounted, type Ref, ref} from "vue";
+import PageTitle from "@/components/PageTitleComponent.vue";
+import Breadcrumb from "@/components/BreadcrumbComponent.vue";
+import * as yup from 'yup'
+import router from "@/router";
+import {type User} from "@/stores/user";
+import {Role} from "@/commons/utils";
 
-  const userStore = useUserStore();
   const data: Ref<User | null> = ref(null);
 
   onMounted(async () => {
@@ -36,7 +36,18 @@
 
   async function getUser() {
     try {
-      data.value = await userStore.getUserInfo();
+      data.value = {
+        firstName: 'gianni',
+        secondName: 'giannini',
+        email: 'hs@ka.if',
+        role: Role.User,
+      }
+      // data.value = await userStore.getUserInfo();
+      for (const property of copyWithoutElement(Object.keys(newValueRules), 'role')) {
+        if (!(property in data.value)) {
+          data.value[property] = '';
+        }
+      }
       console.log(data.value);
     } catch (e: any) {
       console.error(e);
@@ -64,8 +75,8 @@
       'hide': false,
     },
     'email': {
-      'validation': yup.string().email('Email must contain @ and following chars').required('Email is required'),
-      'mutable': true,
+      'validation': undefined,
+      'mutable': false,
       'hide': false,
     },
     'password': {
@@ -82,6 +93,18 @@
       'hide': false,
     }
   };
+
+const copyWithoutElement = (original: string[], elementToRemove: string) => {
+
+  let indexToRemove: number = original.indexOf(elementToRemove);
+  let newArray: string[] = original;
+
+  if (indexToRemove !== -1) {
+    newArray = original.slice(0, indexToRemove).concat(original.slice(indexToRemove + 1));
+  }
+
+  return newArray;
+};
 </script>
 
 <style>
