@@ -20,6 +20,7 @@ import ErrorView from "@/views/ErrorView.vue";
 import NoPermissionView from "@/views/NoPermissionView.vue";
 import {Role} from "@/commons/utils";
 import 'vue-router'
+import {useNotificationsStore} from "@/stores/notificationsStore";
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -27,7 +28,6 @@ declare module 'vue-router' {
     allowed: Role[];
   }
 }
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -134,6 +134,10 @@ const router = createRouter({
       path: '/user/notifications',
       name: 'notifications',
       component: NotificationsView,
+      beforeEnter: async (to, from) => {
+        const notificationsStore = useNotificationsStore();
+        await notificationsStore.getAllNotifications();
+      },
       meta: {
         allowed: [Role.User, Role.Admin]
       }

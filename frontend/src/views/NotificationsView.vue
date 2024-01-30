@@ -7,19 +7,15 @@ import PageTitle from '@/components/PageTitleComponent.vue'
 
 const notificationsStore = useNotificationsStore();
 
-onMounted(async () => await viewAllNotifications());
+onMounted(async () => await notificationsStore.readNotifications());
 
 /* When the user is in this view and a notification pops up, the page is updated with the new one. */
 watch(() => notificationsStore.unreadNotifications, async (newNotifications) => {
   if (newNotifications > 0) {
-    await viewAllNotifications()
+    await notificationsStore.getAllNotifications();
+    await notificationsStore.readNotifications();
   }
 });
-
-async function viewAllNotifications() {
-  await notificationsStore.getAllNotifications();
-  await notificationsStore.readNotifications();
-}
 </script>
 
 <template>
