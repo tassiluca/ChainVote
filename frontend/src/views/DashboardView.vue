@@ -4,7 +4,7 @@
   <div v-for="qualifier in qualifiers" :class="`elections col-10 center mx-auto election election-${qualifier} bg-light`" :key="`div-${qualifier}`">
     <a :href="`/elections?qualifier=${qualifier}`" class="election-link">{{ capitalizeFirstLetter(qualifier) }} Elections</a>
     <hr v-if="getData(qualifier).length > 0"/>
-    <Carousel :elections="getData(qualifier)"/>
+    <Carousel :elections="sortElectionsByDate(getData(qualifier))"/>
   </div>
 </template>
 
@@ -12,20 +12,34 @@
 import Carousel from "@/components/CarouselComponent.vue";
 import PageTitle from "@/components/PageTitleComponent.vue";
 import Breadcrumb from "@/components/BreadcrumbComponent.vue";
-import {computed, onMounted, ref, type Ref} from "vue";
+import {computed, onMounted, reactive, ref, type Ref} from "vue";
 import router from "@/router";
-import {useVotingStore, type Voting} from "@/stores/voting";
+import {useVotingStore, type Voting, type VotingWithStatus} from "@/stores/voting";
 
 const votingStore = useVotingStore();
-const data: Ref<Voting[] | null> = ref(null);
+const data: Ref<VotingWithStatus[] | null> = ref(null);
 
 onMounted(async () => {
   await getVotings();
 });
 
+function getStatus(election: Voting): string {
+  const now = new Date();
+  if (now >= election.start && now < election.end) {
+    return "open";
+  } else if (now >= election.end) {
+    return "closed";
+  } else {
+    return "soon";
+  }
+}
+
 async function getVotings() {
   try {
     data.value = await votingStore.getVotings();
+    for (const voting of data.value) {
+      voting['status'] = getStatus(voting);
+    }
   } catch (e: any) {
     console.error(e);
     await router.push({name: "not-found"})
@@ -43,33 +57,35 @@ function sortElectionsByDate(elections: Voting[], prop: keyof Voting = 'start'):
   return elections.sort((a: Voting, b: Voting) => a[prop as keyof typeof a] - b[prop as keyof typeof b]);
 }
 
-function isOpen(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.start && now < election.end;
-}
-
-function isClosed(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.end;
-}
-
-function isSoon(election: Voting): boolean {
-  const now = new Date();
-  return now < election.start;
-}
-
 const qualifiers = ['open', 'closed', 'soon'];
 
+const reactiveVotings = computed(() => {
+  if (!data.value) return [];
+  return data.value.map(voting => reactive(voting));
+});
+
 const getOpen = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isOpen(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'open')
+  } else {
+    return []
+  }
 });
 
 const getClosed = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isClosed(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'closed')
+  } else {
+    return []
+  }
 });
 
 const getSoon = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isSoon(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'soon')
+  } else {
+    return []
+  }
 });
 
 function getData(qualifier: string) {

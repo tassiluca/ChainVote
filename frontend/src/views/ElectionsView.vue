@@ -3,21 +3,35 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
 import {useRoute} from "vue-router";
-import { computed, onMounted, type Ref, ref } from 'vue'
+import {computed, onMounted, reactive, type Ref, ref} from 'vue'
 import ElectionComponent from "@/components/ElectionComponent.vue";
-import {useVotingStore, type Voting} from "@/stores/voting";
+import {useVotingStore, type Voting, type VotingWithStatus} from "@/stores/voting";
 import router from "@/router";
 
 const votingStore = useVotingStore();
-const data: Ref<Voting[] | null> = ref(null);
+const data: Ref<VotingWithStatus[] | null> = ref(null);
 
 onMounted(async () => {
   await getVotings();
 })
 
+function getStatus(election: Voting): string {
+  const now = new Date();
+  if (now >= election.start && now < election.end) {
+    return "Open";
+  } else if (now >= election.end) {
+    return "Closed";
+  } else {
+    return "Soon";
+  }
+}
+
 async function getVotings() {
   try {
     data.value = await votingStore.getVotings();
+    for (const voting of data.value) {
+      voting['status'] = getStatus(voting);
+    }
   } catch (e: any) {
     console.error(e);
     await router.push({name: "not-found"})
@@ -43,35 +57,41 @@ function sortElectionsByDate(elections: Voting[], prop: keyof Voting = 'start'):
   return elections.sort((a: Voting, b: Voting) => a[prop as keyof typeof a] - b[prop as keyof typeof b]);
 }
 
-function isOpen(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.start && now < election.end;
-}
-
-function isClosed(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.end;
-}
-
-function isSoon(election: Voting): boolean {
-  const now = new Date();
-  return now < election.start;
-}
-
 const getAll = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value
+  } else {
+    return []
+  }
+});
+
+const reactiveVotings = computed(() => {
+  if (!data.value) return [];
+  return data.value.map(voting => reactive(voting));
 });
 
 const getOpen = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isOpen(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'open')
+  } else {
+    return []
+  }
 });
 
 const getClosed = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isClosed(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'closed')
+  } else {
+    return []
+  }
 });
 
 const getSoon = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isSoon(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'soon')
+  } else {
+    return []
+  }
 });
 
 const query: string[] = ["all", "open", "closed", "soon"]
@@ -100,7 +120,7 @@ const totalPages = computed(() => {
 const displayedElections = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return getData.value.slice(start, end);
+  return sortElectionsByDate(getData.value).slice(start, end);
 });
 
 function nextPage() {
