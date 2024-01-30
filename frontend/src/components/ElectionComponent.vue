@@ -39,14 +39,13 @@
 </template>
 
 <script setup lang="ts">
-import type {Voting} from "@/stores/voting";
+import type {VotingWithStatus} from "@/stores/voting";
 
-function isOpen(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.start && now < election.end;
+function isOpen(election: VotingWithStatus): boolean {
+  return election.status === 'open';
 }
 defineProps<{
-  election: Voting
+  election: VotingWithStatus
 }>()
 </script>
 

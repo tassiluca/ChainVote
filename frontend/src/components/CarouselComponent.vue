@@ -25,11 +25,10 @@
 import ElectionCard from "@/components/ElectionCardComponent.vue";
 import { Carousel, Navigation, Slide } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
-import type {Voting} from "@/stores/voting";
+import type {VotingWithStatus} from "@/stores/voting";
 
-
-defineProps<{
-  elections: Voting[]
+const props = defineProps<{
+  elections: VotingWithStatus[]
 }>()
 
 const settings = {

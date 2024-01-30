@@ -19,6 +19,11 @@
         <span>{{ errors.refValue }}</span>
       </div>
       <button class="btn btn-sm btn-primary btn-block hidden"
+              :id="`restore-change-${property}`"
+              @click.prevent="onRestoreButton">
+        Restore
+      </button>
+      <button class="btn btn-sm btn-primary btn-block hidden"
               :id="`submit-change-${property}`"
               type="submit"
               :disabled="!meta.valid">
@@ -27,11 +32,6 @@
               class="spinner-border spinner-border-sm hidden"
               role="status"
               aria-hidden="true"></span>
-      </button>
-      <button class="btn btn-sm btn-primary btn-block hidden"
-              :id="`restore-change-${property}`"
-              @click.prevent="onRestoreButton">
-        Restore
       </button>
       <p :id="`error-${property}`" class="alert alert-danger hidden" role="alert"></p>
       <p :id="`success-${property}`" class="alert alert-success hidden" role="alert"></p>

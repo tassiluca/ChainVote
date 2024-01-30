@@ -19,6 +19,10 @@ export interface Voting {
   results: Record<string, number>;
 }
 
+export interface VotingWithStatus extends Voting {
+  status?: string
+}
+
 export interface VotingCreation {
   goal: string
   voters: string

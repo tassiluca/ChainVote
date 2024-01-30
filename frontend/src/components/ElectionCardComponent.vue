@@ -6,13 +6,9 @@
       <ul class="election-props">
         <li>
           <strong>Start:</strong> {{ ("0" + election.start.getUTCDate()).slice(-2) }} {{ election.start.toLocaleString('default', { month: 'short' }) }} {{election.start.getFullYear() }} {{ election.start.getHours() }}:{{ ("0" + election.start.getMinutes()).slice(-2) }}
-<!--          <strong>Start:</strong> {{ election.start.getDay() }}/{{ election.start.getMonth() }}/{{ election.start.getFullYear() }} {{ election.start.getHours() }}:{{ election.start.getMinutes() }}-->
         </li>
         <li>
           <strong>End:</strong> {{ ("0" + election.end.getUTCDate()).slice(-2) }} {{ election.end.toLocaleString('default', { month: 'short' }) }} {{election.end.getFullYear() }} {{ election.end.getHours() }}:{{ ("0" + election.end.getMinutes()).slice(-2) }}
-        </li>
-        <li>
-          <strong>Affluence:</strong> {{ election.turnout }}%
         </li>
         <li>
           <div class="card links mx-auto">
@@ -33,18 +29,14 @@
 
 <script setup lang="ts">
 
-import type {Voting} from "@/stores/voting";
+import type {VotingWithStatus} from "@/stores/voting";
 
 defineProps<{
-  election: {
-    type: Voting,
-    required: true
-  },
+  election: VotingWithStatus
 }>()
 
-function isOpen(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.start && now < election.end;
+function isOpen(election: VotingWithStatus): boolean {
+  return election.status === 'open';
 }
 </script>
 
