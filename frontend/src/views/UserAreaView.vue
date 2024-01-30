@@ -50,11 +50,13 @@
     [up: string]: Rule
   } = {
     'firstName': {
-      'validation': yup.string().required('Name must be at least 1 character long'),
+      'validation': yup.string().required('First name must be at least 1 character long')
+          .matches(/^[^\d\s]+$/, 'First name must not contain digits or whitespaces'),
       'mutable': true,
     },
     'secondName': {
-      'validation': yup.string().required('Surname must be at least 1 character long'),
+      'validation': yup.string().required('Second name must be at least 1 character long')
+          .matches(/^[^\d\s]+$/, 'Second name must not contain digits or whitespaces'),
       'mutable': true,
     },
     'email': {
