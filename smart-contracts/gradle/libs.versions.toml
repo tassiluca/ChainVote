@@ -1,6 +1,6 @@
 [versions]
 junit = "5.10.1"
-log4j = "2.20.0"
+log4j = "2.22.1"
 
 [libraries]
 fabric-chaincode-shim = "org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.0"
