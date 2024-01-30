@@ -2,7 +2,7 @@
   <Breadcrumb :paths="[{name: 'Dashboard', link: '/dashboard'}]" />
   <PageTitle title="Dashboard" />
   <div v-for="qualifier in qualifiers" :class="`elections col-10 center mx-auto election election-${qualifier} bg-light`" :key="`div-${qualifier}`">
-    <a :href="`/elections?qualifier=${qualifier}`" class="election-link">{{ capitalizeFirstLetter(qualifier) }} Elections</a>
+    <h2><a :href="`/elections?qualifier=${qualifier}`" class="election-link">{{ capitalizeFirstLetter(qualifier) }} Elections</a></h2>
     <hr v-if="getData(qualifier).length > 0"/>
     <Carousel :elections="sortElectionsByDate(getData(qualifier))"/>
   </div>
@@ -104,9 +104,16 @@ function getData(qualifier: string) {
 </script>
 
 <style>
+  .elections {
+    margin: 4% 0;
+  }
+
+  .elections h2 {
+    font-size: 1.6em;
+  }
+
   .election-link {
     color: black;
-    font-weight: bold;
     text-decoration: none;
   }
 
@@ -119,14 +126,10 @@ function getData(qualifier: string) {
     border-color: inherit;
   }
 
-  .elections {
-    margin: 4% 0;
-  }
-
   .election {
     margin: 2% 0;
     border-radius: 15px;
-    box-shadow: 1px 3px 10px rgba(200, 200, 200, 0.82);
+    box-shadow: 3px 3px 10px rgba(200, 200, 200, 0.82);
     padding: 2%;
     button {
       color: black;
@@ -135,7 +138,7 @@ function getData(qualifier: string) {
 </style>
 
 <style lang="scss">
-  $color-open: #66FF99;
+  $color-open: #009f00;
   .election-open {
     border: $color-open 2px solid;
     a:hover {
@@ -145,7 +148,7 @@ function getData(qualifier: string) {
       color: $color-open;
     }
   }
-  $color-closed: red;
+  $color-closed: #c70224;
   .election-closed {
     border: $color-closed 2px solid;
     a:hover {

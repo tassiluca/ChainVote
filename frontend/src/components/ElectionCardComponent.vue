@@ -10,19 +10,11 @@
         <li>
           <strong>End:</strong> {{ ("0" + election.end.getUTCDate()).slice(-2) }} {{ election.end.toLocaleString('default', { month: 'short' }) }} {{election.end.getFullYear() }} {{ election.end.getHours() }}:{{ ("0" + election.end.getMinutes()).slice(-2) }}
         </li>
-        <li>
-          <div class="card links mx-auto">
-            <ul>
-              <li>
-                <a :href="`/elections/${election.id}`">See details</a>
-              </li>
-              <li v-if="isOpen(election)">
-                <a :href="`/vote/${election.id}`">Cast a vote</a>
-              </li>
-            </ul>
-          </div>
-        </li>
       </ul>
+      <div class="d-flex flex-column links">
+        <a :href="`/elections/${election.id}`">See details</a>
+        <a :href="`/vote/${election.id}`">Cast a vote</a>
+      </div>
     </div>
   </div>
 </template>
@@ -55,14 +47,16 @@ function isOpen(election: VotingWithStatus): boolean {
     text-decoration: none;
   }
 
-  div.links {
-    display: inline-block;
-    padding: 4%;
+  div.links a {
+    padding: 6px 0;
+    margin: 4px 0;
+    border-radius: 15px;
+    background-color: #edede9;
   }
 
-  .links ul {
-    margin-left: 0;
-    padding-left: 0;
+  div.links a:hover {
+    font-weight: bold;
+    box-shadow: 1px 2px 5px rgba(200, 200, 200, 0.82);
   }
 
   .card {
