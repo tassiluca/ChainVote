@@ -7,7 +7,7 @@ const notificationEvent = "new-notification"
 const noticeTime: number = 60_000;
 
 export async function loadAllScheduledNotifications() {
-  // TODO: load all ScheduledNotifications
+  // TODO: load all ScheduledNotifications at server startup
   console.debug("Loading all scheduled notifications")
 }
 
@@ -52,5 +52,5 @@ async function emitNotification(io: Server, event: EventType, body: string) {
     type: event,
     text: body,
   })
-  await notification.save(); // TODO: catch possible errors
+  await notification.save();
 }
