@@ -28,7 +28,7 @@ onMounted(async () => {
     if (election.value) {
       election.value = {
         ...election.value, // Shallow copy of the original object
-        turnout: turnout,
+        turnout: `${parseFloat(turnout.replace('%', '')).toFixed(2)}%`,
       };
     }
   });
@@ -81,7 +81,7 @@ async function getVotingDetails(id: string) {
       <div class="col">
         <Tile title="Results">
           <template #default>
-            <p v-if="Object.keys(election.results).length === 0 && Date.now() < election.start.getTime()">
+            <p v-if="Object.keys(election.results).length !== 0 && highestOf(election.results)[0].value === 0 && Date.now() < election.start.getTime()">
               Voting has not been opened, yet.
             </p>
             <p v-else-if="Object.keys(election.results).length === 0">
