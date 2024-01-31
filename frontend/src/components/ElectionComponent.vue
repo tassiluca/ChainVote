@@ -43,25 +43,15 @@ import type {Voting} from "@/stores/voting";
 import {capitalizeFirstLetter, formatDate, formatTime, getStatus} from "@/commons/utils";
 import {ref} from "vue";
 
-const now = ref(new Date().getTime());
-
-function scheduleUpdateNow() {
-  setTimeout(updateNow, 1000);
-}
-
-function updateNow() {
-  now.value = new Date().getTime();
-  scheduleUpdateNow();
-}
-
-scheduleUpdateNow();
-
 function isOpen(election: Voting): boolean {
   return getStatus(election, now.value) === 'open';
 }
-defineProps<{
-  election: Voting
+const props = defineProps<{
+  election: Voting,
+  time: number,
 }>()
+
+const now = ref(props.time);
 </script>
 
 <style scoped>

@@ -4,7 +4,8 @@
   <div v-for="qualifier in qualifiers" :class="`elections col-10 center mx-auto election election-${qualifier} bg-light`" :key="`div-${qualifier}`">
     <a :href="`/elections?qualifier=${qualifier}`" class="election-link">{{ capitalizeFirstLetter(qualifier) }} Elections</a>
     <hr v-if="getData(qualifier).length > 0"/>
-    <Carousel :elections="sortElectionsByDate(getData(qualifier))"/>
+    <Carousel :elections="sortElectionsByDate(getData(qualifier))"
+              :time="now"/>
   </div>
 </template>
 
