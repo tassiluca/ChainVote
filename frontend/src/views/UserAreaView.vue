@@ -1,7 +1,7 @@
 <template>
   <Breadcrumb :paths="[{name: 'User area', link: '/user'}]" />
   <PageTitle title="User area"/>
-  <div v-if="data" class="row gy-5 row-cols-md-2 row-cols-1 mx-auto my-2">
+  <div v-if="data" class="container-sm row gy-5 row-cols-md-2 row-cols-1 mx-auto my-2">
     <div class="col" v-for="property in Object.keys(newValueRules)" :key="property">
       <div class="p-2 border bg-light">
         <div class="card col-10 mx-auto">
