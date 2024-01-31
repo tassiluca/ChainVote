@@ -1,7 +1,7 @@
 <template>
   <Carousel v-bind="settings" :breakpoints="breakpoints">
     <Slide v-for="election in elections" :key="String(election.id)">
-      <ElectionCard :election="election"/>
+      <ElectionCard :election="election" :time="time"/>
     </Slide>
     <template #pagination="{ pagesCount, currentPage, setCurrentPage }">
       <div class="pagination">
@@ -28,7 +28,8 @@ import 'vue3-carousel/dist/carousel.css'
 import type {Voting} from "@/stores/voting";
 
 defineProps<{
-  elections: Voting[]
+  elections: Voting[],
+  time: number,
 }>()
 
 const settings = {

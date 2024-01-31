@@ -147,7 +147,8 @@ function resetPage() {
   <div class="container-sm col-10 col-md-8 text-center">
     <div v-if="displayedElections.length > 0">
       <div v-for="election in displayedElections" :key="String(election.id)" class="row election">
-        <ElectionComponent :election="election"/>
+        <ElectionComponent :election="election"
+                            :time="now"/>
       </div>
       <div class="pagination-buttons" v-if="totalPages>2">
         <button @click="prevPage" class="btn btn-primary" :disabled="currentPage === 1">&lt;</button>
