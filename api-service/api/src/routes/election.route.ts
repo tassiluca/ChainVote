@@ -197,7 +197,7 @@ const ElectionRouter = (io: Server): Router => {
         validationHandler([
             body("electionId").exists().isNumeric()
         ]),
-        createElection
+      (req, res, next) => createElection(req, res, next, io)
     );
 
     /**

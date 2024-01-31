@@ -1,0 +1,31 @@
+@startuml code-creation-use-case
+
+actor User as C
+participant ":api-server" as API
+participant ":CodesManagerContract" as CM
+
+activate C
+activate API
+activate CM
+
+== Use case: User request new one time code ==
+
+C ->> API : ""/code/generate"" \n""{usr, electionId}""
+API ->> CM : ""generateCodeFor(usr, electionId, seed)""
+
+alt#Gold #Pink election not exists
+    CM --> API : ""electionId"" do not exists
+    API --> C : ""**500 Error**:"" \n""electionId"" not exists
+else code already generated
+    CM --> API : ""code"" already \ngenerated for (""usr"", ""electionId"")
+    API --> C : ""**500 Error**:"" \n""code"" already generated
+else #LightGreen Successful case
+    CM -> CM : generate new code \nfor (""usr"", ""electionId"") and \nstore association on \nledger private data
+    activate CM
+    CM --> CM : ""one-time-code""
+    deactivate CM
+    CM --> API : ""one-time-code""
+    API --> C : ""**201 Ok**: one-time-code""
+end
+
+@enduml

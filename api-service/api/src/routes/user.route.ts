@@ -2,7 +2,7 @@ import { Router } from "express";
 import {createUser, getProfile, editProfile, deleteProfile, passwordForgotten} from "../controllers/users";
 import { authenticationHandler } from "core-components";
 import { validationHandler } from "core-components";
-import {body, param} from "express-validator";
+import {body} from "express-validator";
 import {ApiLimiterEntry,apiLimiter} from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
 
@@ -81,12 +81,10 @@ userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *
  */
 userRouter.get(
-    "/:email",
+    "/",
     authenticationHandler,
-    validationHandler([
-        param("email").exists().isEmail()
-    ]),
-    getProfile);
+    getProfile
+);
 
 /**
  * @openapi
@@ -152,23 +150,18 @@ userRouter.get(
  *
  */
 userRouter.put(
-    "/:email",
+    "/",
     authenticationHandler,
     validationHandler([
-        // Param validation
-        param("email").exists().isEmail(),
-
         // Body validation
         body("data").isObject().notEmpty(),
         body("data.firstName").optional().isAlpha(),
         body("data.secondName").optional().isAlpha(),
-
         // Check that the user is not trying to change the email or the password
-        body("data.password").not().exists(),
         body("data.email").not().exists(),
     ]),
-    editProfile);
-
+    editProfile
+);
 
 /**
  * @openapi
@@ -222,7 +215,8 @@ userRouter.delete(
     validationHandler([
         body("email").exists().isEmail()
     ]),
-    deleteProfile);
+    deleteProfile
+);
 
 /**
  * @openapi
@@ -290,7 +284,8 @@ userRouter.post(
         body("firstName").exists().isAlpha(),
         body("secondName").exists().isAlpha(),
     ]),
-    createUser);
+    createUser
+);
 
 userRouter.put(
     "/password-forgotten",

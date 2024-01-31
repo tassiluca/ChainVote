@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {useAuthStore} from "@/stores/auth";
 import {apiEndpoints} from "@/commons/globals";
 import axios from "axios";
+import { ref } from 'vue'
 
 export interface Choice {
   name: string;
@@ -20,7 +21,7 @@ export interface Voting {
 
 export interface VotingCreation {
   goal: string
-  voters: number
+  voters: string
   startDate: string
   endDate: string
   choices: string[]
@@ -30,52 +31,39 @@ export const useVotingStore = defineStore('voting', () => {
 
   const authStore = useAuthStore();
 
+  const otpInUse = ref('');
+
   async function getVotingBy(id: string): Promise<Voting> {
     const urlInfos = `${apiEndpoints.API_SERVER}/election/info/detail/${id}`;
     const urlDetails = `${apiEndpoints.API_SERVER}/election/detail/${id}`;
-    const electionDetailsResponse = await axios.get(
-      urlDetails,
-      { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
-    );
-    const electionInfosResponse = await axios.get(
-      urlInfos,
-      { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
-    );
-    return toVoting(electionInfosResponse, electionDetailsResponse);
+    const electionDetailsResponse = await axios.get(urlDetails);
+    const electionInfosResponse = await axios.get(urlInfos);
+    return toVoting(electionInfosResponse.data.data, electionDetailsResponse.data.data);
   }
 
   async function getVotings(): Promise<Voting[]> {
     const urlInfos = `${apiEndpoints.API_SERVER}/election/info/all`;
     const urlDetails = `${apiEndpoints.API_SERVER}/election/all`;
-    const electionDetailsResponse = await axios.get(
-        urlDetails,
-        { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
-    );
-    const electionInfosResponse = await axios.get(
-        urlInfos,
-        { headers : { 'Authorization': `Bearer ${authStore.accessToken}` }}
-    );
-
+    const electionDetailsResponse = await axios.get(urlDetails);
+    const electionInfosResponse = await axios.get(urlInfos);
     const votings: Voting[] = [];
-
     for (const election of electionInfosResponse.data.data) {
-      election.details = electionDetailsResponse.data.data.find((i: any) => i.electionId === election.electionId);
+      election.details = electionDetailsResponse.data.data.find((i: any) => i.id === election.electionId);
       votings.push(toVoting(election, election.details));
     }
-
     return votings;
   }
 
   function toVoting(electionInfos: any, electionDetails: any): Voting {
     return {
-      id: electionInfos.data.data.electionId,
-      goal: electionInfos.data.data.goal,
-      voters: electionInfos.data.data.voters,
-      start: new Date(electionInfos.data.data.startDate),
-      end: new Date(electionInfos.data.data.endDate),
-      choices: electionInfos.data.data.choices.map((i: any) => ({ name: i.choice })),
-      turnout: electionDetails.data.data.affluence,
-      results: electionDetails.data.data.results
+      id: electionInfos.electionId,
+      goal: electionInfos.goal,
+      voters: electionInfos.voters,
+      start: new Date(electionInfos.startDate),
+      end: new Date(electionInfos.endDate),
+      choices: electionInfos.choices.map((i: any) => ({ name: i.choice })),
+      turnout: electionDetails.affluence,
+      results: electionDetails.results
     }
   }
 
@@ -87,7 +75,7 @@ export const useVotingStore = defineStore('voting', () => {
         voting,
         {headers: {'Authorization': `Bearer ${authStore.accessToken}`}}
     );
-    if (responseInfo.status !== 200) {
+    if (responseInfo.status !== 201) {
       return {success: false, msg: responseInfo.data.message};
     } else {
       // Election info created, now create the election
@@ -110,10 +98,18 @@ export const useVotingStore = defineStore('voting', () => {
           return {success: false, msg: 'Something went wrong. Please try again.'};
         }
       } else {
-        return {success: true, msg: responseInfo.data.message};
+        return {success: true, msg: `Election ${responseInfo.data.data.electionId} created successfully!`};
       }
     }
   }
 
-  return { getVotingBy, getVotings, createVoting };
+  function setOtpInUse(otp: string) {
+    otpInUse.value = otp;
+  }
+
+  function getOtpInUse(): string {
+    return otpInUse.value;
+  }
+
+  return { getVotingBy, getVotings, createVoting, setOtpInUse, getOtpInUse };
 });

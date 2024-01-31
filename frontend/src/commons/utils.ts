@@ -2,6 +2,8 @@
  * Contains utility functions used by multiple components.
  */
 
+import type {Voting} from "@/stores/voting";
+
 /** An enum representing the possible roles of a user. */
 export enum Role { User = 'user', Admin = 'admin' }
 
@@ -10,7 +12,6 @@ export enum Role { User = 'user', Admin = 'admin' }
  * @param roleString the role string to convert
  */
 export function toRole(roleString: string | null): Role | null {
-  console.log(`toRole(${roleString})`);
   const possiblyRole = roleString?.toLowerCase() as Role;
   return (possiblyRole && Object.values(Role).includes(possiblyRole)) ? possiblyRole : null;
 }
@@ -18,12 +19,13 @@ export function toRole(roleString: string | null): Role | null {
 /**
  * Formats the given date as a string with the format "dd MMM yy" w.r.t. italian timezone (e.g. "01 Jan 21")
  * @param date the date to format
+ * @param yearsDigit the number of digits to use for the year (2 or 4)
  */
-export function formatDate(date: Date): string {
+export function formatDate(date: Date, yearsDigit: '2-digit' | 'numeric' | undefined = '2-digit'): string {
   const options: Intl.DateTimeFormatOptions = {
     day: '2-digit',
     month: 'short',
-    year: '2-digit',
+    year: yearsDigit,
   };
   return new Intl.DateTimeFormat('it-IT', options).format(date).toString();
 }
@@ -55,4 +57,30 @@ export function highestOf(data: Record<string, number>): { key: string, value: n
     }
   }
   return { key: maxKey, value: maxValue as number };
+}
+
+/**
+ * Capitalizes the first letter of the given string.
+ * @param str the string to capitalize.
+ */
+export function capitalizeFirstLetter(str: string) {
+  if (str === '') {
+    return str;
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Returns the status of the given election w.r.t. the given date.
+ * @param election the election to analyze.
+ * @param now the date to use as reference.
+ */
+export function getStatus(election: Voting, now: number): string {
+  if (now >= election.start.getTime() && now < election.end.getTime()) {
+    return "open";
+  } else if (now >= election.end.getTime()) {
+    return "closed";
+  } else {
+    return "soon";
+  }
 }

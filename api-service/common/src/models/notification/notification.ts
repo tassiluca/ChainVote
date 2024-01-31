@@ -38,15 +38,16 @@ const Notification = new Schema<INotification, NotificationDocumentType>({
     }
 });
 
-
 Notification.static('getNotificationsForUser', async function getNotificationsForUser(userId: Types.ObjectId){
-    const notificationQueryPromise = this.find({ user: userId })
-        .lean()
-        .exec();
+    const notificationQueryPromise = this.find({
+        $or: [
+            { user: userId },
+            { user: { $exists: false } }
+        ]
+    }).lean().exec();
     const readNotificationIdsPromise = ReadNotification.find({ user: userId })
         .distinct('notification')
         .exec();
-
     const [notifications, readNotificationIds] = await Promise.all([notificationQueryPromise, readNotificationIdsPromise])
     const readNotificationsIdsString = readNotificationIds.map(id => id.toString());
     return notifications.map(notification => {

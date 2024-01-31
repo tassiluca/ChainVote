@@ -2,17 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import {BadRequestError, ErrorTypes, NotFoundError, UnauthorizedError, User} from "core-components";
 import { ac } from "../configs/accesscontrol.config";
-import GrpcClientPool from "../blockchain/grpc.client.pool";
-import {Org2Peer} from "../blockchain/peer.enum";
 import mailer from "../configs/mailer.config";
-import transformHyperledgerError from "../blockchain/errors/error.handling";
-
 
 /**
  * Set the user identity to work with. This function should be used when, in an API control method, an admin entity
  * wants to access to the data of another user. In this case, the request should specify the email of the user
  * to control.
- *
  * @param req
  * @param res
  * @param next
@@ -21,10 +16,9 @@ import transformHyperledgerError from "../blockchain/errors/error.handling";
 async function setWorkData(req: Request, res: Response, next:NextFunction, isAllowed:boolean) {
     let user = res.locals.user;
     const email = req.body.email;
-    
     if (email && email !== user.email) {
         try {
-            if(!isAllowed) {
+            if (!isAllowed) {
                 next(
                     new UnauthorizedError(
                         "Can't access to the resource",
@@ -34,13 +28,12 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
                 );
             }
             user = await User.findOne({email: email});
-            if(user == undefined) {
+            if (user == undefined) {
                 next(new NotFoundError(
                     "Can't find the user",
                     undefined,
                     ErrorTypes.AUTHENTICATION_ERROR
-                )
-            );
+                ));
             }
         } catch(error) {
             throw error; 
@@ -51,7 +44,6 @@ async function setWorkData(req: Request, res: Response, next:NextFunction, isAll
 
 /**
  * Create a new user
- *
  * @param req
  * @param res
  * @param next
@@ -86,7 +78,6 @@ export async function createUser(req: Request, res: Response, next: NextFunction
 
 /**
  * Get the profile of the user
- *
  * @param req
  * @param res
  * @param next
@@ -98,6 +89,7 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
         user = await setWorkData(req, res, next, isAllowed);
         res.locals.code = StatusCodes.OK;
         res.locals.data = {
+            id: user._id.toString(),
             email: user.email,
             firstName: user.firstName,
             secondName: user.secondName,
@@ -111,7 +103,6 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
 
 /**
  * Edit the profile of the user
- *
  * @param req
  * @param res
  * @param next
@@ -124,7 +115,6 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
     } catch (error) {
         return next(error);
     }
-
     const data = req.body.data;
     if (data === null || data === undefined) {
         return next(
@@ -135,7 +125,6 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
             )
         );
     }
-
     try {
         await User.updateOne({ email: user.email }, data);
         res.locals.code = StatusCodes.OK;
@@ -148,7 +137,6 @@ export async function editProfile(req: Request, res: Response, next: NextFunctio
 
 /**
  * Delete the profile of the user
- *
  * @param req
  * @param res
  * @param next
@@ -170,12 +158,10 @@ export async function deleteProfile(req: Request, res: Response, next: NextFunct
 function generateRandomPassword(regexPattern: RegExp, length: number): string {
     const validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
     let password = '';
-
     for (let i = 0; i < length; i++) {
         let randomChar = validChars.charAt(Math.floor(Math.random() * validChars.length));
         password += randomChar;
     }
-
     return password;
 }
 
@@ -183,10 +169,8 @@ function getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// TODO check if works
 /**
  * Send user a new password via mail
- *
  * @param req
  * @param res
  * @param next
@@ -198,9 +182,7 @@ export async function passwordForgotten(req: Request, res: Response, next: NextF
     while (!regexPattern.test(password)) {
         password = generateRandomPassword(regexPattern, passwordLength);
     }
-
     const data = {'password': password}
-
     try {
         await User.updateOne({ email: req.body.email }, data);
         res.locals.code = StatusCodes.OK;
@@ -208,26 +190,21 @@ export async function passwordForgotten(req: Request, res: Response, next: NextF
     } catch(error) {
         return next(error);
     }
-
     const message = {
         from: 'ChainVote',
         to: req.body.email,
         subject: 'Your new password has been created.',
         html: `
-                Hello ${res.locals.user.firstName} ${res.locals.user.secondName},<br>
-                This is the new password: <b>${password}</b>
-            `
+            Hello from ChainVote team &#128075;,<br>
+            This is the new password: <b>${password}</b>
+        `
     };
-
     mailer.sendMail(message).then((info) => {
         res.locals.code = 201
         res.locals.data = {
             msg: "Email sent",
             info: info.messageId
         }
-    }).catch((err) => {
-            return next(err);
-        }
-    );
+    }).catch((err) => next(err));
     return next();
 }

@@ -11,12 +11,9 @@ import {ac} from "../configs/accesscontrol.config";
 import {ErrorTypes, UnauthorizedError} from "core-components";
 import mailer from "../configs/mailer.config";
 
-
-
 const channelName = "ch2";
 const contractName = "chaincode-votes";
 const utf8Decoder = new TextDecoder();
-
 
 /**
  * Check if a code is valid
@@ -38,11 +35,9 @@ export async function isValid(req: Request, res: Response, next: NextFunction) {
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-
         const code = req.body.code;
         const userId = res.locals.user._id.toString();
         const electionId = req.body.electionId;
-
         const codeRequest: Uint8Array = await contract.evaluate('CodesManagerContract:isValid', {
             arguments: [electionId],
             transientData: {
@@ -50,7 +45,6 @@ export async function isValid(req: Request, res: Response, next: NextFunction) {
                 "userId": userId
             }
         });
-
         const result = utf8Decoder.decode(codeRequest);
         res.locals.code = StatusCodes.OK;
         res.locals.data = JSON.parse(result).result;
@@ -80,11 +74,9 @@ export async function verifyCodeOwner(req: Request, res: Response, next: NextFun
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-
         const code = req.body.code;
         const userId = res.locals.user._id.toString();
         const electionId = req.body.electionId;
-
         const codeRequest: Uint8Array = await contract.evaluate('CodesManagerContract:verifyCodeOwner', {
             arguments: [electionId],
             transientData: {
@@ -103,7 +95,6 @@ export async function verifyCodeOwner(req: Request, res: Response, next: NextFun
 
 /**
  * Generate a code that can be used by a user for voting
- *
  * @param req
  * @param res
  * @param next
@@ -122,39 +113,30 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
         const gatewayOrg1: Gateway = await GrpcClientPool.getInstance().getClientForPeer(Org2Peer.PEER1);
         const network: Network = gatewayOrg1.getNetwork(channelName);
         const contract: Contract = network.getContract(contractName);
-
         const electionId = req.body.electionId
-
         const randomNumber = Math.floor(Math.random() * 1_000_000_000);
         const seed: string = seedrandom(randomNumber+ Date.now()).int32().toString();
         const userId = res.locals.user._id.toString();
-
         const codeRequest: Uint8Array = await contract.submit('CodesManagerContract:generateCodeFor', {
             arguments: [electionId],
             transientData: { "seed": seed, "userId": userId }
         });
-
         const result = utf8Decoder.decode(codeRequest);
         const code = JSON.parse(result).result;
-
         // Divide the code in two parts
         const firstPart = code.substring(0, code.length/2);
         const secondPart = code.substring(code.length/2, code.length);
-
-
         res.locals.code = StatusCodes.CREATED;
         res.locals.data = firstPart;
-
         const message = {
             from: 'ChainVote',
-            to: 'giovanni.antonioni2@studio.unibo.it',
+            to: res.locals.user.email,
             subject: 'The other part of your code is here',
             html: `
                 Hello ${res.locals.user.firstName} ${res.locals.user.secondName},<br>
                 This is the other part of your code: <b>${secondPart}</b>
             `
         };
-
         mailer.sendMail(message).then((info) => {
             return res.status(201).json(
                 {
@@ -166,7 +148,6 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
                 return res.status(500).json({ msg: err });
             }
         );
-
     } catch (error) {
         return next(transformHyperledgerError(error));
     }

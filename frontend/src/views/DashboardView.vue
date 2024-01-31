@@ -2,9 +2,10 @@
   <Breadcrumb :paths="[{name: 'Dashboard', link: '/dashboard'}]" />
   <PageTitle title="Dashboard" />
   <div v-for="qualifier in qualifiers" :class="`elections col-10 center mx-auto election election-${qualifier} bg-light`" :key="`div-${qualifier}`">
-    <a :href="`/elections?qualifier=${qualifier}`" class="election-link">{{ capitalizeFirstLetter(qualifier) }} Elections</a>
+    <h2><a :href="`/elections?qualifier=${qualifier}`" class="election-link">{{ capitalizeFirstLetter(qualifier) }} Elections</a></h2>
     <hr v-if="getData(qualifier).length > 0"/>
-    <Carousel :elections="getData(qualifier)"/>
+    <Carousel :elections="sortElectionsByDate(getData(qualifier))"
+              :time="now"/>
   </div>
 </template>
 
@@ -12,49 +13,29 @@
 import Carousel from "@/components/CarouselComponent.vue";
 import PageTitle from "@/components/PageTitleComponent.vue";
 import Breadcrumb from "@/components/BreadcrumbComponent.vue";
-import {computed, onMounted, ref, type Ref} from "vue";
+import {computed, onMounted, reactive, ref, type Ref} from "vue";
 import router from "@/router";
 import {useVotingStore, type Voting} from "@/stores/voting";
+import {capitalizeFirstLetter, getStatus} from "@/commons/utils";
 
 const votingStore = useVotingStore();
 const data: Ref<Voting[] | null> = ref(null);
 
 onMounted(async () => {
   await getVotings();
+  scheduleUpdateNow();
 });
-  // data.value = [{
-  //     id: 1,
-  //     goal: "Elezione del presidente del consiglio dei ministri prova 1",
-  //     start: new Date("2021-10-04T10:00"),
-  //     end: new Date("2026-11-04T10:00"),
-  //     turnout: "20",
-  //     choices: [
-  //       {name: "choice 0"},
-  //       {name: "choice 1"},
-  //     ],
-  //     voters: 10,
-  //     results: {
-  //       first: 5,
-  //       second: 3,
-  //     }
-  //   },
-  //   {
-  //     id: 2,
-  //     goal: "Elezione del presidente del consiglio dei ministri prova 2",
-  //     start: new Date("2021-10-04T10:00"),
-  //     end: new Date("2026-11-04T10:00"),
-  //     turnout: "20",
-  //     choices: [
-  //       {name: "choice 0"},
-  //       {name: "choice 1"},
-  //     ],
-  //     voters: 10,
-  //     results: {
-  //       first: 5,
-  //       second: 3,
-  //     },
-  //   },
-  // ]
+
+const now = ref(new Date().getTime());
+
+function scheduleUpdateNow() {
+  setTimeout(updateNow, 1000);
+}
+
+function updateNow() {
+  now.value = new Date().getTime();
+  scheduleUpdateNow();
+}
 
 async function getVotings() {
   try {
@@ -65,44 +46,39 @@ async function getVotings() {
   }
 }
 
-function capitalizeFirstLetter(str: string) {
-  if (str === '') {
-    return str;
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
 function sortElectionsByDate(elections: Voting[], prop: keyof Voting = 'start'): Voting[] {
   return elections.sort((a: Voting, b: Voting) => a[prop as keyof typeof a] - b[prop as keyof typeof b]);
 }
 
-function isOpen(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.start && now < election.end;
-}
-
-function isClosed(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.end;
-}
-
-function isSoon(election: Voting): boolean {
-  const now = new Date();
-  return now < election.start;
-}
-
 const qualifiers = ['open', 'closed', 'soon'];
 
+const reactiveVotings = computed(() => {
+  if (!data.value) return [];
+  return data.value.map(voting => reactive(voting));
+});
+
 const getOpen = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isOpen(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'open')
+  } else {
+    return []
+  }
 });
 
 const getClosed = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isClosed(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'closed')
+  } else {
+    return []
+  }
 });
 
 const getSoon = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isSoon(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'soon')
+  } else {
+    return []
+  }
 });
 
 function getData(qualifier: string) {
@@ -121,9 +97,16 @@ function getData(qualifier: string) {
 </script>
 
 <style>
+  .elections {
+    margin: 4% 0;
+  }
+
+  .elections h2 {
+    font-size: 1.6em;
+  }
+
   .election-link {
     color: black;
-    font-weight: bold;
     text-decoration: none;
   }
 
@@ -136,14 +119,10 @@ function getData(qualifier: string) {
     border-color: inherit;
   }
 
-  .elections {
-    margin: 4% 0;
-  }
-
   .election {
     margin: 2% 0;
     border-radius: 15px;
-    box-shadow: 1px 3px 10px rgba(200, 200, 200, 0.82);
+    box-shadow: 3px 3px 10px rgba(200, 200, 200, 0.82);
     padding: 2%;
     button {
       color: black;
@@ -152,7 +131,7 @@ function getData(qualifier: string) {
 </style>
 
 <style lang="scss">
-  $color-open: #66FF99;
+  $color-open: #009f00;
   .election-open {
     border: $color-open 2px solid;
     a:hover {
@@ -162,7 +141,7 @@ function getData(qualifier: string) {
       color: $color-open;
     }
   }
-  $color-closed: red;
+  $color-closed: #c70224;
   .election-closed {
     border: $color-closed 2px solid;
     a:hover {

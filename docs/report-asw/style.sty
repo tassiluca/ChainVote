@@ -1,0 +1,99 @@
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{code-listings}
+\usepackage{cleveref}
+\usepackage{todonotes}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+\usepackage{geometry}
+
+\setlist{noitemsep}
+
+\newcommand{\emailaddr}[1]{\href{mailto:#1}{\texttt{#1}}}
+\newcommand{\desc}[1]{\textcolor{gray}{#1}}
+
+\usepackage[
+	framemethod=tikz
+]{mdframed}
+\usepackage{csquotes}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\definecolor{LightGray}{gray}{0.97}
+\usepackage{hyperref}
+\usepackage{xurl}
+
+\newcommand{\centerImage}[4] {
+	\begin{figure}[htb]
+		\begin{center}
+			\includegraphics[width=#4\linewidth]{#1}
+			\caption{#2}
+			\label{fig:#3}
+		\end{center}
+	\end{figure}
+}
+
+\mdfdefinestyle{warning}{
+	topline=false, bottomline=false,
+	leftline=false, rightline=false,
+	nobreak,
+	singleextra={%
+		\draw(P-|O)++(-0.5em,0)node(tmp1){};
+		\draw(P-|O)++(0.5em,0)node(tmp2){};
+		\fill[black,rotate around={45:(P-|O)}](tmp1)rectangle(tmp2);
+		\node at(P-|O){\color{white}\scriptsize\bfseries !};
+		\draw[very thick](P-|O)++(0,-1em)--(O);%--(O-|P);
+	}
+}
+
+% Define a custom environment for warning text
+\newenvironment{warn}[1][Warning:]{ % Set the default warning to "Warning:"
+	\medskip
+	\begin{mdframed}[style=warning]
+		\noindent{\textbf{#1}}
+	}{
+	\end{mdframed}
+}
+
+\mdfdefinestyle{info}{%
+	topline=false, bottomline=false,
+	leftline=false, rightline=false,
+	nobreak,
+	singleextra={%
+		\fill[black](P-|O)circle[radius=0.4em];
+		\node at(P-|O){\color{white}\scriptsize\bfseries i};
+		\draw[very thick](P-|O)++(0,-0.8em)--(O);%--(O-|P);
+	}
+}
+
+% Define a custom environment for information
+\newenvironment{info}[1][Info:]{ % Set the default title to "Info:"
+	\medskip
+	\begin{mdframed}[style=info]
+		\noindent{\textbf{#1}}
+	}{
+	\end{mdframed}
+}
+
+% Define a custom environment for Q&A
+\newcounter{qa} % Custom counter for questions and answers
+\renewcommand{\theqa}{Q\arabic{qa}.} % Custom format for the counter
+
+\newenvironment{Question}[1][]{%
+  \refstepcounter{qa}%
+  \begin{enumerate}[label=\textbf{\theqa},#1]%
+  \item
+}{%
+  \end{enumerate}%
+}
+
+\newenvironment{Answer}[1][]{%
+  \begin{enumerate}[label=\textbf{A.}, left=2em, #1]%
+  \item
+}{%
+  \end{enumerate}%
+}

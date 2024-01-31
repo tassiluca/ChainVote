@@ -1,38 +1,46 @@
 <script setup lang="ts">
-
+import { formatTime } from '@/commons/utils'
+import { onMounted, watch } from 'vue'
+import { useNotificationsStore } from '@/stores/notificationsStore'
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
+
+const notificationsStore = useNotificationsStore();
+
+onMounted(async () => await notificationsStore.readNotifications());
+
+/* When the user is in this view and a notification pops up, the page is updated with the new one. */
+watch(() => notificationsStore.unreadNotifications, async (newNotifications) => {
+  if (newNotifications > 0) {
+    await notificationsStore.getAllNotifications();
+    await notificationsStore.readNotifications();
+  }
+});
 </script>
 
 <template>
   <Breadcrumb :paths="[{name: 'User Area', link: '/user'}, {name: 'Notifications', link: '/user/notifications'}]" />
   <div class="container-sm col-md-7 text-center">
     <PageTitle title="Notifications" />
-
-    <div class="row notification">
-      <div class="col-1 d-flex flex-column align-items-center justify-content-center">
-        <img alt="New notification" src="@/assets/notifications/circle-new-notification.svg" width="30" height="30" />
-      </div>
-      <div class="date col-3 d-flex flex-column justify-content-center" aria-label="05 January 2024">
-        <span>05</span>
-        <span>GEN 24</span>
-      </div>
-      <div class="msg col d-flex flex-column justify-content-center">
-        <p>CLOSING ELECTION</p>
-        <p>The `KITTEN OR PUPPY` election will close at 6:00 pm. If you have not already voted, please do so as soon as possible.</p>
-      </div>
+    <div v-if="notificationsStore.notifications.length == 0">
+      <p>You don't have notifications, yet.</p>
     </div>
-
-    <div class="row notification">
+    <div v-for="notification in notificationsStore.notifications" :key="notification.date.toString()" class="row notification">
       <div class="col-1 d-flex flex-column align-items-center justify-content-center">
+        <img v-if="notification.new"
+             alt="Not read notification, yet."
+             src="@/assets/notifications/circle-new-notification.svg"
+             width="30" height="30"
+        />
       </div>
-      <div class="date col-3 d-flex flex-column justify-content-center" aria-label="05 January 2024">
-        <span>05</span>
-        <span>GEN 24</span>
+      <div class="date col-4 d-flex flex-column justify-content-center" :aria-label="notification.date.toString()">
+        <span>{{ notification.date.getDate() }}</span>
+        <span>{{ notification.date.toLocaleString('it-IT', {month: 'short', year: '2-digit'}).toUpperCase() }}</span>
+        <span>{{ formatTime(notification.date) }}</span>
       </div>
       <div class="msg col d-flex flex-column justify-content-center">
-        <p>CLOSING ELECTION</p>
-        <p>The `KITTEN OR PUPPY` election will close at 6:00 pm. If you have not already voted, please do so as soon as possible.</p>
+        <p>{{ notification.type.toUpperCase().replace('-', ' ') }}</p>
+        <p>{{ notification.body }}</p>
       </div>
     </div>
   </div>
@@ -79,5 +87,4 @@ div.msg {
     text-align: left !important;
   }
 }
-
 </style>

@@ -1,32 +1,20 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title"><a :href="`/election/details/${election.id}`">{{ election.goal }}</a></h5>
+      <h5 class="card-title"><a :href="`/elections/${election.id}`">{{ election.goal }}</a></h5>
       <hr class="solid"/>
       <ul class="election-props">
         <li>
-          <strong>Start:</strong> {{ ("0" + election.start.getUTCDate()).slice(-2) }} {{ election.start.toLocaleString('default', { month: 'short' }) }} {{election.start.getFullYear() }} {{ election.start.getHours() }}:{{ ("0" + election.start.getMinutes()).slice(-2) }}
-<!--          <strong>Start:</strong> {{ election.start.getDay() }}/{{ election.start.getMonth() }}/{{ election.start.getFullYear() }} {{ election.start.getHours() }}:{{ election.start.getMinutes() }}-->
+          <strong>Start:</strong> {{formatDate(election.start, 'numeric')}} <br/> {{ formatTime(election.start) }}
         </li>
         <li>
-          <strong>End:</strong> {{ ("0" + election.end.getUTCDate()).slice(-2) }} {{ election.end.toLocaleString('default', { month: 'short' }) }} {{election.end.getFullYear() }} {{ election.end.getHours() }}:{{ ("0" + election.end.getMinutes()).slice(-2) }}
-        </li>
-        <li>
-          <strong>Affluence:</strong> {{ election.turnout }}%
-        </li>
-        <li>
-          <div class="card links mx-auto">
-            <ul>
-              <li>
-                <a :href="`/election/details/${election.id}`">See details</a>
-              </li>
-              <li v-if="isOpen(election)">
-                <a :href="`/vote/${election.id}`">Cast a vote</a>
-              </li>
-            </ul>
-          </div>
+          <strong>End:</strong> {{formatDate(election.end, 'numeric')}} <br/> {{ formatTime(election.end) }}
         </li>
       </ul>
+      <div class="d-flex flex-column links">
+        <a :href="`/elections/${election.id}`">See details</a>
+        <a :href="`/vote/${election.id}`">Cast a vote</a>
+      </div>
     </div>
   </div>
 </template>
@@ -34,17 +22,18 @@
 <script setup lang="ts">
 
 import type {Voting} from "@/stores/voting";
+import {ref} from "vue";
+import {formatDate, formatTime, getStatus} from "@/commons/utils";
 
-defineProps<{
-  election: {
-    type: Voting,
-    required: true
-  },
+const props = defineProps<{
+  election: Voting,
+  time: number,
 }>()
 
+const now = ref(props.time);
+
 function isOpen(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.start && now < election.end;
+  return getStatus(election, now.value) === 'open';
 }
 </script>
 
@@ -63,14 +52,16 @@ function isOpen(election: Voting): boolean {
     text-decoration: none;
   }
 
-  div.links {
-    display: inline-block;
-    padding: 4%;
+  div.links a {
+    padding: 6px 0;
+    margin: 4px 0;
+    border-radius: 15px;
+    background-color: #edede9;
   }
 
-  .links ul {
-    margin-left: 0;
-    padding-left: 0;
+  div.links a:hover {
+    font-weight: bold;
+    box-shadow: 1px 2px 5px rgba(200, 200, 200, 0.82);
   }
 
   .card {

@@ -22,12 +22,9 @@ export {
     ReadNotification
 } from "./models/read-notification/read.notification";
 
-
-
 /**
  * Exporting errors
  */
-
 export {
     HttpBaseError, 
     BadRequestError,
@@ -84,10 +81,8 @@ export type {
 /**
  * Exporting JWT handlers
  */
-
 import {JwtHandler as h, IJwtHandler} from "./utils/jwt/jwt.handler";
 const JwtHandler = h as unknown as IJwtHandler;
 export {
     JwtHandler
 }
-

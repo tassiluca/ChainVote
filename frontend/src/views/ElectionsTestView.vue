@@ -1,39 +1,31 @@
-<script setup>
+<script setup lang="ts">
     import * as bootstrap from 'bootstrap'
-    import { ref, onMounted } from 'vue'
-    import axios from "axios";
+    import { ref, onMounted, nextTick } from 'vue'
+    import RequestCodeModal from '@/components/vote/RequestCodeModal.vue';
 
-    const modal = ref(null)
-    const codeRequest = ref(false)
-    const requestError = ref(false)
-    const validationMessage = ref("")
+    const electionName = ref("Test election")  // Name of the election to pass to the modal
+    const electionId = ref("2027020788")       // Id of the election to request code for
+    /*
+     * The id of the modal.
+     * It is used to open the modal from the parent component.
+     */
+    const modalId = ref("modal_vote")
+    const modal = ref() // The element that will control the modal
 
-    const electionName = "Test election"
-    const uid = "65ab091c11f72779fb454ff7"
-    const electionId = "2027020788"
-
-    const code = ref("")
-    onMounted(() => {
-        modal.value = new bootstrap.Modal('#modal_vote', {})
-    })
+    onMounted(async () => {
+      // Await the next tick to be sure that the modal is rendered
+      await nextTick();
+      modal.value = new bootstrap.Modal(`#${modalId.value}`, {})
+    });
 
     function openModal() {
-        modal.value.show()
-    }
-    
-    function sendCodeRequest() {
-        axios.post("http://localhost:8080/code/generate", {
-            userId: uid,
-            electionId: electionId
-        }).then((response) => {
-            code.value = response.data.data
-            codeRequest.value = true
-            requestError.value = false
-        }).catch((error) => {
-            codeRequest.value = true
-            requestError.value = true
-            validationMessage.value = error.response.data.error.message
-        });
+        // This functions should be called when user clicks on the links to request the code
+        // Here should set the values of the props of the modal
+        // electionName.value = ...
+        // electionId.value = ...
+        if (modal.value) {
+          modal.value.show()
+        }
     }
 </script>
 
@@ -42,59 +34,9 @@
         <header>
             <h1> Test page for code request </h1>
         </header>
-
         <button type="button" class="btn btn-primary" @click="openModal"> Launch demo modal </button>
-
-        <div class="modal fade" id="modal_vote" tabindex="-1">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Vote for {{ electionName }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            <div class="row mb-2">
-                                <p>
-                                    To access "{{ electionName }}" voting, it is necessary to apply for a One Time Code (OTC).  Once the
-                                    generation procedure is completed the following account will no longer be able to request additional codes for the following ballot.
-                                    The code is strictly bounded to the following election and it can't be used elsewhere.
-                                </p>
-                            </div>
-                            <div class="row mb-2">
-                                <p>Already have a code?  <a href="#toElectionPage">Vote now</a></p>
-                            </div>
-                            <div class="row mb-2">
-                                <form @submit.prevent="sendCodeRequest">
-                                    <div class="input-group mb-3 has-validation">
-                                        <input type="text" class="form-control" aria-label="Code output" v-model="code" readonly>
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-primary" type="submit">Request code</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="row mb-2" v-if="codeRequest">
-                                <p v-if="requestError" class="fail"> Error while generating code: "{{ validationMessage }}"</p>
-                                <p v-else class="success">
-                                    The code was successfully generated for the following election.
-                                    The first part is showed above and the second part will be sent to the email address associated with the following account.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <RequestCodeModal :electionName="electionName" :electionId="electionId" :id="modalId" />
     </div>
 </template>
 
-<style scoped>
-    .success {
-        color: #31B90F;
-    }
 
-    .fail {
-        color: #B9310F;
-    }
-</style>

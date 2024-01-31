@@ -10,7 +10,7 @@ export async function defaultResponseHandler(
 ) {
     const data = res.locals.data;
     const code = res.locals.code;
-    if(data == undefined || code == undefined) {
+    if (data == undefined || code == undefined) {
         return next(new BadRequestError("The route doesn't exist"));
     }
     const response: RespObj = {
@@ -19,7 +19,6 @@ export async function defaultResponseHandler(
         data: data,
         code: code
     }
-
     res.status(response.code);
     return res.send(response);
 }

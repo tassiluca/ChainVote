@@ -4,24 +4,31 @@ import type {Role} from "@/commons/utils";
 import {defineStore} from "pinia";
 
 export interface User {
-    name: string,
-    surname: string,
+    firstName: string,
+    secondName: string,
     email: string,
-    password: string,
+    password?: string,
     role: Role,
+}
+
+export interface UserCreation {
+    email: string
+    firstName: number
+    secondName: string
+    password: string
 }
 
 export const useUserStore = defineStore('user',  () => {
 
     async function getUserInfo(): Promise<User> {
-        const url = `${apiEndpoints.API_SERVER}/users`;
+        const url = `${apiEndpoints.API_SERVER}/users/`;
         const response = await axios.get(url);
         return response.data.data;
     }
 
-    async function updateUserInfo(property: string, value: any): Promise<User> {
-        const url = `${apiEndpoints.API_SERVER}/users`;
-        const data = {property: value};
+    async function updateUserInfo(property: string, value: string): Promise<User> {
+        const url = `${apiEndpoints.API_SERVER}/users/`;
+        const data = { data: {[property]: value} };
         const response = await axios.put(url, data);
         return response.data.data;
     }
@@ -29,9 +36,19 @@ export const useUserStore = defineStore('user',  () => {
     async function passwordResetRequest(email: string) {
         const url = `${apiEndpoints.API_SERVER}/users/password-forgotten`;
         const data = {email: email};
-        const response = await axios.post(url, data);
+        const response = await axios.put(url, data);
         return response.data.data;
     }
 
-    return { getUserInfo, updateUserInfo, passwordResetRequest }
+    async function registration(user: UserCreation): Promise<{ success: boolean, msg: string }> {
+        const urlCreation = `${apiEndpoints.API_SERVER}/users`;
+        const responseResult = await axios.post(urlCreation, user);
+
+        if (responseResult.status !== 201) {
+            return { success: false, msg: "Error during registration"};
+        }
+        return { success: true, msg: "Registration successful"};
+    }
+
+    return { getUserInfo, updateUserInfo, passwordResetRequest, registration }
 });

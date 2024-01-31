@@ -3,47 +3,30 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
 import {useRoute} from "vue-router";
-import {computed, type Ref, ref} from "vue";
+import {computed, onMounted, reactive, type Ref, ref} from 'vue'
 import ElectionComponent from "@/components/ElectionComponent.vue";
 import {useVotingStore, type Voting} from "@/stores/voting";
 import router from "@/router";
+import {capitalizeFirstLetter, getStatus} from "@/commons/utils";
 
 const votingStore = useVotingStore();
 const data: Ref<Voting[] | null> = ref(null);
 
-  // data.value = [{
-  //     id: 1,
-  //     goal: "Elezione del presidente del consiglio dei ministri prova 1",
-  //     start: new Date("2021-10-04T10:00"),
-  //     end: new Date("2026-11-04T10:00"),
-  //     turnout: "20",
-  //     choices: [
-  //       {name: "choice 0"},
-  //       {name: "choice 1"},
-  //     ],
-  //     voters: 10,
-  //     results: {
-  //       first: 5,
-  //       second: 3,
-  //     }
-  //   },
-  //   {
-  //     id: 2,
-  //     goal: "Elezione del presidente del consiglio dei ministri prova 2",
-  //     start: new Date("2021-10-04T10:00"),
-  //     end: new Date("2026-11-04T10:00"),
-  //     turnout: "20",
-  //     choices: [
-  //       {name: "choice 0"},
-  //       {name: "choice 1"},
-  //     ],
-  //     voters: 10,
-  //     results: {
-  //       first: 5,
-  //       second: 3,
-  //     },
-  //   },
-  // ]
+onMounted(async () => {
+  await getVotings();
+  scheduleUpdateNow();
+})
+
+const now = ref(new Date().getTime());
+
+function scheduleUpdateNow() {
+  setTimeout(updateNow, 1000);
+}
+
+function updateNow() {
+  now.value = new Date().getTime();
+  scheduleUpdateNow();
+}
 
 async function getVotings() {
   try {
@@ -62,46 +45,45 @@ if (qualifier && ['all', 'open', 'closed', 'soon'].includes(qualifier)) {
   picked.value = qualifier;
 }
 
-function capitalizeFirstLetter(str: string) {
-  if (str === '') {
-    return str;
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
 function sortElectionsByDate(elections: Voting[], prop: keyof Voting = 'start'): Voting[] {
   return elections.sort((a: Voting, b: Voting) => a[prop as keyof typeof a] - b[prop as keyof typeof b]);
 }
 
-function isOpen(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.start && now < election.end;
-}
-
-function isClosed(election: Voting): boolean {
-  const now = new Date();
-  return now >= election.end;
-}
-
-function isSoon(election: Voting): boolean {
-  const now = new Date();
-  return now < election.start;
-}
-
 const getAll = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value
+  } else {
+    return []
+  }
+});
+
+const reactiveVotings = computed(() => {
+  if (!data.value) return [];
+  return data.value.map(voting => reactive(voting));
 });
 
 const getOpen = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isOpen(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'open')
+  } else {
+    return []
+  }
 });
 
 const getClosed = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isClosed(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'closed')
+  } else {
+    return []
+  }
 });
 
 const getSoon = computed(() => {
-  return sortElectionsByDate(Object.assign([], data.value).filter((election: Voting) => isSoon(election)));
+  if (reactiveVotings.value) {
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'soon')
+  } else {
+    return []
+  }
 });
 
 const query: string[] = ["all", "open", "closed", "soon"]
@@ -130,7 +112,7 @@ const totalPages = computed(() => {
 const displayedElections = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return getData.value.slice(start, end);
+  return sortElectionsByDate(getData.value).slice(start, end);
 });
 
 function nextPage() {
@@ -165,7 +147,8 @@ function resetPage() {
   <div class="container-sm col-10 col-md-8 text-center">
     <div v-if="displayedElections.length > 0">
       <div v-for="election in displayedElections" :key="String(election.id)" class="row election">
-        <ElectionComponent :election="election"/>
+        <ElectionComponent :election="election"
+                            :time="now"/>
       </div>
       <div class="pagination-buttons" v-if="totalPages>2">
         <button @click="prevPage" class="btn btn-primary" :disabled="currentPage === 1">&lt;</button>
