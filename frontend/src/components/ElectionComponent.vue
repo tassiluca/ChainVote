@@ -53,7 +53,7 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  openModal: [electionId: number, electionName: string]
+  openModal: [electionId: string, electionName: string]
 }>();
 
 const now = ref(props.time);

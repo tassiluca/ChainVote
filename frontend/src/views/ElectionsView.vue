@@ -18,6 +18,7 @@ const modalId = ref("modal_vote_view")
 const modal = ref()
 const electionName = ref("")
 const electionId = ref("")
+const refKey = ref(0)
 
 onMounted(async () => {
   await getVotings();
@@ -26,9 +27,9 @@ onMounted(async () => {
   modal.value = new bootstrap.Modal(`#${modalId.value}`, {});
 })
 
-function openModal(id: number, name: string) {
+function openModal(id: string, name: string) {
   electionName.value = name
-  electionId.value = String(id)
+  electionId.value = id
   if (modal.value) {
     modal.value.show()
   }
@@ -163,13 +164,11 @@ function resetPage() {
   <div class="container-sm col-12 col-md-8 text-center">
     <div v-if="displayedElections.length > 0">
       <div v-for="election in displayedElections" :key="String(election.id)" class="row election">
-        <ElectionComponent :election="election"
-                            :time="now"
-                            @openModal="(id: number, name: string) => openModal(id, name)"
+        <ElectionComponent :election="election" :time="now"  @openModal="(id: string, name: string) => openModal(id, name)"
         />
-        <RequestCodeModal :electionName="electionName" :electionId="electionId" :id="modalId" />
+        <RequestCodeModal :electionName="electionName" :electionId="electionId" :id="modalId"/>
       </div>
-      <div class="pagination-buttons" v-if="totalPages>2">
+      <div class="pagination-buttons" v-if="totalPages>1">
         <button @click="prevPage" class="btn btn-primary" :disabled="currentPage === 1">&lt;</button>
         <button @click="nextPage" class="btn btn-primary" :disabled="currentPage === totalPages">&gt;</button>
         <br/>

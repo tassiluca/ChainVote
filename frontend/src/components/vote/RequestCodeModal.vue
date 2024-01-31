@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from 'vue'
-import { useAuthStore } from '@/stores/auth'
 import axios from 'axios'
 import { apiEndpoints } from "@/commons/globals";
 
@@ -14,18 +13,11 @@ const requestError = ref(false)
 const codeRequest = ref(false)
 const submit = ref(false)
 const code = ref("")
-let userInfo: any = {}
 
-onBeforeMount(async () => {
-  userInfo = await useAuthStore().getUserInfo();
-});
-
-function sendCodeRequest() {
+function sendCodeRequest(id: string) {
   submit.value = true
-  axios.post(`${apiEndpoints.API_SERVER}/code/generate`, {
-    userId: userInfo.id,
-    electionId: electionId
-  }).then((response) => {
+  axios.post(`${apiEndpoints.API_SERVER}/code/generate`, { electionId: id })
+  .then((response) => {
     code.value = response.data.data
     codeRequest.value = true
     requestError.value = false
@@ -38,7 +30,6 @@ function sendCodeRequest() {
     submit.value = false
   });
 }
-
 
 </script>
 
@@ -63,7 +54,7 @@ function sendCodeRequest() {
               <p>Already have a code? <a href="#toElectionPage">Vote now</a></p>
             </div>
             <div class="row mb-2">
-              <form @submit.prevent="sendCodeRequest">
+              <form @submit.prevent="sendCodeRequest(electionId)">
                 <div class="input-group mb-3 has-validation">
                   <input type="text" class="form-control" aria-label="Code output" v-model="code" readonly>
                   <div class="input-group-append">
