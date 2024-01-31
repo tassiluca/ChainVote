@@ -11,7 +11,7 @@ services:
       - google_api_secret
     environment:
       - MONGODB_CONNECTION_STRING=mongodb://user:pass@mongodb:27017/?authMechanism=DEFAULT&directConnection=true
-      - MAIL_USER=antonioni.giovanni9@gmail.com
+      - MAIL_USER=chainvote.01@gmail.com
       - API_PASSWORD=pass
       - REDIS_HOST=redis
       - REDIS_PORT=6379
