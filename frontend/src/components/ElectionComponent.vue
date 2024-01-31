@@ -9,7 +9,8 @@
           <div class="row">
             <p class="links-container">
               <a :href="`/elections/${election.id}`" class="useful-link">Details</a>
-              <a :href="`/vote/${election.id}`" class="useful-link" v-if="isOpen(election)">Vote</a>
+              <a :href="`/vote/${election.id}`" class="useful-link" v-if="isOpen(election) && authStore.userRole !== Role.Admin">Vote</a>
+              <a class="useful-link" v-if="isOpen(election) && authStore.userRole !== Role.Admin" @click="$emit('openModal', election.id, election.goal)" href="#">Get code</a>
             </p>
           </div>
         </div>
@@ -40,16 +41,24 @@
 
 <script setup lang="ts">
 import type {Voting} from "@/stores/voting";
-import {capitalizeFirstLetter, formatDate, formatTime, getStatus} from "@/commons/utils";
-import {ref} from "vue";
+import {capitalizeFirstLetter, formatDate, formatTime, getStatus, Role} from "@/commons/utils";
+import {defineEmits, ref} from "vue";
+import {useAuthStore} from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 function isOpen(election: Voting): boolean {
   return getStatus(election, now.value) === 'open';
 }
+
 const props = defineProps<{
   election: Voting,
   time: number,
 }>()
+
+defineEmits<{
+  openModal: [electionId: number, electionName: string]
+}>();
 
 const now = ref(props.time);
 </script>

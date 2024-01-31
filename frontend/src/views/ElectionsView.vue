@@ -3,19 +3,36 @@
 import Breadcrumb from '@/components/BreadcrumbComponent.vue'
 import PageTitle from '@/components/PageTitleComponent.vue'
 import {useRoute} from "vue-router";
-import {computed, onMounted, reactive, type Ref, ref} from 'vue'
+import {computed, nextTick, onMounted, reactive, type Ref, ref} from 'vue'
 import ElectionComponent from "@/components/ElectionComponent.vue";
 import {useVotingStore, type Voting} from "@/stores/voting";
 import router from "@/router";
 import {capitalizeFirstLetter, getStatus} from "@/commons/utils";
+import * as bootstrap from "bootstrap";
+import RequestCodeModal from "@/components/vote/RequestCodeModal.vue";
 
 const votingStore = useVotingStore();
 const data: Ref<Voting[] | null> = ref(null);
 
+const modalId = ref("modal_vote_view")
+const modal = ref()
+const electionName = ref("")
+const electionId = ref("")
+
 onMounted(async () => {
   await getVotings();
   scheduleUpdateNow();
+  await nextTick();
+  modal.value = new bootstrap.Modal(`#${modalId.value}`, {});
 })
+
+function openModal(id: number, name: string) {
+  electionName.value = name
+  electionId.value = String(id)
+  if (modal.value) {
+    modal.value.show()
+  }
+}
 
 const now = ref(new Date().getTime());
 
@@ -38,11 +55,10 @@ async function getVotings() {
 }
 // read meta parameters from the router
 const route = useRoute();
-const qualifier: string = route.query.qualifier as string;
 const picked = ref('all');
 
-if (qualifier && ['all', 'open', 'closed', 'soon'].includes(qualifier)) {
-  picked.value = qualifier;
+if (route.query.qualifier && ['all', 'open', 'closed', 'soon'].includes(route.query.qualifier as string)) {
+  picked.value = route.query.qualifier as string;
 }
 
 function sortElectionsByDate(elections: Voting[], prop: keyof Voting = 'start'): Voting[] {
@@ -148,7 +164,10 @@ function resetPage() {
     <div v-if="displayedElections.length > 0">
       <div v-for="election in displayedElections" :key="String(election.id)" class="row election">
         <ElectionComponent :election="election"
-                            :time="now"/>
+                            :time="now"
+                            @openModal="(id: number, name: string) => openModal(id, name)"
+        />
+        <RequestCodeModal :electionName="electionName" :electionId="electionId" :id="modalId" />
       </div>
       <div class="pagination-buttons" v-if="totalPages>2">
         <button @click="prevPage" class="btn btn-primary" :disabled="currentPage === 1">&lt;</button>

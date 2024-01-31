@@ -13,7 +13,8 @@
       </ul>
       <div class="d-flex flex-column links">
         <a :href="`/elections/${election.id}`">See details</a>
-        <a :href="`/vote/${election.id}`">Cast a vote</a>
+        <a v-if="isOpen(election) && authStore.userRole !== Role.Admin" :href="`/vote/${election.id}`">Cast a vote</a>
+        <a v-if="isOpen(election) && authStore.userRole !== Role.Admin" href="#" @click="$emit('openModal', election.id, election.goal)">Get code</a>
       </div>
     </div>
   </div>
@@ -22,13 +23,20 @@
 <script setup lang="ts">
 
 import type {Voting} from "@/stores/voting";
-import {ref} from "vue";
-import {formatDate, formatTime, getStatus} from "@/commons/utils";
+import {ref, defineEmits} from "vue";
+import {formatDate, formatTime, getStatus, Role} from "@/commons/utils";
+import {useAuthStore} from "@/stores/auth";
 
 const props = defineProps<{
   election: Voting,
   time: number,
 }>()
+
+defineEmits<{
+  openModal: [electionId: number, electionName: string]
+}>();
+
+const authStore = useAuthStore();
 
 const now = ref(props.time);
 

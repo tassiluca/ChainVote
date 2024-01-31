@@ -1,7 +1,8 @@
 <template>
   <Carousel v-bind="settings" :breakpoints="breakpoints">
     <Slide v-for="election in elections" :key="String(election.id)">
-      <ElectionCard :election="election" :time="time"/>
+      <ElectionCard :election="election" :time="time"
+                    @openModal="(id: number, name: string) => $emit('modalRaised', id, name)"/>
     </Slide>
     <template #pagination="{ pagesCount, currentPage, setCurrentPage }">
       <div class="pagination">
@@ -30,6 +31,10 @@ import type {Voting} from "@/stores/voting";
 defineProps<{
   elections: Voting[],
   time: number,
+}>()
+
+defineEmits<{
+  modalRaised: [electionId: number, electionName: string]
 }>()
 
 const settings = {

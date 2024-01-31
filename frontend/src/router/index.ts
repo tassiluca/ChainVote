@@ -85,7 +85,6 @@ const router = createRouter({
     {
       path: '/elections',
       name: 'elections',
-      props: route => ({ qualifier: route.query.qualifier }),
       component: ElectionsView,
       meta: {
         allowed: [Role.User, Role.Admin]
