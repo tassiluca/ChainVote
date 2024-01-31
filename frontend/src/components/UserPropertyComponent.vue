@@ -44,6 +44,7 @@
   import {useForm} from "vee-validate";
   import * as yup from "yup";
   import {type User, useUserStore} from "@/stores/user";
+  import {capitalizeFirstLetter} from "../commons/utils";
 
   const props = defineProps<{
     property: string,
@@ -58,10 +59,6 @@
   const userStore = useUserStore();
 
   const isReadOnly = ref(true);
-
-  function capitalizeFirstLetter(str: string) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
 
   const {meta, errors, handleSubmit, defineField } = useForm({
     validationSchema: yup.object({
