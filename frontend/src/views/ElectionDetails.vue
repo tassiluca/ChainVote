@@ -81,20 +81,20 @@ async function getVotingDetails(id: string) {
       <div class="col">
         <Tile title="Results">
           <template #default>
-            <p v-if="highestOf(election.results).value === 0 && Date.now() < election.start.getTime()">
+            <p v-if="Object.keys(election.results).length === 0 && Date.now() < election.start.getTime()">
               Voting has not been opened, yet.
             </p>
             <p v-else-if="Object.keys(election.results).length === 0">
               Voting is still open, results will be made available after closing date.
             </p>
-            <p v-else-if="Object.keys(election.results).length !== 0 && highestOf(election.results).value == 0">
+            <p v-else-if="Object.keys(election.results).length !== 0 && highestOf(election.results)[0].value === 0">
               No votes have been casted.
             </p>
             <p v-else>
-              The option '<strong>{{ highestOf(election.results).key }}</strong>' has collected the highest number of votes.
+              <strong>{{ Object.keys(highestOf(election.results)).reduce((p, c) => p + ", " + c) }}</strong> collected the highest number of votes.
             </p>
           </template>
-          <template #details v-if="Object.keys(election.results).length !== 0 && highestOf(election.results).value !== 0">
+          <template #details v-if="Object.keys(election.results).length !== 0 && highestOf(election.results)[0].value !== 0">
             <p class="text-black">Results are here presented: </p>
             <table class="table table-striped">
               <thead>

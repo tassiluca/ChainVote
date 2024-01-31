@@ -44,19 +44,21 @@ export function formatTime(date: Date) {
 }
 
 /**
- * Returns the entry of the given record with the highest value.
+ * Returns the entries of the given record with the highest value.
  * @param data the record to analyze.
  */
-export function highestOf(data: Record<string, number>): { key: string, value: number } {
-  let maxKey: string = '';
-  let maxValue: number = 0;
+export function highestOf(data: Record<string, number>): { key: string, value: number }[] {
+  let maxEntries: { key: string, value: number }[] = [];
+  let maxValue = 0;
   for (const [key, value] of Object.entries(data)) {
     if (value > maxValue) {
-      maxKey = key;
       maxValue = value;
+      maxEntries = [{ key, value }];
+    } else if (value === maxValue) {
+      maxEntries.push({ key, value });
     }
   }
-  return { key: maxKey, value: maxValue as number };
+  return maxEntries;
 }
 
 /**

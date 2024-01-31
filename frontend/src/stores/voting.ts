@@ -81,7 +81,7 @@ export const useVotingStore = defineStore('voting', () => {
       start: new Date(electionInfos.startDate),
       end: new Date(electionInfos.endDate),
       choices: electionInfos.choices.map((i: any) => ({ name: i.choice })),
-      turnout: electionDetails.affluence,
+      turnout: `${parseFloat(electionDetails.affluence.replace('%', '')).toFixed(2)}%`,
       results: electionDetails.results
     }
   }
