@@ -144,7 +144,7 @@ function resetPage() {
       </li>
     </ul>
   </div>
-  <div class="container-sm col-10 col-md-8 text-center">
+  <div class="container-sm col-12 col-md-8 text-center">
     <div v-if="displayedElections.length > 0">
       <div v-for="election in displayedElections" :key="String(election.id)" class="row election">
         <ElectionComponent :election="election"
@@ -173,5 +173,8 @@ div.radio-button {
 }
 .no-election {
   font-weight: bold;
+}
+.election {
+  background-color: #f8f9fa;
 }
 </style>
