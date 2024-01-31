@@ -5,7 +5,10 @@
     <h2><a :href="`/elections?qualifier=${qualifier}`" class="election-link">{{ capitalizeFirstLetter(qualifier) }} Elections</a></h2>
     <hr v-if="getData(qualifier).length > 0"/>
     <Carousel :elections="sortElectionsByDate(getData(qualifier))"
-              :time="now"/>
+              :time="now"
+              @modalRaised="(id: number, name: string) => openModal(id, name)"
+    />
+    <RequestCodeModal :electionName="electionName" :electionId="electionId" :id="modalId" />
   </div>
 </template>
 
@@ -13,18 +16,36 @@
 import Carousel from "@/components/CarouselComponent.vue";
 import PageTitle from "@/components/PageTitleComponent.vue";
 import Breadcrumb from "@/components/BreadcrumbComponent.vue";
-import {computed, onMounted, reactive, ref, type Ref} from "vue";
+import {computed, nextTick, onMounted, reactive, ref, type Ref} from "vue";
 import router from "@/router";
 import {useVotingStore, type Voting} from "@/stores/voting";
 import {capitalizeFirstLetter, getStatus} from "@/commons/utils";
+import * as bootstrap from "bootstrap";
+import RequestCodeModal from "@/components/vote/RequestCodeModal.vue";
 
 const votingStore = useVotingStore();
 const data: Ref<Voting[] | null> = ref(null);
 
+const modalId = ref("modal_vote")
+const modal = ref()
+const electionName = ref("")
+const electionId = ref("")
+
 onMounted(async () => {
   await getVotings();
   scheduleUpdateNow();
+  await nextTick();
+  modal.value = new bootstrap.Modal(`#${modalId.value}`, {})
 });
+
+function openModal(id: number, name: string) {
+  electionName.value = name
+  electionId.value = String(id)
+  console.log(modal.value)
+  if (modal.value) {
+    modal.value.show()
+  }
+}
 
 const now = ref(new Date().getTime());
 
