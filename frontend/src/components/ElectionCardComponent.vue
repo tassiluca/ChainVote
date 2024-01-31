@@ -5,10 +5,10 @@
       <hr class="solid"/>
       <ul class="election-props">
         <li>
-          <strong>Start:</strong> {{ ("0" + election.start.getUTCDate()).slice(-2) }} {{ election.start.toLocaleString('default', { month: 'short' }) }} {{election.start.getFullYear() }} {{ election.start.getHours() }}:{{ ("0" + election.start.getMinutes()).slice(-2) }}
+          <strong>Start:</strong> {{formatDate(election.start, 'numeric')}} <br/> {{ formatTime(election.start) }}
         </li>
         <li>
-          <strong>End:</strong> {{ ("0" + election.end.getUTCDate()).slice(-2) }} {{ election.end.toLocaleString('default', { month: 'short' }) }} {{election.end.getFullYear() }} {{ election.end.getHours() }}:{{ ("0" + election.end.getMinutes()).slice(-2) }}
+          <strong>End:</strong> {{formatDate(election.end, 'numeric')}} <br/> {{ formatTime(election.end) }}
         </li>
       </ul>
       <div class="d-flex flex-column links">
@@ -21,14 +21,29 @@
 
 <script setup lang="ts">
 
-import type {VotingWithStatus} from "@/stores/voting";
+import type {Voting} from "@/stores/voting";
+import {ref} from "vue";
+import {formatDate, formatTime, getStatus} from "@/commons/utils";
 
 defineProps<{
-  election: VotingWithStatus
+  election: Voting
 }>()
 
-function isOpen(election: VotingWithStatus): boolean {
-  return election.status === 'open';
+const now = ref(new Date().getTime());
+
+function scheduleUpdateNow() {
+  setTimeout(updateNow, 1000);
+}
+
+function updateNow() {
+  now.value = new Date().getTime();
+  scheduleUpdateNow();
+}
+
+scheduleUpdateNow();
+
+function isOpen(election: Voting): boolean {
+  return getStatus(election, now.value) === 'open';
 }
 </script>
 

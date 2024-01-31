@@ -14,43 +14,35 @@ import PageTitle from "@/components/PageTitleComponent.vue";
 import Breadcrumb from "@/components/BreadcrumbComponent.vue";
 import {computed, onMounted, reactive, ref, type Ref} from "vue";
 import router from "@/router";
-import {useVotingStore, type Voting, type VotingWithStatus} from "@/stores/voting";
+import {useVotingStore, type Voting} from "@/stores/voting";
+import {capitalizeFirstLetter, getStatus} from "@/commons/utils";
 
 const votingStore = useVotingStore();
-const data: Ref<VotingWithStatus[] | null> = ref(null);
+const data: Ref<Voting[] | null> = ref(null);
 
 onMounted(async () => {
   await getVotings();
+  scheduleUpdateNow();
 });
 
-function getStatus(election: Voting): string {
-  const now = new Date();
-  if (now >= election.start && now < election.end) {
-    return "open";
-  } else if (now >= election.end) {
-    return "closed";
-  } else {
-    return "soon";
-  }
+const now = ref(new Date().getTime());
+
+function scheduleUpdateNow() {
+  setTimeout(updateNow, 1000);
+}
+
+function updateNow() {
+  now.value = new Date().getTime();
+  scheduleUpdateNow();
 }
 
 async function getVotings() {
   try {
     data.value = await votingStore.getVotings();
-    for (const voting of data.value) {
-      voting['status'] = getStatus(voting);
-    }
   } catch (e: any) {
     console.error(e);
     await router.push({name: "not-found"})
   }
-}
-
-function capitalizeFirstLetter(str: string) {
-  if (str === '') {
-    return str;
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function sortElectionsByDate(elections: Voting[], prop: keyof Voting = 'start'): Voting[] {
@@ -66,7 +58,7 @@ const reactiveVotings = computed(() => {
 
 const getOpen = computed(() => {
   if (reactiveVotings.value) {
-    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'open')
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'open')
   } else {
     return []
   }
@@ -74,7 +66,7 @@ const getOpen = computed(() => {
 
 const getClosed = computed(() => {
   if (reactiveVotings.value) {
-    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'closed')
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'closed')
   } else {
     return []
   }
@@ -82,7 +74,7 @@ const getClosed = computed(() => {
 
 const getSoon = computed(() => {
   if (reactiveVotings.value) {
-    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'soon')
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'soon')
   } else {
     return []
   }
