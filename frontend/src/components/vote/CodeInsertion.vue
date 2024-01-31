@@ -45,7 +45,7 @@ function submitCode(code: string) {
     if (response.data.data) {
       useVotingStore().setOtpInUse(code);
       useVotingStore().setOtpInUseElectionId(route.params.id as string)
-      router.push(`/vote/${route.params.id}`);
+      window.location.href = `/vote/${route.params.id}`;
     } else {
       error.value = true;
     }
@@ -104,7 +104,7 @@ onMounted(async () => {
 <template>
     <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
       <div class="card-body p-5 text-center">
-        <h4>Insert the eleciton's OTC </h4>
+        <h4>Insert the election's OTC </h4>
         <div class="otp-field mb-4">
           <input type="text" v-for="(_, index) in inputRefs" v-model="inputRefs[index].value" :disabled="index !== 0"/>
         </div>

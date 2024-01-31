@@ -4,26 +4,21 @@
     import { useRoute } from 'vue-router';
     import router from '@/router'
     import VoteOption from "@/components/vote/VoteOption.vue";
-    import axios from "axios";
+    import PageTitle from '@/components/PageTitleComponent.vue'
 
 
     const voteOptions: any = ref([]);
+    const response = ref({});
+    const submitting = ref(false);
 
     const choosedOption = ref("");
     const route = useRoute();
     const electionId = route.params.id as string;
 
-    function submitForm(): void {
-        axios.put(`http://localhost:8080/election/vote/${electionId}`, {
-            code: useVotingStore().getOtpInUse(),
-            choice: choosedOption.value
-        }).then((response) => {
-            alert(response.data.data);
-            useVotingStore().setOtpInUse("");
-            useVotingStore().setOtpInUseElectionId("");
-        }).catch((error) => {
-            alert(error);
-        });
+    async function submitForm() {
+        submitting.value = true;
+        response.value= await useVotingStore().castVote(choosedOption.value);
+        submitting.value = false;
     }
 
     const goal = ref("");
@@ -45,18 +40,27 @@
 <template>
     <div class="container">
         <header class="mb-2">
-            <h1> {{ goal }} </h1>
+          <PageTitle :title="`Vote for election ${goal}`" />
         </header>
         <form @submit.prevent="submitForm" method="POST" >
             <div class="row mb-3">
-                <h2>Vote options</h2>
+                <h2>Vote choices</h2>
                 <VoteOption v-for="option in voteOptions" 
                     :key="option.id" 
                     :optId="option.id.toString()" 
                     :name="option.name" 
                     v-model="choosedOption"/>
             </div>
-            <button type="submit" class="btn btn-primary" :disabled="!choosedOption">Submit</button>
+            <button type="submit" class="btn btn-primary" :disabled="!choosedOption">
+              Vote
+              <span v-if="submitting" class="spinner-border spinner-border-sm text-light"></span>
+            </button>
+            <slot name="footer"/>
+            <div v-if="response.hasOwnProperty('success')"
+                 class="alert mt-3 mb-3 text-center col-10 mx-auto"
+                 :class="{ 'alert-danger': !response.success, 'alert-success': response.success }"
+                 role="alert"
+            ><strong>{{ response.msg }}</strong></div>
         </form>
     </div>
 </template>

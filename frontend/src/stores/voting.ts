@@ -38,6 +38,24 @@ export const useVotingStore = defineStore('voting', () => {
   const otpInUse = ref(sessionStorage.getItem("otpInUse"));
   const otpInUseElectionId = ref(sessionStorage.getItem("otpInUseElectionId"));
 
+  async function castVote(choice: string) {
+    const urlRequest = `${apiEndpoints.API_SERVER}/election/vote/${otpInUseElectionId.value}`;
+    const response = await axios.put(urlRequest, {
+        code: otpInUse.value,
+        choice: choice
+    });
+
+    if(response.status !== 200) {
+      console.log(response.data.message);
+      return {success: false, msg: response.data.error.message};
+    }
+
+    setOtpInUseElectionId('');
+    setOtpInUse('');
+    return {success: true, msg: 'Vote casted successfully!'}
+  }
+
+
   async function getVotingBy(id: string): Promise<Voting> {
     const urlInfos = `${apiEndpoints.API_SERVER}/election/info/detail/${id}`;
     const urlDetails = `${apiEndpoints.API_SERVER}/election/detail/${id}`;
@@ -135,5 +153,15 @@ export const useVotingStore = defineStore('voting', () => {
     return otpInUseElectionId.value;
   }
 
-  return { getVotingBy, getVotings, createVoting, setOtpInUse, getOtpInUse, getElectionInfo, setOtpInUseElectionId, getOtpInUseElectionId }
+  return {
+      getVotingBy,
+      getVotings,
+      createVoting,
+      castVote,
+      setOtpInUse,
+      getOtpInUse,
+      getElectionInfo,
+      setOtpInUseElectionId,
+      getOtpInUseElectionId
+  }
 });
