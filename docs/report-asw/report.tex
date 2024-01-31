@@ -14,11 +14,11 @@
 \subtitle{(v. \version)}
 
 \author{
-    Giovanni Antonioni \\ \emailaddr{giovanni.antonioni2@studio.unibo.it}
+    Giovanni Antonioni \\ \emailaddr{giovanni.antonioni2@studio.unibo.it} \\ Matr. \texttt{xxxx}
     \and 
-    Luca Rubboli \\ \emailaddr{luca.rubboli2@studio.unibo.it} 
-    \and 
-    Luca Tassinari \\ \emailaddr{luca.tassinari10@studio.unibo.it}
+    Luca Rubboli \\ \emailaddr{luca.rubboli2@studio.unibo.it} \\ Matr. \texttt{xxxx}
+    \and
+    Luca Tassinari \\ \emailaddr{luca.tassinari10@studio.unibo.it} \\ Matr. \texttt{1096190}
 }
 
 \date{\today}
@@ -31,13 +31,15 @@
     Electronic voting systems based on blockchain technology have emerged as a potential solution to enhance the security and transparency of traditional voting methods. In this system, voters cast their votes electronically, and the results are stored on a decentralized blockchain ledger, which ensures the integrity of the vote by preventing any tampering or manipulation. This system provides a transparent and immutable record of votes, which can be accessed by anyone in the network, thus increasing trust in the electoral process. Nevertheless, the use of blockchain technology in electronic voting systems holds promise for creating a more secure, transparent, and democratic electoral process.
 \end{abstract}
 
-\section{Goals/requirements}
+\section{Goals and requirements}
 
 The project consists of the implementation of a small-scale distributed electronic voting system based on blockchain technology.
 %
-Specifically, the goal is to create a distributed architecture that exposes a uniform API allowing users to interact with the system using a web application, as described in the use scenarios presented in \Cref{sec:scenarios}. 
+Specifically, the goal is to create a \textbf{distributed architecture} that exposes a \textbf{uniform API} allowing users to interact with the system using a \textbf{web application}.
 
-Here are reported the set of questions and answers used to refine the system's requirements.
+\subsection{Functional requirements}
+
+Here are reported the set of questions and answers used to refine the coarse-grained system's requirements.
 
 \begin{Question}
     What are the main actors of the system?
@@ -95,19 +97,28 @@ Here are reported the set of questions and answers used to refine the system's r
     Yes.
 \end{Answer}
 
+\begin{Question}
+    Users get some kind of notifications?
+\end{Question}
+\begin{Answer}
+    Users are notified whenever a new election opens and is about to close.
+\end{Answer}
 
-\section{Requirements Analysis}
+The above user requirements have emphasized the use cases reported in \Cref{fig:use-cases-diagram}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/use-cases.eps}
+    \caption{Use cases diagram of the ChainVote application.}
+    \label{fig:use-cases-diagram} 
+\end{figure}
 
 \subsection{Non functional requirements}
 \label{sec:non-functional-requirements}
 
-%% -------------------------------------- DS ----------------------------
-\iffalse
-
-In order to decouple as much as possible users from their vote inside the blockchain and make it more difficult for unauthorized individuals to cast a vote impersonating someone else, pseudo-random one-time codes will be used.
+In order to decouple as much as possible users from their vote inside the blockchain and make it more difficult for unauthorized individuals to cast a vote impersonating someone else, \textbf{pseudo-random one-time codes} will be used.
 %
-The idea is that, before casting a new vote, the user requests a one-time code 
-that is sent to him using a different trusted method.
+The idea is that, before casting a new vote, the user requests a one-time code that is sent to him using a different trusted method.
 %
 When voting, the user will have to send back the generated one-time code to the system to correctly submit his vote.
 %
@@ -120,6 +131,9 @@ The outline of use cases related to the casting of a vote in light of the above 
     \label{fig:refined-cast-vote-use-case}
 \end{figure}
 
+%% -------------------------------------- DS ----------------------------
+\iffalse
+
 To accomplish this, two challenges must be faced during the design process:
 
 \begin{itemize}
@@ -130,49 +144,276 @@ To accomplish this, two challenges must be faced during the design process:
 \fi
 %% -------------------------------------- DS ----------------------------
 
+Moreover, for security reasons, the \textbf{user's password should not be stored in plain text} within the server storage, but password encryption mechanisms will have to be employed.
 
-\subsection{Technologies}
+The web application must be designed to be accessible and have a user experience that allows even less experienced users to use it easily. For this, the design must be designed to be \textbf{responsive} and \textbf{mobile-first}. In addition, an important feature that must be supported is the responsiveness of the interface, which must be able to refresh and show voting-related information in \textbf{real-time} without having to refresh the page.
 
-%% -------------------------------------- DS ----------------------------
-\iffalse
+\subsection{Target User Analysis}
 
-After evaluating different valid blockchain technologies, including Corda (R3) \cite{corda} and Tendermint \cite{tendermint}, Hyperledger Fabric has been chosen for this project for the following main reasons:
-
-\begin{itemize}
-    \item It is a general purpose \textit{permissioned} blockchain, with all the advantages described in \Cref{sec:background};
-    \item It is highly configurable and customizable, like the possibility to plug different consensus mechanisms or the support of several mainstream programming languages for the smart contracts (Go, JavaScript \& TypeScript, Java \& Kotlin);
-    \item It offers mechanisms that raise the bar of confidentiality and higher fine-grained control over ledger access, thanks to channels and private data collections;
-    \item It has an active and growing community of developers and contributors, as well as detailed documentation.
-\end{itemize}
-
-In addition, one of the project goals is to provide a uniform API to interact with the system. 
+In order to meet the non functional properties concerning the user experience it's important to have a comprehensive understanding of our target audience.
 %
-To do this a ReST approach has been used, which is a widely adopted standard for exposing APIs. 
-%
-ReST gives different advantages:
+In the next section is presented the target user analysis that serves as the compass guiding our decisions.
 
-\begin{itemize}
-    \item \emph{Optimal access to the resources}: Rest requires a resource-centric design, this means that the API will be structured around the resources that are exposed. In this way, it's possible to have fine-grained control over the access and management of the resources.
-    \item \emph{Stateless}: ReST API requests are stateless, which means they're independent of each other. This allows to scale the system horizontally, without having to worry about the state of the system.
-    \item \emph{Expressive}: ReST APIs are expressive, this means that the APIs are designed in a way that is easy to understand and use. This allows to have a more maintainable and extensible system.
-\end{itemize}
+\subsubsection*{Admin users}
 
-\fi
-%% -------------------------------------- DS ----------------------------
+\noindent
+\emph{%
+    As an administrator (who), \\ 
+    I want to create an election (what), \\ 
+    So that interested users can express their vote (why).
+}
+\vspace*{0.2cm}
+
+\textbf{Personas:} Ellis
+
+Ellis is an administrator of the ChainVote system.
+
+\textbf{Use Case Scenario:}
+
+The University of Bologna needs to elect the next rector and wants to collect votes through the ChainVote system. Alba is tasked with creating the election.
+
+\begin{enumerate}
+    \item Alba logs into the platform using her credentials;
+    \item Alba navigates to the "Create Election" section;
+    \item Alba enters the election details:
+    \begin{itemize}
+        \item Estimated number of voters;
+        \item Election start date;
+        \item Election end date;
+        \item Goal (election title);
+        \item Choices.
+    \end{itemize}
+    \item Alba saves the election.
+\end{enumerate}
+
+\vspace*{0.5cm}
+\noindent
+\emph{%
+    As an administrator (who), \\
+    I want to view the election results (what), \\
+    To make a decision regarding the consequences of the election (why).
+}
+\vspace*{0.2cm}
+
+\textbf{Personas:} Giovanni
+
+Giovanni is the rector of the University of Bologna.
+
+\textbf{Use Case Scenario:}
+
+Giovanni wants to view the results of the vote concerning the next rector of the University of Bologna so that he can congrats to him.
+
+\begin{enumerate}
+    \item Giovanni accesses the system with his credentials;
+    \item Giovanni navigates to the "Dashboard" page;
+    \item Giovanni selects the election with the goal "Next rector of UniBo";
+    \item Giovanni verifies that the vote is closed;
+    \item Giovanni views the results related to the election and the turnout.
+\end{enumerate}
+
+\subsubsection*{Users}
+
+\noindent
+\emph{%
+    As a user (who), \\
+    I want to access the system (what), \\
+    To be able to use various functionalities (why).
+}
+\vspace*{0.2cm}
+
+\textbf{Personas:} Luca
+
+Luca is a university student in Engineering and Computer Science at the University of Bologna, Cesena campus.
+
+\textbf{Use Case Scenario:}
+
+Luca wants to connect to the system to view upcoming elections.
+
+\begin{enumerate}
+    \item Luca goes to the login page;
+    \item Luca enters his username and password in the respective fields;
+    \item Luca clicks the login button;
+    \item Luca gets redirected to the Dashboard where all the elections are displayed.
+\end{enumerate}
+
+\vspace*{0.5cm}
+\noindent
+\emph{%
+    As a user (who), \\
+    I want to view system notifications (what), \\
+    To stay updated (why).
+}
+\vspace*{0.2cm}
+
+\textbf{Personas:} Deborah
+
+Deborah is an out-of-town student. 
+
+\textbf{Use Case Scenario:}
+
+Deborah is waiting for the opening of the election and wants to receive and see a notification as soon as an election opens or is about to close.
+
+\begin{enumerate}
+    \item Deborah logs into the system with his credentials;
+    \item Deborah views if there are new notifications from the navbar icon that signals not read notification;
+    \item Deborah clicks on the navbar link that takes to the page related to her notifications;
+    \item Deborah is notified by a toast popup if a notification is triggered by the server.
+\end{enumerate}
+
+\vspace*{0.5cm}
+\noindent
+\emph{%
+    As a user (who), \\
+    I want to request a one time code for an election (what), \\
+    so that I can cast a vote for it (why).
+}
+\vspace*{0.2cm}
+
+\textbf{Personas:} Oscar
+
+Oscar is a member of the UniBo Council. 
+
+\textbf{Use Case Scenario:}
+
+Oscar wants to request a code to participate in the vote regarding the next rector of UniBo.
+
+\begin{enumerate}
+    \item Oscar logs into the system with his credentials;
+    \item Oscar navigates to the "Dashboard";
+    \item Oscar verifies that the election is open;
+    \item Oscar accesses the code request area;
+    \item Oscar clicks the button to request the code;
+    \item Oscar views part of the code internally in a form on the page, and the other half is sent to his email address.
+\end{enumerate}
+
+\vspace*{0.2cm}
+\noindent
+\emph{%
+    As a user (who), \\
+    I want to cast a vote in an election (what), \\
+    To express my preference (why).
+}
+\vspace*{0.2cm}
+
+\textbf{Use Case Scenario:}
+
+Oscar, after obtaining the code, wants to cast his vote.
+
+\begin{enumerate}
+    \item Oscar logs into the system with his credentials;
+    \item Oscar navigates to the "Dashboard";
+    \item Oscar verifies that the election is open;
+    \item Oscar accesses the vote area;
+    \item Oscar enters the code for the vote (previously obtained);
+    \item Oscar chooses an option.
+\end{enumerate}
+
+\vspace*{0.2cm}
+\noindent
+\emph{%
+    As a user (who), \\
+    I want to view the results of an election (what),
+    To understand the preferences expressed by users regarding the election (why).
+}
+\vspace*{0.2cm}
+
+\textbf{Use Case Scenario:}
+
+Oscar wants to view the results of the election.
+
+\begin{enumerate}
+    \item Oscar logs into the system with his credentials;
+    \item Oscar navigates to the Dashboard;
+    \item Oscar selects the election of his interest;
+    \item Oscar verifies that the vote is closed;
+    \item Oscar views the results related to the vote.
+\end{enumerate}
+
+\vspace*{0.5cm}
+\noindent
+\emph{%
+    As a user (who), \\
+    I want to change my password (what), \\
+    So that I can access the system again (why).
+}
+\vspace*{0.2cm}
+
+\textbf{Personas:} Aurora
+
+Aurora is a kindly elderly person. 
+
+\textbf{Use Case Scenario:}
+
+Aurora wants to access the system after a long period and realizes she has forgotten the login password for her account.
+
+\begin{enumerate}
+    \item Aurora connects to the login page;
+    \item Aurora clicks the "recover password" link;
+    \item Aurora enters her information (email) and clicks the "Recover Password" button;
+    \item Aurora receives instructions to reset the password at the email address provided in the previous step;
+    \item Aurora logins again into the system.
+\end{enumerate}
 
 \section{Design}
+
+This section present the overall design of the system, both frontend and backend side.
 
 \subsection{Frontend design}
 
 \subsubsection*{Mockups}
 
-\subsubsection*{Target User Analysis}
+The style of the web application is an important aspect to take care of in order to meet the usability requirements described above.
+%
+In order to devise a design that would enable a good user experience of the final product, initial mockups had to be carried out. 
 
-\subsubsection*{Story board}
-\todo{Qui? O sotto?}
+As already specified in the non-functional requirements, the design of the application is mobile-first. 
+%
+This means that the mockups have been made and thought out in their elements primarily in the mobile context and adapted to be usable in a user-friendly manner and taking advantage of all the spaces available in the desktop version.
+
+The only page accessible by unauthenticated users is the home page where the purpose of the project is described.
+
+The user, in order to use the system, is required to log in (\Cref{fig:login-dashboard-views}).
+%
+Once correctly logged, the user is redirected to the Dashboard where can visualize all the elections, categorized by "Open", "Closed" and "Soon".
+%
+From there he can see the details of an election (\Cref{fig:details-cast-notifications-view}), as well as reach the page to cast a new vote.
+%
+From the navbar is possible to navigate the notifications view where all recent notifications are displayed along with an indication of whether it has already been read or not.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/mockups/login.pdf}
+        %\caption{}
+    \end{subfigure}
+    % add with subfigures the dashboard view
+    \caption{Login and Dashboard views}
+    \label{fig:login-dashboard-views}
+\end{figure}
+\todo{Dashboard mockup}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/mockups/details.pdf}
+        % \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/mockups/notifications.pdf}
+        %\caption{}
+    \end{subfigure}
+    \hfill
+    % add with subfigures the cast a vote view
+    \caption{Voting details, Cast a vote and Notifications view.}
+    \label{fig:details-cast-notifications-view}
+\end{figure}
+\todo{Cast a vote mockup}
 
 \subsection{Backend Architecture}
-
 
 %% -------------------------------------- DS ----------------------------
 \iffalse
@@ -370,7 +611,41 @@ Other than the blockchain the system relies on two databases:
 \fi
 %% -------------------------------------- DS ----------------------------
 
+\subsection{Technologies}
+
+%% -------------------------------------- DS ----------------------------
+\iffalse
+
+After evaluating different valid blockchain technologies, including Corda (R3) \cite{corda} and Tendermint \cite{tendermint}, Hyperledger Fabric has been chosen for this project for the following main reasons:
+
+\begin{itemize}
+    \item It is a general purpose \textit{permissioned} blockchain, with all the advantages described in \Cref{sec:background};
+    \item It is highly configurable and customizable, like the possibility to plug different consensus mechanisms or the support of several mainstream programming languages for the smart contracts (Go, JavaScript \& TypeScript, Java \& Kotlin);
+    \item It offers mechanisms that raise the bar of confidentiality and higher fine-grained control over ledger access, thanks to channels and private data collections;
+    \item It has an active and growing community of developers and contributors, as well as detailed documentation.
+\end{itemize}
+
+In addition, one of the project goals is to provide a uniform API to interact with the system. 
+%
+To do this a ReST approach has been used, which is a widely adopted standard for exposing APIs. 
+%
+ReST gives different advantages:
+
+\begin{itemize}
+    \item \emph{Optimal access to the resources}: Rest requires a resource-centric design, this means that the API will be structured around the resources that are exposed. In this way, it's possible to have fine-grained control over the access and management of the resources.
+    \item \emph{Stateless}: ReST API requests are stateless, which means they're independent of each other. This allows to scale the system horizontally, without having to worry about the state of the system.
+    \item \emph{Expressive}: ReST APIs are expressive, this means that the APIs are designed in a way that is easy to understand and use. This allows to have a more maintainable and extensible system.
+\end{itemize}
+
+\fi
+%% -------------------------------------- DS ----------------------------
+
 \section{Implementation Details}
+
+\subsection{API Server}
+
+\subsection{Frontend}
+
 
 %% -------------------------------------- DS ----------------------------
 \iffalse
@@ -647,6 +922,9 @@ Route checking is done on data saved on a \texttt{Redis} database. To make this 
 
 \fi
 %% -------------------------------------- DS ----------------------------
+
+\section{Story board}
+
 
 \section{Self-assessment / Validation}
 
