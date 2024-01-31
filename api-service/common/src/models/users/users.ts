@@ -1,4 +1,4 @@
-import mongoose, {Model, Schema, Types} from "mongoose"
+import mongoose, {Model, Schema, Types, UpdateQuery} from "mongoose"
 import {MongoError} from "mongodb"
 import bcrypt from "bcrypt"
 import {isEmail, isStrongPassword, isAlpha} from "validator";
@@ -57,9 +57,7 @@ let User = new Schema<IUser, UserDocumentType>({
 
 User.pre("save", function (next) {
     const user = this;
-
-    if (user.isModified("password") || user.isNew) {    
-
+    if (user.isModified("password") || user.isNew) {
       bcrypt.genSalt(SALT_WORK_FACTOR, function (error, salt) {
         if (error) {
           return next(error)
@@ -69,7 +67,7 @@ User.pre("save", function (next) {
             if (error) {
               return next(error)
             }
-  
+
             user.password = hash
             next()
           })
@@ -77,6 +75,32 @@ User.pre("save", function (next) {
       })
     } else {
       return next()
+    }
+});
+
+
+User.pre("updateOne", function(next) {
+    const update: any = {...this.getUpdate()};
+    const context = this;
+    if (update.password) {
+        bcrypt.genSalt(SALT_WORK_FACTOR, function (error, salt) {
+            if (error) {
+                return next(error)
+            } else {
+
+                bcrypt.hash(update.password, salt, function(error, hash) {
+                    if (error) {
+                        return next(error)
+                    }
+
+                    update.password = hash
+                    context.setUpdate(update);
+                    next()
+                })
+            }
+        })
+    } else {
+        next();
     }
 });
 

@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import axios from "axios";
 import LoginView from '@/views/LoginView.vue'
 import PasswordForgotten from "@/views/PasswordForgotten.vue";
 import NotificationsView from '@/views/NotificationsView.vue'
@@ -15,7 +14,6 @@ import CodeInsertionView from '@/views/CodeInsertionView.vue';
 import VoteView from "@/views/VoteView.vue";
 import ElectionsView from "@/views/ElectionsView.vue";
 import {useAuthStore} from "@/stores/auth";
-import { useVotingStore } from '@/stores/voting'
 import {Role} from "@/commons/utils";
 import 'vue-router'
 import {useNotificationsStore} from "@/stores/notificationsStore";
@@ -61,22 +59,6 @@ const router = createRouter({
     {
       path: '/vote/:id',
       name: 'vote',
-      beforeEnter: (to, from, next) => { // TODO: move to component / store ?
-        try {
-          if (useVotingStore().getOtpInUse() === '') {
-            next({ name: 'not-found' });
-          }
-
-          axios.get(`http://localhost:8080/election/info/detail/${to.params.id}`)
-            .then((response) => {
-              to.meta.data = response.data.data;
-              next();
-            });
-        } catch (error) {
-          console.log(error);
-          // next({ name: 'not-found' });
-        }
-      },
       component: VoteView,
       meta: {
         allowed: [Role.User]

@@ -6,9 +6,7 @@ import { useRoute } from 'vue-router'
 import router from '@/router'
 import axios from 'axios'
 
-const {digitNumber} = defineProps<{
-  digitNumber: number
-}>();
+const {digitNumber} = defineProps<{ digitNumber: number }>();
 
 const route = useRoute();
 
@@ -46,7 +44,8 @@ function submitCode(code: string) {
   axios.post(urlCheck, data).then((response) => {
     if (response.data.data) {
       useVotingStore().setOtpInUse(code);
-      router.push(`/vote/${route.params.id}`);
+      useVotingStore().setOtpInUseElectionId(route.params.id as string)
+      window.location.href = `/vote/${route.params.id}`;
     } else {
       error.value = true;
     }
@@ -105,7 +104,7 @@ onMounted(async () => {
 <template>
     <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
       <div class="card-body p-5 text-center">
-        <h4>Insert the eleciton's OTC </h4>
+        <h4>Insert the election's OTC </h4>
         <div class="otp-field mb-4">
           <input type="text" v-for="(_, index) in inputRefs" v-model="inputRefs[index].value" :disabled="index !== 0"/>
         </div>
