@@ -5,33 +5,32 @@ import PageTitle from '@/components/PageTitleComponent.vue'
 import {useRoute} from "vue-router";
 import {computed, onMounted, reactive, type Ref, ref} from 'vue'
 import ElectionComponent from "@/components/ElectionComponent.vue";
-import {useVotingStore, type Voting, type VotingWithStatus} from "@/stores/voting";
+import {useVotingStore, type Voting} from "@/stores/voting";
 import router from "@/router";
+import {capitalizeFirstLetter, getStatus} from "@/commons/utils";
 
 const votingStore = useVotingStore();
-const data: Ref<VotingWithStatus[] | null> = ref(null);
+const data: Ref<Voting[] | null> = ref(null);
 
 onMounted(async () => {
   await getVotings();
+  scheduleUpdateNow();
 })
 
-function getStatus(election: Voting): string {
-  const now = new Date();
-  if (now >= election.start && now < election.end) {
-    return "Open";
-  } else if (now >= election.end) {
-    return "Closed";
-  } else {
-    return "Soon";
-  }
+const now = ref(new Date().getTime());
+
+function scheduleUpdateNow() {
+  setTimeout(updateNow, 1000);
+}
+
+function updateNow() {
+  now.value = new Date().getTime();
+  scheduleUpdateNow();
 }
 
 async function getVotings() {
   try {
     data.value = await votingStore.getVotings();
-    for (const voting of data.value) {
-      voting['status'] = getStatus(voting);
-    }
   } catch (e: any) {
     console.error(e);
     await router.push({name: "not-found"})
@@ -44,13 +43,6 @@ const picked = ref('all');
 
 if (qualifier && ['all', 'open', 'closed', 'soon'].includes(qualifier)) {
   picked.value = qualifier;
-}
-
-function capitalizeFirstLetter(str: string) {
-  if (str === '') {
-    return str;
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function sortElectionsByDate(elections: Voting[], prop: keyof Voting = 'start'): Voting[] {
@@ -72,7 +64,7 @@ const reactiveVotings = computed(() => {
 
 const getOpen = computed(() => {
   if (reactiveVotings.value) {
-    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'open')
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'open')
   } else {
     return []
   }
@@ -80,7 +72,7 @@ const getOpen = computed(() => {
 
 const getClosed = computed(() => {
   if (reactiveVotings.value) {
-    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'closed')
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'closed')
   } else {
     return []
   }
@@ -88,7 +80,7 @@ const getClosed = computed(() => {
 
 const getSoon = computed(() => {
   if (reactiveVotings.value) {
-    return reactiveVotings.value.filter((election: VotingWithStatus) => election.status === 'soon')
+    return reactiveVotings.value.filter((election: Voting) => getStatus(election, now.value) === 'soon')
   } else {
     return []
   }
@@ -152,10 +144,11 @@ function resetPage() {
       </li>
     </ul>
   </div>
-  <div class="container-sm col-10 col-md-8 text-center">
+  <div class="container-sm col-12 col-md-8 text-center">
     <div v-if="displayedElections.length > 0">
       <div v-for="election in displayedElections" :key="String(election.id)" class="row election">
-        <ElectionComponent :election="election"/>
+        <ElectionComponent :election="election"
+                            :time="now"/>
       </div>
       <div class="pagination-buttons" v-if="totalPages>2">
         <button @click="prevPage" class="btn btn-primary" :disabled="currentPage === 1">&lt;</button>
@@ -180,5 +173,8 @@ div.radio-button {
 }
 .no-election {
   font-weight: bold;
+}
+.election {
+  background-color: #f8f9fa;
 }
 </style>

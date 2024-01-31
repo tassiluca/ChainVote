@@ -6,6 +6,8 @@ import FormInput from '@/components/forms/FormInputComponent.vue'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import {type UserCreation, useUserStore} from "@/stores/user";
+import BreadcrumbComponent from "@/components/BreadcrumbComponent.vue";
+import Breadcrumb from "@/components/BreadcrumbComponent.vue";
 
 const response = ref({})
 
@@ -96,7 +98,8 @@ const properties: {
 </script>
 
 <template>
-    <div class="container">
+    <Breadcrumb :paths="[{name: 'User registration', link: '/register'}]" />
+    <div class="container-sm">
         <PageTitle title="User registration" />
         <Form @submit="onSubmit" :response="response" submit-btn-name="Create an user">
             <template v-slot:body>
@@ -112,7 +115,7 @@ const properties: {
                                     :autocomplete="properties[prop]['autocomplete']"
                                     :placeholder="properties[prop]['placeholder']">
                             </FormInput>
-                            <span>{{ errors[prop] }}</span>
+                            <span class="validation">{{ errors[prop] }}</span>
                         </div>
                     </div>
                 </div>
@@ -121,4 +124,8 @@ const properties: {
     </div>
 </template>
 
-
+<style scoped>
+span.validation {
+  color: #c70224;
+}
+</style>

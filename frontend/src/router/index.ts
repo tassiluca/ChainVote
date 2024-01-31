@@ -14,8 +14,6 @@ import CodeInsertionView from '@/views/CodeInsertionView.vue';
 import VoteView from "@/views/VoteView.vue";
 import ElectionsView from "@/views/ElectionsView.vue";
 import {useAuthStore} from "@/stores/auth";
-import ErrorView from "@/views/ErrorView.vue";
-import NoPermissionView from "@/views/NoPermissionView.vue";
 import {Role} from "@/commons/utils";
 import 'vue-router'
 import {useNotificationsStore} from "@/stores/notificationsStore";
@@ -116,25 +114,10 @@ const router = createRouter({
       path: '/user/notifications',
       name: 'notifications',
       component: NotificationsView,
-      beforeEnter: async (to, from) => {
-        const notificationsStore = useNotificationsStore();
-        await notificationsStore.getAllNotifications();
-      },
+      beforeEnter: async () => await useNotificationsStore().getAllNotifications(),
       meta: {
         allowed: [Role.User, Role.Admin]
       }
-    },
-    {
-      // TODO: change path
-      path: '/error',
-      name: 'error',
-      component: ErrorView,
-    },
-    {
-      // TODO: change path
-      path: '/no-permission',
-      name: 'no-permission',
-      component: NoPermissionView,
     },
     {
       path: '/:pathMatch(.*)*',
