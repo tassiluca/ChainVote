@@ -1,12 +1,12 @@
 import request from "supertest";
-import ExpressConfig from "../src/configs/express.config";
+import ServerConfig from "../src/configs/server.config";
 import {StatusCodes} from "http-status-codes";
 import {createElectionInfo} from "./common/utils";
 import {Jwt, JwtHandler, User} from "core-components";
 import {resolve} from "path";
 
 const MAX_TIMEOUT = 20_000;
-let app= ExpressConfig();
+let app= ServerConfig();
 
 let admin, adminJwtToken;
 let user, userJwtToken;

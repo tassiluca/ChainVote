@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    ports:
+      - "80:80"
+    networks:
+      - api-service_backend
+    environment:
+      - API_SERVER_URL=http://api-server:8080
+      - AUTH_SERVER_URL=http://auth-server:8180
+
+networks:
+  api-service_backend:
+    external: true

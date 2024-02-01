@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon';
 
-
 const ZONE = 'Europe/Rome';
 
 /**

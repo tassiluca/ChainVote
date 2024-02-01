@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { createUser, getProfile, editProfile, deleteProfile } from "../controllers/users";
+import {createUser, getProfile, editProfile, deleteProfile, passwordForgotten} from "../controllers/users";
 import { authenticationHandler } from "core-components";
 import { validationHandler } from "core-components";
-import {body, param} from "express-validator";
+import {body} from "express-validator";
 import {ApiLimiterEntry,apiLimiter} from "core-components";
 import RedisLimiterStorage from "../configs/redis.config";
 
@@ -38,16 +38,9 @@ userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  * @openapi
  *
  * paths:
- *   /users/{email}:
+ *   /users:
  *      get:
- *          summary: Return the profile of the user with the given email
- *          parameters:
- *              - name: email
- *                in: path
- *                description: The email of the user profile.
- *                required: false
- *                schema:
- *                  type: string
+ *          summary: Return the profile of the user
  *          responses:
  *              '200':
  *                  description: Ok
@@ -81,27 +74,19 @@ userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *
  */
 userRouter.get(
-    "/:email",
+    "/",
     authenticationHandler,
-    validationHandler([
-        param("email").exists().isEmail()
-    ]),
-    getProfile);
+    getProfile
+);
 
 /**
  * @openapi
  *
  * paths:
- *   /users/{userEmail}:
+ *   /users:
  *      put:
  *          summary: Update a specific user
  *          parameters:
- *              - name: userEmail
- *                in: path
- *                description: The email of the user to update.
- *                required: false
- *                schema:
- *                  type: string
  *              - name: data
  *                in: body
  *                description: The data to update the user with.
@@ -152,29 +137,24 @@ userRouter.get(
  *
  */
 userRouter.put(
-    "/:email",
+    "/",
     authenticationHandler,
     validationHandler([
-        // Param validation
-        param("email").exists().isEmail(),
-
         // Body validation
         body("data").isObject().notEmpty(),
         body("data.firstName").optional().isAlpha(),
         body("data.secondName").optional().isAlpha(),
-
         // Check that the user is not trying to change the email or the password
-        body("data.password").not().exists(),
         body("data.email").not().exists(),
     ]),
-    editProfile);
-
+    editProfile
+);
 
 /**
  * @openapi
  *
  * paths:
- *   /users/{userEmail}:
+ *   /users:
  *      delete:
  *          summary: Update a specific user
  *          parameters:
@@ -222,7 +202,8 @@ userRouter.delete(
     validationHandler([
         body("email").exists().isEmail()
     ]),
-    deleteProfile);
+    deleteProfile
+);
 
 /**
  * @openapi
@@ -290,6 +271,64 @@ userRouter.post(
         body("firstName").exists().isAlpha(),
         body("secondName").exists().isAlpha(),
     ]),
-    createUser);
+    createUser
+);
+
+/**
+ * @openapi
+ *
+ * paths:
+ *   /users/password-forgotten:
+ *      put:
+ *          summary: Reset password
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              email:
+ *                                  type: string
+ *                                  description: The email of the user
+ *          responses:
+ *              '201':
+ *                  description: Created
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
+ *              '429':
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
+ *              '500':
+ *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
+ *
+ */
+userRouter.put(
+    "/password-forgotten",
+    validationHandler([
+        body("email").exists().isEmail(),
+    ]),
+    passwordForgotten
+);
 
 export default userRouter;

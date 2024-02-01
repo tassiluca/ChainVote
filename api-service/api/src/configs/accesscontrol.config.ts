@@ -47,4 +47,3 @@ const acObject: AccessControl = new AccessControl(grantsObject);
 acObject.lock();
 
 export {acObject as ac};
-

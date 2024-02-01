@@ -1,6 +1,6 @@
 {
   "name": "core-components",
-  "version": "1.1.4",
+  "version": "1.1.10",
   "description": "Core components that are shared between the different Javascript's services of the organization",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

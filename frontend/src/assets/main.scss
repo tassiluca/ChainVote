@@ -1,0 +1,25 @@
+@import './base.css';
+
+/***********************************************************************************************************************
+ * Custom modification to boostrap.
+ * NOTE: Variable overrides must come after our functions are imported, but before the rest of the imports.
+ **********************************************************************************************************************/
+// Theme colors
+$secondary: #00BF7D;
+
+/***********************************************************************************************************************
+ * Custom modification to `vue-toast-notification` plugin.
+ **********************************************************************************************************************/
+.v-toast__item--info {
+  background-color: #004080 !important;
+  box-shadow: 2px 5px 15px rgba(13, 110, 253, 0.82) !important;
+}
+
+@media screen and (max-width: 768px) {
+  .v-toast {
+    padding: 10px !important;
+    position: fixed !important
+  }
+}
+
+@import 'bootstrap/scss/bootstrap.scss';

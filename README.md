@@ -1,19 +1,26 @@
 <div align="center">
 
-**Distributed Systems Final Project**
+**Distributed Systems + Applications and Web Services Final Project @ UniBo**
 
-```
- ██████╗██╗  ██╗ █████╗ ██╗███╗   ██╗██╗   ██╗ ██████╗ ████████╗███████╗
-██╔════╝██║  ██║██╔══██╗██║████╗  ██║██║   ██║██╔═══██╗╚══██╔══╝██╔════╝
-██║     ███████║███████║██║██╔██╗ ██║██║   ██║██║   ██║   ██║   █████╗  
-██║     ██╔══██║██╔══██║██║██║╚██╗██║╚██╗ ██╔╝██║   ██║   ██║   ██╔══╝  
-╚██████╗██║  ██║██║  ██║██║██║ ╚████║ ╚████╔╝ ╚██████╔╝   ██║   ███████╗
- ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝  ╚═══╝   ╚═════╝    ╚═╝   ╚══════╝
-```
+<img src="./frontend/src/assets/logo.svg" width="180px" />
 
-[Requirements](#requirements) | [Startup](#startup) | [Documentation](#documentation) | [Troubleshooting](#troubleshooting) | [Authors](#authors)
+[Abstract](#abstract) | [Requirements](#requirements) | [Startup](#startup) | [Docs](#documentation) | [Develop](#develop) | [Troubleshooting](#troubleshooting) | [Authors](#authors)
 
 </div>
+
+## Abstract
+
+> Electronic voting systems based on blockchain technology have emerged
+as a potential solution to enhance the security and transparency of traditional voting methods. In this system, voters cast their votes electronically,
+and the results are stored on a decentralized blockchain ledger, which ensures the integrity of the vote by preventing any tampering or manipulation.
+This system provides a transparent and immutable record of votes, which
+can be accessed by anyone in the network, thus increasing trust in the electoral process. Nevertheless, the use of blockchain technology in electronic
+voting systems holds promise for creating a more secure, transparent, and
+democratic electoral process.
+> 
+> The project consists of the implementation of a small-scale distributed electronic voting system based on blockchain technology. Specifically, the goal is to create a **distributed architecture** that exposes a **uniform API** allowing users to interact with the system using a web application.
+
+**Warning:** This repository is part of an academic project developed for the course in Distributed Systems and Application and Web Services @ UniBo. It is intended for educational purposes and may not be suitable for production use.
 
 ## Requirements
 
@@ -24,21 +31,30 @@
 - Node.js 18 or higher
 - `npm`
 
-## Develop
-
-To clone the project:
-
-```bash
-git clone --recurse-submodules <URL> <DESTINATION>
-```
-
-If the repository has been cloned plainly, then submodules can be initialized manually:
-
-```bash
-git submodule update --init --recursive
-```
-
 ## Startup
+
+---
+
+**Important**
+
+For security reasons the password for using the mailer is not stored in the repository, but it is passed to the container using a docker secret. Before starting up the system, it’s necessary to create a password file, at the position defined in the secrets section of the `docker-compose.yaml` file:
+
+```yaml
+secrets:
+  google_api_secret:
+    file: ~/secrets/api-pass.txt
+```
+
+It is also possible to specify the mail address that will be used to send the emails by changing the `MAIL ADDRESS` environment variable on the `api-server` service:
+
+```yaml
+environment:
+  ...
+  - MAIL_USER=chainvote.01@gmail.com
+  ...
+```
+
+---
 
 To bring up the blockchain network, deploy the smart contracts on top of the peers, start the API services and the frontend web app you can use the `services.sh` script on the root of the project.
 
@@ -50,15 +66,19 @@ To bring up all the system's services:
 
 Since the first time it will pull Hyperledger Fabric binaries and docker images to create blockchain artifacts and start API services, it will take a while to bring up the entire system.
 
+---
+
 While it reaches the API server creation phase, the script will execute the `npm login` command. 
 We've preconfigured some default credentials for this purpose; these should be used when login request is prompted:
 
 - username: `user`
 - password: `password`
 
-:warning: During the startup phase of the API layer, the script will require the sudo privileges in order to ensure that the `verdaccio`, `cache` and `dbdata` folders have write and read permissions, which are needed on Linux environment.
+During the startup phase of the API layer, the script will require the sudo privileges in order to ensure that the `verdaccio`, `cache` and `dbdata` folders have write and read permissions, which are needed on Linux environment.
 
-The full working system consists of 33 containers (Figure 19): one for each peer and chaincode deployed on it, five containers for the API services and one for the frontend web app.
+---
+
+The full working system consists of 33 containers: one for each peer and chaincode deployed on it, five containers for the API services and one for the frontend web app.
 
 To bring them down without cleaning the blockchain artifacts (it will speed up the creation of the network next times):
 
@@ -86,6 +106,20 @@ For more details have a look at the project documentation.
 - **RESTful API**
   - [`api-server`](https://tassiluca.github.io/ChainVote/swagger-ui-api/)
   - [`auth-server`](https://tassiluca.github.io/ChainVote/swagger-ui-auth/)
+
+## Develop
+
+To clone the project:
+
+```bash
+git clone --recurse-submodules <URL> <DESTINATION>
+```
+
+If the repository has been cloned plainly, then submodules can be initialized manually:
+
+```bash
+git submodule update --init --recursive
+```
 
 ## Troubleshooting
 

@@ -1,0 +1,27 @@
+@startuml api-limiter-api
+
+package common {
+    class LimiterMiddleware 
+
+    interface ApiLimiterRule
+    interface ApiLimiterEntry
+
+    interface ApiLimiterStorage {
+        + exists(clientId: string): Promise<boolean>
+        + increaseEntry(clientId: string): Promise<number>
+        + setExpiration(\n    clientId: string,\n    seconds: number\n): Promise<boolean>
+    }
+}
+
+class RedisLimiterStorage implements common.ApiLimiterStorage {
+    + exists(clientId: string): Promise<boolean>
+    + increaseEntry(clientId: string): Promise<number>
+    + setExpiration(\n    clientId: string,\n    seconds: number\n): Promise<boolean>
+}
+
+ApiLimiterRule *-- ApiLimiterEntry
+LimiterMiddleware ..> ApiLimiterRule: <<use>>
+LimiterMiddleware ..> common.ApiLimiterStorage: <<use>>
+
+
+@enduml

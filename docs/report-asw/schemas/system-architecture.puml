@@ -1,0 +1,82 @@
+@startuml system-architecture
+
+skinparam component {
+    BackgroundColor<<registry-server>> White
+    BackgroundColor<<executable>> #ccffcc
+    BackgroundColor<<test>> cyan
+}
+skinparam DatabaseBackgroundColor LightYellow
+
+''''''''''''''''' FRONTEND COMPONENT ''''''''''''''''''
+() "Authentication \nReST API" as AUTH_API
+() "Elections \nReST API" as ELECTIONS_API
+() "Web Socket" as WEB_SOCKET
+
+component ":frontend" as FRONTEND {
+    portout " " as FRONTEND_OUT
+}
+
+FRONTEND_OUT --> AUTH_API
+FRONTEND_OUT --> ELECTIONS_API
+FRONTEND_OUT --> WEB_SOCKET
+
+'''''''''''''''' API-SERVICE COMPONENT ''''''''''''''''
+component ":api-service" {
+    portin " " as API_PIN
+    portin " " as AUTH_PIN
+    portin " " as IO_PIN
+
+    () "connection" as MONGO_CONNECTION
+    () "connection" as REDIS_CONNECTION
+
+    component ":core-components" as CC
+    component ":auth-server" as ATS <<executable>>
+    component ":api-server" as APS <<executable>>
+
+    database MongoDB
+    database Redis
+
+    portout " " as API_OUT
+}
+
+ELECTIONS_API -- API_PIN
+AUTH_API -- AUTH_PIN
+WEB_SOCKET -- IO_PIN
+AUTH_PIN ---> ATS
+API_PIN ---> APS
+IO_PIN <---> APS
+APS <..> MONGO_CONNECTION
+APS <..> REDIS_CONNECTION
+ATS <..> REDIS_CONNECTION
+ATS -- CC
+APS -- CC
+ATS <..> MONGO_CONNECTION
+REDIS_CONNECTION <..> Redis
+MONGO_CONNECTION <..> MongoDB
+APS --> API_OUT
+
+'''''''''''''''' BLOCKCHAIN COMPONENT ''''''''''''''''
+() "Hyperledger \nAPI Gateway" as API_BLOCKCHAIN_INTERFACE
+API_OUT -right-> API_BLOCKCHAIN_INTERFACE
+
+component ":blockchain-network" as BLC {
+    portin " " as BLC_PIN
+
+    () "blockchain connection" as BLC_CONNECTION
+
+    component ":smart-contracts" as SC <<executable>>
+    component ":blockchain" as CHAIN
+
+    database "Private Data" as PVD
+    database "Ledger" as LD
+}
+
+API_BLOCKCHAIN_INTERFACE -right-> BLC_PIN
+BLC_PIN --> SC
+
+SC -right- CHAIN
+SC <..> BLC_CONNECTION
+BLC_CONNECTION <..> LD
+BLC_CONNECTION <..> PVD
+
+@enduml

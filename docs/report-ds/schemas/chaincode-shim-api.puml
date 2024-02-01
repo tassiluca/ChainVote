@@ -1,0 +1,42 @@
+@startuml chaincode-shim-api
+
+package org.hyperledger.fabric.shim {
+
+    class Context {
+        +getClientIdentity(): ClientIdentity
+        +getStub(): ChaincodeStub
+    }
+
+    class ClientIdentity {
+        +assertAttributeValue(\n    attrName: String,\n    attrValue: String\n): boolean
+        +getAttributeValue(attrName: String): String
+        +getId(): String
+        +getMSPID(): String
+        +getX509Certificate(): X509Certificate
+    }
+
+    class ChaincodeStub {
+        +putPrivateData(collection: String, key: String, value: byte[])
+        +getPrivateData(collection: String, key: String): byte[]
+        +getPrivateDataHash(collection: String, key: String): byte[]
+        +getPrivateDataQueryResult(\n    collection: String,\n    query: String\n): QueryResultsIterator<KeyValue>
+        +...()
+        ---
+        +putState(key: String, value: byte[])
+        +getState(key: String): byte[]
+        +getQueryResult(query: String): QueryResultsIterator<KeyValue>
+        +getStateByPartialCompositeKey(\n    compositeKey: CompositeKey\n): QueryResultsIterator<KeyValue>
+        +...()
+        ---
+        +getTransient(): Map<String, byte[]>
+        ---
+        +invokeChaincodeWithStringArgs(\n    chaincodeName: String,\n    args: String[]\n    channel: String\n): Chaincode.Response
+        +...()
+    }
+
+    Context *-right- ClientIdentity
+    Context *-- ChaincodeStub
+
+}
+
+@enduml
