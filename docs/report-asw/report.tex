@@ -956,7 +956,54 @@ Route checking is done on data saved on a \texttt{Redis} database. To make this 
 
 \subsubsection{Real time updates and notifications with \texttt{Socket.io}}
 
-\texttt{Socket.io}, as already stated in \Cref{sec:technologies}
+As mentioned in \Cref{sec:technologies}, \texttt{Socket.io} have been used for the implementation of real-time updates and notifications.
+
+More in details, the kind of updates that are interesting from the client perspective and to be updated reactively without the need of refreshing the page are the following:
+
+\begin{itemize}
+    \item when someone cast a vote the details page must be updated to reflect the new turnout of the election;
+    \item when an election opens or closes the details page and the dashboard must be updated to reflect the new status of the election and display the results if it is closed;
+\end{itemize}
+
+Moreover, whenever an important event occurs, the server must push to clients a notification to inform them about it.
+%
+Following a comprehensive requirements analysis, the following events have emerged as crucial and indispensable for the successful implementation of our project:
+
+\begin{itemize}
+    \item when a new election is created;
+    \item when an election is about to close.
+\end{itemize}
+
+
+Concerning the notifications they are emitted in broadcast to all connected clients, which in turns register the callback to execute whenever a new event is received.
+
+\jsimport[
+    caption={},
+    label={lst:notifications}
+]{listings/emitTurnout.ts}
+
+For the elections updates we leverage the \texttt{Socket.io} rooms mechanism: a room is created for each election and the clients that are interested in receiving updates for a specific election will join the room associated with it.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/socket-io-rooms.eps}
+    \caption{\texttt{Socket.io} rooms mechanism used to notify clients about election updates.}
+    \label{fig:socket-io-rooms} 
+\end{figure}
+
+Also, since elections can be, and generally are, created to open at some time in the future, it must be possible, on the part of the server, to schedule them. 
+%
+This is achieved by registering a callback that is scheduled to be executed at the time the notification is to be triggered. 
+%
+An abnormal restart of the server, however, would erase all schedules, preventing clients from being notified. 
+%
+To overcome this problem, the scheduled notifications are stored within MongoDB so that at any server restart, it may be possible to reschedule notifications that have not yet been delivered.
+
+\jsimport[
+    caption={},
+    label={lst:notifications}
+]{listings/notifications.ts}
+
 
 
 \subsection{Frontend}
