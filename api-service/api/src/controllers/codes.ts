@@ -1,9 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {Contract, Gateway, Network} from "@hyperledger/fabric-gateway";
 import GrpcClientPool from "../blockchain/grpc.client.pool";
-
 import seedrandom from 'seedrandom';
-
 import {Org2Peer} from "../blockchain/peer.enum";
 import {StatusCodes} from "http-status-codes";
 import transformHyperledgerError from "../blockchain/errors/error.handling";
@@ -136,22 +134,16 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
             to: res.locals.user.email,
             subject: 'The other part of your code is here',
             html: `
-                Hello ${res.locals.user.firstName} ${res.locals.user.secondName},<br>
+                Hello ${res.locals.user.firstName} ${res.locals.user.secondName} &#128075;,<br>
                 This is the other part of your code: <b>${secondPart}</b>
             `
         };
-
-        mailer.sendMail(message).then((info) => {
-            return res.status(201).json(
-                {
-                    msg: "Email sent",
-                    info: info.messageId
-                }
-            )
-        }).catch((err) => {
-                return res.status(500).json({ msg: err });
-            }
-        );
+        const info = await mailer.sendMail(message);
+        res.locals.code = StatusCodes.CREATED;
+        res.locals.data = {
+            msg: "Email sent",
+            info: info.messageId
+        }
     } catch (error) {
         return next(transformHyperledgerError(error));
     }

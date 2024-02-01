@@ -38,16 +38,9 @@ userRouter.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  * @openapi
  *
  * paths:
- *   /users/{email}:
+ *   /users:
  *      get:
- *          summary: Return the profile of the user with the given email
- *          parameters:
- *              - name: email
- *                in: path
- *                description: The email of the user profile.
- *                required: false
- *                schema:
- *                  type: string
+ *          summary: Return the profile of the user
  *          responses:
  *              '200':
  *                  description: Ok
@@ -90,16 +83,10 @@ userRouter.get(
  * @openapi
  *
  * paths:
- *   /users/{userEmail}:
+ *   /users:
  *      put:
  *          summary: Update a specific user
  *          parameters:
- *              - name: userEmail
- *                in: path
- *                description: The email of the user to update.
- *                required: false
- *                schema:
- *                  type: string
  *              - name: data
  *                in: body
  *                description: The data to update the user with.
@@ -167,7 +154,7 @@ userRouter.put(
  * @openapi
  *
  * paths:
- *   /users/{userEmail}:
+ *   /users:
  *      delete:
  *          summary: Update a specific user
  *          parameters:
@@ -287,6 +274,55 @@ userRouter.post(
     createUser
 );
 
+/**
+ * @openapi
+ *
+ * paths:
+ *   /users/password-forgotten:
+ *      put:
+ *          summary: Request to send a new password to the user email
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              email:
+ *                                  type: string
+ *                                  description: The email of the user
+ *          responses:
+ *              '201':
+ *                  description: Created
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/CommonResponse'
+ *              '400':
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/BadRequestError'
+ *
+ *              '429':
+ *                  description: Too many requests
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/TooManyRequestError'
+ *              '500':
+ *                  description: Generic server error
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              allOf:
+ *                                  - $ref: '#/components/schemas/InternalServerError'
+ *
+ */
 userRouter.put(
     "/password-forgotten",
     validationHandler([

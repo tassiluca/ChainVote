@@ -47,11 +47,11 @@ codesRoute.use(apiLimiter(API_LIMITER_RULES, limitStorage));
  *                      schema:
  *                          type: object
  *                          properties:
- *                              userId:
+ *                              electionId:
  *                                  type: string
- *                                  description: The id of a user.
+ *                                  description: The election id for which generates a one-time-code.
  *                      example:
- *                          userId: 2050333334
+ *                          electionId: 1728519885
  *          responses:
  *              '201':
  *                  description: Created
@@ -121,7 +121,6 @@ codesRoute.post(
  *                      example:
  *                          userId: 2050333334
  *                          code: 6e692a06ad
- *
  *          responses:
  *              '200':
  *                  description: Ok
@@ -191,9 +190,8 @@ codesRoute.post(
  *                                  type: string
  *                                  description: The code to check
  *                      example:
- *                          userId: 2050333334
+ *                          electionId: 1728519885
  *                          code: 6e692a06ad
- *
  *          responses:
  *              '200':
  *                  description: Ok

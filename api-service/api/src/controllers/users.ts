@@ -199,12 +199,11 @@ export async function passwordForgotten(req: Request, res: Response, next: NextF
             This is the new password: <b>${password}</b>
         `
     };
-    mailer.sendMail(message).then((info) => {
-        res.locals.code = 201
-        res.locals.data = {
-            msg: "Email sent",
-            info: info.messageId
-        }
-    }).catch((err) => next(err));
+    const info = await mailer.sendMail(message)
+    res.locals.code = 201
+    res.locals.data = {
+        msg: "Email sent",
+        info: info.messageId
+    }
     return next();
 }
