@@ -378,7 +378,7 @@ Once correctly logged, the user is redirected to the Dashboard where all the ele
 
 Reasoning about usability, has been decided to add another view, Election view, where elections can be displayed, rather categorized or unfiltered. Moreover, vertical display allows a smoother visualization, up to 10 per page even in mobile setting.
 %
-From both visualization views, users can see the details of an election (\Cref{fig:details-cast-notifications-view}), ask for the code required during voting phase as well as reach the page to cast a new vote.
+From both visualization views, users can see the details of an election (\Cref{fig:details-cast-notifications-view}), ask for the code required during voting phase and reach the page to cast a new vote.
 %
 From the navbar is possible to navigate the notifications view where all recent notifications are displayed along with an indication of whether it has already been read or not.
 
@@ -448,7 +448,7 @@ The following section presents the overall architecture of the system's backend 
     \item API server: used as middleware between the blockchain network and the clients, it exposes the API to interact with the system
 \end{itemize}
 
-Focusing on the API server module, we see, in figure \Cref{fig:system-architecture}, that it provides its functionality through the \texttt{:api-server} and \texttt{:auth-server} submodules: \texttt{:api-server} maintains the logics for interacting with the blockchain network, manage the users data and send the events to the frontend using websockets. \texttt{:auth-server} exposes the login endpoints and generates the JWT tokens used to authenticate the users.
+Focusing on the API server module shown in \Cref{fig:system-architecture}, we can see that it provides its functionality through the \texttt{:api-server} and \texttt{:auth-server} submodules: \texttt{:api-server} maintains the logics for interacting with the blockchain network, manage the users data and send the events to the frontend using websockets. \texttt{:auth-server} exposes the login endpoints and generates the JWT tokens used to authenticate the users.
 
 Both modules are based on the same technological stack (Node and Express.js) and share some common functionality distributed through the use of an internal dependency registry (represented as \texttt{:common} in \Cref{fig:system-architecture}). The utility classes and functions are packed as a npm package and imported as dependency.
 
@@ -474,7 +474,7 @@ Clients can also receive notifications from the server through the use of websoc
 \subsection{Technologies}
 \label{sec:technologies}
 
-As solution stack, we adopted \texttt{MEVN}, in detail:
+As solution stack, we've adopted \texttt{MEVN}, in detail
 \begin{itemize}
     \item \texttt{Node} and \texttt{Express} server side;
     \item \texttt{Vue} client side;
@@ -691,11 +691,11 @@ Through the navigation bar the administrator is able to create a new election en
 \end{figure}
 \restoregeometry
 
-An user can register into the system by entering their personal information (which are modifiable once logged in, \Cref{fig:user-area}), a valid email address and a password.
+A user can register into the system by entering its personal information (which are modifiable once logged in, \Cref{fig:user-area}), a valid email address and a password.
 %
-The inputs of the form (like for every form of the website) are checked for correctness, displaying an error message if the input is not valid (\Cref{fig:user-registration}).
+The inputs of the form (as every form of the website) are checked for correctness, displaying an error message if the given value is not valid (\Cref{fig:user-registration}).
 
-Moreover, if the user forget the password can request the generation of  new one which is sent to the email address provided during the registration (\Cref{fig:password-forgotten}).
+Moreover, if the user forgets the password can request the generation of  new one which is sent to the email address provided during the registration (\Cref{fig:password-forgotten}).
 
 After registration, the user can authenticate into the system by entering his or her credentials (\Cref{fig:user-login}) and is automatically directed to the dashboard where the most recent elections are displayed based on their status (open, closed, upcoming) (\Cref{fig:dashboard}).
 %
@@ -825,7 +825,7 @@ In any moment the user can read the received notifications by clicking on the no
 \section{Validation}
 
 Due to mobile first principles, validation phase consisted first of all in test all the system functionalities by means of browser's simulator.
-This phase has been repeated changing browsers to test portability too. In addition, all the APIs has been tested using either web application and \texttt{Postman}.
+This phase has been repeated changing browsers to test portability too. In addition, all the APIs has been tested using either web application, \texttt{Postman} and \texttt{jest}.
 
 \subsection{User experience}
 
