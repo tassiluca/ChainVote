@@ -8,13 +8,13 @@
 \newcommand{\version}{\versionmajor.\versionminor.\versionpatch}
 
 \title{\LARGE
-    ChainVote Final Report
+    ChainVote Final Report - ASW
 }
 
 \subtitle{(v. \version)}
 
 \author{
-    Giovanni Antonioni \\ \emailaddr{giovanni.antonioni2@studio.unibo.it} \\ Matr. \texttt{001083764}
+    Giovanni Antonioni \\ \emailaddr{giovanni.antonioni2@studio.unibo.it} \\ Matr. \texttt{1083764}
     \and 
     Luca Rubboli \\ \emailaddr{luca.rubboli2@studio.unibo.it} \\ Matr. \texttt{1083742}
     \and
@@ -1119,29 +1119,12 @@ While the system is starting up docker will cache lots of data that is used in t
 
 \section{Conclusions}
 
-In this project, we explored the possibility of building a reliable and secure e-voting system leveraging the advantages offered by blockchain technology.
+In this project we designed and implemented a web application that allows a user to interact with our system.
 
-After identifying system requirements and exploring three of the most important technologies for building permissioned blockchain, we chose Hyperledger Fabric for its modularity and high configurability.
+Following the REST API principles and guidelines learned during the lessons, we achieved a good level of usability and user experience, enhancing our technical knowledge about modern web frameworks and tools while, at the same time, getting in touch with real-time scenarios.
 
-We then proceeded with the design of the blockchain network and architecture of the project, trying to give maximum preference to its extensibility, not forgetting the three essential cornerstones for such a project: security, reliability and fault-tolerance.
+Despite being a challenging project we can consider reached our fixed goals, fulfilling all the requirements of the system.
 
-Ample space was devoted to the configuration and implementation of the network and smart contracts and their deployment using Docker.
-
-Finally, we developed a ReST API adopting best practices to provide a uniform interface, with a semantic and clear meaning, to application clients.
-
-Despite being a challenging project we achieved the goals, fulfilling all the requirements of the system.
-
-\subsection{Future Works}
-
-To conclude, some extensions that could be implemented to make the system more comprehensive are listed below:
-\begin{itemize}
-    \item As highlighted in \ref{subsec:blockchain-architecture}, the blockchain network must be improved from the fault-tolerance side by building a significant amount of organization peers; this could positively affect the availability of the system too;
-    \item As domain requirements could change, another feature could involve the ability to define customizable rules for ballots, i.e. the possibility to vote multiple choices in a single ballot, and for elections, i.e. establish criteria to invalidate results based on quorum;
-    \item The admin creation process should be handled differently, in a real scenario an admin should be created only by means of another admin;
-    \item Given that the process of collecting signatures for petitions to invoke a popular vote is a costly process for both organizers and participants, the system could provide a user-friendly interface to handle proposals and automatically generate a referendum when a quorum is reached;
-    \item Tests could be enriched by simulating a wider variety of stress situations;
-    \item From a security point of view, the mechanism used to provide the code to users should rely on a secure fashion, i.e. a combination of out-of-band channels.
-\end{itemize}
 
 \nocite{*} % Includes all references from the `references.bib` file
 \bibliographystyle{plain}
