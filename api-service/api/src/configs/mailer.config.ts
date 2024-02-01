@@ -7,7 +7,7 @@ const secretValue = fs.readFileSync(path, 'utf8').trim();
 const config = {
     service: 'gmail',
     auth: {
-        user: "chainvote.01@gmail.com",
+        user: process.env.MAIL_USER,
         pass: secretValue
     }
 }

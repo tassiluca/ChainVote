@@ -927,6 +927,28 @@ We check the validity of the response by evaluating the status code and the body
     \item npm.
 \end{itemize}
 
+\begin{warn}
+    For security reasons the password for using the mailer is not stored in the repository, but it is passed to the container using a docker secret. Before starting up the system, it's necessary to create a password file, at the position defined in the \texttt{secrets} section of the \texttt{docker-compose.yaml} file:
+    \begin{verbatim}
+    secrets:
+        google_api_secret:
+            file: ~/secrets/api-pass.txt
+    \end{verbatim}
+
+    Is also possible to specify the mail address that will be used to send the emails by changing the \texttt{MAIL\_ADDRESS} environment variable on the \texttt{api-server} service.
+
+    \begin{verbatim}
+        environment:
+            ...
+            - MAIL_USER=chainvote.01@gmail.com
+            ...
+        \end{verbatim}
+\end{warn}
+
+    
+
+
+
 \subsection{Startup}
 
 To bring up the blockchain network, deploy the smart contracts on top of the peers, start the API services and the frontend web app you can use the \texttt{services.sh} script on the root of the project.
