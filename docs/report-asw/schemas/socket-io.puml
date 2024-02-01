@@ -1,0 +1,28 @@
+@startuml socket-io-rooms
+
+
+node api-server {
+    component socket.io {
+        cloud electionY
+
+        cloud electionX {
+            file "socket A"
+            file "socket B"
+        }
+    }
+}
+
+node client1 as C1 {
+    component "socket.io-client"
+}
+
+node client2 as C2 {
+    component "socket.io-client "
+}
+
+C1 ..> electionX : join
+C2 .up..> electionX : join
+electionX --(0)--> C1 : electionX update >
+electionX --(0)--> C2 : electionX update >
+
+@enduml
