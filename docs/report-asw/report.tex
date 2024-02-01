@@ -431,18 +431,14 @@ From the navbar is possible to navigate the notifications view where all recent 
         \includegraphics[width=\textwidth]{./figures/mockups/user-area.pdf}
         %\caption{}
     \end{subfigure}
-    \caption{User area view.}
-    \label{fig:user-area-view}
-\end{figure}
-
-\begin{figure}
+    \hfill
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
         \includegraphics[width=\textwidth]{./figures/mockups/create-election.pdf}
         %\caption{}
     \end{subfigure}
-    \caption{Create election view.}
-    \label{fig:create-election-view}
+    \caption{User area and create election view.}
+    \label{fig:create-election-user-areaview}
 \end{figure}
 
 \subsection{Backend Architecture}
@@ -645,6 +641,31 @@ Other than the blockchain the system relies on two databases:
 
 \subsection{Technologies}
 \label{sec:technologies}
+
+As solution stack, we adopted \texttt{MEVN}, in detail:
+\begin{itemize}
+    \item \texttt{Node} and \texttt{Express} server side;
+    \item \texttt{Vue} client side;
+    \item \texttt{MongoDB} as storage technology;
+    \item \texttt{mongoose} for DB interactions;
+    \item \texttt{Redis} as caching storage;
+    \item \texttt{Socket.io} to achieve real-time updates;
+    \item \texttt{Verdaccio} as internal repository system;
+    \item \texttt{Axios} to deliver asyncronous HTTP requests;
+    \item \texttt{npm} as dependency manager;
+    \item \texttt{Hyperledger Fabric} as open source Blockchain structure;
+    \item \texttt{Docker} as virtualization system manager and to smooth deployment.
+\end{itemize}
+
+Moreover, we used the following languages
+\begin{itemize}
+    \item \texttt{Java} as main blockchain's chaincode language;
+    \item \texttt{Typescript}, both server and client side;
+    \item \texttt{HTML} as views' structure;
+    \item \texttt{CSS} and \texttt{SCSS} as style sheets.
+\end{itemize}
+
+During development we got in touch with minor technologies, it's worth mentioning \texttt{Swagger OpenAPI}, by means of which we documented our RestAPI and \texttt{bootstrap} to enhance page style.
 
 %% -------------------------------------- DS ----------------------------
 \iffalse
@@ -1017,6 +1038,8 @@ Route checking is done on data saved on a \texttt{Redis} database. To make this 
 \end{figure}
 
 \subsubsection{Mailer}
+
+\todo{Fill mailer}
 
 \subsubsection{Routes}
 
