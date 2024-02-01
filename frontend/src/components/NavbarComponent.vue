@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faEnvelope, faBars, faUser, faRightToBracket, faRightFromBracket, faEnvelopeOpen, faEnvelopeOpenText } from "@fortawesome/free-solid-svg-icons";
-import { useAuthStore } from "@/stores/auth";
-import { useNotificationsStore } from '@/stores/notificationsStore'
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {
+  faBars,
+  faEnvelope,
+  faEnvelopeOpen,
+  faEnvelopeOpenText,
+  faRightFromBracket,
+  faRightToBracket,
+  faUser
+} from "@fortawesome/free-solid-svg-icons";
+import {useAuthStore} from "@/stores/auth";
+import {useNotificationsStore} from '@/stores/notificationsStore'
 import {Role} from "@/commons/utils";
 
 const authStore = useAuthStore();
@@ -35,14 +43,11 @@ library.add(faEnvelope, faEnvelopeOpen, faEnvelopeOpenText, faBars, faUser, faRi
       </a>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
-          <li class="nav-item">
+          <li class="nav-item" v-if="authStore.isLogged && authStore.userRole == Role.User">
             <a class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
           <li v-if="authStore.isLogged" class="nav-item">
             <a class="nav-link" href="/dashboard">Dashboard</a>
-          </li>
-          <li v-if="authStore.isLogged" class="nav-item">
-            <a class="nav-link" href="/elections">Elections</a>
           </li>
           <li v-if="authStore.isLogged && authStore.userRole === Role.Admin" class="nav-item">
             <a class="nav-link" href="/elections/create">Create election</a>
