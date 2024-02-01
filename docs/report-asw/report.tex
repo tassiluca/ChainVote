@@ -585,9 +585,7 @@ When needed the mailer can be used in the code as follows:
 \subsubsection{Routes}
 
 Following REST principles, we defined routes according to the main entities.
-Using Open API, we provide documentation of both \texttt{:api-server} and \texttt{auth-server} modules (\Cref{fig:backend-routes-api} and \Cref{fig:backend-routes-auth}).
-
-\todo{Check if it's okay}
+Using Open API, we provide documentation of both \texttt{:api-server} and \texttt{:auth-server} modules (\Cref{fig:backend-routes-api} and \Cref{fig:backend-routes-auth}).
 
 \begin{figure}
     \centering
@@ -836,7 +834,7 @@ In any moment the user can read the received notifications by clicking on the no
 
 \section{Validation}
 
-Due to mobile first principles, validation phase consisted first of all in test all the system functionalities by means of browser's simulator.
+Due to mobile first principles, validation phase consisted first of all in testing all the system functionalities by means of browser's mobile visualizer simulator.
 This phase has been repeated changing browsers to test portability too. In addition, all the APIs has been tested using either web application, \texttt{Postman} and \texttt{jest}.
 
 \subsection{User experience}
@@ -846,7 +844,7 @@ In order to enhance usability and user-experience, Nielsen's heuristics has been
     \item Visibility of system status, sharing system's status with the user, i.e. during form submission a spinner will report the computation;
     \item Match between system and real world, adopting icons and names familiar with the catchment area;
     \item User control and freedom, in fact the system will never impose an action, but suggest the path the user can follow;
-    \item Error prevention, for instance in place of asking for a code, the alert raised to display half of a code won't accidentally close;
+    \item Error prevention, for instance in place of asking for a code, the pop-up raised to display half of a code won't accidentally close;
     \item Recognition rather than recall, since the system has been designed to be the most intuitive as possible;
     \item Minimalist design, adhering to KISS principle, views are designed as minimal but effective;
     \item Help user recognize, diagnose and recover from errors, exposing clear and meaningful messages in place of errors raised.
@@ -914,8 +912,6 @@ We check the validity of the response by evaluating the status code and the body
 %% -------------------------------------- DS ----------------------------
 
 \section{Deployment}
-
-\todo{Add file secrets for mailer}
 
 \subsection{Prerequisites}
 
