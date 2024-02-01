@@ -3,7 +3,7 @@ import router from "@/router";
 import io from "socket.io-client";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleInfo, faSquarePollHorizontal } from '@fortawesome/free-solid-svg-icons'
-import { onMounted, onUnmounted, type Ref, ref } from "vue";
+import { computed, onMounted, onUnmounted, type Ref, ref } from "vue";
 import { useVotingStore, type Voting} from "@/stores/voting";
 import { useRoute } from "vue-router";
 import { formatDate, formatTime, highestOf } from "@/commons/utils";
@@ -17,6 +17,15 @@ import PieChart from "@/components/charts/PieChart.vue";
 const socket = io(apiEndpoints.API_SERVER)
 const votingStore = useVotingStore();
 const election: Ref<Voting | null> = ref(null);
+const resultsWithAbstained = computed(() => {
+  if (election.value?.results) {
+    return {
+      ...election.value.results,
+      "Abstained": election.value?.voters - Object.values(election.value.results).reduce((p, c) => p + c, 0)
+    }
+  }
+  return {};
+})
 const route = useRoute();
 
 library.add(faCircleInfo, faSquarePollHorizontal);
@@ -91,7 +100,10 @@ async function getVotingDetails(id: string) {
               No votes have been casted.
             </p>
             <p v-else>
-              <strong>{{ Object.keys(highestOf(election.results)).reduce((p, c) => p + ", " + c) }}</strong> collected the highest number of votes.
+              <strong>
+                {{ Object.values(highestOf(election.results)).map(v => v.key).reduce((p, c) => p + ", " + c) }}
+              </strong>
+              collected the highest number of votes.
             </p>
           </template>
           <template #details v-if="Object.keys(election.results).length !== 0 && highestOf(election.results)[0].value !== 0">
@@ -104,19 +116,19 @@ async function getVotingDetails(id: string) {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(votes, choice) in election.results" :key="choice">
+                <tr v-for="(votes, choice) in resultsWithAbstained" :key="choice">
                   <td>{{ choice }}</td>
                   <td>{{ votes }}</td>
                 </tr>
               </tbody>
             </table>
             <BarChart
-                :labels="Object.keys(election.results)"
-                :values="[{ 'title': 'Number of votes', 'label': 'votes no.', 'data': Object.values(election.results) }]"
+                :labels="Object.keys(resultsWithAbstained)"
+                :values="[{ 'title': 'Number of votes', 'label': 'votes no.', 'data': Object.values(resultsWithAbstained) }]"
             />
             <PieChart
-                :labels="Object.keys(election.results)"
-                :values="Object.values(election.results)"
+                :labels="Object.keys(resultsWithAbstained)"
+                :values="Object.values(resultsWithAbstained)"
             />
           </template>
         </Tile>

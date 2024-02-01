@@ -31,7 +31,19 @@ const options = {
 </script>
 
 <template>
-  <Pie :data="data" :options="options" />
+  <div class="container-sm">
+    <Pie :data="data" :options="options" />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+div {
+  width: 80%;
+}
+
+@media screen and (min-width: 768px) {
+  div {
+    width: 60%;
+  }
+}
+</style>
