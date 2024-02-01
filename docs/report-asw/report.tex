@@ -1148,6 +1148,172 @@ By means of custom emit events and props, the nested structure offered by compon
 
 \section{Story board}
 
+The homepage of the system is shown in \Cref{fig:homepage}.
+
+A system administrator can authenticate into the system by entering his credentials (\Cref{fig:login-admin}) and is automatically redirected to the dashboard.
+
+Through the navigation bar the administrator is able to create a new election entering the goal of the election, opening and closing date and time, number of participants and choices (white ballot is always added to those entered by the user) (\Cref{fig:creation-election}).
+
+\newgeometry{margin=1.0cm}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/1-index.png}
+    \caption{Homepage of the web app.}
+    \label{fig:homepage}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/2-login-admin.png}
+    \caption{Login of the administrator view.}
+    \label{fig:login-admin}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.88\linewidth]{figures/story-board/3-creation-election.png}
+    \caption{Creation of a new election view.}
+    \label{fig:creation-election}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.88\linewidth]{figures/story-board/4-user-registration.png}
+    \caption{User registration view. Non correct inputs are highlighted.}
+    \label{fig:user-registration}
+\end{figure}
+\restoregeometry
+
+An user can register into the system by entering their personal information (which are modifiable once logged in, \Cref{fig:user-area}), a valid email address and a password.
+%
+The inputs of the form (like for every form of the website) are checked for correctness, displaying an error message if the input is not valid (\Cref{fig:user-registration}).
+
+Moreover, if the user forget the password can request the generation of  new one which is sent to the email address provided during the registration (\Cref{fig:password-forgotten}).
+
+After registration, the user can authenticate into the system by entering his or her credentials (\Cref{fig:user-login}) and is automatically directed to the dashboard where the most recent elections are displayed based on their status (open, closed, upcoming) (\Cref{fig:dashboard}).
+%
+For a more fluid experience, the user, clicking on the title of the election status, is redirected to the list where he or she can filter them in a more usable way (\Cref{fig:elections}).
+
+\newgeometry{margin=1.0cm}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/7-user-area.png}
+    \label{fig:user-area}
+    \caption{User area view.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/story-board/16-password-forgotten.png}
+    \caption{Password forgotten view.}
+    \label{fig:password-forgotten}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/5-user-login.png}
+    \caption{User login view.}
+    \label{fig:user-login}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/6-dashboard.png}
+    \caption{Dashboard view.}
+    \label{fig:dashboard}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/6a-elections.png}
+    \caption{Elections list view.}
+    \label{fig:elections}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/8-notifications.png}
+    \label{fig:notifications}
+    \caption{A toast notification pops up and the election card is updated.}
+\end{figure}
+\restoregeometry
+
+Once the election opens the user is notified by a toast message which appears and the notification icon in the navbar is updated to reflect the number of new notification not yet read (\Cref{fig:notifications}).
+%
+At the same time the card of the election moves to the open elections section and buttons for casting a new vote are displayed.
+
+Clicking on "Get code" a modal pops up allowing to request a one time code for that election (\Cref{fig:request-code}).
+%
+The first part of the code is displayed in the input field.
+%
+The second part is sent to the user's email address.
+
+Once the user receives the second part of the code it's possible to insert it in the appropriate page (\Cref{fig:insert-code}).
+
+After the code is inserted, if it is valid, the user is redirected to the page where can cast the vote (\Cref{fig:cast-vote}).
+%
+After expressing the choice, the user is redirected to the details page.
+
+\newgeometry{margin=1.0cm}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/story-board/9-request-code.png}
+    \label{fig:request-code}
+    \caption{Request code modal.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/10-insert-code.png}
+    \label{fig:insert-code}
+    \caption{Insert one-time-code view.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/11-cast-vote.png}
+    \caption{Vote casting view.}
+    \label{fig:cast-vote}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/12-details.png}
+    \caption{Election details view.}
+    \label{fig:details}
+\end{figure}
+\restoregeometry
+
+The details page shows all the information about the election: the static ones along with the turnout (updated in real time) and the results, which are displayed only after the election is closed (\Cref{fig:details}).
+%
+For brevity's sake, the page shows both the notification toast alerting the user the election is closing (which is sent some time before the closing time) and the look of the page once the election is closed.
+
+Results are displayed both tabularly and graphically by means of both a pie chart and a bar chart (\Cref{fig:results-1}, \Cref{fig:results-2}).
+
+In any moment the user can read the received notifications by clicking on the notification icon in the navbar (\Cref{fig:notifications-list}).
+
+\newgeometry{margin=1.0cm}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/13-results.png}
+    \label{fig:results-1}
+    \caption{Election results view: table and bar chart.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/14-results.png}
+    \label{fig:results-2}
+    \caption{Election results view: pie chart.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/story-board/15-notifications.png}
+    \caption{Notifications list view.}
+    \label{fig:notifications-list}
+\end{figure}
+\restoregeometry
 
 \section{Validation}
 
