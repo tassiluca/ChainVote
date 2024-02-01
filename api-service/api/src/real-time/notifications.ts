@@ -6,11 +6,6 @@ const notificationEvent = "new-notification"
 /** The number of milliseconds before the closing of an election at which send a notification. */
 const noticeTime: number = 60_000;
 
-export async function loadAllScheduledNotifications() {
-  // TODO: load all ScheduledNotifications at server startup
-  console.debug("Loading all scheduled notifications")
-}
-
 export async function setClosingElectionNotification(io: Server, at: Date, electionId: string, goal: string) {
   const noticeClosingNotification = new ScheduledNotification({
     when: new Date(at.getTime() - noticeTime),

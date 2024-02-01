@@ -280,7 +280,7 @@ userRouter.post(
  * paths:
  *   /users/password-forgotten:
  *      put:
- *          summary: Request to send a new password to the user email
+ *          summary: Reset password
  *          requestBody:
  *              required: true
  *              content:
