@@ -415,10 +415,15 @@ From the navbar is possible to navigate the notifications view where all recent 
     \hfill
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
+        \includegraphics[width=\textwidth]{./figures/mockups/vote-page.pdf}
+        % \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{./figures/mockups/notifications.pdf}
         %\caption{}
     \end{subfigure}
-    \hfill
     % add with subfigures the cast a vote view
     \caption{Voting details, Cast a vote and Notifications view.}
     \label{fig:details-cast-notifications-view}
@@ -431,21 +436,49 @@ From the navbar is possible to navigate the notifications view where all recent 
         \includegraphics[width=\textwidth]{./figures/mockups/user-area.pdf}
         %\caption{}
     \end{subfigure}
-    \caption{User area view.}
-    \label{fig:user-area-view}
-\end{figure}
-
-\begin{figure}
+    \hfill
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
         \includegraphics[width=\textwidth]{./figures/mockups/create-election.pdf}
         %\caption{}
     \end{subfigure}
-    \caption{Create election view.}
-    \label{fig:create-election-view}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/mockups/otc.pdf}
+        %\caption{}
+    \end{subfigure}
+    \caption{User area, Create election and OTC request view.}
+    \label{fig:user-area-view}
 \end{figure}
 
 \subsection{Backend Architecture}
+The following section presents the overall architecture of the system's backend that is principally composed  by two modules:
+\begin{itemize}
+    \item Blockchain network: based on Hyperledger Fabric, maintains the business logic regarding votes and elections;
+    \item API server: used as middleware between the blockchain network and the clients, it exposes the API to interact with the system
+\end{itemize}
+
+Focusing on the API server module, we see, in figure \Cref{fig:system-architecture}, that it provides its functionality through the \texttt{:api-server} and \texttt{:auth-server} submodules: \texttt{:api-server} maintains the logics for interacting with the blockchain network, manage the users data and send the events to the frontend using websockets. \texttt{:auth-server} exposes the login endpoints and generates the JWT tokens used to authenticate the users (more detail in \ref{sec:authentication}).
+
+Both modules are based on the same techonlogical stack (Node and Express.js) and share some common functionality distributed through the use of an internal dependency registry (represented as \texttt{:common} in \Cref{fig:system-architecture}). The utility classes and functions are packed as a npm package and imported as dependency.
+
+Other than the blockchain's ledger the system relies on two databases, both contained in the \texttt{:api-service} module:
+\begin{itemize}
+    \item \texttt{MongoDB} stores persistent information, i.e., user data and authentication tokens.
+    \item \texttt{Redis} is used for storing temporary data, i.e., the number of requests for a specific endpoint.
+\end{itemize}
+
+Clients can also receive notifications from the server through the use of websockets. The server uses the \texttt{socket.io} library to send events to the clients.
+
+\begin{landscape}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{figures/system-architecture.eps}
+        \caption{UML class diagram of the election's domain entities.}
+        \label{fig:system-architecture} 
+    \end{figure}
+\end{landscape}
 
 %% -------------------------------------- DS ----------------------------
 \iffalse
@@ -880,6 +913,7 @@ The Communicator class requires several arguments for the instantiation, and thi
 The first time that we request a client for a specific endpoint the GrpcClientPool will create a new gRPC session and will store it in a map, associating it with the endpoint. The next time that we request a client for the same endpoint, the GrpcClientPool will return the client that was created previously. This will allow us to reuse the same gRPC session for multiple requests, without having to create a new one.
 
 \subsection{Authentication}
+\label{sec:authentication} 
 Authentication within the system is implemented by the use of \texttt{JWT tokens}. JWT \cite{jwt} is an open standard that allows the secure transmission of information between two parties as a JSON object. The information passed is digitally signed using the RS256 algorithm so it can be trusted and verified by an entity that requests it. Both the sign and verify functions for an access token are distributed to the \texttt{API} and \texttt{AUTH} server inside the \texttt{:common} package.
 
 As mentioned in \Cref{uc:auth-to-the-system}, when a user tries to log in, the \texttt{AUTH} server will sign an access and a refresh token. The first one has a validity of 15 minutes while the latter one of 30, both will be securely signed by a private key and then sent back to the client. 
