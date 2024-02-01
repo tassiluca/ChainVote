@@ -48,7 +48,99 @@ function updateNow() {
 
 async function getVotings() {
   try {
-    data.value = await votingStore.getVotings();
+    // data.value = await votingStore.getVotings();
+    data.value = [
+      {
+        id: 1,
+        goal: "Goal 1",
+        voters: 100,
+        start: new Date(),
+        end: new Date(10938943246341),
+        choices: [
+          {name: "Choice 1"},
+          {name: "Choice 2"},
+          {name: "Choice 3"},
+        ],
+        results: {
+          "Choice 1": 10,
+          "Choice 2": 20,
+          "Choice 3": 30,
+        },
+        turnout: "10",
+      },
+      {
+        id: 2,
+        goal: "Goal 2",
+        voters: 100,
+        start: new Date(),
+        end: new Date(10938943246341),
+        choices: [
+          {name: "Choice 1"},
+          {name: "Choice 2"},
+          {name: "Choice 3"},
+        ],
+        results: {
+          "Choice 1": 10,
+          "Choice 2": 20,
+          "Choice 3": 30,
+        },
+        turnout: "10",
+      },
+      {
+        id: 3,
+        goal: "Goal 3",
+        voters: 100,
+        start: new Date(),
+        end: new Date(10938943246341),
+        choices: [
+          {name: "Choice 1"},
+          {name: "Choice 2"},
+          {name: "Choice 3"},
+        ],
+        results: {
+          "Choice 1": 10,
+          "Choice 2": 20,
+          "Choice 3": 30,
+        },
+        turnout: "10",
+      },
+      {
+        id: 4,
+        goal: "Goal 4",
+        voters: 100,
+        start: new Date(),
+        end: new Date(10938943246341),
+        choices: [
+          {name: "Choice 1"},
+          {name: "Choice 2"},
+          {name: "Choice 3"},
+        ],
+        results: {
+          "Choice 1": 10,
+          "Choice 2": 20,
+          "Choice 3": 30,
+        },
+        turnout: "10",
+      },
+      {
+        id: 5,
+        goal: "Goal 5",
+        voters: 100,
+        start: new Date(),
+        end: new Date(10938943246341),
+        choices: [
+          {name: "Choice 1"},
+          {name: "Choice 2"},
+          {name: "Choice 3"},
+        ],
+        results: {
+          "Choice 1": 10,
+          "Choice 2": 20,
+          "Choice 3": 30,
+        },
+        turnout: "10",
+      },
+    ]
   } catch (e: any) {
     console.error(e);
     await router.push({name: "not-found"})
@@ -169,8 +261,8 @@ function resetPage() {
         <RequestCodeModal :electionName="electionName" :electionId="electionId" :id="modalId"/>
       </div>
       <div class="pagination-buttons" v-if="totalPages>1">
-        <button @click="prevPage" class="btn btn-primary" :disabled="currentPage === 1">&lt;</button>
-        <button @click="nextPage" class="btn btn-primary" :disabled="currentPage === totalPages">&gt;</button>
+        <button @click="prevPage" class="btn btn-primary" :disabled="currentPage === 1">Prev</button>&nbsp;
+        <button @click="nextPage" class="btn btn-primary" :disabled="currentPage === totalPages">Next</button>
         <br/>
         <p>{{currentPage}} / {{totalPages}}</p>
       </div>
