@@ -41,6 +41,9 @@ library.add(faEnvelope, faEnvelopeOpen, faEnvelopeOpenText, faBars, faUser, faRi
           <li v-if="authStore.isLogged" class="nav-item">
             <a class="nav-link" href="/dashboard">Dashboard</a>
           </li>
+          <li v-if="authStore.isLogged" class="nav-item">
+            <a class="nav-link" href="/elections">Elections</a>
+          </li>
           <li v-if="authStore.isLogged && authStore.userRole === Role.Admin" class="nav-item">
             <a class="nav-link" href="/elections/create">Create election</a>
           </li>
