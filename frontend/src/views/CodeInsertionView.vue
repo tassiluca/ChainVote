@@ -3,12 +3,8 @@ import CodeInsertion from '@/components/vote/CodeInsertion.vue'
 </script>
 
 <template>
-  <section class="container-fluid bg-body-tertiary d-block">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">
-        <CodeInsertion :digit-number="10" />
-      </div>
-    </div>
+  <section class="container mt-5">
+    <CodeInsertion :digit-number="10" />
   </section>
 </template>
 
@@ -19,6 +15,7 @@ import CodeInsertion from '@/components/vote/CodeInsertion.vue'
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-inline: auto;
   }
 
   .otp-field input {

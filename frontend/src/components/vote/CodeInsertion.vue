@@ -32,6 +32,17 @@ watch(inputRefs, (newValue) => {
   }
 });
 
+function clearInputs() {
+  inputRefs.forEach((input, _) => {
+    input.value = '';
+  });
+  const inputs: NodeListOf<HTMLElement> = document.querySelectorAll("input");
+  inputs.forEach((input, index) => {
+    console.log(index);
+    input.disabled = index !== 0;
+  });
+}
+
 
 function submitCode(code: string) {
   submit.value = true;
@@ -48,17 +59,21 @@ function submitCode(code: string) {
       window.location.href = `/vote/${route.params.id}`;
     } else {
       error.value = true;
+      clearInputs();
     }
   }).catch((err) => {
     error.value = true;
+    clearInputs();
   }).finally(() => {
     submit.value = false;
   });
 }
 
+
+
 onMounted(async () => {
   await nextTick();
-  const inputs: NodeListOf<HTMLElement> = document.querySelectorAll(".otp-field > input");
+  const inputs: NodeListOf<HTMLElement> = document.querySelectorAll("input");
 
   inputs.forEach((input, _) => {
     input.addEventListener("keyup", (e) => {
@@ -85,6 +100,7 @@ onMounted(async () => {
       if (e.key === "Backspace") {
         if (prevInput) {
           prevInput.disabled = false;
+          prevInput.value = "";
           currentInput.disabled = true;
           prevInput.focus();
         }
@@ -102,27 +118,27 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
-      <div class="card-body p-5 text-center">
-        <h4>Insert the election's OTC </h4>
-        <div class="otp-field mb-4">
-          <input type="text" v-for="(_, index) in inputRefs" v-model="inputRefs[index].value" :disabled="index !== 0"/>
-        </div>
+  <div class="bg-white p-3 rounded shadow-sm text-center">
+    <h4 class="text-center mb-3">Insert the election's OTC</h4>
+    <div class="overflow-auto">
+      <div class="d-flex flex-wrap justify-content-center">
+        <input
+          type="text"
+          v-for="(_, index) in inputRefs"
+          v-model="inputRefs[index].value"
+          :disabled="index !== 0"
+          class="form-control mx-2 my-2"
+          style="max-width: 60px;"
+          autocomplete="off"
+        />
       </div>
-      <p v-if="error"> Code is not valid !</p>
     </div>
+    <p v-if="error" class="text-danger mt-3">Code is not valid!</p>
+  </div>
 </template>
 
 <style scoped>
-  .otp-field {
-    flex-direction: row;
-    column-gap: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .otp-field input {
+  input {
     height: 45px;
     width: 42px;
     border-radius: 6px;
@@ -131,7 +147,8 @@ onMounted(async () => {
     text-align: center;
     border: 1px solid #ddd;
   }
-  .otp-field input:focus {
+
+  input:focus {
     border-color: #0073E6;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
   }
