@@ -4,7 +4,7 @@
 
 <img src="./frontend/src/assets/logo.svg" width="180px" />
 
-[Requirements](#requirements) | [Develop](#develop) | [Startup](#startup) | [Docs](#documentation) | [Troubleshooting](#troubleshooting) | [Authors](#authors)
+[Requirements](#requirements) | [Startup](#startup) | [Docs](#documentation) | [Develop](#develop) | [Troubleshooting](#troubleshooting) | [Authors](#authors)
 
 </div>
 
@@ -16,20 +16,6 @@
 - Java 11 or higher
 - Node.js 18 or higher
 - `npm`
-
-## Develop
-
-To clone the project:
-
-```bash
-git clone --recurse-submodules <URL> <DESTINATION>
-```
-
-If the repository has been cloned plainly, then submodules can be initialized manually:
-
-```bash
-git submodule update --init --recursive
-```
 
 ## Startup
 
@@ -79,6 +65,20 @@ For more details have a look at the project documentation.
 - **RESTful API**
   - [`api-server`](https://tassiluca.github.io/ChainVote/swagger-ui-api/)
   - [`auth-server`](https://tassiluca.github.io/ChainVote/swagger-ui-auth/)
+
+## Develop
+
+To clone the project:
+
+```bash
+git clone --recurse-submodules <URL> <DESTINATION>
+```
+
+If the repository has been cloned plainly, then submodules can be initialized manually:
+
+```bash
+git submodule update --init --recursive
+```
 
 ## Troubleshooting
 
