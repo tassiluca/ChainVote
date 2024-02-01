@@ -401,7 +401,6 @@ From the navbar is possible to navigate the notifications view where all recent 
         \includegraphics[width=\textwidth]{./figures/mockups/elections.pdf}
         %\caption{}
     \end{subfigure}
-    % add with subfigures the dashboard view
     \caption{Login, Dashboard and Elections views}
     \label{fig:login-dashboard-elections-views}
 \end{figure}
@@ -954,14 +953,128 @@ Route checking is done on data saved on a \texttt{Redis} database. To make this 
 \fi
 %% -------------------------------------- DS ----------------------------
 
+\subsubsection{Authentication}
+Authentication within the system is implemented by the use of \texttt{JWT tokens}. JWT \cite{jwt} is an open standard that allows the secure transmission of information between two parties as a JSON object. The information passed is digitally signed using the RS256 algorithm so it can be trusted and verified by an entity that requests it. Both the sign and verify functions for an access token are distributed to the \texttt{API} and \texttt{AUTH} server inside the \texttt{:common} package.
+
+When a user tries to log in, the \texttt{AUTH} server will sign an access and a refresh token. The first one has a validity of 15 minutes while the latter one of 30, both will be securely signed by a private key and then sent back to the client. 
+
+\jsimport[
+    caption={The login method in the auth server},
+    label={lst:login-auth-server}
+]{listings/login.ts}
+
+The client is responsible for securely storing the tokens and for sending them to the request that requires authentication. Before accessing the routes, \texttt{API} server verifies the validity of the access token and extract 
+the information that it needs from it.
+This operation is performed by a middleware that is executed before the request is processed by the route handler. It verifies the validity of the token and extracts the information that it needs from it. If the token is valid, the middleware registers the user information and sends it to the function that handles the request. If the token is not valid, the middleware sends back an error response.
+
+\jsimport[
+    caption={The middleware that handles the authentication},
+    label={lst:auth-middleware}
+]{listings/authentication.handler.ts}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/jwt-api.eps}
+    \label{fig:jwt-packages-api} 
+    \caption{The overall API for the management of the JWT tokens}
+\end{figure}
+
+The \texttt{Jwt} model handles the verification and persistence of tokens inside the \texttt{MongoDB} database. It uses the namesake utility class, located within the \texttt{utils.jwt} package which is responsible for managing the construction of the various parts of the token.
+
+\begin{warn}[\textit{Warning}]
+    Once the network is deployed, the script copies a pair of public \& private keys in \texttt{api}, \texttt{auth} and \texttt{common} modules. While this operation simplifies the deployment process, and its testing, we're aware that in a real scenario, this would be a security issue and the private key should be stored and distributed relying on a more secure way.
+\end{warn}
+
+\subsubsection{Rate limiter}
+We've implemented a custom rate-limiter module inside the API layer, which is responsible for limiting the number of requests that a client can send to a specific endpoint. This is done by using a \texttt{Redis} database that stores the number of requests that a client has sent to a specific endpoint. The rate limiter is implemented as a middleware that is executed before the request is processed by the route handler. It checks if the client has exceeded the maximum number of requests allowed, if so it sends back an error response to the client, otherwise, it increments the number of requests and sends the request to the route handler.
+
+The way it works is as follows: each controller specifies a set of rules for each endpoint that can vary from the type of request.
+
+\jsimport[
+    caption={The definitions of the rules for the rate-limiter},
+    label={lst:rate-limiter-rules}
+]{listings/api.rule.ts}
+
+In \Cref{lst:rate-limiter-rules} we listed the rules for three endpoints, each of them specify for the \texttt{verb} type two parameters:
+\begin{itemize}
+    \item \texttt{time}: The time window in which the requests are counted.
+    \item \texttt{limit}: The maximum number of requests that can be sent in the specified time window.
+\end{itemize}
+
+So, for example, \texttt{endpoint\_name\_1} can receive a maximum of 50 requests in 18 seconds if the request type is \texttt{POST} and 60 requests in 14 seconds if the request type is \texttt{GET}.
+The set of rules is then passed to the RateLimiter middleware which retrieves the IP address of the client and the endpoint that is being requested. 
+Route checking is done on data saved on a \texttt{Redis} database. To make this solution more modular and extensible a Storage (\texttt{ApiLimiterStorage}) interface was devised that defines the operations to be performed on the data. 
+
+\jsimport[
+    caption={The limiter middleware},
+    label={lst:rate-limiter-middleware}
+]{listings/api.limiter.ts}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/api-limiter-api.eps}
+    \label{fig:api-limiter-api} 
+\end{figure}
+
+\subsubsection{Mailer}
+
+\subsubsection{Routes}
+
+Following REST principles, we defined routes according to the main entities.
+Using Open API, we provide documentation of both \texttt{:api-server} and \texttt{auth-server} modules:
+\begin{itemize}
+    \item \href{https://tassiluca.github.io/ChainVote/swagger-ui-api/}{\texttt{:api-server} API}
+    \item \href{https://tassiluca.github.io/ChainVote/swagger-ui-auth/}{\texttt{:auth-server} API}
+\end{itemize}
+
+A brief example is provided in \Cref{fig:backend-routes}.
+
+\todo{Check if it's okay}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/backend-routes/users.png}
+        % \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/backend-routes/election.png}
+        %\caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/backend-routes/code.png}
+        %\caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/backend-routes/notifications.png}
+        %\caption{}
+    \end{subfigure}
+    \hfill
+    \caption{Backend routes api.}
+    \label{fig:backend-routes}
+\end{figure}
+
 \subsubsection{Real time updates and notifications with \texttt{Socket.io}}
 
 \texttt{Socket.io}, as already stated in \Cref{sec:technologies}
 
-
 \subsection{Frontend}
 
+\subsubsection{Stores}
 
+We've collected all backend APIs in stores, one for each main entity of the system, which also hold information required in communications.
+
+\subsubsection{Vue Components}
+
+Given the reusable and modular nature offered by Vue's component, we've implemented several components to manage custom content and logic.
+By means of custom emit events and props, the nested structure offered by components can be crossed from parent to child components bidirectionally, triggering events in child components that propagate up to the parents.
 
 \section{Story board}
 
