@@ -235,7 +235,7 @@ services:
 
   couchdb-peer1-org1:
     container_name: couchdb-peer1-org1
-    image: couchdb:3.3.2
+    image: couchdb:3.3.3
     labels:
       service: hyperledger-fabric
     environment:
@@ -290,7 +290,7 @@ services:
 
   couchdb-peer1-org2:
     container_name: couchdb-peer1-org2
-    image: couchdb:3.3.2
+    image: couchdb:3.3.3
     labels:
       service: hyperledger-fabric
     environment:
@@ -345,7 +345,7 @@ services:
 
   couchdb-peer2-org2:
     container_name: couchdb-peer2-org2
-    image: couchdb:3.3.2
+    image: couchdb:3.3.3
     labels:
       service: hyperledger-fabric
     environment:
@@ -400,7 +400,7 @@ services:
 
   couchdb-peer1-org3:
     container_name: couchdb-peer1-org3
-    image: couchdb:3.3.2
+    image: couchdb:3.3.3
     labels:
       service: hyperledger-fabric
     environment:
@@ -455,7 +455,7 @@ services:
 
   couchdb-peer2-org3:
     container_name: couchdb-peer2-org3
-    image: couchdb:3.3.2
+    image: couchdb:3.3.3
     labels:
       service: hyperledger-fabric
     environment:
