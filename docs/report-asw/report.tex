@@ -1151,6 +1151,22 @@ By means of custom emit events and props, the nested structure offered by compon
 
 \section{Validation}
 
+Due to mobile first principles, validation phase consisted first of all in test all the system functionalities by means of browser's simulator.
+This phase has been repeated changing browsers to test portability too. In addition, all the APIs has been tested using either web application and \texttt{Postman}.
+
+\subsection{User experience}
+
+In order to enhance usability and user-experience, Nielsen's heuristics has been considered during the whole development of the system, in details
+\begin{itemize}
+    \item Visibility of system status, sharing system's status with the user, i.e. during form submission a spinner will report the computation;
+    \item Match between system and real world, adopting icons and names familiar with the catchment area;
+    \item User control and freedom, in fact the system will never impose an action, but suggest the path the user can follow;
+    \item Error prevention, for instance in place of asking for a code, the alert raised to display half of a code won't accidentally close;
+    \item Recognition rather than recall, since the system has been designed to be the most intuitive as possible;
+    \item Minimalist design, adhering to KISS principle, views are designed as minimal but effective;
+    \item Help user recognize, diagnose and recover from errors, exposing clear and meaningful messages in place of errors raised.
+\end{itemize}
+
 %% -------------------------------------- DS ----------------------------
 \iffalse
 
