@@ -46,7 +46,7 @@
 </script>
 
 <template>
-    <div class="container">
+    <div class="container-sm col-md-10">
         <header class="mb-2">
           <PageTitle :title="`Vote for election ${goal}`" />
         </header>

@@ -43,7 +43,7 @@ library.add(faEnvelope, faEnvelopeOpen, faEnvelopeOpenText, faBars, faUser, faRi
       </a>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
-          <li class="nav-item" v-if="authStore.isLogged && authStore.userRole == Role.User">
+          <li class="nav-item" v-if="!authStore.isLogged || (authStore.isLogged && authStore.userRole == Role.User)">
             <a class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
           <li v-if="authStore.isLogged" class="nav-item">
