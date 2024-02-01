@@ -158,14 +158,14 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "electionId": {
+                  "userId": {
                     "type": "string",
-                    "description": "The election id for which generates a one-time-code."
+                    "description": "The id of a user."
                   }
                 }
               },
               "example": {
-                "electionId": 1728519885
+                "userId": 2050333334
               }
             }
           }
@@ -358,7 +358,7 @@
                 }
               },
               "example": {
-                "electionId": 1728519885,
+                "userId": 2050333334,
                 "code": "6e692a06ad"
               }
             }
@@ -1060,147 +1060,21 @@
         }
       }
     },
-    "/notifications/all": {
+    "/users/{email}": {
       "get": {
-        "summary": "Return all the notifications for the user",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/CommonResponse"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/BadRequestError"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/TooManyRequestError"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Generic server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/InternalServerError"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/notifications/{notificationId}": {
-      "put": {
-        "summary": "Mark a notification as read",
+        "summary": "Return the profile of the user with the given email",
         "parameters": [
           {
-            "name": "notificationId",
+            "name": "email",
             "in": "path",
-            "description": "The id of the notification to mark as read",
-            "required": true,
+            "description": "The email of the user profile.",
+            "required": false,
             "schema": {
               "type": "string"
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/CommonResponse"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/BadRequestError"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/TooManyRequestError"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Generic server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/InternalServerError"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users": {
-      "get": {
-        "summary": "Return the profile of the user",
-        "responses": {
           "200": {
             "description": "Ok",
             "content": {
@@ -1258,10 +1132,21 @@
             }
           }
         }
-      },
+      }
+    },
+    "/users/{userEmail}": {
       "put": {
         "summary": "Update a specific user",
         "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "The email of the user to update.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "data",
             "in": "body",
@@ -1416,7 +1301,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/users": {
       "post": {
         "summary": "Create a new user",
         "requestBody": {
@@ -1450,85 +1337,6 @@
         "responses": {
           "200": {
             "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/CommonResponse"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/BadRequestError"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/TooManyRequestError"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Generic server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/InternalServerError"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/password-forgotten": {
-      "put": {
-        "summary": "Request to send a new password to the user email",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "description": "The email of the user"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
