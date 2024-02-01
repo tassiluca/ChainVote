@@ -19,6 +19,7 @@
         submitting.value = true;
         try {
           response.value = await useVotingStore().castVote(choosedOption.value);
+          setTimeout(async () => await router.replace(`/elections/${electionId}`), 2000);
         } catch (e: any) {
           response.value = {
             success: false,

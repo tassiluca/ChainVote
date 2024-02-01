@@ -9,7 +9,6 @@ import CreateElectionView from "@/views/CreateElectionView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import UserAreaView from "@/views/UserAreaView.vue";
 import ElectionDetails from "@/views/ElectionDetails.vue";
-import ElectionsTestView from '@/views/ElectionsTestView.vue';
 import CodeInsertionView from '@/views/CodeInsertionView.vue';
 import VoteView from "@/views/VoteView.vue";
 import ElectionsView from "@/views/ElectionsView.vue";
@@ -71,11 +70,6 @@ const router = createRouter({
       meta: {
         allowed: [Role.User, Role.Admin]
       }
-    },
-    {
-      path: '/test-modal',
-      name: 'test-modal',
-      component: ElectionsTestView
     },
     {
       path: '/insert-code/:id',

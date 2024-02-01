@@ -16,7 +16,7 @@
 \author{
     Giovanni Antonioni \\ \emailaddr{giovanni.antonioni2@studio.unibo.it} \\ Matr. \texttt{xxxx}
     \and 
-    Luca Rubboli \\ \emailaddr{luca.rubboli2@studio.unibo.it} \\ Matr. \texttt{xxxx}
+    Luca Rubboli \\ \emailaddr{luca.rubboli2@studio.unibo.it} \\ Matr. \texttt{1083742}
     \and
     Luca Tassinari \\ \emailaddr{luca.tassinari10@studio.unibo.it} \\ Matr. \texttt{1096190}
 }
@@ -164,9 +164,9 @@ In the next section is presented the target user analysis that serves as the com
 }
 \vspace*{0.2cm}
 
-\textbf{Personas:} Ellis
+\textbf{Personas:} Alba
 
-Ellis is an administrator of the ChainVote system.
+Alba is an administrator of the ChainVote system.
 
 \textbf{Use Case Scenario:}
 
@@ -362,21 +362,23 @@ This section present the overall design of the system, both frontend and backend
 
 \subsubsection*{Mockups}
 
-The style of the web application is an important aspect to take care of in order to meet the usability requirements described above.
+Style in a web application is an important aspect to consider to fulfill usability requirements described above.
 %
 In order to devise a design that would enable a good user experience of the final product, initial mockups had to be carried out. 
 
-As already specified in the non-functional requirements, the design of the application is mobile-first. 
+As already specified in the non-functional requirements, design of the application is mobile-first. 
 %
-This means that the mockups have been made and thought out in their elements primarily in the mobile context and adapted to be usable in a user-friendly manner and taking advantage of all the spaces available in the desktop version.
+This means that mockups have been made and thought out in their elements primarily in the mobile context and adapted to be usable in a user-friendly manner and taking advantage of all the spaces available in the desktop version.
 
-The only page accessible by unauthenticated users is the home page where the purpose of the project is described.
+The only page accessible by unauthenticated users is the home page where is described the purpose of the project.
 
-The user, in order to use the system, is required to log in (\Cref{fig:login-dashboard-views}).
+The user, in order to use the system, is required to log in (\Cref{fig:login-dashboard-elections-views}).
 %
-Once correctly logged, the user is redirected to the Dashboard where can visualize all the elections, categorized by "Open", "Closed" and "Soon".
+Once correctly logged, the user is redirected to the Dashboard where all the elections are displayed, categorized by "Open", "Closed" and "Soon".
+
+Reasoning about usability, has been decided to add another view, Election view, where elections can be displayed, rather categorized or unfiltered. Moreover, vertical display allows a smoother visualization, up to 10 per page even in mobile setting.
 %
-From there he can see the details of an election (\Cref{fig:details-cast-notifications-view}), as well as reach the page to cast a new vote.
+From both visualization views, users can see the details of an election (\Cref{fig:details-cast-notifications-view}), ask for the code required during voting phase as well as reach the page to cast a new vote.
 %
 From the navbar is possible to navigate the notifications view where all recent notifications are displayed along with an indication of whether it has already been read or not.
 
@@ -387,11 +389,22 @@ From the navbar is possible to navigate the notifications view where all recent 
         \includegraphics[width=\textwidth]{./figures/mockups/login.pdf}
         %\caption{}
     \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/mockups/dashboard.pdf}
+        %\caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/mockups/elections.pdf}
+        %\caption{}
+    \end{subfigure}
     % add with subfigures the dashboard view
-    \caption{Login and Dashboard views}
-    \label{fig:login-dashboard-views}
+    \caption{Login, Dashboard and Elections views}
+    \label{fig:login-dashboard-elections-views}
 \end{figure}
-\todo{Dashboard mockup}
 
 \begin{figure}
     \centering
@@ -412,6 +425,26 @@ From the navbar is possible to navigate the notifications view where all recent 
     \label{fig:details-cast-notifications-view}
 \end{figure}
 \todo{Cast a vote mockup}
+
+\begin{figure}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/mockups/user-area.pdf}
+        %\caption{}
+    \end{subfigure}
+    \caption{User area view.}
+    \label{fig:user-area-view}
+\end{figure}
+
+\begin{figure}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./figures/mockups/create-election.pdf}
+        %\caption{}
+    \end{subfigure}
+    \caption{Create election view.}
+    \label{fig:create-election-view}
+\end{figure}
 
 \subsection{Backend Architecture}
 
@@ -612,6 +645,7 @@ Other than the blockchain the system relies on two databases:
 %% -------------------------------------- DS ----------------------------
 
 \subsection{Technologies}
+\label{sec:technologies}
 
 %% -------------------------------------- DS ----------------------------
 \iffalse
@@ -643,9 +677,6 @@ ReST gives different advantages:
 \section{Implementation Details}
 
 \subsection{API Server}
-
-\subsection{Frontend}
-
 
 %% -------------------------------------- DS ----------------------------
 \iffalse
@@ -923,10 +954,19 @@ Route checking is done on data saved on a \texttt{Redis} database. To make this 
 \fi
 %% -------------------------------------- DS ----------------------------
 
+\subsubsection{Real time updates and notifications with \texttt{Socket.io}}
+
+\texttt{Socket.io}, as already stated in \Cref{sec:technologies}
+
+
+\subsection{Frontend}
+
+
+
 \section{Story board}
 
 
-\section{Self-assessment / Validation}
+\section{Validation}
 
 %% -------------------------------------- DS ----------------------------
 \iffalse
