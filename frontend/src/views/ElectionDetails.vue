@@ -60,7 +60,7 @@ async function getVotingDetails(id: string) {
 </script>
 
 <template>
-  <Breadcrumb :paths="[{name: 'Dashboard', link: '/dashboard'}, {name: 'Details', link: '/voting/details'}]" />
+  <Breadcrumb :paths="[{name: 'Dashboard', link: '/dashboard'}, {name: 'Details', link: '/elections/details'}]" />
   <div v-if="election" class="container-sm col-md-7 text-center">
     <PageTitle title="Voting details" />
     <div class="row">

@@ -35,7 +35,7 @@ function sendCodeRequest(id: string) {
 </script>
 
 <template>
-  <div class="modal fade" tabindex="-1">
+  <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
