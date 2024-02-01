@@ -17,7 +17,14 @@
 
     async function submitForm() {
         submitting.value = true;
-        response.value= await useVotingStore().castVote(choosedOption.value);
+        try {
+          response.value = await useVotingStore().castVote(choosedOption.value);
+        } catch (e: any) {
+          response.value = {
+            success: false,
+            msg: e.response.data.error.message,
+          };
+        }
         submitting.value = false;
     }
 

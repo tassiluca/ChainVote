@@ -6,7 +6,7 @@
       </div>
       <div class="d-flex justify-content-center flex-wrap">
         <a :href="`/elections/${election.id}`" class="useful-link">Details</a>
-        <a :href="`/vote/${election.id}`" class="useful-link" v-if="isOpen(election) && authStore.userRole !== Role.Admin">Vote</a>
+        <a :href="`/insert-code/${election.id}`" class="useful-link" v-if="isOpen(election) && authStore.userRole !== Role.Admin">Vote</a>
         <a class="useful-link" v-if="isOpen(election) && authStore.userRole !== Role.Admin" @click="$emit('openModal', election.id, election.goal)" href="#">Get code</a>
       </div>
     </div>

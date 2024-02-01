@@ -185,8 +185,6 @@ export async function passwordForgotten(req: Request, res: Response, next: NextF
     const data = {'password': password}
     try {
         await User.updateOne({ email: req.body.email }, data);
-        res.locals.code = StatusCodes.OK;
-        res.locals.data = true;
     } catch(error) {
         return next(error);
     }
@@ -199,11 +197,10 @@ export async function passwordForgotten(req: Request, res: Response, next: NextF
             This is the new password: <b>${password}</b>
         `
     };
-    const info = await mailer.sendMail(message)
-    res.locals.code = 201
+    await mailer.sendMail(message).catch((error: any) => next(error));
+    res.locals.code = StatusCodes.CREATED;
     res.locals.data = {
-        msg: "Email sent",
-        info: info.messageId
+        msg: "Email sent"
     }
     return next();
 }

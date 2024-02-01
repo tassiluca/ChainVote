@@ -124,11 +124,6 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
         // Divide the code in two parts
         const firstPart = code.substring(0, code.length/2);
         const secondPart = code.substring(code.length/2, code.length);
-
-        res.locals.code = StatusCodes.CREATED;
-        res.locals.data = firstPart;
-
-
         const message = {
             from: 'ChainVote',
             to: res.locals.user.email,
@@ -138,12 +133,9 @@ export async function generateCodeFor(req: Request, res: Response, next: NextFun
                 This is the other part of your code: <b>${secondPart}</b>
             `
         };
-        const info = await mailer.sendMail(message);
+        await mailer.sendMail(message).catch((error: any) => next(error));
         res.locals.code = StatusCodes.CREATED;
-        res.locals.data = {
-            msg: "Email sent",
-            info: info.messageId
-        }
+        res.locals.data = firstPart;
     } catch (error) {
         return next(transformHyperledgerError(error));
     }

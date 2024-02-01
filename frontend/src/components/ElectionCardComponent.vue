@@ -13,7 +13,7 @@
       </ul>
       <div class="d-flex flex-column links">
         <a :href="`/elections/${election.id}`">See details</a>
-        <a v-if="isOpen(election) && authStore.userRole !== Role.Admin" :href="`/vote/${election.id}`">Cast a vote</a>
+        <a v-if="isOpen(election) && authStore.userRole !== Role.Admin" :href="`/insert-code/${election.id}`">Cast a vote</a>
         <a v-if="isOpen(election) && authStore.userRole !== Role.Admin" href="#" @click="$emit('openModal', election.id, election.goal)">Get code</a>
       </div>
     </div>

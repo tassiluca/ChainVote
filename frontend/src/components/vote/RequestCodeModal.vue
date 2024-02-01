@@ -19,6 +19,7 @@ function sendCodeRequest(id: string) {
   axios.post(`${apiEndpoints.API_SERVER}/code/generate`, { electionId: id })
   .then((response) => {
     code.value = response.data.data
+    console.log(code.value)
     codeRequest.value = true
     requestError.value = false
   }).catch((error) => {
@@ -51,7 +52,7 @@ function sendCodeRequest(id: string) {
               </p>
             </div>
             <div class="row mb-2">
-              <p>Already have a code? <a href="#toElectionPage">Vote now</a></p>
+              <p>Already have a code? <a :href="`/insert-code/${electionId}`">Vote now</a></p>
             </div>
             <div class="row mb-2">
               <form @submit.prevent="sendCodeRequest(electionId)">
