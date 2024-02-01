@@ -1076,6 +1076,19 @@ Route checking is done on data saved on a \texttt{Redis} database. To make this 
 \end{figure}
 
 \subsubsection{Mailer}
+The system can send emails to the user by the means of a mailer component configured inside the API server. 
+We use a custom gmail account which credentials are passed using a docker secret on the initialization of the container during the deployment phase.
+\jsimport[
+    caption={The mailer component},
+    label={lst:mailer}
+]{listings/mailer-config.ts}
+
+When needed the mailer can be used in the code as follows:
+
+\jsimport[
+    caption={An example of how to use the mailer component},
+    label={lst:mailer-usage}
+]{listings/mailer-usage.ts}
 
 
 \subsubsection{Routes}
