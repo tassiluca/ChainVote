@@ -22,7 +22,7 @@
     "express-validator": "^7.0.1",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^9.0.1",
-    "mongoose": "^7.4.4",
+    "mongoose": "^8.0.0",
     "redis": "^4.6.8"
   },
   "devDependencies": {
